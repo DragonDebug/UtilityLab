@@ -20,6 +20,8 @@ From this folder in PowerShell:
 
 This creates a new folder named with today’s date (`yyyy MM dd`) in the same folder as the script.
 
+If that name already exists, it creates `yyyy MM dd (2)`, then `(3)`, and so on.
+
 ## 3) Run the test script
 
 ```powershell

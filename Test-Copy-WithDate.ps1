@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 $repoRoot = $PSScriptRoot
 $scriptPath = Join-Path $repoRoot "Copy-WithDate.ps1"
 
-if (-not (Test-Path $scriptPath)) {
+if (-not (Test-Path -LiteralPath $scriptPath -PathType Leaf)) {
     throw "Script not found: $scriptPath"
 }
 
@@ -18,18 +18,12 @@ try {
     # Arrange: create a fake source folder with a test file.
     New-Item -Path $tempSource -ItemType Directory | Out-Null
     $testFile = Join-Path $tempSource "sample.txt"
-    Set-Content -Path $testFile -Value "hello" -Encoding UTF8
+    Set-Content -LiteralPath $testFile -Value "hello" -Encoding UTF8
 
     # Arrange: write a config.json that points to the temp source folder.
-    # Backslashes must be escaped in JSON, so replace \ with \\.
     $configPath = Join-Path $tempRoot "config.json"
-    $escapedSource = $tempSource -replace '\\', '\\'
-    $configJson = @"
-{
-  "SourceFolder": "$escapedSource"
-}
-"@
-    Set-Content -Path $configPath -Value $configJson -Encoding UTF8
+    $configJson = [ordered]@{ SourceFolder = $tempSource } | ConvertTo-Json
+    Set-Content -LiteralPath $configPath -Value $configJson -Encoding UTF8
 
     # Arrange: copy the script into the temp folder so it uses the temp config.
     $tempScriptPath = Join-Path $tempRoot "Copy-WithDate.ps1"
@@ -37,18 +31,21 @@ try {
 
     # Act: run the script from the temp folder.
     & $tempScriptPath
+    if (-not $?) {
+        throw "Test failed: main script returned an error."
+    }
 
     # Assert: destination folder and file exist.
-    if (-not (Test-Path $tempDest)) {
+    if (-not (Test-Path -LiteralPath $tempDest -PathType Container)) {
         throw "Test failed: destination folder was not created."
     }
 
     $copiedFile = Join-Path $tempDest "sample.txt"
-    if (-not (Test-Path $copiedFile)) {
+    if (-not (Test-Path -LiteralPath $copiedFile -PathType Leaf)) {
         throw "Test failed: sample file was not copied."
     }
 
-    $content = Get-Content -Path $copiedFile -Raw
+    $content = Get-Content -LiteralPath $copiedFile -Raw
     if ($content -notmatch "hello") {
         throw "Test failed: copied file contents are incorrect."
     }
@@ -57,7 +54,7 @@ try {
 }
 finally {
     # Cleanup: remove the temp folder tree to keep the system clean.
-    if (Test-Path $tempRoot) {
-        Remove-Item -Path $tempRoot -Recurse -Force
+    if (Test-Path -LiteralPath $tempRoot) {
+        Remove-Item -LiteralPath $tempRoot -Recurse -Force
     }
 }
