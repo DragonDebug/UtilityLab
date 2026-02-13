@@ -20,15 +20,16 @@ try {
         throw "Source folder not found (or not a folder): $sourceFolder"
     }
 
-    # Build the destination folder name from today's date.
+    # Build the destination folder name from today's date with a separator.
     $dateStamp = Get-Date -Format "yyyy MM dd"
-    $destinationFolder = Join-Path -Path $PSScriptRoot -ChildPath $dateStamp
+    $baseFolderName = "$dateStamp -"
+    $destinationFolder = Join-Path -Path $PSScriptRoot -ChildPath $baseFolderName
 
-    # If today's folder already exists, create yyyy MM dd (2), (3), etc.
+    # If today's folder already exists, create yyyy MM dd - (2), (3), etc.
     if (Test-Path -LiteralPath $destinationFolder) {
         $counter = 2
         do {
-            $candidateFolder = Join-Path -Path $PSScriptRoot -ChildPath "$dateStamp ($counter)"
+            $candidateFolder = Join-Path -Path $PSScriptRoot -ChildPath "$baseFolderName ($counter)"
             $counter++
         } while (Test-Path -LiteralPath $candidateFolder)
 
