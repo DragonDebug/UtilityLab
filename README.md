@@ -1,8 +1,22 @@
-# Folder Copy Script
+# Folder Standards — Tool Collection
 
-## 1) Configure source folder
+A set of PowerShell productivity tools. Each tool lives in its own subfolder.
 
-Create or edit `config.psd1` in this folder:
+> If scripts are blocked, run once in your terminal:
+>
+> ```powershell
+> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+> ```
+
+---
+
+## CopyWithDate
+
+Creates a dated copy of a default folder (`yyyy MM dd - Name`).
+
+### Setup
+
+Edit `CopyWithDate\config.psd1`:
 
 ```powershell
 @{
@@ -10,28 +24,45 @@ Create or edit `config.psd1` in this folder:
 }
 ```
 
-Just paste a normal Windows path between the single quotes — no escaping needed.
+Just paste a normal Windows path — no escaping needed.
 
-## 2) Run the main script
-
-From this folder in PowerShell:
+### Usage
 
 ```powershell
-.\Copy-WithDate.ps1
+cd CopyWithDate
+.\Copy-WithDate.ps1            # Date-only folder
+.\Copy-WithDateAndName.ps1     # Date + custom name
+.\Copy-WithDate-UI.ps1         # GUI version
 ```
 
-This creates a new folder named with today’s date (`yyyy MM dd`) in the same folder as the script.
+Or double-click `Copy-WithDateAndName.bat`.
 
-If that name already exists, it creates `yyyy MM dd (2)`, then `(3)`, and so on.
-
-## 3) Run the test script
+### Test
 
 ```powershell
 .\Test-Copy-WithDate.ps1
 ```
 
-If scripts are blocked, run once in the same terminal:
+---
+
+## ListFolderContents
+
+Lists file and folder names from the current directory into a text file.
+
+### Setup
+
+1. Double-click `ListFolderContents\Settings\List-FolderContents-Settings.bat` (or run `ListFolderContents\Settings\List-FolderContents-Settings.ps1`) to open the settings GUI.
+2. Choose your filter (all files or specific extensions), toggle folder/subfolder inclusion, and set the output file name.
+3. Click **Save Settings** — your preferences are saved to a shared config in `%APPDATA%\FolderStandards\ListFolderContents\config.psd1`.
+
+### Usage
+
+Navigate to any folder you want to list, then run:
 
 ```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+& "C:\path\to\ListFolderContents\List-FolderContents.ps1"
 ```
+
+Or copy `List-FolderContents.bat` to the target folder and double-click it.
+
+By default, the script writes a text file (default `filelist.txt`) next to the script. You can point it to any folder or file path in the settings. If the file already exists it is overwritten.

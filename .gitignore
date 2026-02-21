@@ -1,1 +1,3 @@
-config.psd1
+CopyWithDate/config.psd1
+LongPathTest
+ListFolderContents/Create-TestTree.ps1
