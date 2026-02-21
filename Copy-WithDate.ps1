@@ -3,16 +3,16 @@ $ErrorActionPreference = "Stop"
 
 try {
     # Load configuration from the script directory.
-    $configPath = Join-Path -Path $PSScriptRoot -ChildPath "config.json"
+    $configPath = Join-Path -Path $PSScriptRoot -ChildPath "config.psd1"
     if (-not (Test-Path -LiteralPath $configPath -PathType Leaf)) {
         throw "Config file not found: $configPath"
     }
 
-    # Read the JSON config and extract the source folder path.
-    $config = Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json
+    # Read the PowerShell data file and extract the source folder path.
+    $config = Import-PowerShellDataFile -LiteralPath $configPath
     $sourceFolder = $config.SourceFolder
     if ([string]::IsNullOrWhiteSpace($sourceFolder)) {
-        throw "SourceFolder is missing in config.json"
+        throw "SourceFolder is missing in config.psd1"
     }
 
     # Validate the source folder exists and is a directory before copying.

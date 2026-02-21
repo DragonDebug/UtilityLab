@@ -4,17 +4,17 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 function Get-SourceFolder {
-    $configPath = Join-Path -Path $PSScriptRoot -ChildPath "config.json"
+    $configPath = Join-Path -Path $PSScriptRoot -ChildPath "config.psd1"
 
     if (-not (Test-Path -LiteralPath $configPath -PathType Leaf)) {
         throw "Config file not found: $configPath"
     }
 
-    $config = Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json
+    $config = Import-PowerShellDataFile -LiteralPath $configPath
     $sourceFolder = $config.SourceFolder
 
     if ([string]::IsNullOrWhiteSpace($sourceFolder)) {
-        throw "SourceFolder is missing in config.json"
+        throw "SourceFolder is missing in config.psd1"
     }
 
     if (-not (Test-Path -LiteralPath $sourceFolder -PathType Container)) {

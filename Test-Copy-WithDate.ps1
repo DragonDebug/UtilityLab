@@ -20,10 +20,10 @@ try {
     $testFile = Join-Path $tempSource "sample.txt"
     Set-Content -LiteralPath $testFile -Value "hello" -Encoding UTF8
 
-    # Arrange: write a config.json that points to the temp source folder.
-    $configPath = Join-Path $tempRoot "config.json"
-    $configJson = [ordered]@{ SourceFolder = $tempSource } | ConvertTo-Json
-    Set-Content -LiteralPath $configPath -Value $configJson -Encoding UTF8
+    # Arrange: write a config.psd1 that points to the temp source folder.
+    $configPath = Join-Path $tempRoot "config.psd1"
+    $configContent = "@{`n    SourceFolder = '$tempSource'`n}`n"
+    Set-Content -LiteralPath $configPath -Value $configContent -Encoding UTF8
 
     # Arrange: copy the script into the temp folder so it uses the temp config.
     $tempScriptPath = Join-Path $tempRoot "Copy-WithDate.ps1"

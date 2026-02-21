@@ -2,13 +2,15 @@
 
 ## 1) Configure source folder
 
-Create or edit `config.json` in this folder:
+Create or edit `config.psd1` in this folder:
 
-```json
-{
-  "SourceFolder": "C:\\Your\\Default\\Folder"
+```powershell
+@{
+    SourceFolder = 'C:\Your\Default\Folder'
 }
 ```
+
+Just paste a normal Windows path between the single quotes — no escaping needed.
 
 ## 2) Run the main script
 
