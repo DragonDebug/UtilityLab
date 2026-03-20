@@ -52,6 +52,7 @@ function Export-FileNames {
 	# Exclusions:
 	# - destination file itself
 	# - PowerShell scripts (*.ps1)
+	# - Batch files (*.bat)
 	# - hidden files by file attribute
 	# - dotfiles (for example .gitignore)
 	$names = Get-ChildItem -LiteralPath $TargetFolder -File |
@@ -60,8 +61,9 @@ function Export-FileNames {
 			$isHiddenAttribute = ($_.Attributes -band [System.IO.FileAttributes]::Hidden) -ne 0
 			$isDotFile = $_.Name.StartsWith('.')
 			$isPs1 = $_.Extension -ieq '.ps1'
+			$isBat = $_.Extension -ieq '.bat'
 
-			$fullPath -ne $destinationFullPath -and -not $isPs1 -and -not $isHiddenAttribute -and -not $isDotFile
+			$fullPath -ne $destinationFullPath -and -not $isPs1 -and -not $isBat -and -not $isHiddenAttribute -and -not $isDotFile
 		} |
 		Sort-Object -Property Name |
 		Select-Object -ExpandProperty Name
