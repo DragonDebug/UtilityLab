@@ -307,6 +307,10 @@
 
     .btn-header-templates { --header-btn-color: #f59e0b; }
 
+    .btn-header-items { --header-btn-color: #14b8a6; }
+
+    .btn-header-settings { --header-btn-color: #9a6a37; }
+
     .btn-header-clear { --header-btn-color: #ef4444; }
 
     .btn-header-export { --header-btn-color: #22c55e; }
@@ -346,15 +350,277 @@
     }
 
     #taskModal .modal {
-      max-width: 760px;
+      max-width: 810px;
+      background:
+        radial-gradient(circle at top right, color-mix(in srgb, #ec4899 10%, transparent), transparent 34%),
+        radial-gradient(circle at top left, color-mix(in srgb, #14b8a6 8%, transparent), transparent 30%),
+        linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, var(--surface)), var(--surface));
+      border-color: color-mix(in srgb, #ec4899 14%, var(--border));
+      position: relative;
+      overflow: hidden;
+      padding: 20px 22px 18px;
+    }
+
+    #taskModal .modal::before {
+      content: none;
     }
 
     #categoryModal .modal {
       max-width: 620px;
     }
 
-    #taskForm .form-row:first-of-type {
-      grid-template-columns: 1.2fr .85fr .85fr;
+    #itemsModal .modal {
+      max-width: 1160px;
+    }
+
+    #taskForm .form-row.form-row-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    #taskForm .form-row.form-row-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #taskForm {
+      display: grid;
+      grid-template-columns: 1.2fr .9fr .9fr;
+      gap: 10px 12px;
+      position: relative;
+      z-index: 1;
+      align-items: start;
+    }
+
+    #taskForm .form-row {
+      margin: 0;
+    }
+
+    #taskForm > .task-form-section-label,
+    #taskForm > .form-row,
+    #taskForm > .task-field-notes,
+    #taskForm > .form-actions {
+      grid-column: 1 / -1;
+    }
+
+    #taskForm > .task-field-title {
+      grid-column: 1 / span 2;
+    }
+
+    #taskForm > .task-field-description {
+      grid-column: 1 / -1;
+    }
+
+    #taskForm > .task-field-template {
+      grid-column: 3 / -1;
+    }
+
+    #taskForm > .task-field-email {
+      grid-column: 1 / -1;
+    }
+
+    .task-form-section-label {
+      --section-accent: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 0;
+      margin-top: 2px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text) 72%, var(--section-accent) 28%);
+    }
+
+    .task-form-section-label::before {
+      content: '';
+      width: 26px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--section-accent), color-mix(in srgb, var(--section-accent) 18%, transparent));
+    }
+
+    .task-form-section-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--section-accent) 24%, var(--border));
+      background: color-mix(in srgb, var(--section-accent) 12%, transparent);
+      color: var(--section-accent);
+      flex: 0 0 auto;
+    }
+
+    .task-form-section-icon svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .task-form-section-label.is-core {
+      --section-accent: #ec4899;
+    }
+
+    .task-form-section-label.is-workflow {
+      --section-accent: #14b8a6;
+    }
+
+    .task-form-section-label.is-schedule {
+      --section-accent: #5b8def;
+    }
+
+    #taskForm .task-form-field {
+      --task-group-accent: var(--accent);
+      margin-bottom: 0;
+      padding: 10px 11px 11px;
+      border: 1px solid color-mix(in srgb, var(--task-group-accent) 18%, var(--border));
+      border-radius: 14px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 8%, transparent), rgba(255,255,255,.02));
+      position: relative;
+      overflow: hidden;
+    }
+
+    #taskForm .task-form-field::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--task-group-accent), color-mix(in srgb, var(--task-group-accent) 14%, transparent));
+      opacity: .92;
+    }
+
+    #taskForm .task-form-field label {
+      color: color-mix(in srgb, var(--text-muted) 42%, var(--task-group-accent) 58%);
+      margin-bottom: 4px;
+    }
+
+    #taskForm .task-form-field input,
+    #taskForm .task-form-field select,
+    #taskForm .task-form-field textarea {
+      border-color: color-mix(in srgb, var(--task-group-accent) 22%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 10%, var(--field-bg-strong)), var(--field-bg));
+    }
+
+    #taskForm .task-form-field input:focus,
+    #taskForm .task-form-field select:focus,
+    #taskForm .task-form-field textarea:focus {
+      border-color: color-mix(in srgb, var(--task-group-accent) 74%, white 26%);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--task-group-accent) 18%, transparent), inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    #taskForm .task-form-field textarea {
+      min-height: 78px;
+    }
+
+    #taskForm .task-field-priority,
+    #taskForm .task-field-status {
+      border-color: color-mix(in srgb, var(--task-group-accent) 34%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 14%, transparent), rgba(255,255,255,.025));
+    }
+
+    #taskForm .task-field-priority label,
+    #taskForm .task-field-status label {
+      color: color-mix(in srgb, var(--text) 26%, var(--task-group-accent) 74%);
+    }
+
+    #taskForm .task-field-priority select,
+    #taskForm .task-field-status select {
+      border-color: color-mix(in srgb, var(--task-group-accent) 32%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 15%, var(--field-bg-strong)), var(--field-bg));
+    }
+
+    .task-field-title {
+      --task-group-accent: #ec4899;
+    }
+
+    .task-field-template {
+      --task-group-accent: #f59e0b;
+    }
+
+    .task-field-email {
+      --task-group-accent: #5b8def;
+    }
+
+    .task-field-description {
+      --task-group-accent: #8b5cf6;
+    }
+
+    .task-field-category {
+      --task-group-accent: #64748b;
+    }
+
+    .task-field-priority {
+      --task-group-accent: var(--medium);
+    }
+
+    .task-field-status {
+      --task-group-accent: var(--status-pending);
+    }
+
+    .task-field-received {
+      --task-group-accent: #14b8a6;
+    }
+
+    .task-field-due {
+      --task-group-accent: #ef7d57;
+    }
+
+    .task-field-notes {
+      --task-group-accent: #64748b;
+    }
+
+    #taskForm .form-actions {
+      margin-top: 2px;
+    }
+
+    #taskForm #submitTaskBtn {
+      --header-btn-color: #ec4899;
+      --header-btn-text: color-mix(in srgb, var(--text) 72%, #ffd4ea 28%);
+      justify-content: center;
+      min-width: 148px;
+      background: color-mix(in srgb, var(--header-btn-color) 12%, var(--surface2));
+      color: var(--header-btn-text);
+      border: 1px solid color-mix(in srgb, var(--header-btn-color) 28%, var(--border));
+    }
+
+    #taskForm #submitTaskBtn:hover {
+      background: color-mix(in srgb, var(--header-btn-color) 17%, var(--surface3));
+      color: color-mix(in srgb, var(--text) 84%, var(--header-btn-color) 16%);
+      border-color: color-mix(in srgb, var(--header-btn-color) 40%, var(--border-strong));
+    }
+
+    #taskForm #submitTaskBtn svg {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
+    }
+
+    @media (max-width: 760px) {
+      #taskModal .modal {
+        max-width: min(740px, calc(100vw - 24px));
+      }
+
+      #taskForm {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      #taskForm > .task-field-title,
+      #taskForm > .task-field-description {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 540px) {
+      #taskForm {
+        grid-template-columns: 1fr;
+      }
+
+      #taskForm > .task-field-template,
+      #taskForm > .task-field-email {
+        grid-column: 1 / -1;
+      }
     }
 
     .modal h2 {
@@ -1041,11 +1307,11 @@
     .task-card.priority-low    { border-left-color: var(--low); }
     .task-card.priority-very-low { border-left-color: var(--very-low); }
 
-    .task-card.status-done {
+    .task-card.status-completed {
       opacity: .55;
     }
 
-    .task-card.status-done .task-title {
+    .task-card.status-completed .task-title {
       text-decoration: line-through;
       color: var(--text-muted);
     }
@@ -1187,7 +1453,7 @@
     .badge-not-started { background: color-mix(in srgb, var(--status-not-started) 12%, transparent); color: var(--status-not-started); border-color: color-mix(in srgb, var(--status-not-started) 22%, transparent); }
     .badge-ongoing { background: color-mix(in srgb, var(--status-ongoing) 15%, transparent); color: var(--status-ongoing); border-color: color-mix(in srgb, var(--status-ongoing) 24%, transparent); }
     .badge-waiting-for-someone-else { background: color-mix(in srgb, var(--status-waiting) 15%, transparent); color: var(--status-waiting); border-color: color-mix(in srgb, var(--status-waiting) 28%, transparent); }
-    .badge-done    { background: color-mix(in srgb, var(--status-done) 18%, transparent); color: #94a3b8; border-color: color-mix(in srgb, var(--status-done) 28%, transparent); }
+    .badge-completed { background: color-mix(in srgb, var(--status-done) 18%, transparent); color: #94a3b8; border-color: color-mix(in srgb, var(--status-done) 28%, transparent); }
 
     .badge-category {
       color: var(--category-color, var(--text));
@@ -2409,6 +2675,659 @@
       color: var(--text-muted);
     }
 
+    .workflow-items-section {
+      --section-accent: #14b8a6;
+    }
+
+    .workflow-item-form {
+      display: grid;
+      gap: 8px;
+      padding: 9px;
+      border: 1px solid color-mix(in srgb, var(--section-accent, var(--accent)) 22%, var(--border));
+      border-radius: 12px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--section-accent, var(--accent)) 10%, transparent), rgba(255,255,255,.02));
+      margin-bottom: 12px;
+    }
+
+    .workflow-item-bulk,
+    .workflow-item-defaults {
+      display: grid;
+      gap: 8px;
+    }
+
+    .workflow-item-defaults {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .workflow-item-checklist-defaults,
+    .workflow-item-checklist {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 6px;
+    }
+
+    .workflow-item-label,
+    .workflow-item-field-group label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text-muted) 66%, var(--section-accent, var(--accent)) 34%);
+    }
+
+    .workflow-item-bulk-input,
+    .workflow-item-default-input,
+    .workflow-item-field-group select,
+    .workflow-item-field-group input,
+    .workflow-item-field-group textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid color-mix(in srgb, var(--section-accent, var(--accent)) 18%, var(--border));
+      border-radius: 10px;
+      background: linear-gradient(180deg, var(--field-bg-strong), var(--field-bg));
+      color: var(--text);
+      padding: 8px 9px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .workflow-item-bulk-input {
+      min-height: 94px;
+      resize: vertical;
+    }
+
+    .workflow-item-field-group textarea {
+      min-height: 56px;
+      resize: vertical;
+    }
+
+    .workflow-item-bulk-input:focus,
+    .workflow-item-default-input:focus,
+    .workflow-item-field-group select:focus,
+    .workflow-item-field-group input:focus,
+    .workflow-item-field-group textarea:focus {
+      border-color: var(--section-accent, var(--accent));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--section-accent, var(--accent)) 18%, transparent);
+    }
+
+    .workflow-item-field-group select,
+    .workflow-item-default-input.is-select {
+      cursor: pointer;
+      color-scheme: dark;
+    }
+
+    :root.theme-light .workflow-item-field-group select,
+    :root.theme-light .workflow-item-default-input.is-select {
+      color-scheme: light;
+    }
+
+    .workflow-item-field-group select option,
+    .workflow-item-default-input.is-select option {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .workflow-item-submit-btn {
+      justify-self: end;
+    }
+
+    .workflow-item-task-link {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .workflow-item-list-shell {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .workflow-item-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .workflow-item-empty {
+      color: var(--text-muted);
+      font-size: 12px;
+      padding: 14px;
+      text-align: center;
+      border: 1px dashed color-mix(in srgb, var(--section-accent, var(--accent)) 22%, var(--border));
+      border-radius: 10px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--section-accent, var(--accent)) 5%, transparent), transparent);
+    }
+
+    .workflow-item {
+      display: grid;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid color-mix(in srgb, var(--section-accent, var(--accent)) 18%, var(--border));
+      border-radius: 12px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--section-accent, var(--accent)) 8%, transparent), rgba(255,255,255,.02));
+    }
+
+    .workflow-item-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .workflow-item-header-main {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .workflow-item-heading {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .workflow-item-number {
+      font-size: 11px;
+      font-weight: 800;
+      color: color-mix(in srgb, var(--text) 76%, var(--section-accent, var(--accent)) 24%);
+      overflow-wrap: anywhere;
+    }
+
+    .workflow-item-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .workflow-item-chip,
+    .workflow-item-media-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 20px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--section-accent, var(--accent)) 18%, var(--border));
+      background: color-mix(in srgb, var(--section-accent, var(--accent)) 10%, transparent);
+      color: color-mix(in srgb, var(--text) 78%, var(--section-accent, var(--accent)) 22%);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .workflow-item-chip.is-approved {
+      border-color: color-mix(in srgb, var(--success) 26%, var(--border));
+      background: color-mix(in srgb, var(--success) 14%, transparent);
+      color: color-mix(in srgb, var(--success) 78%, var(--text) 22%);
+    }
+
+    .workflow-item-chip.is-project {
+      border-color: color-mix(in srgb, #38bdf8 24%, var(--border));
+      background: color-mix(in srgb, #38bdf8 12%, transparent);
+      color: color-mix(in srgb, #38bdf8 72%, var(--text) 28%);
+    }
+
+    .workflow-item-chip.is-supplier {
+      border-color: color-mix(in srgb, #f97316 24%, var(--border));
+      background: color-mix(in srgb, #f97316 12%, transparent);
+      color: color-mix(in srgb, #f97316 74%, var(--text) 26%);
+    }
+
+    .workflow-item-chip.is-vault {
+      border-color: color-mix(in srgb, #14b8a6 24%, var(--border));
+      background: color-mix(in srgb, #14b8a6 12%, transparent);
+      color: color-mix(in srgb, #14b8a6 74%, var(--text) 26%);
+    }
+
+    .workflow-item-chip.is-plm {
+      border-color: color-mix(in srgb, #6366f1 24%, var(--border));
+      background: color-mix(in srgb, #6366f1 12%, transparent);
+      color: color-mix(in srgb, #6366f1 74%, var(--text) 26%);
+    }
+
+    .workflow-item-chip.is-cdd,
+    .workflow-item-chip.is-sam {
+      border-color: color-mix(in srgb, #f59e0b 24%, var(--border));
+      background: color-mix(in srgb, #f59e0b 12%, transparent);
+      color: color-mix(in srgb, #f59e0b 76%, var(--text) 24%);
+    }
+
+    .workflow-item-stage,
+    .workflow-item-progress {
+      display: inline-flex;
+      align-items: center;
+      min-height: 20px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .workflow-item-stage {
+      background: color-mix(in srgb, var(--section-accent, var(--accent)) 16%, transparent);
+      color: color-mix(in srgb, var(--text) 20%, var(--section-accent, var(--accent)) 80%);
+      border: 1px solid color-mix(in srgb, var(--section-accent, var(--accent)) 24%, transparent);
+    }
+
+    .workflow-item-progress {
+      background: color-mix(in srgb, var(--text-muted) 18%, transparent);
+      color: color-mix(in srgb, var(--text-muted) 30%, var(--text) 70%);
+      border: 1px solid color-mix(in srgb, var(--text-muted) 24%, transparent);
+    }
+
+    .workflow-item-status-line {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .workflow-item-actions {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+
+    .workflow-item-actions .btn {
+      min-height: 24px;
+      padding: 3px 8px;
+      font-size: 10px;
+    }
+
+    .workflow-item-header {
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .workflow-item-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .workflow-item-field-group {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .workflow-item-field-group.is-wide {
+      grid-column: 1 / -1;
+    }
+
+    .workflow-item-media {
+      position: relative;
+      width: 72px;
+      min-width: 72px;
+      flex: 0 0 72px;
+      align-self: flex-start;
+    }
+
+    .workflow-item-media-inline {
+      position: relative;
+    }
+
+    .workflow-item-approval-toggle {
+      justify-content: flex-start;
+      min-height: 28px;
+      font-size: 10px;
+      letter-spacing: .02em;
+      text-transform: none;
+    }
+
+    .workflow-item-image-frame {
+      display: grid;
+      place-items: center;
+      width: 72px;
+      min-height: 72px;
+      border: 1px dashed color-mix(in srgb, var(--section-accent, var(--accent)) 22%, var(--border));
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      overflow: hidden;
+      position: relative;
+    }
+
+    .workflow-item-image-frame.is-empty {
+      padding: 8px;
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .workflow-item-image-preview {
+      display: block;
+      width: 100%;
+      height: 72px;
+      object-fit: cover;
+      background: rgba(0,0,0,.08);
+    }
+
+    .workflow-item-upload {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .workflow-item-upload input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .workflow-item-image-placeholder {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .workflow-item-image-placeholder strong {
+      font-size: 18px;
+      line-height: 1;
+      color: color-mix(in srgb, var(--section-accent, var(--accent)) 65%, var(--text-muted) 35%);
+    }
+
+    .workflow-item-image-clear {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 18px;
+      height: 18px;
+      border: 1px solid color-mix(in srgb, var(--danger) 26%, var(--border));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      color: var(--danger);
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .workflow-item-image-clear:hover {
+      background: color-mix(in srgb, var(--danger) 12%, var(--surface));
+    }
+
+    .workflow-item-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 32px;
+      padding: 7px 9px;
+      border: 1px solid color-mix(in srgb, var(--section-accent, var(--accent)) 16%, var(--border));
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
+      font-size: 10px;
+      color: color-mix(in srgb, var(--text) 80%, var(--text-muted) 20%);
+      cursor: pointer;
+    }
+
+    .workflow-item-check.is-approval-step {
+      border-color: color-mix(in srgb, #f59e0b 20%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, #f59e0b 8%, transparent), rgba(255,255,255,.01));
+    }
+
+    .workflow-item-check.is-release-step {
+      border-color: color-mix(in srgb, #14b8a6 20%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, #14b8a6 8%, transparent), rgba(255,255,255,.01));
+    }
+
+    .workflow-item-check.is-checked {
+      border-color: color-mix(in srgb, var(--section-accent, var(--accent)) 34%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--section-accent, var(--accent)) 12%, transparent), rgba(255,255,255,.03));
+    }
+
+    .workflow-item-step-index {
+      display: inline-grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--text-muted) 18%, transparent);
+      color: color-mix(in srgb, var(--text-muted) 22%, var(--text) 78%);
+      font-size: 10px;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .workflow-item-check.is-approval-step .workflow-item-step-index {
+      background: color-mix(in srgb, #f59e0b 18%, transparent);
+      color: color-mix(in srgb, #f59e0b 72%, var(--text) 28%);
+    }
+
+    .workflow-item-check.is-release-step .workflow-item-step-index {
+      background: color-mix(in srgb, #14b8a6 18%, transparent);
+      color: color-mix(in srgb, #14b8a6 72%, var(--text) 28%);
+    }
+
+    .workflow-item-check.is-checked .workflow-item-step-index {
+      background: color-mix(in srgb, var(--section-accent, var(--accent)) 24%, transparent);
+      color: color-mix(in srgb, var(--section-accent, var(--accent)) 80%, var(--text) 20%);
+    }
+
+    .workflow-item-check-copy {
+      min-width: 0;
+      line-height: 1.25;
+    }
+
+    .workflow-item-check input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--section-accent, var(--accent));
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .items-modal-toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: stretch;
+      margin-bottom: 16px;
+    }
+
+    .items-modal-search,
+    .items-modal-summary-card,
+    .items-modal-bulk,
+    .items-modal-list-shell {
+      border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+      border-radius: 14px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 8%, transparent), rgba(255,255,255,.02));
+    }
+
+    .items-modal-search {
+      display: grid;
+      gap: 6px;
+      padding: 12px;
+    }
+
+    .items-modal-search label,
+    .items-modal-summary,
+    .items-modal-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text-muted) 68%, var(--accent) 32%);
+    }
+
+    .items-modal-section-label {
+      letter-spacing: .09em;
+    }
+
+    .items-modal-search input {
+      width: 100%;
+      border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: linear-gradient(180deg, var(--field-bg-strong), var(--field-bg));
+      color: var(--text);
+      outline: none;
+    }
+
+    .items-modal-search input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+
+    .items-modal-summary-card {
+      min-width: 148px;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      padding: 12px 14px;
+    }
+
+    .items-modal-summary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 0;
+      white-space: nowrap;
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .items-modal-bulk {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .items-modal-bulk-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .items-modal-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      max-width: 54ch;
+    }
+
+    .items-modal-bulk-summary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      color: color-mix(in srgb, var(--text) 82%, var(--accent) 18%);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .items-modal-bulk-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .items-modal-bulk-actions .btn {
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    .items-modal-bulk-actions [data-bulk-update-field="counterDieApprovalStatus"],
+    .items-modal-bulk-actions [data-bulk-update-field="samApprovalStatus"] {
+      border-color: color-mix(in srgb, #f59e0b 22%, var(--border));
+      background: color-mix(in srgb, #f59e0b 10%, transparent);
+      color: color-mix(in srgb, #f59e0b 76%, var(--text) 24%);
+    }
+
+    .items-modal-bulk-actions [data-bulk-update-field="vaultStatus"] {
+      border-color: color-mix(in srgb, #14b8a6 22%, var(--border));
+      background: color-mix(in srgb, #14b8a6 10%, transparent);
+      color: color-mix(in srgb, #14b8a6 76%, var(--text) 24%);
+    }
+
+    .items-modal-bulk-actions [data-bulk-update-field="plmStatus"] {
+      border-color: color-mix(in srgb, #6366f1 22%, var(--border));
+      background: color-mix(in srgb, #6366f1 10%, transparent);
+      color: color-mix(in srgb, #6366f1 76%, var(--text) 24%);
+    }
+
+    .items-modal-list-shell {
+      padding: 10px;
+    }
+
+    .item-settings-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .item-settings-intro {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    .item-settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .item-settings-group {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border));
+      border-radius: 14px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, transparent), rgba(255,255,255,.02));
+    }
+
+    .item-settings-group label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text-muted) 66%, var(--accent) 34%);
+    }
+
+    .item-settings-group textarea {
+      width: 100%;
+      min-height: 180px;
+      border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: linear-gradient(180deg, var(--field-bg-strong), var(--field-bg));
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+    }
+
+    .item-settings-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+
+    .item-settings-help {
+      margin: 0;
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
     /* ── Responsive ──
        980 px: collapse to single column, un-sticky panels.
        760 px: stack header buttons, grid the filters bar.
@@ -2454,7 +3373,6 @@
     }
 
     @media (max-width: 760px) {
-      #taskForm .form-row:first-of-type { grid-template-columns: 1fr; }
       .app-header {
         align-items: flex-start;
         flex-wrap: wrap;
@@ -2555,6 +3473,11 @@
       .form-row { grid-template-columns: 1fr; }
       .category-form-row { grid-template-columns: 1fr; }
       .subtask-form { grid-template-columns: 1fr; }
+      .workflow-item-defaults,
+      .workflow-item-checklist-defaults,
+      .workflow-item-grid { grid-template-columns: 1fr; }
+      .items-modal-toolbar { grid-template-columns: 1fr; align-items: stretch; }
+      .items-modal-summary { justify-content: flex-start; }
       .task-stats { grid-template-columns: 1fr; }
       .task-stats-header { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .task-stats-secondary { grid-template-columns: 1fr; }
@@ -2658,6 +3581,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M6 4.5h9l3 3V19.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1Z"/><path d="M15 4.5V8h3"/><path d="M8 12h8"/><path d="M8 15.5h8"/></svg>
         <span class="btn-header-label">Templates</span>
       </button>
+      <button class="btn btn-header btn-header-items" id="manageItemsBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 6.5h16"/><path d="M4 12h16"/><path d="M4 17.5h16"/><circle cx="8" cy="6.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="17.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        <span class="btn-header-label">All Items</span>
+      </button>
+      <button class="btn btn-header btn-header-settings" id="manageItemSettingsBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.2 15a1 1 0 0 0 .2 1.1l.1.1a1.7 1.7 0 0 1 0 2.4 1.7 1.7 0 0 1-2.4 0l-.1-.1a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9v.3a1.7 1.7 0 0 1-1.7 1.7 1.7 1.7 0 0 1-1.7-1.7V19a1 1 0 0 0-.6-.9 1 1 0 0 0-1.1.2l-.1.1a1.7 1.7 0 0 1-2.4 0 1.7 1.7 0 0 1 0-2.4l.1-.1a1 1 0 0 0 .2-1.1 1 1 0 0 0-.9-.6H4.5A1.7 1.7 0 0 1 2.8 12a1.7 1.7 0 0 1 1.7-1.7H4.8a1 1 0 0 0 .9-.6 1 1 0 0 0-.2-1.1l-.1-.1a1.7 1.7 0 0 1 0-2.4 1.7 1.7 0 0 1 2.4 0l.1.1a1 1 0 0 0 1.1.2 1 1 0 0 0 .6-.9V4.5A1.7 1.7 0 0 1 12 2.8a1.7 1.7 0 0 1 1.7 1.7v.3a1 1 0 0 0 .6.9 1 1 0 0 0 1.1-.2l.1-.1a1.7 1.7 0 0 1 2.4 0 1.7 1.7 0 0 1 0 2.4l-.1.1a1 1 0 0 0-.2 1.1 1 1 0 0 0 .9.6h.3A1.7 1.7 0 0 1 21.2 12a1.7 1.7 0 0 1-1.7 1.7h-.3a1 1 0 0 0-.9.6Z"/></svg>
+        <span class="btn-header-label">Item Settings</span>
+      </button>
       <button class="btn btn-header btn-header-clear" id="clearCompletedBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M9 3.5h6"/><path d="M4 7.5h16"/><path d="M6.5 7.5 7.3 19a1 1 0 0 0 1 .9h7.4a1 1 0 0 0 1-.9l.8-11.5"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
         <span class="btn-header-label">Clear Completed</span>
@@ -2694,7 +3625,7 @@
         <option value="Not Started">Not Started</option>
         <option value="Ongoing">Ongoing</option>
         <option value="Waiting for Someone Else">Waiting for Someone Else</option>
-        <option value="Done">Done</option>
+        <option value="Completed">Completed</option>
       </select>
       <select id="sortTasks" class="sort-select">
         <option value="workflow">Sort: Workflow</option>
@@ -2735,34 +3666,33 @@
       <h2 id="modalTitle">New Task</h2>
       <form id="taskForm" novalidate>
 
-        <div class="form-group">
+        <div class="task-form-section-label is-core"><span class="task-form-section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19.5h4.5L19 9a1.4 1.4 0 0 0 0-2l-2-2a1.4 1.4 0 0 0-2 0L4.5 15.5V19.5Z"/><path d="m13.5 6.5 4 4"/></svg></span>Core Details</div>
+
+        <div class="form-group task-form-field task-field-title">
           <label for="taskTitle">Title *</label>
           <input type="text" id="taskTitle" placeholder="Task title…" required />
         </div>
 
-        <div class="form-group">
+        <div class="form-group task-form-field task-field-template">
           <label for="taskTemplate">Template</label>
           <select id="taskTemplate">
             <option value="">No Template</option>
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group task-form-field task-field-email">
           <label for="taskEmailSubject">Email Subject</label>
           <input type="text" id="taskEmailSubject" placeholder="Optional subject line" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group task-form-field task-field-description">
           <label for="taskDescription">Description</label>
           <textarea id="taskDescription" placeholder="Short task summary or context..."></textarea>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="taskCategory">Category</label>
-            <select id="taskCategory"></select>
-          </div>
-          <div class="form-group">
+        <div class="task-form-section-label is-workflow"><span class="task-form-section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 7h12"/><path d="M6 12h8"/><path d="M6 17h10"/><circle cx="17" cy="7" r="1.5"/><circle cx="13" cy="12" r="1.5"/><circle cx="15" cy="17" r="1.5"/></svg></span>Workflow</div>
+        <div class="form-row form-row-3">
+          <div class="form-group task-form-field task-field-priority">
             <label for="taskPriority">Priority</label>
             <select id="taskPriority">
               <option value="Critical">Critical</option>
@@ -2772,37 +3702,42 @@
               <option value="Very Low">Very Low</option>
             </select>
           </div>
-          <div class="form-group">
+          <div class="form-group task-form-field task-field-category">
+            <label for="taskCategory">Category</label>
+            <select id="taskCategory"></select>
+          </div>
+          <div class="form-group task-form-field task-field-status">
             <label for="taskStatus">Status</label>
             <select id="taskStatus">
               <option value="Pending">Pending</option>
               <option value="Not Started">Not Started</option>
               <option value="Ongoing">Ongoing</option>
               <option value="Waiting for Someone Else">Waiting for Someone Else</option>
-              <option value="Done">Done</option>
+              <option value="Completed">Completed</option>
             </select>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
+        <div class="task-form-section-label is-schedule"><span class="task-form-section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M4 10h16"/></svg></span>Schedule And Notes</div>
+        <div class="form-row form-row-2">
+          <div class="form-group task-form-field task-field-received">
             <label for="taskReceivedAt">Received Date</label>
             <input type="date" id="taskReceivedAt" />
           </div>
-          <div class="form-group">
+          <div class="form-group task-form-field task-field-due">
             <label for="taskDueDate">Due Date</label>
             <input type="date" id="taskDueDate" />
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group task-form-field task-field-notes">
           <label for="taskNotes">Notes</label>
           <textarea id="taskNotes" placeholder="Optional notes…"></textarea>
         </div>
 
         <div class="form-actions">
           <button type="button" class="btn btn-ghost" id="cancelTaskBtn">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="submitTaskBtn">Create Task</button>
+          <button type="submit" class="btn" id="submitTaskBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="btn-header-label" id="submitTaskBtnLabel">Create Task</span></button>
         </div>
       </form>
     </div>
@@ -2868,6 +3803,75 @@
     </div>
   </div>
 
+  <div class="modal-backdrop" id="itemSettingsModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="itemSettingsModalTitle">
+      <h2 id="itemSettingsModalTitle">Item Settings</h2>
+      <form id="itemSettingsForm" class="item-settings-form" novalidate>
+        <p class="item-settings-intro">Suppliers and projects here feed the item editors and the batch-create defaults. The first supplier in the list becomes the default for new items.</p>
+        <div class="item-settings-grid">
+          <div class="item-settings-group">
+            <label for="itemSupplierOptionsInput">Suppliers</label>
+            <textarea id="itemSupplierOptionsInput" placeholder="One supplier per line"></textarea>
+            <p class="item-settings-help">Keep one supplier per line. Existing item values stay intact even if you later remove an option here.</p>
+          </div>
+          <div class="item-settings-group">
+            <label for="itemProjectOptionsInput">Projects</label>
+            <textarea id="itemProjectOptionsInput" placeholder="One project per line"></textarea>
+            <p class="item-settings-help">Projects will appear as selectable options when you create or edit an item.</p>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" id="cancelItemSettingsBtn">Close</button>
+          <button type="submit" class="btn btn-primary">Save Settings</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="itemsModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="itemsModalTitle">
+      <h2 id="itemsModalTitle">All Items</h2>
+      <div class="items-modal-toolbar">
+        <div class="items-modal-search">
+          <div class="items-modal-section-label">Find Items</div>
+          <label for="itemSearchInput">Search Items</label>
+          <input type="search" id="itemSearchInput" placeholder="Search TID, BID, project, supplier, or task" />
+        </div>
+        <div class="items-modal-summary-card">
+          <div class="items-modal-section-label">Registry</div>
+          <div class="items-modal-summary" id="itemsModalSummary">0 items</div>
+        </div>
+      </div>
+      <div class="items-modal-bulk" id="itemsModalBulkTools">
+        <div class="items-modal-bulk-heading">
+          <div>
+            <div class="items-modal-section-label">Quick Update</div>
+            <div class="items-modal-note">BID-linked approvals, vault state, and PLM state stay synchronized automatically across duplicates.</div>
+          </div>
+          <div class="items-modal-bulk-summary" id="itemsBulkSummary">0 selected</div>
+        </div>
+        <div class="items-modal-bulk-actions">
+          <button type="button" class="btn btn-ghost" data-select-visible-items>Select Visible</button>
+          <button type="button" class="btn btn-ghost" data-clear-selected-items>Clear Selection</button>
+          <button type="button" class="btn btn-ghost" data-bulk-update-field="counterDieApprovalStatus" data-bulk-update-value="true">CDD Approved</button>
+          <button type="button" class="btn btn-ghost" data-bulk-update-field="counterDieApprovalStatus" data-bulk-update-value="false">CDD Pending</button>
+          <button type="button" class="btn btn-ghost" data-bulk-update-field="samApprovalStatus" data-bulk-update-value="true">SAM Approved</button>
+          <button type="button" class="btn btn-ghost" data-bulk-update-field="samApprovalStatus" data-bulk-update-value="false">SAM Pending</button>
+          <button type="button" class="btn btn-ghost" data-bulk-update-field="vaultStatus" data-bulk-update-value="true">Vault Released</button>
+          <button type="button" class="btn btn-ghost" data-bulk-update-field="vaultStatus" data-bulk-update-value="false">Vault In Work</button>
+          <button type="button" class="btn btn-ghost" data-bulk-update-field="plmStatus" data-bulk-update-value="true">PLM 235</button>
+          <button type="button" class="btn btn-ghost" data-bulk-update-field="plmStatus" data-bulk-update-value="false">PLM 110</button>
+        </div>
+      </div>
+      <div class="workflow-item-list-shell items-modal-list-shell">
+        <div class="workflow-item-list" id="allItemsList"></div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-ghost" id="closeItemsBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
   <div class="context-menu" id="detailContextMenu" role="menu" aria-label="Task detail actions" hidden>
     <div class="context-menu-label">Task Actions</div>
     <button type="button" class="context-menu-btn is-edit" data-context-action="edit" role="menuitem">
@@ -2880,7 +3884,7 @@
     <button type="button" class="context-menu-btn is-toggle" data-context-action="toggle-status" role="menuitem">
       <span class="context-menu-main">
         <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
-        <span id="detailContextToggleLabel">Mark done</span>
+        <span id="detailContextToggleLabel">Mark complete</span>
       </span>
       <strong>State</strong>
     </button>
@@ -2928,10 +3932,13 @@
     // Centralised localStorage key names so they never get mis-typed elsewhere.
     const KEYS = {
       tasks: 'tm_tasks',
+      items: 'tm_items',
+      itemSettings: 'tm_item_settings',
       logs: 'tm_logs',
       categories: 'tm_categories',
       templates: 'tm_templates',
       hideDone: 'tm_hide_done',
+      sortMode: 'tm_sort_mode',
       theme: 'tm_theme',
       showSecondaryStats: 'tm_show_secondary_stats'
     };
@@ -2958,22 +3965,70 @@
       localStorage.setItem(key, String(value));
     }
 
+    function normalizeOptionList(optionList = []) {
+      const values = Array.isArray(optionList)
+        ? optionList
+        : String(optionList || '').split(/\r?\n/);
+      const seen = new Set();
+
+      return values
+        .map(value => String(value || '').trim())
+        .filter(value => {
+          if (!value) return false;
+          const normalizedKey = value.toLowerCase();
+          if (seen.has(normalizedKey)) return false;
+          seen.add(normalizedKey);
+          return true;
+        });
+    }
+
+    function normalizeItemSettings(settings = {}) {
+      const supplierOptions = normalizeOptionList(
+        Array.isArray(settings?.supplierOptions) && settings.supplierOptions.length
+          ? settings.supplierOptions
+          : DEFAULT_ITEM_SUPPLIER_OPTIONS
+      );
+      const projectOptions = normalizeOptionList(settings?.projectOptions || DEFAULT_ITEM_PROJECT_OPTIONS);
+
+      return {
+        supplierOptions: supplierOptions.length ? supplierOptions : [...DEFAULT_ITEM_SUPPLIER_OPTIONS],
+        projectOptions
+      };
+    }
+
+    function getSupplierOptions(extraValue = '') {
+      return normalizeOptionList([...(itemSettings?.supplierOptions || DEFAULT_ITEM_SUPPLIER_OPTIONS), extraValue]);
+    }
+
+    function getProjectOptions(extraValue = '') {
+      return normalizeOptionList([...(itemSettings?.projectOptions || DEFAULT_ITEM_PROJECT_OPTIONS), extraValue]);
+    }
+
+    function getDefaultItemSupplier() {
+      return getSupplierOptions()[0] || '';
+    }
+
     // ── State ──
     // In-memory arrays kept in sync with localStorage via the save* helpers.
     // selectedTaskId tracks which card is active / shown in the detail panel.
     let tasks       = [];
+    let items       = [];
     let logs        = [];
     let categories  = [];
     let templates   = [];
+    let itemSettings = null;
     let hideDone    = false;
     let showSecondaryStats = true;
     let currentTheme = 'dark';
+    let currentSortMode = 'workflow';
     let editingId   = null;
     let editingCategoryName = null;
     let editingTemplateId = null;
     let selectedTaskId = null;
     let activeSecondaryStatsTab = 'status';
     let activeDetailTab = 'description';
+    let itemSearchQuery = '';
+    let selectedItemIds = new Set();
 
     const INPUT_LIMITS = {
       searchTasks: 60,
@@ -2985,15 +4040,17 @@
       templateName: 80,
       templateSubtasks: 800,
       subtaskTitle: 80,
+      workflowItemBulkInput: 1500,
       logContent: 800,
     };
 
     const PRIORITY_OPTIONS = ['Critical', 'High', 'Medium', 'Low', 'Very Low'];
-    const STATUS_OPTIONS = ['Not Started','Pending','Ongoing', 'Waiting for Someone Else', 'Done'];
+    const STATUS_OPTIONS = ['Not Started','Pending','Ongoing', 'Waiting for Someone Else', 'Completed'];
+    const TASK_SORT_OPTIONS = ['workflow', 'due-date', 'created-date', 'priority', 'title'];
     const DEFAULT_PRIORITY = 'Medium';
     const DEFAULT_STATUS = 'Not Started';
     const LEGACY_STATUS_ALIASES = {
-      Completed: 'Done'
+      Done: 'Completed'
     };
     const ATTENTION_PRIORITIES = new Set(['Critical', 'High']);
     const PRIORITY_ORDER = Object.fromEntries(PRIORITY_OPTIONS.map((priority, index) => [priority, index]));
@@ -3002,7 +4059,7 @@
       Pending: 'var(--status-pending)',
       Ongoing: 'var(--status-ongoing)',
       'Waiting for Someone Else': 'var(--status-waiting)',
-      Done: 'var(--status-done)'
+      Completed: 'var(--status-done)'
     };
     const PRIORITY_ACCENTS = {
       Critical: 'var(--critical)',
@@ -3016,8 +4073,31 @@
       Pending: 1,
       'Waiting for Someone Else': 2,
       'Not Started': 3,
-      Done: 4
+      Completed: 4
     };
+
+    const DEFAULT_ITEM_SUPPLIER_OPTIONS = ['Supplier A', 'Supplier B', 'Supplier C'];
+    const DEFAULT_ITEM_PROJECT_OPTIONS = [];
+    const ITEM_VAULT_STATUS_OPTIONS = ['In Work', 'Released'];
+    const ITEM_PLM_STATUS_OPTIONS = ['110', '235'];
+    const DEFAULT_ITEM_VAULT_STATUS = ITEM_VAULT_STATUS_OPTIONS[0] || '';
+    const DEFAULT_ITEM_PLM_STATUS = ITEM_PLM_STATUS_OPTIONS[0] || '';
+    const ITEM_APPROVAL_FIELDS = ['counterDieApprovalStatus', 'samApprovalStatus'];
+    const SHARED_ITEM_FIELDS = ['vaultStatus', 'plmStatus', 'counterDieApprovalStatus', 'samApprovalStatus'];
+    const ITEM_CHECKLIST_FIELDS = [
+      { key: 'detailsCaptured', label: 'Detail Captured' },
+      { key: 'drawnAddedToVault', label: 'Drawn & Added To Vault' },
+      { key: 'drawingSentToSupplier', label: 'Drawing Sent To Supplier' }
+    ];
+    const ITEM_WORKFLOW_STEPS = [
+      { type: 'checklist', key: 'detailsCaptured', label: 'Detail Captured' },
+      { type: 'checklist', key: 'drawnAddedToVault', label: 'Drawn & Added To Vault' },
+      { type: 'checklist', key: 'drawingSentToSupplier', label: 'Drawing Sent To Supplier' },
+      { type: 'field', key: 'counterDieApprovalStatus', label: 'CDD Approval', className: 'is-approval-step' },
+      { type: 'field', key: 'samApprovalStatus', label: 'SAM Approval', className: 'is-approval-step' },
+      { type: 'field', key: 'vaultStatus', label: 'Vault Released', className: 'is-release-step' },
+      { type: 'field', key: 'plmStatus', label: 'PLM 235', className: 'is-release-step' }
+    ];
 
     const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const INPUT_FIELDS_WITHOUT_COUNTER = new Set(['searchTasks', 'categoryName']);
@@ -3084,12 +4164,15 @@
     // normalises legacy values, and ensures required defaults exist.
     function loadState() {
       tasks = loadJson(KEYS.tasks, []);
+      const storedItems = loadJson(KEYS.items, null);
+      itemSettings = normalizeItemSettings(loadJson(KEYS.itemSettings, null));
       logs = loadJson(KEYS.logs, []);
       categories = loadJson(KEYS.categories, []);
       templates = loadJson(KEYS.templates, []);
       hideDone = loadPreference(KEYS.hideDone, 'false') === 'true';
       showSecondaryStats = loadPreference(KEYS.showSecondaryStats, 'true') !== 'false';
       currentTheme = loadPreference(KEYS.theme, document.documentElement.dataset.theme || 'dark');
+      currentSortMode = normalizeTaskSortMode(loadPreference(KEYS.sortMode, 'workflow'));
 
       if (!categories.length) {
         categories = getDefaultCategories();
@@ -3107,19 +4190,38 @@
       }
 
       const fallbackCategory = 'General';
-      tasks = tasks.map(task => ({
-        ...task,
-        description: String(task.description || '').trim() || null,
-        emailSubject: String(task.emailSubject || '').trim() || null,
-        category: getCategoryByName(task.category)?.name || fallbackCategory,
-        priority: normalizePriority(task.priority),
-        status: normalizeStatus(task.status),
-        subtasks: Array.isArray(task.subtasks) ? task.subtasks : []
-      }));
+      const legacyItems = storedItems === null
+        ? tasks.flatMap(task => normalizeLegacyTaskItems(task.workflowItems, task.id, task.title))
+        : [];
+
+      tasks = tasks.map(task => {
+        const normalizedTask = {
+          ...task,
+          description: String(task.description || '').trim() || null,
+          emailSubject: String(task.emailSubject || '').trim() || null,
+          category: getCategoryByName(task.category)?.name || fallbackCategory,
+          priority: normalizePriority(task.priority),
+          status: normalizeStatus(task.status),
+          subtasks: Array.isArray(task.subtasks) ? task.subtasks : []
+        };
+
+        delete normalizedTask.workflowItems;
+        return normalizedTask;
+      });
+
+      items = storedItems === null ? legacyItems : normalizeItems(storedItems);
     }
 
     function saveTasks() {
       saveJson(KEYS.tasks, tasks);
+    }
+
+    function saveItems() {
+      saveJson(KEYS.items, items);
+    }
+
+    function saveItemSettings() {
+      saveJson(KEYS.itemSettings, itemSettings);
     }
 
     function saveLogs() {
@@ -3140,6 +4242,10 @@
 
     function saveSecondaryStatsPreference() {
       savePreference(KEYS.showSecondaryStats, showSecondaryStats);
+    }
+
+    function saveSortModePreference() {
+      savePreference(KEYS.sortMode, currentSortMode);
     }
 
     function applyTheme(theme) {
@@ -3185,7 +4291,7 @@
 
       const toggleLabel = document.getElementById('detailContextToggleLabel');
       if (toggleLabel) {
-        toggleLabel.textContent = isTaskCompleted(task) ? 'Reopen task' : 'Mark done';
+        toggleLabel.textContent = isTaskCompleted(task) ? 'Reopen task' : 'Mark complete';
       }
 
       menu.hidden = false;
@@ -3226,12 +4332,38 @@
       return options.find(option => option.toLowerCase() === String(resolvedValue).toLowerCase()) || fallback;
     }
 
+    function syncTaskModalFieldAccents() {
+      const categoryField = document.querySelector('#taskForm .task-field-category');
+      const priorityField = document.querySelector('#taskForm .task-field-priority');
+      const statusField = document.querySelector('#taskForm .task-field-status');
+      const categoryValue = document.getElementById('taskCategory')?.value || '';
+      const priorityValue = document.getElementById('taskPriority')?.value || DEFAULT_PRIORITY;
+      const statusValue = document.getElementById('taskStatus')?.value || DEFAULT_STATUS;
+
+      if (categoryField) {
+        categoryField.style.setProperty('--task-group-accent', getCategoryColor(categoryValue) || '#64748b');
+      }
+
+      if (priorityField) {
+        priorityField.style.setProperty('--task-group-accent', PRIORITY_ACCENTS[normalizePriority(priorityValue)] || 'var(--medium)');
+      }
+
+      if (statusField) {
+        statusField.style.setProperty('--task-group-accent', STATUS_ACCENTS[normalizeStatus(statusValue)] || 'var(--status-pending)');
+      }
+    }
+
     function normalizePriority(priority) {
       return normalizeOptionValue(priority, PRIORITY_OPTIONS, DEFAULT_PRIORITY);
     }
 
     function normalizeStatus(status) {
       return normalizeOptionValue(status, STATUS_OPTIONS, DEFAULT_STATUS, LEGACY_STATUS_ALIASES);
+    }
+
+    function normalizeTaskSortMode(sortMode) {
+      const normalizedSortMode = String(sortMode || '').trim();
+      return TASK_SORT_OPTIONS.includes(normalizedSortMode) ? normalizedSortMode : 'workflow';
     }
 
     function toClassToken(value) {
@@ -3276,6 +4408,15 @@
         filterStatus.innerHTML = `<option value="">All Statuses</option>${buildOptionMarkup(STATUS_OPTIONS, selectedStatus)}`;
         filterStatus.value = selectedStatus;
       }
+
+      const sortTasks = document.getElementById('sortTasks');
+      if (sortTasks) {
+        const selectedSortMode = normalizeTaskSortMode(sortTasks.value || currentSortMode);
+        sortTasks.value = selectedSortMode;
+        currentSortMode = selectedSortMode;
+      }
+
+      syncTaskModalFieldAccents();
     }
 
     function getDefaultCategories() {
@@ -3344,8 +4485,7 @@
     }
 
     function isTaskCompleted(task) {
-      const status = String(task?.status || '').trim();
-      return status === 'Done' || status === 'Completed';
+      return normalizeStatus(task?.status) === 'Completed';
     }
 
     function getCategoryByName(categoryName) {
@@ -3387,18 +4527,444 @@
       return template.subtasks.map(title => ({ id: genId(), title, done: false }));
     }
 
+    function normalizeUniqueReference(value) {
+      return String(value || '').trim();
+    }
+
+    function normalizeItemBoolean(value) {
+      if (typeof value === 'boolean') return value;
+
+      const normalizedValue = String(value || '').trim().toLowerCase();
+      return normalizedValue === 'true'
+        || normalizedValue === 'yes'
+        || normalizedValue === 'approved'
+        || normalizedValue === 'done';
+    }
+
+    function normalizeItemChecklist(checklist = {}, completedStageCount = 0) {
+      const normalizedChecklist = {};
+
+      ITEM_CHECKLIST_FIELDS.forEach((field, index) => {
+        normalizedChecklist[field.key] = typeof checklist?.[field.key] === 'boolean'
+          ? checklist[field.key]
+          : index < completedStageCount;
+      });
+
+      return normalizedChecklist;
+    }
+
+    function normalizeLegacyTaskItems(legacyItems, taskId, taskTitle) {
+      if (!Array.isArray(legacyItems)) return [];
+
+      return legacyItems
+        .map(item => ({
+          id: item?.id || genId(),
+          taskId,
+          taskTitleSnapshot: String(taskTitle || '').trim(),
+          tidReference: normalizeUniqueReference(item?.tidReference),
+          bidReference: normalizeUniqueReference(item?.bidReference || item?.number),
+          project: '',
+          supplier: normalizeUniqueReference(item?.supplier) || getDefaultItemSupplier(),
+          vaultStatus: ITEM_VAULT_STATUS_OPTIONS.includes(item?.vaultStatus) ? item.vaultStatus : DEFAULT_ITEM_VAULT_STATUS,
+          plmStatus: DEFAULT_ITEM_PLM_STATUS,
+          drawingSentAt: item?.drawingSentAt || '',
+          counterDieApprovalStatus: normalizeItemBoolean(item?.counterDieApprovalStatus),
+          samApprovalStatus: normalizeItemBoolean(item?.samApprovalStatus),
+          details: String(item?.details || '').trim(),
+          imageDataUrl: '',
+          imageName: '',
+          createdAt: item?.createdAt || new Date().toISOString(),
+          checklist: normalizeItemChecklist(item?.checklist, Math.max(Number(item?.currentStageIndex) || 0, 0) + 1)
+        }))
+        .filter(item => item.bidReference);
+    }
+
+    function normalizeItems(itemList) {
+      if (!Array.isArray(itemList)) return [];
+
+      return itemList
+        .map(item => {
+          const normalizedBidReference = normalizeUniqueReference(item?.bidReference || '');
+          const normalizedTidReference = normalizeUniqueReference(item?.tidReference || item?.number);
+          const bidReference = normalizedBidReference || normalizedTidReference;
+          const tidReference = normalizedBidReference ? normalizedTidReference : '';
+
+          return {
+            id: item?.id || genId(),
+            taskId: item?.taskId || null,
+            taskTitleSnapshot: String(item?.taskTitleSnapshot || '').trim(),
+            tidReference,
+            bidReference,
+            project: String(item?.project || '').trim(),
+            supplier: normalizeUniqueReference(item?.supplier) || getDefaultItemSupplier(),
+            vaultStatus: ITEM_VAULT_STATUS_OPTIONS.includes(item?.vaultStatus) ? item.vaultStatus : DEFAULT_ITEM_VAULT_STATUS,
+            plmStatus: ITEM_PLM_STATUS_OPTIONS.includes(String(item?.plmStatus || '')) ? String(item.plmStatus) : DEFAULT_ITEM_PLM_STATUS,
+            drawingSentAt: item?.drawingSentAt || '',
+            counterDieApprovalStatus: normalizeItemBoolean(item?.counterDieApprovalStatus),
+            samApprovalStatus: normalizeItemBoolean(item?.samApprovalStatus),
+            details: String(item?.details || '').trim(),
+            imageDataUrl: String(item?.imageDataUrl || '').trim(),
+            imageName: String(item?.imageName || '').trim(),
+            createdAt: item?.createdAt || new Date().toISOString(),
+            checklist: normalizeItemChecklist(item?.checklist)
+          };
+        })
+        .filter(item => item.bidReference);
+    }
+
+    function buildSelectOptions(options, selectedValue, placeholderLabel = 'Select') {
+      return `<option value="">${escHtml(placeholderLabel)}</option>${options.map(option => `
+        <option value="${escHtml(option)}"${String(selectedValue || '') === option ? ' selected' : ''}>${escHtml(option)}</option>`).join('')}`;
+    }
+
+    function getItemById(itemId) {
+      return items.find(item => item.id === itemId) || null;
+    }
+
+    function getItemsForTask(taskId) {
+      return items.filter(item => item.taskId === taskId);
+    }
+
+    function getItemTaskLabel(item) {
+      return getTaskById(item?.taskId)?.title
+        || (item?.taskTitleSnapshot ? `Unassigned (was ${item.taskTitleSnapshot})` : 'Unassigned');
+    }
+
+    function getItemPrimaryReference(item) {
+      return item?.bidReference || item?.tidReference || 'Item';
+    }
+
+    function getItemReferenceSummary(item) {
+      if (item?.bidReference && item?.tidReference) {
+        return `${item.bidReference} / TID ${item.tidReference}`;
+      }
+
+      return getItemPrimaryReference(item);
+    }
+
+    function getBinaryItemFieldConfig(fieldName) {
+      if (fieldName === 'vaultStatus') {
+        return {
+          defaultValue: DEFAULT_ITEM_VAULT_STATUS,
+          checkedValue: ITEM_VAULT_STATUS_OPTIONS[1] || DEFAULT_ITEM_VAULT_STATUS,
+          label: 'Vault Status'
+        };
+      }
+
+      if (fieldName === 'plmStatus') {
+        return {
+          defaultValue: DEFAULT_ITEM_PLM_STATUS,
+          checkedValue: ITEM_PLM_STATUS_OPTIONS[1] || DEFAULT_ITEM_PLM_STATUS,
+          label: 'PLM Status'
+        };
+      }
+
+      return null;
+    }
+
+    function getBinaryItemFieldState(item, fieldName) {
+      const config = getBinaryItemFieldConfig(fieldName);
+      if (!config) return { checked: false, value: '' };
+      const currentValue = String(item?.[fieldName] || config.defaultValue);
+      return {
+        checked: currentValue === config.checkedValue,
+        value: currentValue === config.checkedValue ? config.checkedValue : config.defaultValue
+      };
+    }
+
+    function getSharedItemKey(bidReference) {
+      return normalizeUniqueReference(bidReference).toLowerCase();
+    }
+
+    function getItemsBySharedKey(bidReference, excludeId = null) {
+      const sharedKey = getSharedItemKey(bidReference);
+      if (!sharedKey) return [];
+
+      return items.filter(item => {
+        if (excludeId && item.id === excludeId) return false;
+        return getSharedItemKey(item.bidReference) === sharedKey;
+      });
+    }
+
+    function getSharedItemValues(source) {
+      return {
+        vaultStatus: source?.vaultStatus || DEFAULT_ITEM_VAULT_STATUS,
+        plmStatus: source?.plmStatus || DEFAULT_ITEM_PLM_STATUS,
+        counterDieApprovalStatus: Boolean(source?.counterDieApprovalStatus),
+        samApprovalStatus: Boolean(source?.samApprovalStatus)
+      };
+    }
+
+    function syncSharedFieldsForBid(bidReference, sourceValues) {
+      const sharedKey = getSharedItemKey(bidReference);
+      if (!sharedKey) return;
+
+      const sharedValues = getSharedItemValues(sourceValues);
+      items.forEach(item => {
+        if (getSharedItemKey(item.bidReference) !== sharedKey) return;
+        SHARED_ITEM_FIELDS.forEach(fieldName => {
+          item[fieldName] = sharedValues[fieldName];
+        });
+      });
+    }
+
+    function getItemChecklistCompletedCount(item) {
+      return ITEM_WORKFLOW_STEPS.filter(step => {
+        if (step.type === 'checklist') {
+          return Boolean(item?.checklist?.[step.key]);
+        }
+
+        if (step.key === 'vaultStatus' || step.key === 'plmStatus') {
+          return getBinaryItemFieldState(item, step.key).checked;
+        }
+
+        return Boolean(item?.[step.key]);
+      }).length;
+    }
+
+    function getWorkflowDefaultControlId(fieldName) {
+      return {
+        counterDieApprovalStatus: 'workflowItemCddApprovalDefault',
+        samApprovalStatus: 'workflowItemSamApprovalDefault',
+        vaultStatus: 'workflowItemVaultStatusDefault',
+        plmStatus: 'workflowItemPlmStatusDefault'
+      }[fieldName] || '';
+    }
+
+    function getItemWorkflowChecklistMarkup(item) {
+      return ITEM_WORKFLOW_STEPS.map((step, index) => {
+        const isChecked = step.type === 'checklist'
+          ? Boolean(item?.checklist?.[step.key])
+          : step.key === 'vaultStatus' || step.key === 'plmStatus'
+            ? getBinaryItemFieldState(item, step.key).checked
+            : Boolean(item?.[step.key]);
+        const dataAttribute = step.type === 'checklist'
+          ? `data-item-id="${item.id}" data-item-checklist="${step.key}"`
+          : `data-item-id="${item.id}" data-item-field="${step.key}"`;
+        const classNames = ['workflow-item-check'];
+        if (step.type === 'field') classNames.push('workflow-item-approval-toggle');
+        if (step.className) classNames.push(step.className);
+        if (isChecked) classNames.push('is-checked');
+
+        return `
+          <label class="${classNames.join(' ')}">
+            <span class="workflow-item-step-index">${index + 1}</span>
+            <input type="checkbox" ${dataAttribute} ${isChecked ? 'checked' : ''} />
+            <span class="workflow-item-check-copy">${escHtml(step.label)}</span>
+          </label>`;
+      }).join('');
+    }
+
+    function getWorkflowDefaultChecklistMarkup() {
+      return ITEM_WORKFLOW_STEPS.map((step, index) => {
+        const inputId = step.type === 'checklist'
+          ? `workflowItemChecklist-${step.key}`
+          : getWorkflowDefaultControlId(step.key);
+        const dataAttribute = step.type === 'checklist'
+          ? `data-workflow-default-checklist="${step.key}"`
+          : '';
+        const classNames = ['workflow-item-check'];
+        if (step.type === 'field') classNames.push('workflow-item-approval-toggle');
+        if (step.className) classNames.push(step.className);
+
+        return `
+          <label class="${classNames.join(' ')}">
+            <span class="workflow-item-step-index">${index + 1}</span>
+            <input type="checkbox" id="${inputId}" ${dataAttribute} />
+            <span class="workflow-item-check-copy">${escHtml(step.label)}</span>
+          </label>`;
+      }).join('');
+    }
+
+    function parseItemBatchLines(text) {
+      return String(text || '')
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(Boolean)
+        .map(line => {
+          const [bidReference = '', tidReference = ''] = line.split(/\s*(?:\||,|\t)\s*/, 2);
+          return {
+            tidReference: normalizeUniqueReference(tidReference),
+            bidReference: normalizeUniqueReference(bidReference)
+          };
+        })
+        .filter(item => item.bidReference);
+    }
+
+    function createGlobalItem(itemRefs, defaults = {}, task = null) {
+      const existingGroupSource = getItemsBySharedKey(itemRefs.bidReference)[0] || null;
+      const sharedDefaults = existingGroupSource ? getSharedItemValues(existingGroupSource) : getSharedItemValues(defaults);
+
+      return normalizeItems([{
+        id: genId(),
+        taskId: task?.id || null,
+        taskTitleSnapshot: String(task?.title || '').trim(),
+        tidReference: itemRefs.tidReference,
+        bidReference: itemRefs.bidReference,
+        project: String(defaults.project || '').trim(),
+        supplier: defaults.supplier || getDefaultItemSupplier(),
+        vaultStatus: sharedDefaults.vaultStatus,
+        plmStatus: sharedDefaults.plmStatus,
+        drawingSentAt: defaults.drawingSentAt || '',
+        counterDieApprovalStatus: sharedDefaults.counterDieApprovalStatus,
+        samApprovalStatus: sharedDefaults.samApprovalStatus,
+        details: '',
+        imageDataUrl: '',
+        imageName: '',
+        createdAt: new Date().toISOString(),
+        checklist: defaults.checklist || {}
+      }])[0];
+    }
+
+    function getDuplicateItemMessages(candidate, excludeId = null) {
+      return [];
+    }
+
+    function getBatchDuplicateMessages(batchItems) {
+      return [];
+    }
+
+    function getItemSearchText(item) {
+      return [
+        item.bidReference,
+        item.tidReference,
+        item.project,
+        item.supplier,
+        item.vaultStatus,
+        item.plmStatus,
+        item.counterDieApprovalStatus ? 'counter die approved cdd approval' : '',
+        item.samApprovalStatus ? 'sam approval approved' : '',
+        getItemTaskLabel(item)
+      ].filter(Boolean).join(' ').toLowerCase();
+    }
+
+    function getItemEditorMarkup(item, options = {}) {
+      const showTaskLink = options.showTaskLink === true;
+      const selectable = options.selectable === true;
+      const isSelected = options.isSelected === true;
+      const checklistCompletedCount = getItemChecklistCompletedCount(item);
+
+      return `
+        <article class="workflow-item${isSelected ? ' is-selected' : ''}">
+          <div class="workflow-item-header">
+            <div class="workflow-item-media">
+              <div class="workflow-item-media-inline">
+                ${item.imageDataUrl ? `<button type="button" class="workflow-item-image-clear" data-clear-item-image="${item.id}" aria-label="Remove image">x</button>` : ''}
+                <label class="workflow-item-image-frame workflow-item-upload${item.imageDataUrl ? '' : ' is-empty'}">
+                  ${item.imageDataUrl
+                    ? `<img class="workflow-item-image-preview" src="${escHtml(item.imageDataUrl)}" alt="${escHtml(getItemReferenceSummary(item))}" />`
+                    : '<span class="workflow-item-image-placeholder"><strong>+</strong><span>Add image</span></span>'}
+                  <input type="file" accept="image/*" data-item-image-upload="${item.id}" />
+                </label>
+              </div>
+            </div>
+            <div class="workflow-item-header-main">
+              <div class="workflow-item-heading">
+                <strong class="workflow-item-number">${escHtml(item.bidReference)}</strong>
+                ${item.tidReference ? `<span class="workflow-item-stage">TID ${escHtml(item.tidReference)}</span>` : ''}
+                <span class="workflow-item-progress">${checklistCompletedCount}/${ITEM_WORKFLOW_STEPS.length} done</span>
+              </div>
+              <div class="workflow-item-meta">
+                ${item.project ? `<span class="workflow-item-chip is-project">${escHtml(item.project)}</span>` : ''}
+                <span class="workflow-item-chip is-supplier">${escHtml(item.supplier || getDefaultItemSupplier())}</span>
+                <span class="workflow-item-chip is-vault">${escHtml(item.vaultStatus || DEFAULT_ITEM_VAULT_STATUS)}</span>
+                <span class="workflow-item-chip is-plm">PLM ${escHtml(item.plmStatus || DEFAULT_ITEM_PLM_STATUS)}</span>
+                ${item.counterDieApprovalStatus ? '<span class="workflow-item-chip is-cdd">CDD</span>' : ''}
+                ${item.samApprovalStatus ? '<span class="workflow-item-chip is-sam">SAM</span>' : ''}
+              </div>
+              ${showTaskLink ? `<div class="workflow-item-task-link">Task: ${escHtml(getItemTaskLabel(item))}</div>` : ''}
+            </div>
+            <div class="workflow-item-actions">
+              ${selectable ? `<label class="workflow-item-select"><input type="checkbox" data-select-item="${item.id}" ${isSelected ? 'checked' : ''} /><span>Select</span></label>` : ''}
+              <button type="button" class="btn btn-danger" data-delete-item="${item.id}">Delete</button>
+            </div>
+          </div>
+          <div class="workflow-item-grid">
+            <div class="workflow-item-field-group">
+              <label>BID Reference</label>
+              <input type="text" value="${escHtml(item.bidReference)}" data-item-id="${item.id}" data-item-field="bidReference" placeholder="Unique BID reference" />
+            </div>
+            <div class="workflow-item-field-group">
+              <label>TID Reference</label>
+              <input type="text" value="${escHtml(item.tidReference)}" data-item-id="${item.id}" data-item-field="tidReference" placeholder="Optional unique TID reference" />
+            </div>
+            <div class="workflow-item-field-group">
+              <label>Project</label>
+              <select data-item-id="${item.id}" data-item-field="project">${buildSelectOptions(getProjectOptions(item.project), item.project, 'Select project')}</select>
+            </div>
+            <div class="workflow-item-field-group">
+              <label>Supplier</label>
+              <select data-item-id="${item.id}" data-item-field="supplier">${buildSelectOptions(getSupplierOptions(item.supplier), item.supplier || getDefaultItemSupplier(), 'Select supplier')}</select>
+            </div>
+            <div class="workflow-item-field-group">
+              <label>Drawing Sent Date</label>
+              <input type="date" value="${escHtml(item.drawingSentAt)}" data-item-id="${item.id}" data-item-field="drawingSentAt" />
+            </div>
+          </div>
+          <div class="workflow-item-checklist">${getItemWorkflowChecklistMarkup(item)}</div>
+        </article>`;
+    }
+
+    function getWorkflowItemsSectionMarkup(task) {
+      const taskItems = getItemsForTask(task.id);
+      const completedCount = taskItems.filter(item => getItemChecklistCompletedCount(item) === ITEM_WORKFLOW_STEPS.length).length;
+
+      return `
+        <div class="detail-section-header">
+          <div class="section-title">Items</div>
+          <span class="detail-section-meta">${completedCount}/${taskItems.length} fully complete</span>
+        </div>
+        <form class="workflow-item-form" id="workflowItemForm">
+          <div class="workflow-item-bulk">
+            <label class="workflow-item-label" for="workflowItemBulkInput">Items To Create</label>
+            <textarea id="workflowItemBulkInput" class="workflow-item-bulk-input" placeholder="One item per line using: BID Reference[, TID Reference]" required></textarea>
+          </div>
+          <div class="workflow-item-defaults">
+            <div class="workflow-item-field-group">
+              <label for="workflowItemProjectDefault">Project</label>
+              <select id="workflowItemProjectDefault" class="workflow-item-default-input is-select">${buildSelectOptions(getProjectOptions(), '', 'Select project')}</select>
+            </div>
+            <div class="workflow-item-field-group">
+              <label for="workflowItemSupplierDefault">Supplier</label>
+              <select id="workflowItemSupplierDefault" class="workflow-item-default-input is-select">${buildSelectOptions(getSupplierOptions(), getDefaultItemSupplier(), 'Select supplier')}</select>
+            </div>
+            <div class="workflow-item-field-group">
+              <label for="workflowItemDrawingSentDefault">Drawing Sent Date</label>
+              <input type="date" id="workflowItemDrawingSentDefault" class="workflow-item-default-input" />
+            </div>
+          </div>
+          <div class="workflow-item-checklist-defaults">${getWorkflowDefaultChecklistMarkup()}</div>
+          <button type="submit" class="btn btn-primary workflow-item-submit-btn">Add Items</button>
+        </form>
+        ${taskItems.length
+          ? `<div class="workflow-item-list-shell"><div class="workflow-item-list">${taskItems.map(item => getItemEditorMarkup(item)).join('')}</div></div>`
+          : '<div class="workflow-item-empty">No items linked to this task yet. Add a batch above or manage them from All Items.</div>'}`;
+    }
+
     function getCurrentFilters() {
       return {
         search: document.getElementById('searchTasks')?.value.trim().toLowerCase() || '',
         category: document.getElementById('filterCategory')?.value || '',
         priority: document.getElementById('filterPriority')?.value || '',
         status: document.getElementById('filterStatus')?.value || '',
-        sort: document.getElementById('sortTasks')?.value || 'workflow'
+        sort: normalizeTaskSortMode(document.getElementById('sortTasks')?.value || currentSortMode)
       };
     }
 
     function getTaskSearchText(task) {
-      return [task.title, task.description, task.emailSubject, task.notes]
+      const taskItems = getItemsForTask(task.id);
+      const workflowText = taskItems.map(item => [
+        item.bidReference,
+        item.tidReference,
+        item.project,
+        item.supplier,
+        item.vaultStatus,
+        item.plmStatus,
+        item.counterDieApprovalStatus ? 'counter die approved cdd approval' : '',
+        item.samApprovalStatus ? 'sam approval approved' : ''
+      ].filter(Boolean).join(' ')).join(' ');
+
+      return [task.title, task.description, task.emailSubject, task.notes, workflowText]
         .filter(Boolean)
         .join(' ')
         .toLowerCase();
@@ -3544,11 +5110,6 @@
         .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
     }
 
-    function ensureSelectedTask() {
-      if (selectedTaskId && getTaskById(selectedTaskId)) return;
-      selectedTaskId = tasks[0]?.id || null;
-    }
-
     function clearCompletedTasks() {
       const completedTaskIds = tasks
         .filter(task => isTaskCompleted(task))
@@ -3561,6 +5122,9 @@
       const completedTaskIdSet = new Set(completedTaskIds);
       tasks = tasks.filter(task => !completedTaskIdSet.has(task.id));
       logs = logs.filter(log => !completedTaskIdSet.has(log.taskId));
+      items = items.map(item => completedTaskIdSet.has(item.taskId)
+        ? { ...item, taskId: null }
+        : item);
 
       if (selectedTaskId && completedTaskIdSet.has(selectedTaskId)) {
         selectedTaskId = null;
@@ -3568,8 +5132,39 @@
 
       saveTasks();
       saveLogs();
+      saveItems();
       renderTasks();
       return true;
+    }
+
+    function getScrollTop(element) {
+      return element ? element.scrollTop : 0;
+    }
+
+    function restoreScrollTop(element, scrollTop) {
+      if (!element || !Number.isFinite(scrollTop)) return;
+      element.scrollTop = Math.max(0, scrollTop);
+    }
+
+    function captureChildScrollPositions(root, selectors = []) {
+      if (!root) return {};
+
+      return selectors.reduce((positions, selector) => {
+        const element = root.querySelector(selector);
+        if (element) {
+          positions[selector] = element.scrollTop;
+        }
+        return positions;
+      }, {});
+    }
+
+    function restoreChildScrollPositions(root, positions = {}) {
+      if (!root) return;
+
+      Object.entries(positions).forEach(([selector, scrollTop]) => {
+        const element = root.querySelector(selector);
+        restoreScrollTop(element, scrollTop);
+      });
     }
 
     // ── Render Stats ──
@@ -3582,7 +5177,7 @@
       const attention = tasks.filter(task => ATTENTION_PRIORITIES.has(normalizePriority(task.priority)) && !isTaskCompleted(task)).length;
       const statusStats = STATUS_OPTIONS.map(status => ({
         label: status,
-        value: status === 'Done'
+        value: status === 'Completed'
           ? tasks.filter(task => isTaskCompleted(task)).length
           : tasks.filter(task => normalizeStatus(task.status) === status).length,
         accent: STATUS_ACCENTS[status] || 'var(--accent)',
@@ -3702,6 +5297,8 @@
         filterCategory.innerHTML = `<option value="">All Categories</option>${optionHtml}`;
         filterCategory.value = getCategoryByName(currentFilterValue)?.name || '';
       }
+
+      syncTaskModalFieldAccents();
     }
 
     function renderCategoryList() {
@@ -3775,7 +5372,12 @@
     // ── Render Task List ──
     // Master render function: refreshes stats, filters, sorts, then rebuilds
     // the task card list and the detail panel for the selected task.
-    function renderTasks() {
+    function renderTasks(options = {}) {
+      const detailPanel = document.getElementById('taskDetailPanel');
+      const itemsModalShell = document.querySelector('#itemsModal .workflow-item-list-shell');
+      const detailScrollTop = options.preserveDetailScroll ? getScrollTop(detailPanel) : 0;
+      const itemsModalScrollTop = options.preserveItemsModalScroll ? getScrollTop(itemsModalShell) : 0;
+
       renderStats();
       renderCategoryOptions();
       renderTemplateOptions();
@@ -3793,9 +5395,9 @@
       });
 
       const list = document.getElementById('taskList');
-      ensureSelectedTask();
 
       if (visible.length === 0) {
+        selectedTaskId = null;
         list.innerHTML = `
           <div class="empty-state">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
@@ -3806,11 +5408,15 @@
             <p>No tasks found</p>
             <small>${tasks.length === 0 ? 'Create your first task with the button above, or start from a reusable template.' : 'Try adjusting your filters to bring matching tasks back into view.'}</small>
           </div>`;
-        renderTaskDetails();
+        renderTaskDetails({ preserveScrollTop: detailScrollTop });
         return;
       }
 
       visible.sort((a, b) => compareTasks(a, b, filters.sort));
+
+      if (!visible.some(task => task.id === selectedTaskId)) {
+        selectedTaskId = visible[0]?.id || null;
+      }
 
       list.innerHTML = visible.map(t => {
         const priority = normalizePriority(t.priority);
@@ -3823,6 +5429,7 @@
 
         const isActive = t.id === selectedTaskId;
         const logData = getLogPreview(t.id);
+        const workflowItemCount = getItemsForTask(t.id).length;
         return `
           <div class="task-card ${priorityClass} ${statusClass} ${isActive ? 'is-active' : ''}" data-id="${t.id}" style="--category-color:${escHtml(categoryColor)}">
             <div class="task-card-body">
@@ -3837,6 +5444,7 @@
                         ${getCategoryMarkup(t.category)}
                         <span class="badge badge-${toClassToken(priority)}">${escHtml(priority)}</span>
                         <span class="badge badge-${toClassToken(status)}">${escHtml(status)}</span>
+                        <span class="task-date">${workflowItemCount} item${workflowItemCount === 1 ? '' : 's'}</span>
                         <span class="task-date">${logData.count} log${logData.count === 1 ? '' : 's'}</span>
                       </div>
                       <div class="task-preview-list">
@@ -3875,11 +5483,17 @@
           </div>`;
       }).join('');
 
-      renderTaskDetails();
+      renderTaskDetails({ preserveScrollTop: detailScrollTop });
+
+      if (document.getElementById('itemsModal')?.classList.contains('open')) {
+        renderAllItemsList({ preserveScrollTop: itemsModalScrollTop });
+      }
     }
 
-    function renderTaskDetails() {
+    function renderTaskDetails(options = {}) {
       const panel = document.getElementById('taskDetailPanel');
+      const preserveScrollTop = options.preserveScrollTop;
+      const preservedChildScrolls = captureChildScrollPositions(panel, ['.subtask-list-shell', '.workflow-item-list-shell']);
       closeDetailContextMenu();
       const task = getTaskById(selectedTaskId);
 
@@ -3897,17 +5511,20 @@
               <small>Notes, subtasks, timestamps, and log history appear here once you choose a task from the queue.</small>
             </div>
           </div>`;
+        restoreScrollTop(panel, preserveScrollTop);
+        restoreChildScrollPositions(panel, preservedChildScrolls);
         return;
       }
 
       const taskLogs = getLogsByTaskId(task.id);
       const priority = normalizePriority(task.priority);
       const status = normalizeStatus(task.status);
-      const dueClass = isOverdue(task.dueDate) && status !== 'Done' ? 'overdue' : '';
+      const dueClass = isOverdue(task.dueDate) && !isTaskCompleted(task) ? 'overdue' : '';
       const categoryColor = getCategoryColor(task.category);
       const template = getTemplateById(task.templateId);
       const subtaskCount = task.subtasks?.length || 0;
       const completedSubtasks = (task.subtasks || []).filter(subtask => subtask.done).length;
+      const workflowItemCount = getItemsForTask(task.id).length;
       const detailTabs = [
         {
           id: 'description',
@@ -3956,6 +5573,14 @@
                     </div>`).join('')}
                 </div>
               </div>` : '<div class="subtask-empty">No subtasks yet. Add one above.</div>'}`
+        },
+        {
+          id: 'items',
+          label: 'Items',
+          accent: '#14b8a6',
+          meta: `${workflowItemCount} item${workflowItemCount === 1 ? '' : 's'}`,
+          panelClass: 'workflow-items-section',
+          content: getWorkflowItemsSectionMarkup(task)
         },
         {
           id: 'logs',
@@ -4022,6 +5647,7 @@
               ${getCategoryMarkup(task.category)}
               <span class="badge badge-${toClassToken(priority)}">${escHtml(priority)}</span>
               <span class="badge badge-${toClassToken(status)}">${escHtml(status)}</span>
+              <span class="badge badge-category" style="--category-color:#14b8a6">${workflowItemCount} item${workflowItemCount === 1 ? '' : 's'}</span>
               ${template ? `<span class="badge badge-category" style="--category-color:${escHtml(categoryColor)}">Template: ${escHtml(template.name)}</span>` : ''}
             </div>
           </div>
@@ -4068,6 +5694,8 @@
         </div>`;
 
       applyInputLimits();
+      restoreScrollTop(panel, preserveScrollTop);
+      restoreChildScrollPositions(panel, preservedChildScrolls);
     }
 
     // ── Escape HTML ──
@@ -4088,7 +5716,7 @@
       const modal = document.getElementById('taskModal');
       const form  = document.getElementById('taskForm');
       const title = document.getElementById('modalTitle');
-      const submit = document.getElementById('submitTaskBtn');
+      const submitLabel = document.getElementById('submitTaskBtnLabel');
 
       form.reset();
       renderTaskOptionSets();
@@ -4097,7 +5725,7 @@
         const t = tasks.find(x => x.id === taskId);
         if (!t) return;
         title.textContent  = 'Edit Task';
-        submit.textContent = 'Save Changes';
+        submitLabel.textContent = 'Save Changes';
         document.getElementById('taskTitle').value      = t.title;
         document.getElementById('taskTemplate').value   = getTemplateById(t.templateId)?.id || '';
         document.getElementById('taskEmailSubject').value = t.emailSubject || '';
@@ -4110,7 +5738,7 @@
         document.getElementById('taskNotes').value      = t.notes      || '';
       } else {
         title.textContent  = 'New Task';
-        submit.textContent = 'Create Task';
+        submitLabel.textContent = 'Create Task';
         document.getElementById('taskTemplate').value   = '';
         document.getElementById('taskEmailSubject').value = '';
         document.getElementById('taskDescription').value = '';
@@ -4121,6 +5749,7 @@
       }
 
       modal.classList.add('open');
+      syncTaskModalFieldAccents();
       document.getElementById('taskTitle').focus();
     }
 
@@ -4197,7 +5826,12 @@
           const nextSubtasks = previousTask.templateId !== data.templateId
             ? buildTaskSubtasks(data.templateId)
             : previousTask.subtasks || [];
-          Object.assign(tasks[idx], data, { subtasks: nextSubtasks });
+          items = items.map(item => item.taskId === editingId
+            ? { ...item, taskTitleSnapshot: data.title }
+            : item);
+          Object.assign(tasks[idx], data, {
+            subtasks: nextSubtasks
+          });
         }
       } else {
         const newTask = {
@@ -4211,8 +5845,14 @@
       }
 
       saveTasks();
+      saveItems();
       renderTasks();
       closeModal();
+    });
+
+    document.getElementById('taskForm').addEventListener('change', e => {
+      if (!['taskCategory', 'taskPriority', 'taskStatus'].includes(e.target.id)) return;
+      syncTaskModalFieldAccents();
     });
 
     // ── Event Delegation: task list ──
@@ -4226,7 +5866,7 @@
       if (completeId) {
         const task = tasks.find(item => item.id === completeId);
         if (!task) return;
-        task.status = normalizeStatus(task.status) === 'Done' ? DEFAULT_STATUS : 'Done';
+        task.status = isTaskCompleted(task) ? DEFAULT_STATUS : 'Completed';
         saveTasks();
         renderTasks();
         return;
@@ -4245,11 +5885,15 @@
         if (confirm('Delete this task?')) {
           tasks = tasks.filter(t => t.id !== deleteId);
           logs = logs.filter(log => log.taskId !== deleteId);
+          items = items.map(item => item.taskId === deleteId
+            ? { ...item, taskId: null }
+            : item);
           if (selectedTaskId === deleteId) {
             selectedTaskId = null;
           }
           saveTasks();
           saveLogs();
+          saveItems();
           renderTasks();
         }
       }
@@ -4295,6 +5939,7 @@
       const deleteSubtaskId = e.target.closest('[data-delete-subtask]')?.dataset.deleteSubtask;
       const moveSubtaskId = e.target.closest('[data-move-subtask]')?.dataset.moveSubtask;
       const moveDirection = e.target.closest('[data-move-direction]')?.dataset.moveDirection;
+      const deleteItemId = e.target.closest('[data-delete-item]')?.dataset.deleteItem;
 
       if (detailTabId) {
         activeDetailTab = detailTabId;
@@ -4313,7 +5958,7 @@
         if (!confirm('Delete this subtask?')) return;
         task.subtasks = (task.subtasks || []).filter(subtask => subtask.id !== deleteSubtaskId);
         saveTasks();
-        renderTasks();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
       }
 
@@ -4324,7 +5969,7 @@
           ? { ...subtask, done: !subtask.done }
           : subtask);
         saveTasks();
-        renderTasks();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
       }
 
@@ -4333,7 +5978,26 @@
         if (!task || !moveDirection) return;
         if (!moveSubtask(task, moveSubtaskId, moveDirection)) return;
         saveTasks();
-        renderTasks();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
+      if (deleteItemId) {
+        if (!confirm('Delete this item?')) return;
+        items = items.filter(item => item.id !== deleteItemId);
+        selectedItemIds.delete(deleteItemId);
+        activeDetailTab = 'items';
+        saveItems();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
+      const clearItemImageId = e.target.closest('[data-clear-item-image]')?.dataset.clearItemImage;
+      if (clearItemImageId) {
+        if (!clearItemImage(clearItemImageId)) return;
+        activeDetailTab = 'items';
+        saveItems();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
       }
 
@@ -4341,9 +6005,52 @@
         if (confirm('Delete this log entry?')) {
           logs = logs.filter(log => log.id !== deleteLogId);
           saveLogs();
-          renderTasks();
+          renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         }
       }
+    });
+
+    document.getElementById('taskDetailPanel').addEventListener('change', e => {
+      const field = e.target.closest('[data-item-field]');
+      const checklistField = e.target.closest('[data-item-checklist]');
+      const imageField = e.target.closest('[data-item-image-upload]');
+
+      if (!field && !checklistField && !imageField) return;
+
+      if (imageField) {
+        applyItemImageChange(imageField.dataset.itemImageUpload, imageField.files?.[0])
+          .then(result => {
+            if (!result.ok && result.message) {
+              alert(result.message);
+              return;
+            }
+
+            activeDetailTab = 'items';
+            saveItems();
+            renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+          })
+          .catch(error => alert(error.message || 'Unable to save the item image.'));
+        return;
+      }
+
+      if (field) {
+        const result = applyItemFieldChange(
+          field.dataset.itemId,
+          field.dataset.itemField,
+          field.type === 'checkbox' ? field.checked : field.value
+        );
+        if (!result.ok && result.message) {
+          alert(result.message);
+        }
+      }
+
+      if (checklistField) {
+        applyItemChecklistChange(checklistField.dataset.itemId, checklistField.dataset.itemChecklist, checklistField.checked);
+      }
+
+      activeDetailTab = 'items';
+      saveItems();
+  renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
     });
 
     document.getElementById('taskDetailPanel').addEventListener('contextmenu', e => {
@@ -4369,7 +6076,7 @@
       }
 
       if (action === 'toggle-status') {
-        task.status = isTaskCompleted(task) ? DEFAULT_STATUS : 'Done';
+        task.status = isTaskCompleted(task) ? DEFAULT_STATUS : 'Completed';
         saveTasks();
         renderTasks();
         return;
@@ -4404,6 +6111,7 @@
             id: genId()
           }))
         };
+        delete duplicatedTask.workflowItems;
         tasks.unshift(duplicatedTask);
         selectedTaskId = duplicatedTask.id;
         saveTasks();
@@ -4415,11 +6123,15 @@
         if (!confirm('Delete this task?')) return;
         tasks = tasks.filter(item => item.id !== task.id);
         logs = logs.filter(log => log.taskId !== task.id);
+        items = items.map(item => item.taskId === task.id
+          ? { ...item, taskId: null }
+          : item);
         if (selectedTaskId === task.id) {
           selectedTaskId = null;
         }
         saveTasks();
         saveLogs();
+        saveItems();
         renderTasks();
       }
     });
@@ -4438,8 +6150,51 @@
 
         task.subtasks = [...(task.subtasks || []), { id: genId(), title: subtaskTitle, done: false }];
         saveTasks();
-        renderTasks();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         document.getElementById('subtaskTitle')?.focus();
+        return;
+      }
+
+      if (e.target.id === 'workflowItemForm') {
+        e.preventDefault();
+
+        const task = getTaskById(selectedTaskId);
+        const bulkInput = document.getElementById('workflowItemBulkInput');
+        if (!task || !bulkInput) return;
+
+        const batchItems = parseItemBatchLines(bulkInput.value);
+        if (!batchItems.length) {
+          bulkInput.focus();
+          return;
+        }
+
+        const defaults = {
+          project: document.getElementById('workflowItemProjectDefault')?.value || '',
+          supplier: document.getElementById('workflowItemSupplierDefault')?.value || getDefaultItemSupplier(),
+          vaultStatus: document.getElementById('workflowItemVaultStatusDefault')?.checked
+            ? (ITEM_VAULT_STATUS_OPTIONS[1] || DEFAULT_ITEM_VAULT_STATUS)
+            : DEFAULT_ITEM_VAULT_STATUS,
+          plmStatus: document.getElementById('workflowItemPlmStatusDefault')?.checked
+            ? (ITEM_PLM_STATUS_OPTIONS[1] || DEFAULT_ITEM_PLM_STATUS)
+            : DEFAULT_ITEM_PLM_STATUS,
+          drawingSentAt: document.getElementById('workflowItemDrawingSentDefault')?.value || '',
+          counterDieApprovalStatus: Boolean(document.getElementById('workflowItemCddApprovalDefault')?.checked),
+          samApprovalStatus: Boolean(document.getElementById('workflowItemSamApprovalDefault')?.checked),
+          checklist: Object.fromEntries(ITEM_CHECKLIST_FIELDS.map(field => [
+            field.key,
+            Boolean(document.getElementById(`workflowItemChecklist-${field.key}`)?.checked)
+          ]))
+        };
+
+        items = [
+          ...items,
+          ...batchItems.map(batchItem => createGlobalItem(batchItem, defaults, task))
+        ];
+
+        activeDetailTab = 'items';
+        saveItems();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        document.getElementById('workflowItemBulkInput')?.focus();
         return;
       }
 
@@ -4463,6 +6218,264 @@
       saveLogs();
       renderTasks();
       document.getElementById('logContent')?.focus();
+    });
+
+    function applyItemFieldChange(itemId, fieldName, rawValue) {
+      const item = getItemById(itemId);
+      if (!item || !fieldName) return { ok: false, message: '' };
+
+      const binaryConfig = getBinaryItemFieldConfig(fieldName);
+
+      const nextValue = binaryConfig
+        ? (Boolean(rawValue) ? binaryConfig.checkedValue : binaryConfig.defaultValue)
+        : fieldName === 'drawingSentAt'
+        ? rawValue
+        : ITEM_APPROVAL_FIELDS.includes(fieldName)
+          ? Boolean(rawValue)
+          : rawValue.trim();
+
+      if (fieldName === 'bidReference' && !nextValue) {
+        return { ok: false, message: 'BID Reference is required for every item.' };
+      }
+
+      item[fieldName] = fieldName === 'supplier'
+        ? (nextValue || getDefaultItemSupplier())
+        : nextValue;
+
+      if (SHARED_ITEM_FIELDS.includes(fieldName)) {
+        syncSharedFieldsForBid(item.bidReference, item);
+      }
+
+      if (fieldName === 'bidReference') {
+        const existingGroupSource = getItemsBySharedKey(item.bidReference, item.id)[0];
+        if (existingGroupSource) {
+          SHARED_ITEM_FIELDS.forEach(sharedField => {
+            item[sharedField] = existingGroupSource[sharedField];
+          });
+          syncSharedFieldsForBid(item.bidReference, item);
+        }
+      }
+
+      return { ok: true, message: '' };
+    }
+
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ''));
+        reader.onerror = () => reject(new Error('Unable to read the selected image.'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function loadImageElement(src) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error('Unable to process the selected image.'));
+        image.src = src;
+      });
+    }
+
+    async function buildItemImageData(file) {
+      if (!file?.type?.startsWith('image/')) {
+        throw new Error('Please choose an image file.');
+      }
+
+      const sourceDataUrl = await readFileAsDataUrl(file);
+      const image = await loadImageElement(sourceDataUrl);
+      const maxDimension = 900;
+      const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(image.width * scale));
+      canvas.height = Math.max(1, Math.round(image.height * scale));
+
+      const context = canvas.getContext('2d');
+      if (!context) {
+        throw new Error('Image processing is not available in this browser.');
+      }
+
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL('image/jpeg', 0.82);
+    }
+
+    async function applyItemImageChange(itemId, file) {
+      const item = getItemById(itemId);
+      if (!item || !file) return { ok: false, message: '' };
+
+      item.imageDataUrl = await buildItemImageData(file);
+      item.imageName = file.name;
+      return { ok: true, message: '' };
+    }
+
+    function clearItemImage(itemId) {
+      const item = getItemById(itemId);
+      if (!item) return false;
+      item.imageDataUrl = '';
+      item.imageName = '';
+      return true;
+    }
+
+    function applyItemChecklistChange(itemId, checklistKey, checked) {
+      const item = getItemById(itemId);
+      if (!item || !checklistKey) return false;
+      item.checklist = {
+        ...item.checklist,
+        [checklistKey]: Boolean(checked)
+      };
+      return true;
+    }
+
+    function renderAllItemsList(options = {}) {
+      const list = document.getElementById('allItemsList');
+      const summary = document.getElementById('itemsModalSummary');
+      const bulkSummary = document.getElementById('itemsBulkSummary');
+      const shell = list?.closest('.workflow-item-list-shell');
+      const preserveScrollTop = options.preserveScrollTop;
+      if (!list || !summary || !bulkSummary) return;
+
+      const filteredItems = items
+        .filter(item => !itemSearchQuery || getItemSearchText(item).includes(itemSearchQuery))
+        .sort((a, b) => a.bidReference.localeCompare(b.bidReference) || (a.tidReference || '').localeCompare(b.tidReference || ''));
+
+      summary.textContent = `${filteredItems.length} of ${items.length} item${items.length === 1 ? '' : 's'}`;
+      bulkSummary.textContent = `${selectedItemIds.size} selected`;
+      list.innerHTML = filteredItems.length
+        ? filteredItems.map(item => getItemEditorMarkup(item, {
+            showTaskLink: true,
+            selectable: true,
+            isSelected: selectedItemIds.has(item.id)
+          })).join('')
+        : '<div class="workflow-item-empty">No items match the current search.</div>';
+
+      restoreScrollTop(shell, preserveScrollTop);
+    }
+
+    function openItemsModal() {
+      const modal = document.getElementById('itemsModal');
+      const searchInput = document.getElementById('itemSearchInput');
+      if (!modal || !searchInput) return;
+      itemSearchQuery = '';
+      selectedItemIds.clear();
+      searchInput.value = '';
+      modal.classList.add('open');
+      renderAllItemsList();
+      searchInput.focus();
+    }
+
+    function closeItemsModal() {
+      const modal = document.getElementById('itemsModal');
+      const searchInput = document.getElementById('itemSearchInput');
+      if (!modal) return;
+      modal.classList.remove('open');
+      itemSearchQuery = '';
+      if (searchInput) searchInput.value = '';
+    }
+
+    document.getElementById('allItemsList').addEventListener('click', e => {
+      const modalListShell = document.querySelector('#itemsModal .workflow-item-list-shell');
+      const modalScrollTop = getScrollTop(modalListShell);
+      const deleteItemId = e.target.closest('[data-delete-item]')?.dataset.deleteItem;
+      if (deleteItemId) {
+        if (!confirm('Delete this item?')) return;
+        items = items.filter(item => item.id !== deleteItemId);
+        selectedItemIds.delete(deleteItemId);
+        saveItems();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
+      const clearItemImageId = e.target.closest('[data-clear-item-image]')?.dataset.clearItemImage;
+      if (!clearItemImageId) return;
+      if (!clearItemImage(clearItemImageId)) return;
+      saveItems();
+      renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+    });
+
+    document.getElementById('allItemsList').addEventListener('change', e => {
+      const modalListShell = document.querySelector('#itemsModal .workflow-item-list-shell');
+      const modalScrollTop = getScrollTop(modalListShell);
+      const field = e.target.closest('[data-item-field]');
+      const checklistField = e.target.closest('[data-item-checklist]');
+      const imageField = e.target.closest('[data-item-image-upload]');
+      const selectionField = e.target.closest('[data-select-item]');
+      if (!field && !checklistField && !imageField && !selectionField) return;
+
+      if (selectionField) {
+        if (selectionField.checked) {
+          selectedItemIds.add(selectionField.dataset.selectItem);
+        } else {
+          selectedItemIds.delete(selectionField.dataset.selectItem);
+        }
+        renderAllItemsList({ preserveScrollTop: modalScrollTop });
+        return;
+      }
+
+      if (imageField) {
+        applyItemImageChange(imageField.dataset.itemImageUpload, imageField.files?.[0])
+          .then(result => {
+            if (!result.ok && result.message) {
+              alert(result.message);
+              return;
+            }
+
+            saveItems();
+            renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+          })
+          .catch(error => alert(error.message || 'Unable to save the item image.'));
+        return;
+      }
+
+      if (field) {
+        const result = applyItemFieldChange(
+          field.dataset.itemId,
+          field.dataset.itemField,
+          field.type === 'checkbox' ? field.checked : field.value
+        );
+        if (!result.ok && result.message) {
+          alert(result.message);
+        }
+      }
+
+      if (checklistField) {
+        applyItemChecklistChange(checklistField.dataset.itemId, checklistField.dataset.itemChecklist, checklistField.checked);
+      }
+
+      saveItems();
+      renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+    });
+
+    document.getElementById('itemsModalBulkTools').addEventListener('click', e => {
+      const modalListShell = document.querySelector('#itemsModal .workflow-item-list-shell');
+      const modalScrollTop = getScrollTop(modalListShell);
+      const selectVisible = e.target.closest('[data-select-visible-items]');
+      if (selectVisible) {
+        items
+          .filter(item => !itemSearchQuery || getItemSearchText(item).includes(itemSearchQuery))
+          .forEach(item => selectedItemIds.add(item.id));
+        renderAllItemsList({ preserveScrollTop: modalScrollTop });
+        return;
+      }
+
+      const clearSelection = e.target.closest('[data-clear-selected-items]');
+      if (clearSelection) {
+        selectedItemIds.clear();
+        renderAllItemsList({ preserveScrollTop: modalScrollTop });
+        return;
+      }
+
+      const bulkAction = e.target.closest('[data-bulk-update-field]');
+      if (!bulkAction || !selectedItemIds.size) return;
+
+      const fieldName = bulkAction.dataset.bulkUpdateField;
+      const rawValue = bulkAction.dataset.bulkUpdateValue === 'true';
+
+      items
+        .filter(item => selectedItemIds.has(item.id))
+        .forEach(item => applyItemFieldChange(item.id, fieldName, rawValue));
+
+      saveItems();
+      renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
     });
 
     document.getElementById('categoryForm').addEventListener('submit', e => {
@@ -4551,14 +6564,36 @@
       renderTasks();
     });
 
+    document.getElementById('itemSettingsForm').addEventListener('submit', e => {
+      e.preventDefault();
+
+      const supplierOptions = normalizeOptionList(document.getElementById('itemSupplierOptionsInput').value);
+      const projectOptions = normalizeOptionList(document.getElementById('itemProjectOptionsInput').value);
+
+      if (!supplierOptions.length) {
+        document.getElementById('itemSupplierOptionsInput').focus();
+        return;
+      }
+
+      itemSettings = normalizeItemSettings({ supplierOptions, projectOptions });
+      saveItemSettings();
+      closeItemSettingsModal();
+      renderTasks();
+      renderAllItemsList();
+    });
+
     // ── Filters ──
     // All filter/sort controls call renderTasks() directly; no state is
-    // persisted for filters (they reset on page reload by design).
+    // persisted for filters, except task sort which survives reloads.
     document.getElementById('searchTasks').addEventListener('input', renderTasks);
     document.getElementById('filterCategory').addEventListener('change', renderTasks);
     document.getElementById('filterPriority').addEventListener('change', renderTasks);
     document.getElementById('filterStatus').addEventListener('change', renderTasks);
-    document.getElementById('sortTasks').addEventListener('change', renderTasks);
+    document.getElementById('sortTasks').addEventListener('change', e => {
+      currentSortMode = normalizeTaskSortMode(e.target.value);
+      saveSortModePreference();
+      renderTasks();
+    });
 
     // ── Toggle Done ──
     // hideDone is persisted to localStorage so the preference survives reloads.
@@ -4588,6 +6623,8 @@
     document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
     document.getElementById('manageCategoriesBtn').addEventListener('click', () => openCategoryModal());
     document.getElementById('manageTemplatesBtn').addEventListener('click', () => openTemplateModal());
+    document.getElementById('manageItemsBtn').addEventListener('click', () => openItemsModal());
+    document.getElementById('manageItemSettingsBtn').addEventListener('click', () => openItemSettingsModal());
     document.getElementById('clearCompletedBtn').addEventListener('click', () => {
       const completedCount = tasks.filter(task => isTaskCompleted(task)).length;
       if (!completedCount) return;
@@ -4599,10 +6636,19 @@
     document.getElementById('cancelTaskBtn').addEventListener('click', closeModal);
     document.getElementById('cancelCategoryBtn').addEventListener('click', closeCategoryModal);
     document.getElementById('cancelTemplateBtn').addEventListener('click', closeTemplateModal);
+    document.getElementById('cancelItemSettingsBtn').addEventListener('click', closeItemSettingsModal);
+    document.getElementById('closeItemsBtn').addEventListener('click', closeItemsModal);
 
     bindBackdropDismiss('taskModal', closeModal);
     bindBackdropDismiss('categoryModal', closeCategoryModal);
     bindBackdropDismiss('templateModal', closeTemplateModal);
+    bindBackdropDismiss('itemSettingsModal', closeItemSettingsModal);
+    bindBackdropDismiss('itemsModal', closeItemsModal);
+
+    document.getElementById('itemSearchInput').addEventListener('input', e => {
+      itemSearchQuery = e.target.value.trim().toLowerCase();
+      renderAllItemsList();
+    });
 
     document.getElementById('categoryList').addEventListener('click', e => {
       const moveName = e.target.closest('[data-move-category]')?.dataset.moveCategory;
@@ -4681,6 +6727,7 @@
         closeModal();
         closeCategoryModal();
         closeTemplateModal();
+        closeItemsModal();
       }
     });
 
@@ -4691,6 +6738,22 @@
 
     window.addEventListener('resize', closeDetailContextMenu);
     document.addEventListener('scroll', closeDetailContextMenu, true);
+
+    function fillItemSettingsForm() {
+      document.getElementById('itemSupplierOptionsInput').value = (itemSettings?.supplierOptions || DEFAULT_ITEM_SUPPLIER_OPTIONS).join('\n');
+      document.getElementById('itemProjectOptionsInput').value = (itemSettings?.projectOptions || []).join('\n');
+    }
+
+    function openItemSettingsModal() {
+      fillItemSettingsForm();
+      document.getElementById('itemSettingsModal').classList.add('open');
+      document.getElementById('itemSupplierOptionsInput').focus();
+    }
+
+    function closeItemSettingsModal() {
+      document.getElementById('itemSettingsModal').classList.remove('open');
+      fillItemSettingsForm();
+    }
 
     function openCategoryModal() {
       document.getElementById('categoryModal').classList.add('open');
@@ -4727,12 +6790,15 @@
     applyTheme(currentTheme);
     saveCategories();
     saveTasks();
+    saveItems();
+    saveItemSettings();
     saveTemplates();
-    ensureSelectedTask();
+    document.getElementById('sortTasks').value = currentSortMode;
     document.getElementById('toggleDoneBtn').textContent = hideDone ? 'Show Completed' : 'Hide Completed';
     renderCategoryList();
     renderTemplateList();
     renderTasks();
+    renderAllItemsList();
     updateSecondaryStatsToggle();
     applyInputLimits();
   </script>
