@@ -4,6 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Task Manager</title>
+  <script>
+    (() => {
+      const themeKey = 'tm_theme';
+      const savedTheme = localStorage.getItem(themeKey);
+      const preferredTheme = savedTheme === 'light' || savedTheme === 'dark'
+        ? savedTheme
+        : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+
+      document.documentElement.classList.add(`theme-${preferredTheme}`);
+      document.documentElement.dataset.theme = preferredTheme;
+    })();
+  </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap');
 
@@ -11,14 +23,19 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0f1117;
-      --surface:   #1a1d27;
-      --surface2:  #22263a;
-      --border:    #2e3250;
-      --text:      #e2e8f0;
-      --text-muted:#8892a4;
-      --accent:    #6366f1;
-      --accent-h:  #818cf8;
+      --bg:        #141821;
+      --surface:   #1b2230;
+      --surface2:  #20293a;
+      --panel-bg:  rgba(27, 34, 48, .86);
+      --panel-alt: rgba(32, 41, 58, .88);
+      --border:    #2c384d;
+      --border-strong:#3a4962;
+      --text:      #e6ebf3;
+      --text-muted:#93a0b5;
+      --accent:    #4f7cff;
+      --accent-h:  #6a90ff;
+      --bg-glow-1: rgba(79,124,255,.12);
+      --bg-glow-2: rgba(32,197,143,.08);
       --shadow-soft: 0 10px 24px rgba(2, 6, 23, .22);
       --shadow-panel: 0 18px 40px rgba(2, 6, 23, .28);
 
@@ -38,10 +55,37 @@
       --task-list-offset: 270px;
     }
 
+    :root.theme-light {
+      --bg:        #edf1f6;
+      --surface:   #f7f9fc;
+      --surface2:  #edf2f8;
+      --panel-bg:  rgba(247, 249, 252, .9);
+      --panel-alt: rgba(237, 242, 248, .92);
+      --border:    #d5deea;
+      --border-strong:#b7c5d8;
+      --text:      #162235;
+      --text-muted:#5e7088;
+      --accent:    #2f63e0;
+      --accent-h:  #4c79ea;
+      --bg-glow-1: rgba(47,99,224,.09);
+      --bg-glow-2: rgba(16,185,129,.06);
+      --shadow-soft: 0 8px 20px rgba(31, 45, 61, .08);
+      --shadow-panel: 0 20px 45px rgba(31, 45, 61, .10);
+      --critical: #d64665;
+      --high: #d94f4f;
+      --medium: #c78413;
+      --low: #1f8c5a;
+      --very-low: #1f7ea7;
+      --status-not-started: #5e7088;
+      --status-waiting: #b98510;
+      --status-ongoing: #2f63e0;
+      --status-done: #66768a;
+    }
+
     body {
       background:
-        radial-gradient(circle at top left, rgba(99,102,241,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(16,185,129,.08), transparent 24%),
+        radial-gradient(circle at top left, var(--bg-glow-1), transparent 28%),
+        radial-gradient(circle at top right, var(--bg-glow-2), transparent 24%),
         var(--bg);
       color: var(--text);
       font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
@@ -51,7 +95,7 @@
 
     /* ── Layout ── */
     .app-header {
-      background: rgba(26, 29, 39, .86);
+      background: var(--panel-bg);
       border-bottom: 1px solid var(--border);
       padding: 14px 16px;
       display: flex;
@@ -98,10 +142,10 @@
     }
 
     .list-panel {
-      background: linear-gradient(180deg, rgba(26,29,39,.82), rgba(15,17,23,.72));
+      background: linear-gradient(180deg, var(--panel-bg), rgba(0,0,0,0));
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 20px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       position: sticky;
@@ -124,7 +168,7 @@
       cursor: pointer;
       border: none;
       white-space: nowrap;
-      transition: filter .15s, background .15s, border-color .15s, transform .15s, box-shadow .15s;
+      transition: color .12s ease, background-color .12s ease, border-color .12s ease, box-shadow .12s ease;
     }
 
     .btn:focus-visible {
@@ -138,7 +182,6 @@
     }
     .btn-primary:hover {
       filter: brightness(1.15);
-      transform: translateY(-1px);
     }
 
     .btn-ghost {
@@ -149,7 +192,6 @@
     .btn-ghost:hover {
       background: var(--surface2);
       color: var(--text);
-      transform: translateY(-1px);
     }
 
     .btn-danger {
@@ -173,7 +215,6 @@
     }
     .modal-backdrop.open {
       display: flex;
-      animation: fadeIn .16s ease-out;
     }
 
     .modal {
@@ -186,7 +227,6 @@
       max-height: 90vh;
       overflow-y: auto;
       box-shadow: var(--shadow-panel);
-      animation: modalRise .18s ease-out;
     }
 
     #taskModal .modal {
@@ -257,12 +297,12 @@
     .filters-bar {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 18px;
-      padding: 12px;
+      margin-bottom: 14px;
+      padding: 10px;
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 14px;
       background: rgba(255,255,255,.03);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
       flex: 0 0 auto;
@@ -276,20 +316,28 @@
       letter-spacing: .08em;
     }
 
-    .filters-bar select {
+    .filters-bar select,
+    .search-input {
       background: rgba(15,17,23,.56);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 0 12px;
-      min-height: 42px;
+      min-height: 38px;
       color: var(--text);
       font-size: 12px;
       outline: none;
-      cursor: pointer;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
     }
 
-    .filters-bar select:focus { border-color: var(--accent); }
+    .filters-bar select { cursor: pointer; }
+
+    .filters-bar select:focus,
+    .search-input:focus { border-color: var(--accent); }
+
+    .search-input {
+      min-width: 220px;
+      flex: 1 1 220px;
+    }
 
     .toggle-done-btn {
       margin-left: auto;
@@ -299,21 +347,28 @@
     .task-stats {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 10px;
+      margin-bottom: 10px;
       flex: 0 0 auto;
+    }
+
+    .task-stats-secondary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
     }
 
     .stat-chip {
       position: relative;
       overflow: hidden;
       display: grid;
-      gap: 8px;
-      min-height: 96px;
-      background: linear-gradient(180deg, rgba(34,38,58,.96), rgba(26,29,39,.92));
+      gap: 6px;
+      min-height: 84px;
+      background: linear-gradient(180deg, var(--panel-alt), var(--panel-bg));
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
+      border-radius: 12px;
+      padding: 12px;
       font-size: 12px;
       color: var(--text-muted);
       box-shadow: var(--shadow-soft);
@@ -341,22 +396,48 @@
 
     .stat-value {
       display: block;
-      font-size: 30px;
+      font-size: 26px;
       font-weight: 800;
       letter-spacing: -.04em;
       color: var(--text);
     }
 
     .stat-hint {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
+    }
+
+    .micro-stat {
+      display: grid;
+      gap: 4px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: var(--surface);
+      min-height: 62px;
+    }
+
+    .micro-stat-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .micro-stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
     }
 
     /* ── Task List ── */
     .task-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       min-height: 320px;
       max-height: max(320px, calc(100vh - var(--sticky-panel-top) - var(--task-list-offset)));
       max-height: max(320px, calc(100dvh - var(--sticky-panel-top) - var(--task-list-offset)));
@@ -424,22 +505,24 @@
     .task-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-left: 4px solid var(--border);
+      border-left: 3px solid var(--border);
       border-radius: 10px;
       display: block;
       flex: 0 0 auto;
-      transition: border-color .15s, box-shadow .15s, transform .15s, background .15s;
+      transition: border-color .12s ease, box-shadow .12s ease, background-color .12s ease;
       position: relative;
       overflow: hidden;
-      box-shadow: var(--shadow-soft);
+      box-shadow: 0 1px 0 rgba(255,255,255,.02);
     }
 
     .task-card-body {
       position: relative;
       z-index: 1;
       display: grid;
-      gap: 12px;
-      padding: 14px 16px;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 260px);
+      gap: 8px;
+      padding: 10px 12px;
+      align-items: start;
     }
 
     .task-card::before {
@@ -455,7 +538,6 @@
     .task-card:hover {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px var(--accent)22;
-      transform: translateY(-1px);
     }
 
     .task-card.is-active {
@@ -478,22 +560,101 @@
       color: var(--text-muted);
     }
 
-    .task-main { min-width: 0; }
+    .task-main {
+      min-width: 0;
+      grid-column: 1;
+      display: grid;
+      gap: 6px;
+      align-content: start;
+      padding-right: 4px;
+    }
+
+    .task-heading {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .task-heading-main {
+      width: 100%;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
 
     .task-title {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 2px;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      line-clamp: 2;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+
+    .task-email-subject,
+    .task-summary,
+    .task-log-preview,
+    .task-subtasks-preview {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .task-email-subject,
+    .task-summary,
+    .task-log-preview {
+      line-clamp: 1;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      overflow: hidden;
+    }
+
+    .task-subtasks-preview {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .quick-toggle {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color .12s ease, border-color .12s ease, background-color .12s ease;
+      flex: 0 0 auto;
+    }
+
+    .quick-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+    }
+
+    .quick-toggle.is-done {
+      border-color: var(--low);
+      color: var(--low);
+      background: rgba(34,197,94,.10);
     }
 
     .task-meta {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 5px;
+      min-width: 0;
     }
 
     .badge {
@@ -512,8 +673,8 @@
     .badge-low      { background: rgba(34,197,94,.15); color: var(--low); }
     .badge-very-low { background: rgba(56,189,248,.15); color: var(--very-low); }
 
-    .badge-not-started,
-    .badge-pending { background: rgba(148,163,184,.12); color: var(--status-not-started); }
+    .badge-pending { background: rgba(59,130,246,.13); color: var(--status-ongoing); }
+    .badge-not-started { background: rgba(148,163,184,.12); color: var(--status-not-started); }
     .badge-ongoing { background: rgba(99,102,241,.15); color: var(--accent-h); }
     .badge-waiting-for-someone-else { background: rgba(251,191,36,.15); color: var(--status-waiting); }
     .badge-done    { background: rgba(71,85,105,.2); color: #94a3b8; }
@@ -541,26 +702,61 @@
     .task-date.overdue { color: var(--high); }
 
     .task-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-      justify-content: flex-start;
+      display: grid;
+      grid-column: 2;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      gap: 5px;
+      width: 100%;
+      justify-self: end;
+      min-width: 0;
     }
 
-    .task-open-btn {
+    .task-action-item {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .task-action-item.is-wide {
+      grid-column: 1 / -1;
+    }
+
+    .task-action-label {
+      font-size: 9px;
+      line-height: 1.1;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      text-align: left;
+      padding-left: 2px;
+    }
+
+    .task-actions .btn,
+    .task-actions .status-select,
+    .task-actions .priority-select {
+      width: 100%;
+    }
+
+    .task-actions .btn {
+      min-height: 28px;
       padding: 4px 8px;
-      font-size: 11px;
-      justify-content: center;
+      font-size: 10px;
     }
 
-    .status-select {
+    .task-actions .btn-danger {
+      border-color: var(--high);
+    }
+
+    .status-select,
+    .priority-select,
+    .sort-select {
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 4px 7px;
-      min-height: 34px;
-      min-width: 172px;
+      padding: 4px 6px;
+      min-height: 30px;
+      min-width: 0;
       max-width: 100%;
       color: var(--text);
       font-size: 11px;
@@ -568,13 +764,21 @@
       outline: none;
     }
 
-    .status-select:focus { border-color: var(--accent); }
+    .status-select:focus,
+    .priority-select:focus,
+    .sort-select:focus { border-color: var(--accent); }
+
+    .task-preview-list {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
 
     .detail-panel {
-      background: var(--surface);
+      background: var(--panel-bg);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 22px;
+      padding: 18px;
       position: sticky;
       top: var(--sticky-panel-top);
       box-shadow: var(--shadow-panel);
@@ -633,8 +837,8 @@
     .detail-submeta {
       display: grid;
       gap: 8px;
-      margin: 16px 0;
-      padding: 14px;
+      margin: 14px 0;
+      padding: 12px;
       border: 1px solid var(--border);
       border-radius: 10px;
       background: rgba(255,255,255,.02);
@@ -659,7 +863,14 @@
       border-top: 1px solid var(--border);
     }
 
-    .detail-notes p {
+    .detail-description {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .detail-notes p,
+    .detail-description p {
       color: var(--text-muted);
       white-space: pre-wrap;
       line-height: 1.5;
@@ -917,22 +1128,6 @@
       color: var(--text-muted);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes modalRise {
-      from {
-        opacity: 0;
-        transform: translateY(8px) scale(.985);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
     /* ── Responsive ── */
     @media (max-width: 980px) {
       .workspace-grid { grid-template-columns: 1fr; }
@@ -943,6 +1138,7 @@
       }
       .detail-panel { position: static; }
       .task-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .task-stats-secondary { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .task-list {
         min-height: 300px;
         max-height: none;
@@ -979,6 +1175,7 @@
       }
       .filter-label { grid-column: 1 / -1; }
       .filters-bar select,
+      .search-input,
       .toggle-done-btn {
         width: 100%;
       }
@@ -1000,13 +1197,16 @@
       .category-form-row { grid-template-columns: 1fr; }
       .subtask-form { grid-template-columns: 1fr; }
       .task-stats { grid-template-columns: 1fr; }
+      .task-stats-secondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .filters-bar { grid-template-columns: 1fr; }
       .list-panel,
       .detail-panel { padding: 14px; }
-      .task-card { padding: 12px; }
-      .task-title {
-        white-space: normal;
-        line-height: 1.4;
+      .task-card-body {
+        grid-template-columns: 1fr;
+      }
+      .task-main,
+      .task-actions {
+        grid-column: auto;
       }
       .task-actions {
         display: grid;
@@ -1014,11 +1214,13 @@
         width: 100%;
       }
       .task-actions .btn,
-      .task-actions .status-select {
+      .task-actions .status-select,
+      .task-actions .priority-select {
         width: 100%;
         justify-content: center;
       }
-      .status-select { min-height: 40px; }
+      .status-select,
+      .priority-select { min-height: 40px; }
       .form-actions {
         flex-wrap: wrap;
       }
@@ -1049,6 +1251,7 @@
   <header class="app-header">
     <h1>Task <span>Manager</span></h1>
     <div class="header-actions">
+      <button class="btn btn-ghost" id="themeToggleBtn">Light Mode</button>
       <button class="btn btn-ghost" id="manageCategoriesBtn">Categories</button>
       <button class="btn btn-ghost" id="manageTemplatesBtn">Templates</button>
       <button class="btn btn-ghost" id="exportExcelBtn">Export Excel</button>
@@ -1065,10 +1268,12 @@
       <section class="list-panel">
         <!-- Stats -->
         <div class="task-stats" id="taskStats"></div>
+        <div class="task-stats-secondary" id="taskStatsSecondary"></div>
 
         <!-- Filters -->
         <div class="filters-bar">
           <span class="filter-label">Filter:</span>
+          <input type="search" id="searchTasks" class="search-input" placeholder="Search title, description, email subject, or notes" />
           <select id="filterCategory">
             <option value="">All Categories</option>
           </select>
@@ -1082,10 +1287,18 @@
           </select>
           <select id="filterStatus">
             <option value="">All Statuses</option>
+            <option value="Pending">Pending</option>
             <option value="Not Started">Not Started</option>
             <option value="Ongoing">Ongoing</option>
             <option value="Waiting for Someone Else">Waiting for Someone Else</option>
             <option value="Done">Done</option>
+          </select>
+          <select id="sortTasks" class="sort-select">
+            <option value="workflow">Sort: Workflow</option>
+            <option value="due-date">Sort: Due Date</option>
+            <option value="created-date">Sort: Created Date</option>
+            <option value="priority">Sort: Priority</option>
+            <option value="title">Sort: Title</option>
           </select>
           <button class="btn btn-ghost toggle-done-btn" id="toggleDoneBtn">Hide Completed</button>
         </div>
@@ -1117,6 +1330,16 @@
           </select>
         </div>
 
+        <div class="form-group">
+          <label for="taskEmailSubject">Email Subject</label>
+          <input type="text" id="taskEmailSubject" placeholder="Optional subject line" />
+        </div>
+
+        <div class="form-group">
+          <label for="taskDescription">Description</label>
+          <textarea id="taskDescription" placeholder="Short task summary or context..."></textarea>
+        </div>
+
         <div class="form-row">
           <div class="form-group">
             <label for="taskCategory">Category</label>
@@ -1135,6 +1358,7 @@
           <div class="form-group">
             <label for="taskStatus">Status</label>
             <select id="taskStatus">
+              <option value="Pending">Pending</option>
               <option value="Not Started">Not Started</option>
               <option value="Ongoing">Ongoing</option>
               <option value="Waiting for Someone Else">Waiting for Someone Else</option>
@@ -1217,7 +1441,36 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
     // ── Storage Keys ──
-    const KEYS = { tasks: 'tm_tasks', logs: 'tm_logs', categories: 'tm_categories', templates: 'tm_templates' };
+    const KEYS = {
+      tasks: 'tm_tasks',
+      logs: 'tm_logs',
+      categories: 'tm_categories',
+      templates: 'tm_templates',
+      hideDone: 'tm_hide_done',
+      theme: 'tm_theme'
+    };
+
+    function loadJson(key, fallback) {
+      try {
+        const rawValue = localStorage.getItem(key);
+        return rawValue ? JSON.parse(rawValue) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function saveJson(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function loadPreference(key, fallback = null) {
+      const value = localStorage.getItem(key);
+      return value === null ? fallback : value;
+    }
+
+    function savePreference(key, value) {
+      localStorage.setItem(key, String(value));
+    }
 
     // ── State ──
     let tasks       = [];
@@ -1225,38 +1478,37 @@
     let categories  = [];
     let templates   = [];
     let hideDone    = false;
+    let currentTheme = 'dark';
     let editingId   = null;
     let editingCategoryName = null;
     let editingTemplateId = null;
     let selectedTaskId = null;
 
     const PRIORITY_OPTIONS = ['Critical', 'High', 'Medium', 'Low', 'Very Low'];
-    const STATUS_OPTIONS = ['Not Started', 'Ongoing', 'Waiting for Someone Else', 'Done'];
+    const STATUS_OPTIONS = ['Pending', 'Not Started', 'Ongoing', 'Waiting for Someone Else', 'Done'];
     const DEFAULT_PRIORITY = 'Medium';
-    const DEFAULT_STATUS = 'Not Started';
-    const LEGACY_STATUS_ALIASES = { Pending: DEFAULT_STATUS };
+    const DEFAULT_STATUS = 'Pending';
+    const LEGACY_STATUS_ALIASES = {};
     const ATTENTION_PRIORITIES = new Set(['Critical', 'High']);
     const PRIORITY_ORDER = Object.fromEntries(PRIORITY_OPTIONS.map((priority, index) => [priority, index]));
     const STATUS_ORDER = {
       Ongoing: 0,
-      'Waiting for Someone Else': 1,
-      'Not Started': 2,
-      Done: 3
+      Pending: 1,
+      'Waiting for Someone Else': 2,
+      'Not Started': 3,
+      Done: 4
     };
+
+    const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     // ── Persistence ──
     function loadState() {
-      try {
-        tasks = JSON.parse(localStorage.getItem(KEYS.tasks)) || [];
-        logs = JSON.parse(localStorage.getItem(KEYS.logs)) || [];
-        categories = JSON.parse(localStorage.getItem(KEYS.categories)) || [];
-        templates = JSON.parse(localStorage.getItem(KEYS.templates)) || [];
-      } catch {
-        tasks = [];
-        logs = [];
-        categories = [];
-        templates = [];
-      }
+      tasks = loadJson(KEYS.tasks, []);
+      logs = loadJson(KEYS.logs, []);
+      categories = loadJson(KEYS.categories, []);
+      templates = loadJson(KEYS.templates, []);
+      hideDone = loadPreference(KEYS.hideDone, 'false') === 'true';
+      currentTheme = loadPreference(KEYS.theme, document.documentElement.dataset.theme || 'dark');
 
       if (!categories.length) {
         categories = getDefaultCategories();
@@ -1276,6 +1528,8 @@
       const fallbackCategory = 'General';
       tasks = tasks.map(task => ({
         ...task,
+        description: String(task.description || '').trim() || null,
+        emailSubject: String(task.emailSubject || '').trim() || null,
         category: getCategoryByName(task.category)?.name || fallbackCategory,
         priority: normalizePriority(task.priority),
         status: normalizeStatus(task.status),
@@ -1284,19 +1538,43 @@
     }
 
     function saveTasks() {
-      localStorage.setItem(KEYS.tasks, JSON.stringify(tasks));
+      saveJson(KEYS.tasks, tasks);
     }
 
     function saveLogs() {
-      localStorage.setItem(KEYS.logs, JSON.stringify(logs));
+      saveJson(KEYS.logs, logs);
     }
 
     function saveCategories() {
-      localStorage.setItem(KEYS.categories, JSON.stringify(categories));
+      saveJson(KEYS.categories, categories);
     }
 
     function saveTemplates() {
-      localStorage.setItem(KEYS.templates, JSON.stringify(templates));
+      saveJson(KEYS.templates, templates);
+    }
+
+    function saveHideDonePreference() {
+      savePreference(KEYS.hideDone, hideDone);
+    }
+
+    function applyTheme(theme) {
+      const nextTheme = theme === 'light' ? 'light' : 'dark';
+      currentTheme = nextTheme;
+      document.documentElement.classList.remove('theme-light', 'theme-dark');
+      document.documentElement.classList.add(`theme-${nextTheme}`);
+      document.documentElement.dataset.theme = nextTheme;
+      savePreference(KEYS.theme, nextTheme);
+      updateThemeToggleLabel();
+    }
+
+    function toggleTheme() {
+      applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    }
+
+    function updateThemeToggleLabel() {
+      const toggleButton = document.getElementById('themeToggleBtn');
+      if (!toggleButton) return;
+      toggleButton.textContent = currentTheme === 'dark' ? 'Light Mode' : 'Dark Mode';
     }
 
     // ── ID Generator ──
@@ -1381,10 +1659,31 @@
       return new Date().toISOString().slice(0, 10);
     }
 
+    function toDateParts(value) {
+      if (!value) return null;
+
+      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        const [year, month, day] = value.split('-').map(Number);
+        return { year, month, day };
+      }
+
+      const parsed = new Date(value);
+      if (Number.isNaN(parsed.getTime())) return null;
+
+      return {
+        year: parsed.getFullYear(),
+        month: parsed.getMonth() + 1,
+        day: parsed.getDate()
+      };
+    }
+
     function formatDate(iso) {
-      if (!iso) return null;
-      const [y, m, d] = iso.split('-');
-      return `${d}/${m}/${y}`;
+      const parts = toDateParts(iso);
+      if (!parts) return null;
+
+      const day = String(parts.day).padStart(2, '0');
+      const month = MONTH_LABELS[parts.month - 1];
+      return `${day}-${month}-${parts.year}`;
     }
 
     function isOverdue(iso) {
@@ -1395,13 +1694,14 @@
       if (!iso) return null;
       const date = new Date(iso);
       if (Number.isNaN(date.getTime())) return null;
-      return date.toLocaleString([], {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
+
+      const formattedDate = formatDate(date.toISOString().slice(0, 10));
+      const formattedTime = date.toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit'
       });
+
+      return `${formattedDate} ${formattedTime}`;
     }
 
     function getTaskById(taskId) {
@@ -1447,10 +1747,82 @@
       return template.subtasks.map(title => ({ id: genId(), title, done: false }));
     }
 
+    function getCurrentFilters() {
+      return {
+        search: document.getElementById('searchTasks')?.value.trim().toLowerCase() || '',
+        category: document.getElementById('filterCategory')?.value || '',
+        priority: document.getElementById('filterPriority')?.value || '',
+        status: document.getElementById('filterStatus')?.value || '',
+        sort: document.getElementById('sortTasks')?.value || 'workflow'
+      };
+    }
+
+    function getTaskSearchText(task) {
+      return [task.title, task.description, task.emailSubject, task.notes]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+    }
+
+    function getSubtaskProgress(task) {
+      const subtaskCount = task.subtasks?.length || 0;
+      const completedCount = (task.subtasks || []).filter(subtask => subtask.done).length;
+      return { completedCount, subtaskCount };
+    }
+
+    function getSubtaskPreview(task) {
+      const pendingSubtasks = (task.subtasks || []).filter(subtask => !subtask.done).slice(0, 2);
+      if (!pendingSubtasks.length) return 'No open subtasks';
+      return pendingSubtasks.map(subtask => subtask.title).join(' • ');
+    }
+
+    function getLogPreview(taskId) {
+      const taskLogs = getLogsByTaskId(taskId);
+      if (!taskLogs.length) return { count: 0, preview: 'No logs yet' };
+      return {
+        count: taskLogs.length,
+        preview: taskLogs[0].content
+      };
+    }
+
+    function compareTasks(a, b, sortMode) {
+      if (sortMode === 'due-date') {
+        const dueA = a.dueDate || '9999-12-31';
+        const dueB = b.dueDate || '9999-12-31';
+        return dueA.localeCompare(dueB) || a.title.localeCompare(b.title);
+      }
+
+      if (sortMode === 'created-date') {
+        return (b.createdAt || '').localeCompare(a.createdAt || '') || a.title.localeCompare(b.title);
+      }
+
+      if (sortMode === 'priority') {
+        return ((PRIORITY_ORDER[normalizePriority(a.priority)] ?? PRIORITY_OPTIONS.length)
+          - (PRIORITY_ORDER[normalizePriority(b.priority)] ?? PRIORITY_OPTIONS.length))
+          || a.title.localeCompare(b.title);
+      }
+
+      if (sortMode === 'title') {
+        return a.title.localeCompare(b.title);
+      }
+
+      const statusOrder = (STATUS_ORDER[normalizeStatus(a.status)] ?? STATUS_OPTIONS.length)
+        - (STATUS_ORDER[normalizeStatus(b.status)] ?? STATUS_OPTIONS.length);
+      if (statusOrder !== 0) return statusOrder;
+
+      const priorityOrder = (PRIORITY_ORDER[normalizePriority(a.priority)] ?? PRIORITY_OPTIONS.length)
+        - (PRIORITY_ORDER[normalizePriority(b.priority)] ?? PRIORITY_OPTIONS.length);
+      if (priorityOrder !== 0) return priorityOrder;
+
+      return (a.dueDate || '9999-12-31').localeCompare(b.dueDate || '9999-12-31');
+    }
+
     function getTaskExportRows() {
       return tasks.map(task => ({
         ID: task.id,
         Title: task.title,
+        EmailSubject: task.emailSubject || '',
+        Description: task.description || '',
         Category: task.category || '',
         Priority: task.priority || '',
         Status: task.status || '',
@@ -1487,7 +1859,7 @@
       }
 
       const workbook = XLSX.utils.book_new();
-      const taskHeaders = ['ID', 'Title', 'Category', 'Priority', 'Status', 'Template', 'CreatedAt', 'ReceivedAt', 'DueDate', 'Notes', 'SubtaskCount', 'Subtasks'];
+      const taskHeaders = ['ID', 'Title', 'EmailSubject', 'Description', 'Category', 'Priority', 'Status', 'Template', 'CreatedAt', 'ReceivedAt', 'DueDate', 'Notes', 'SubtaskCount', 'Subtasks'];
       const logHeaders = ['ID', 'TaskID', 'TaskTitle', 'Date', 'Content'];
 
       XLSX.utils.book_append_sheet(workbook, buildSheet(getTaskExportRows(), taskHeaders), 'Tasks');
@@ -1511,9 +1883,14 @@
     // ── Render Stats ──
     function renderStats() {
       const total   = tasks.length;
-      const active  = tasks.filter(t => normalizeStatus(t.status) !== 'Done').length;
+      const ongoing = tasks.filter(t => normalizeStatus(t.status) === 'Ongoing').length;
       const done    = tasks.filter(t => t.status === 'Done').length;
       const attention = tasks.filter(task => ATTENTION_PRIORITIES.has(normalizePriority(task.priority)) && normalizeStatus(task.status) !== 'Done').length;
+      const secondaryStats = [
+        ...STATUS_OPTIONS.map(status => ({ label: status, value: tasks.filter(task => normalizeStatus(task.status) === status).length })),
+        ...PRIORITY_OPTIONS.map(priority => ({ label: priority, value: tasks.filter(task => normalizePriority(task.priority) === priority).length })),
+        ...categories.map(category => ({ label: category.name, value: tasks.filter(task => task.category === category.name).length }))
+      ];
 
       document.getElementById('taskStats').innerHTML = `
         <div class="stat-chip" style="--chip-accent:var(--accent-h)">
@@ -1522,21 +1899,27 @@
           <span class="stat-hint">Saved locally</span>
         </div>
         <div class="stat-chip" style="--chip-accent:var(--accent)">
-          <span class="stat-label">In Flight</span>
-          <strong class="stat-value">${active}</strong>
-          <span class="stat-hint">Queued, active, or waiting</span>
+          <span class="stat-label">Ongoing Tasks</span>
+          <strong class="stat-value">${ongoing}</strong>
+          <span class="stat-hint">Actively in progress</span>
         </div>
         <div class="stat-chip" style="--chip-accent:var(--text-muted)">
-          <span class="stat-label">Complete</span>
+          <span class="stat-label">Completed</span>
           <strong class="stat-value">${done}</strong>
           <span class="stat-hint">Closed out</span>
         </div>
         <div class="stat-chip" style="--chip-accent:var(--critical)">
-          <span class="stat-label">Attention</span>
+          <span class="stat-label">High / Critical</span>
           <strong class="stat-value" style="color:var(--critical)">${attention}</strong>
-          <span class="stat-hint">Critical or high open</span>
+          <span class="stat-hint">Open urgent work</span>
         </div>
       `;
+
+      document.getElementById('taskStatsSecondary').innerHTML = secondaryStats.map(stat => `
+        <div class="micro-stat">
+          <span class="micro-stat-label">${escHtml(stat.label)}</span>
+          <strong class="micro-stat-value">${stat.value}</strong>
+        </div>`).join('');
     }
 
     function renderCategoryOptions() {
@@ -1627,15 +2010,14 @@
       renderTemplateOptions();
       renderTaskOptionSets();
 
-      const filterCategory = document.getElementById('filterCategory').value;
-      const filterPriority = document.getElementById('filterPriority').value;
-      const filterStatus   = document.getElementById('filterStatus').value;
+      const filters = getCurrentFilters();
 
       let visible = tasks.filter(t => {
         if (hideDone && t.status === 'Done') return false;
-        if (filterCategory && t.category !== filterCategory) return false;
-        if (filterPriority && t.priority !== filterPriority) return false;
-        if (filterStatus   && t.status   !== filterStatus)   return false;
+        if (filters.category && t.category !== filters.category) return false;
+        if (filters.priority && t.priority !== filters.priority) return false;
+        if (filters.status && t.status !== filters.status) return false;
+        if (filters.search && !getTaskSearchText(t).includes(filters.search)) return false;
         return true;
       });
 
@@ -1657,18 +2039,7 @@
         return;
       }
 
-      // Sort by workflow state, then priority, then due date.
-      visible.sort((a, b) => {
-        const so = (STATUS_ORDER[normalizeStatus(a.status)] ?? STATUS_OPTIONS.length)
-          - (STATUS_ORDER[normalizeStatus(b.status)] ?? STATUS_OPTIONS.length);
-        if (so !== 0) return so;
-
-        const po = (PRIORITY_ORDER[normalizePriority(a.priority)] ?? PRIORITY_OPTIONS.length)
-          - (PRIORITY_ORDER[normalizePriority(b.priority)] ?? PRIORITY_OPTIONS.length);
-        if (po !== 0) return po;
-
-        return (a.dueDate || '9999') < (b.dueDate || '9999') ? -1 : 1;
-      });
+      visible.sort((a, b) => compareTasks(a, b, filters.sort));
 
       list.innerHTML = visible.map(t => {
         const priority = normalizePriority(t.priority);
@@ -1680,29 +2051,53 @@
         const categoryColor = getCategoryColor(t.category);
 
         const isActive = t.id === selectedTaskId;
-        const taskLogCount = getLogsByTaskId(t.id).length;
+        const logData = getLogPreview(t.id);
+        const subtaskProgress = getSubtaskProgress(t);
 
         return `
           <div class="task-card ${priorityClass} ${statusClass} ${isActive ? 'is-active' : ''}" data-id="${t.id}" style="--category-color:${escHtml(categoryColor)}">
             <div class="task-card-body">
               <div class="task-main">
-                <div class="task-title">${escHtml(t.title)}</div>
+                <div class="task-heading">
+                  <button class="quick-toggle ${status === 'Done' ? 'is-done' : ''}" data-toggle-complete="${t.id}" title="Toggle complete">${status === 'Done' ? '✓' : ''}</button>
+                  <div class="task-heading-main">
+                    <div class="task-title">${escHtml(t.title)}</div>
+                    ${t.emailSubject ? `<div class="task-email-subject">Email: ${escHtml(t.emailSubject)}</div>` : ''}
+                    ${t.description ? `<div class="task-summary">${escHtml(t.description)}</div>` : ''}
+                  </div>
+                </div>
                 <div class="task-meta">
                   ${getCategoryMarkup(t.category)}
                   <span class="badge badge-${toClassToken(priority)}">${escHtml(priority)}</span>
                   <span class="badge badge-${toClassToken(status)}">${escHtml(status)}</span>
-                  <span class="task-date">${taskLogCount} log${taskLogCount === 1 ? '' : 's'}</span>
+                  <span class="task-date">${logData.count} log${logData.count === 1 ? '' : 's'}</span>
                   ${dueTxt ? `<span class="task-date ${overdue ? 'overdue' : ''}">${overdue ? '⚠ ' : ''}${escHtml(dueTxt)}</span>` : ''}
-                  ${t.createdAt ? `<span class="task-date">Created ${formatDate(t.createdAt)}</span>` : ''}
+                  ${t.receivedAt ? `<span class="task-date">Received ${formatDate(t.receivedAt)}</span>` : ''}
+                </div>
+                <div class="task-preview-list">
+                  <div class="task-subtasks-preview">Subtasks ${subtaskProgress.completedCount}/${subtaskProgress.subtaskCount}: ${escHtml(getSubtaskPreview(t))}</div>
+                  <div class="task-log-preview">Latest log: ${escHtml(logData.preview)}</div>
                 </div>
               </div>
               <div class="task-actions">
-                <button class="btn btn-ghost task-open-btn" data-open="${t.id}" title="Open details">View</button>
-                <select class="status-select" data-id="${t.id}" title="Change status">
-                  ${buildOptionMarkup(STATUS_OPTIONS, status)}
-                </select>
-                <button class="btn btn-ghost" style="padding:4px 8px;font-size:11px;" data-edit="${t.id}" title="Edit">✏</button>
-                <button class="btn btn-danger" data-delete="${t.id}" title="Delete">✕</button>
+                <div class="task-action-item is-wide">
+                  <span class="task-action-label">Priority</span>
+                  <select class="priority-select" data-id="${t.id}" title="Change priority">
+                    ${buildOptionMarkup(PRIORITY_OPTIONS, priority)}
+                  </select>
+                </div>
+                <div class="task-action-item is-wide">
+                  <span class="task-action-label">Status</span>
+                  <select class="status-select" data-id="${t.id}" title="Change status">
+                    ${buildOptionMarkup(STATUS_OPTIONS, status)}
+                  </select>
+                </div>
+                <div class="task-action-item">
+                  <button class="btn btn-ghost" data-edit="${t.id}" title="Edit task">Edit</button>
+                </div>
+                <div class="task-action-item">
+                  <button class="btn btn-danger" data-delete="${t.id}" title="Delete task">Delete</button>
+                </div>
               </div>
             </div>
           </div>`;
@@ -1756,11 +2151,18 @@
         <div class="detail-submeta">
           <div class="detail-row"><span>Category</span><strong>${escHtml(task.category || 'N/A')}</strong></div>
           <div class="detail-row"><span>Template</span><strong>${escHtml(template?.name || 'None')}</strong></div>
+          ${task.emailSubject ? `<div class="detail-row"><span>Email Subject</span><strong>${escHtml(task.emailSubject)}</strong></div>` : ''}
           <div class="detail-row"><span>Created</span><strong>${task.createdAt ? escHtml(formatDate(task.createdAt)) : 'N/A'}</strong></div>
           <div class="detail-row"><span>Received</span><strong>${task.receivedAt ? escHtml(formatDate(task.receivedAt)) : 'N/A'}</strong></div>
           <div class="detail-row"><span>Due</span><strong class="task-date ${dueClass}">${task.dueDate ? escHtml(formatDate(task.dueDate)) : 'N/A'}</strong></div>
           <div class="detail-row"><span>Logs</span><strong>${taskLogs.length}</strong></div>
         </div>
+
+        ${task.description ? `
+          <div class="detail-description">
+            <div class="section-title">Description</div>
+            <p>${escHtml(task.description)}</p>
+          </div>` : ''}
 
         <section class="subtasks-section">
           <div class="section-title">Subtasks</div>
@@ -1833,6 +2235,8 @@
         submit.textContent = 'Save Changes';
         document.getElementById('taskTitle').value      = t.title;
         document.getElementById('taskTemplate').value   = getTemplateById(t.templateId)?.id || '';
+        document.getElementById('taskEmailSubject').value = t.emailSubject || '';
+        document.getElementById('taskDescription').value = t.description || '';
         document.getElementById('taskCategory').value   = getCategoryByName(t.category)?.name || categories[0]?.name || '';
         document.getElementById('taskPriority').value   = normalizePriority(t.priority);
         document.getElementById('taskStatus').value     = normalizeStatus(t.status);
@@ -1843,6 +2247,8 @@
         title.textContent  = 'New Task';
         submit.textContent = 'Create Task';
         document.getElementById('taskTemplate').value   = '';
+        document.getElementById('taskEmailSubject').value = '';
+        document.getElementById('taskDescription').value = '';
         document.getElementById('taskCategory').value   = categories[0]?.name || '';
         document.getElementById('taskPriority').value   = DEFAULT_PRIORITY;
         document.getElementById('taskStatus').value     = DEFAULT_STATUS;
@@ -1870,6 +2276,8 @@
       const data = {
         title,
         templateId: document.getElementById('taskTemplate').value || null,
+        emailSubject: document.getElementById('taskEmailSubject').value.trim() || null,
+        description: document.getElementById('taskDescription').value.trim() || null,
         category:   document.getElementById('taskCategory').value,
         priority:   normalizePriority(document.getElementById('taskPriority').value),
         status:     normalizeStatus(document.getElementById('taskStatus').value),
@@ -1905,19 +2313,22 @@
 
     // ── Event Delegation: list actions ──
     document.getElementById('taskList').addEventListener('click', e => {
-      const openId   = e.target.closest('[data-open]')?.dataset.open;
       const editId   = e.target.closest('[data-edit]')?.dataset.edit;
       const deleteId = e.target.closest('[data-delete]')?.dataset.delete;
+      const completeId = e.target.closest('[data-toggle-complete]')?.dataset.toggleComplete;
 
-      const card = e.target.closest('.task-card');
-      if (card && !e.target.closest('.task-actions')) {
-        selectedTaskId = card.dataset.id;
+      if (completeId) {
+        const task = tasks.find(item => item.id === completeId);
+        if (!task) return;
+        task.status = normalizeStatus(task.status) === 'Done' ? DEFAULT_STATUS : 'Done';
+        saveTasks();
         renderTasks();
         return;
       }
 
-      if (openId) {
-        selectedTaskId = openId;
+      const card = e.target.closest('.task-card');
+      if (card && !e.target.closest('.task-actions')) {
+        selectedTaskId = card.dataset.id;
         renderTasks();
         return;
       }
@@ -1939,7 +2350,17 @@
     });
 
     document.getElementById('taskList').addEventListener('change', e => {
+      const prioritySelect = e.target.closest('.priority-select');
       const select = e.target.closest('.status-select');
+      if (prioritySelect) {
+        const task = tasks.find(t => t.id === prioritySelect.dataset.id);
+        if (!task) return;
+        task.priority = normalizePriority(prioritySelect.value);
+        saveTasks();
+        renderTasks();
+        return;
+      }
+
       if (!select) return;
       const task = tasks.find(t => t.id === select.dataset.id);
       if (task) {
@@ -1994,6 +2415,7 @@
         task.subtasks = [...(task.subtasks || []), { id: genId(), title: subtaskTitle, done: false }];
         saveTasks();
         renderTasks();
+        document.getElementById('subtaskTitle')?.focus();
         return;
       }
 
@@ -2016,6 +2438,7 @@
 
       saveLogs();
       renderTasks();
+      document.getElementById('logContent')?.focus();
     });
 
     document.getElementById('categoryForm').addEventListener('submit', e => {
@@ -2091,19 +2514,23 @@
     });
 
     // ── Filters ──
+    document.getElementById('searchTasks').addEventListener('input', renderTasks);
     document.getElementById('filterCategory').addEventListener('change', renderTasks);
     document.getElementById('filterPriority').addEventListener('change', renderTasks);
     document.getElementById('filterStatus').addEventListener('change', renderTasks);
+    document.getElementById('sortTasks').addEventListener('change', renderTasks);
 
     // ── Toggle Done ──
     document.getElementById('toggleDoneBtn').addEventListener('click', () => {
       hideDone = !hideDone;
+      saveHideDonePreference();
       document.getElementById('toggleDoneBtn').textContent = hideDone ? 'Show Completed' : 'Hide Completed';
       renderTasks();
     });
 
     // ── Modal Open/Close ──
     document.getElementById('newTaskBtn').addEventListener('click', () => openModal());
+    document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
     document.getElementById('manageCategoriesBtn').addEventListener('click', () => openCategoryModal());
     document.getElementById('manageTemplatesBtn').addEventListener('click', () => openTemplateModal());
     document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
@@ -2220,10 +2647,12 @@
 
     // ── Init ──
     loadState();
+    applyTheme(currentTheme);
     saveCategories();
     saveTasks();
     saveTemplates();
     ensureSelectedTask();
+    document.getElementById('toggleDoneBtn').textContent = hideDone ? 'Show Completed' : 'Hide Completed';
     renderCategoryList();
     renderTemplateList();
     renderTasks();
