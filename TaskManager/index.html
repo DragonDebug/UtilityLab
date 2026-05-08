@@ -868,6 +868,54 @@
       flex: 1 1 320px;
     }
 
+    .view-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
+      border-radius: 12px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, transparent), rgba(255,255,255,.02));
+      flex: 0 0 auto;
+    }
+
+    .view-switch-btn {
+      --view-accent: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 6px 10px;
+      border-radius: 9px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: color-mix(in srgb, var(--text-muted) 78%, var(--text) 22%);
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color .12s ease, background-color .12s ease, color .12s ease;
+      white-space: nowrap;
+    }
+
+    .view-switch-btn:hover {
+      color: var(--text);
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
+    }
+
+    .view-switch-btn.is-active {
+      border-color: color-mix(in srgb, var(--view-accent) 30%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--view-accent) 14%, var(--surface2)), color-mix(in srgb, var(--view-accent) 7%, var(--surface)));
+      color: color-mix(in srgb, var(--text) 80%, var(--view-accent) 20%);
+    }
+
+    .view-switch-btn[data-view-mode="standard"] { --view-accent: #5b7dff; }
+    .view-switch-btn[data-view-mode="compact"] { --view-accent: #14b8a6; }
+    .view-switch-btn[data-view-mode="board"] { --view-accent: #f59e0b; }
+    .view-switch-btn[data-view-mode="agenda"] { --view-accent: #ec4899; }
+
     .toggle-done-btn {
       margin-left: auto;
       flex: 0 0 auto;
@@ -1629,6 +1677,290 @@
     .task-description-block.is-empty {
       color: color-mix(in srgb, var(--text-muted) 88%, transparent);
       font-style: italic;
+    }
+
+    .task-list.view-compact {
+      gap: 8px;
+    }
+
+    .task-list.view-board,
+    .task-list.view-agenda {
+      display: grid;
+      align-content: start;
+    }
+
+    .task-list.view-board {
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(250px, 290px);
+      gap: 10px;
+      overflow: auto;
+      padding-bottom: 10px;
+    }
+
+    .task-list.view-agenda {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .task-card-compact .task-card-body {
+      grid-template-columns: minmax(0, 1fr) minmax(84px, 108px);
+      padding: 10px 11px;
+      align-items: center;
+    }
+
+    .task-card-compact .task-main {
+      gap: 6px;
+      padding-right: 0;
+    }
+
+    .task-card-compact .task-title {
+      font-size: 12px;
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
+      margin-bottom: 0;
+    }
+
+    .task-card-compact .task-heading {
+      gap: 7px;
+    }
+
+    .task-card-compact .quick-toggle {
+      width: 22px;
+      height: 22px;
+    }
+
+    .task-compact-support {
+      display: grid;
+      gap: 4px;
+    }
+
+    .task-compact-metrics {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .task-compact-summary {
+      font-size: 10px;
+      line-height: 1.35;
+      color: var(--text-muted);
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .task-card-compact .task-actions {
+      grid-template-columns: 1fr;
+      align-self: stretch;
+      justify-self: stretch;
+      min-width: 0;
+    }
+
+    .task-card-compact .task-actions .btn {
+      min-height: 32px;
+      padding: 6px 8px;
+      font-size: 10px;
+    }
+
+    .task-card-compact.is-board .task-card-body,
+    .task-card-compact.is-agenda .task-card-body {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    .task-card-compact.is-board .task-main,
+    .task-card-compact.is-agenda .task-main {
+      gap: 7px;
+      width: 100%;
+    }
+
+    .task-card-compact.is-board .task-heading,
+    .task-card-compact.is-agenda .task-heading {
+      align-items: flex-start;
+    }
+
+    .task-card-compact.is-board .task-heading-main,
+    .task-card-compact.is-agenda .task-heading-main {
+      gap: 6px;
+    }
+
+    .task-card-compact.is-board .task-title,
+    .task-card-compact.is-agenda .task-title {
+      white-space: normal;
+      overflow: visible;
+      display: block;
+      line-clamp: unset;
+      -webkit-line-clamp: unset;
+    }
+
+    .task-card-compact.is-board .task-meta,
+    .task-card-compact.is-agenda .task-meta {
+      align-items: flex-start;
+    }
+
+    .task-card-compact.is-board .task-date,
+    .task-card-compact.is-agenda .task-date {
+      white-space: normal;
+    }
+
+    .task-card-compact.is-board .task-compact-support,
+    .task-card-compact.is-agenda .task-compact-support {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .task-card-compact.is-board .task-compact-summary,
+    .task-card-compact.is-agenda .task-compact-summary {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .task-card-compact.is-board .task-actions,
+    .task-card-compact.is-agenda .task-actions {
+      margin-top: 2px;
+    }
+
+    .task-view-group {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+      min-height: 0;
+      padding: 10px;
+      border: 1px solid color-mix(in srgb, var(--group-accent, var(--accent)) 18%, var(--border));
+      border-radius: 16px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--group-accent, var(--accent)) 9%, var(--panel-alt)), var(--panel-bg));
+    }
+
+    .task-view-group-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid color-mix(in srgb, var(--group-accent, var(--accent)) 16%, var(--border));
+    }
+
+    .task-view-group-header.is-empty {
+      gap: 8px;
+      padding-bottom: 4px;
+    }
+
+    .task-view-group-header.is-empty .task-view-group-title {
+      gap: 0;
+    }
+
+    .task-view-group-header.is-empty .task-view-group-title span {
+      display: none;
+    }
+
+    .task-view-group-title {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .task-view-group-title strong {
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text) 76%, var(--group-accent, var(--accent)) 24%);
+    }
+
+    .task-view-group-title span {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .task-view-group-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 30px;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--group-accent, var(--accent)) 24%, transparent);
+      background: color-mix(in srgb, var(--group-accent, var(--accent)) 12%, transparent);
+      color: color-mix(in srgb, var(--text) 80%, var(--group-accent, var(--accent)) 20%);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .task-board-column.is-sparse {
+      grid-template-rows: 34px minmax(0, 1fr);
+      gap: 6px;
+      align-content: start;
+    }
+
+    .task-board-column.is-sparse > .task-view-group-header {
+      grid-row: 1;
+      min-height: 34px;
+      height: 34px;
+      max-height: 34px;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 0;
+      border-bottom: none;
+      overflow: hidden;
+    }
+
+    .task-board-column.is-sparse > .task-board-list {
+      grid-row: 2;
+      min-height: 0;
+      align-content: start;
+    }
+
+    .task-board-column.is-sparse .task-view-group-title {
+      gap: 0;
+      align-content: center;
+    }
+
+    .task-board-column.is-sparse .task-view-group-title strong {
+      font-size: 10px;
+    }
+
+    .task-board-column.is-sparse .task-view-group-title span {
+      display: none;
+    }
+
+    .task-board-column.is-sparse .task-view-group-count {
+      min-width: 24px;
+      min-height: 24px;
+      padding: 0 8px;
+      font-size: 10px;
+      align-self: center;
+    }
+
+    .task-board-column.is-empty .task-view-group-title span {
+      display: none;
+    }
+
+    .task-board-list,
+    .task-agenda-list {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      min-width: 0;
+    }
+
+    .task-board-empty,
+    .task-agenda-empty {
+      padding: 12px;
+      border: 1px dashed color-mix(in srgb, var(--group-accent, var(--accent)) 20%, var(--border));
+      border-radius: 12px;
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text-muted);
+      background: color-mix(in srgb, var(--group-accent, var(--accent)) 6%, transparent);
+      text-align: center;
     }
 
     .task-preview-date.is-due {
@@ -3370,6 +3702,12 @@
         overflow: visible;
         padding-right: 0;
       }
+      .task-list.view-board {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-columns: auto;
+        overflow: visible;
+      }
     }
 
     @media (max-width: 760px) {
@@ -3420,6 +3758,7 @@
       }
       .filters-bar select,
       .search-input,
+      .view-switch,
       .toggle-done-btn {
         width: 100%;
       }
@@ -3427,11 +3766,21 @@
       .search-input {
         flex: 1 1 180px;
       }
+      .view-switch {
+        justify-content: stretch;
+        flex-wrap: wrap;
+      }
+      .view-switch-btn {
+        flex: 1 1 calc(50% - 4px);
+      }
       .toggle-done-btn {
         margin-left: 0;
         justify-content: center;
       }
       .task-list { min-height: 300px; }
+      .task-list.view-board {
+        grid-template-columns: 1fr;
+      }
       .empty-state { min-height: 280px; }
       .detail-empty { min-height: 260px; }
       .detail-header {
@@ -3489,9 +3838,15 @@
         padding: 8px;
         min-height: 50px;
       }
+      .view-switch-btn {
+        flex-basis: calc(50% - 4px);
+      }
       .list-panel,
       .detail-panel { padding: 14px; }
       .task-card-body {
+        grid-template-columns: 1fr;
+      }
+      .task-card-compact .task-card-body {
         grid-template-columns: 1fr;
       }
       .task-main,
@@ -3634,6 +3989,12 @@
         <option value="priority">Sort: Priority</option>
         <option value="title">Sort: Title</option>
       </select>
+      <div class="view-switch" id="taskViewSwitch" role="tablist" aria-label="Task card views">
+        <button type="button" class="view-switch-btn is-active" data-view-mode="standard" role="tab" aria-selected="true">Standard</button>
+        <button type="button" class="view-switch-btn" data-view-mode="compact" role="tab" aria-selected="false">Compact</button>
+        <button type="button" class="view-switch-btn" data-view-mode="board" role="tab" aria-selected="false">Board</button>
+        <button type="button" class="view-switch-btn" data-view-mode="agenda" role="tab" aria-selected="false">Agenda</button>
+      </div>
       <button class="btn btn-ghost toggle-done-btn" id="toggleDoneBtn">Hide Completed</button>
     </div>
   </div>
@@ -3938,6 +4299,7 @@
       categories: 'tm_categories',
       templates: 'tm_templates',
       hideDone: 'tm_hide_done',
+      viewMode: 'tm_view_mode',
       sortMode: 'tm_sort_mode',
       theme: 'tm_theme',
       showSecondaryStats: 'tm_show_secondary_stats'
@@ -4020,6 +4382,7 @@
     let hideDone    = false;
     let showSecondaryStats = true;
     let currentTheme = 'dark';
+    let currentViewMode = 'standard';
     let currentSortMode = 'workflow';
     let editingId   = null;
     let editingCategoryName = null;
@@ -4046,6 +4409,7 @@
 
     const PRIORITY_OPTIONS = ['Critical', 'High', 'Medium', 'Low', 'Very Low'];
     const STATUS_OPTIONS = ['Not Started','Pending','Ongoing', 'Waiting for Someone Else', 'Completed'];
+    const TASK_VIEW_OPTIONS = ['standard', 'compact', 'board', 'agenda'];
     const TASK_SORT_OPTIONS = ['workflow', 'due-date', 'created-date', 'priority', 'title'];
     const DEFAULT_PRIORITY = 'Medium';
     const DEFAULT_STATUS = 'Not Started';
@@ -4172,6 +4536,7 @@
       hideDone = loadPreference(KEYS.hideDone, 'false') === 'true';
       showSecondaryStats = loadPreference(KEYS.showSecondaryStats, 'true') !== 'false';
       currentTheme = loadPreference(KEYS.theme, document.documentElement.dataset.theme || 'dark');
+      currentViewMode = normalizeTaskViewMode(loadPreference(KEYS.viewMode, 'standard'));
       currentSortMode = normalizeTaskSortMode(loadPreference(KEYS.sortMode, 'workflow'));
 
       if (!categories.length) {
@@ -4242,6 +4607,10 @@
 
     function saveSecondaryStatsPreference() {
       savePreference(KEYS.showSecondaryStats, showSecondaryStats);
+    }
+
+    function saveViewModePreference() {
+      savePreference(KEYS.viewMode, currentViewMode);
     }
 
     function saveSortModePreference() {
@@ -4366,6 +4735,11 @@
       return TASK_SORT_OPTIONS.includes(normalizedSortMode) ? normalizedSortMode : 'workflow';
     }
 
+    function normalizeTaskViewMode(viewMode) {
+      const normalizedViewMode = String(viewMode || '').trim().toLowerCase();
+      return TASK_VIEW_OPTIONS.includes(normalizedViewMode) ? normalizedViewMode : 'standard';
+    }
+
     function toClassToken(value) {
       return String(value || '')
         .trim()
@@ -4414,6 +4788,17 @@
         const selectedSortMode = normalizeTaskSortMode(sortTasks.value || currentSortMode);
         sortTasks.value = selectedSortMode;
         currentSortMode = selectedSortMode;
+      }
+
+      const taskViewSwitch = document.getElementById('taskViewSwitch');
+      if (taskViewSwitch) {
+        const selectedViewMode = normalizeTaskViewMode(currentViewMode);
+        currentViewMode = selectedViewMode;
+        taskViewSwitch.querySelectorAll('[data-view-mode]').forEach(button => {
+          const isActive = button.dataset.viewMode === selectedViewMode;
+          button.classList.toggle('is-active', isActive);
+          button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
       }
 
       syncTaskModalFieldAccents();
@@ -5038,6 +5423,234 @@
       return (a.dueDate || '9999-12-31').localeCompare(b.dueDate || '9999-12-31');
     }
 
+    function setTaskListViewMode(list, viewMode) {
+      if (!list) return;
+
+      list.classList.remove(...TASK_VIEW_OPTIONS.map(option => `view-${option}`));
+      list.classList.add(`view-${viewMode}`);
+      list.dataset.viewMode = viewMode;
+    }
+
+    function getTaskCardData(task) {
+      const priority = normalizePriority(task.priority);
+      const status = normalizeStatus(task.status);
+      const priorityClass = `priority-${toClassToken(priority)}`;
+      const statusClass = `status-${toClassToken(status)}`;
+      const overdue = isOverdue(task.dueDate) && !isTaskCompleted(task);
+      const categoryColor = getCategoryColor(task.category);
+      const isActive = task.id === selectedTaskId;
+      const logData = getLogPreview(task.id);
+      const workflowItemCount = getItemsForTask(task.id).length;
+      const { completedCount, subtaskCount } = getSubtaskProgress(task);
+
+      return {
+        priority,
+        status,
+        priorityClass,
+        statusClass,
+        overdue,
+        categoryColor,
+        isActive,
+        logData,
+        workflowItemCount,
+        completedCount,
+        subtaskCount
+      };
+    }
+
+    function getTaskCompactSummary(task, taskData) {
+      if (task.description) return task.description;
+      if (task.emailSubject) return `Email: ${task.emailSubject}`;
+      if (taskData.subtaskCount) return `${taskData.completedCount}/${taskData.subtaskCount} subtasks · ${getSubtaskPreview(task)}`;
+      return taskData.logData.preview;
+    }
+
+    function getStandardTaskCardMarkup(task) {
+      const taskData = getTaskCardData(task);
+
+      return `
+        <div class="task-card ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isActive ? 'is-active' : ''}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
+          <div class="task-card-body">
+            <div class="task-main">
+              <div class="task-heading">
+                <button class="quick-toggle ${isTaskCompleted(task) ? 'is-done' : ''}" data-toggle-complete="${task.id}" title="Toggle complete">${isTaskCompleted(task) ? '✓' : ''}</button>
+                <div class="task-heading-main">
+                  <div class="task-title">${escHtml(task.title)}</div>
+                  ${task.emailSubject ? `<div class="task-email-subject">Email: ${escHtml(task.emailSubject)}</div>` : ''}
+                  <div class="task-info-strip">
+                    <div class="task-meta">
+                      ${getCategoryMarkup(task.category)}
+                      <span class="badge badge-${toClassToken(taskData.priority)}">${escHtml(taskData.priority)}</span>
+                      <span class="badge badge-${toClassToken(taskData.status)}">${escHtml(taskData.status)}</span>
+                      <span class="task-date">${taskData.workflowItemCount} item${taskData.workflowItemCount === 1 ? '' : 's'}</span>
+                      <span class="task-date">${taskData.logData.count} log${taskData.logData.count === 1 ? '' : 's'}</span>
+                    </div>
+                    <div class="task-preview-list">
+                      <div class="task-preview-dates">
+                        ${task.createdAt ? `<div class="task-preview-date is-created"><span class="task-preview-date-label">Created</span><span class="task-preview-date-value">${escHtml(formatDate(task.createdAt))}</span></div>` : ''}
+                        ${task.receivedAt ? `<div class="task-preview-date is-received"><span class="task-preview-date-label">Received</span><span class="task-preview-date-value">${escHtml(formatDate(task.receivedAt))}</span></div>` : ''}
+                        ${task.dueDate ? `<div class="task-preview-date is-due ${taskData.overdue ? 'overdue' : ''}"><span class="task-preview-date-label">Due</span><span class="task-preview-date-value">${taskData.overdue ? 'Overdue ' : ''}${escHtml(formatDate(task.dueDate))}</span></div>` : ''}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="task-description-block ${task.description ? '' : 'is-empty'}">${task.description ? escHtml(task.description) : 'No description'}</div>
+                </div>
+              </div>
+            </div>
+            <div class="task-actions">
+              <div class="task-action-item is-wide">
+                <span class="task-action-label">Priority</span>
+                <select class="priority-select" data-id="${task.id}" title="Change priority">
+                  ${buildOptionMarkup(PRIORITY_OPTIONS, taskData.priority)}
+                </select>
+              </div>
+              <div class="task-action-item is-wide">
+                <span class="task-action-label">Status</span>
+                <select class="status-select" data-id="${task.id}" title="Change status">
+                  ${buildOptionMarkup(STATUS_OPTIONS, taskData.status)}
+                </select>
+              </div>
+              <div class="task-action-item">
+                <button class="btn btn-ghost" data-edit="${task.id}" title="Edit task">Edit</button>
+              </div>
+              <div class="task-action-item">
+                <button class="btn btn-danger" data-delete="${task.id}" title="Delete task">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function getCompactTaskCardMarkup(task, options = {}) {
+      const taskData = getTaskCardData(task);
+      const contextClass = options.context ? ` is-${options.context}` : '';
+      const compactSummary = getTaskCompactSummary(task, taskData);
+      const dueSummary = task.dueDate
+        ? `${taskData.overdue ? 'Overdue' : 'Due'} ${formatDate(task.dueDate)}`
+        : (task.receivedAt ? `Received ${formatDate(task.receivedAt)}` : 'No due date');
+
+      return `
+        <div class="task-card task-card-compact ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isActive ? 'is-active' : ''}${contextClass}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
+          <div class="task-card-body">
+            <div class="task-main">
+              <div class="task-heading">
+                <button class="quick-toggle ${isTaskCompleted(task) ? 'is-done' : ''}" data-toggle-complete="${task.id}" title="Toggle complete">${isTaskCompleted(task) ? '✓' : ''}</button>
+                <div class="task-heading-main">
+                  <div class="task-title">${escHtml(task.title)}</div>
+                  <div class="task-meta">
+                    ${getCategoryMarkup(task.category)}
+                    <span class="badge badge-${toClassToken(taskData.priority)}">${escHtml(taskData.priority)}</span>
+                    ${options.hideStatusBadge ? '' : `<span class="badge badge-${toClassToken(taskData.status)}">${escHtml(taskData.status)}</span>`}
+                    <span class="task-date ${taskData.overdue ? 'overdue' : ''}">${escHtml(dueSummary)}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="task-compact-support">
+                <div class="task-compact-metrics">
+                  <span class="task-date">${taskData.workflowItemCount} item${taskData.workflowItemCount === 1 ? '' : 's'}</span>
+                  <span class="task-date">${taskData.logData.count} log${taskData.logData.count === 1 ? '' : 's'}</span>
+                  ${taskData.subtaskCount ? `<span class="task-date">${taskData.completedCount}/${taskData.subtaskCount} subtasks</span>` : ''}
+                </div>
+                <div class="task-compact-summary">${escHtml(compactSummary)}</div>
+              </div>
+            </div>
+            <div class="task-actions task-actions-compact">
+              <div class="task-action-item is-wide">
+                <button class="btn btn-ghost" data-edit="${task.id}" title="Edit task">Edit</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderBoardTaskList(tasksToRender) {
+      const orderedStatuses = [...STATUS_OPTIONS].sort((a, b) => (STATUS_ORDER[a] ?? STATUS_OPTIONS.length) - (STATUS_ORDER[b] ?? STATUS_OPTIONS.length));
+
+      return orderedStatuses.map(status => {
+        const groupedTasks = tasksToRender.filter(task => normalizeStatus(task.status) === status);
+        const accent = STATUS_ACCENTS[status] || 'var(--accent)';
+        const isEmpty = groupedTasks.length === 0;
+        const isSparse = groupedTasks.length <= 1;
+
+        return `
+          <section class="task-view-group task-board-column ${isEmpty ? 'is-empty' : ''} ${isSparse ? 'is-sparse' : ''}" style="--group-accent:${accent}">
+            <div class="task-view-group-header ${isEmpty ? 'is-empty' : ''} ${isSparse ? 'is-sparse' : ''}">
+              <div class="task-view-group-title">
+                <strong>${escHtml(status)}</strong>
+                <span>${groupedTasks.length ? 'Active queue' : 'No matching tasks'}</span>
+              </div>
+              <span class="task-view-group-count">${groupedTasks.length}</span>
+            </div>
+            <div class="task-board-list">
+              ${groupedTasks.length
+                ? groupedTasks.map(task => getCompactTaskCardMarkup(task, { context: 'board', hideStatusBadge: true })).join('')
+                : '<div class="task-board-empty">Nothing in this status for the current filters.</div>'}
+            </div>
+          </section>`;
+      }).join('');
+    }
+
+    function getAgendaGroupId(task) {
+      if (!task.dueDate) return 'no-due-date';
+      if (task.dueDate < today()) return 'overdue';
+      if (task.dueDate === today()) return 'today';
+      return 'upcoming';
+    }
+
+    function compareAgendaTasks(a, b, sortMode) {
+      const dueCompare = (a.dueDate || '9999-12-31').localeCompare(b.dueDate || '9999-12-31');
+      if (dueCompare !== 0) return dueCompare;
+      return compareTasks(a, b, sortMode);
+    }
+
+    function renderAgendaTaskList(tasksToRender, sortMode) {
+      const agendaGroups = [
+        { id: 'overdue', title: 'Overdue', subtitle: 'Past-due work first', accent: 'var(--high)' },
+        { id: 'today', title: 'Due Today', subtitle: 'Tasks landing today', accent: 'var(--medium)' },
+        { id: 'upcoming', title: 'Upcoming', subtitle: 'Future due dates', accent: 'var(--accent)' },
+        { id: 'no-due-date', title: 'No Due Date', subtitle: 'Unscheduled tasks', accent: 'var(--text-muted)' }
+      ];
+
+      return agendaGroups.map(group => {
+        const groupedTasks = tasksToRender
+          .filter(task => getAgendaGroupId(task) === group.id)
+          .sort((a, b) => compareAgendaTasks(a, b, sortMode));
+        const isEmpty = groupedTasks.length === 0;
+
+        return `
+          <section class="task-view-group task-agenda-group ${isEmpty ? 'is-empty' : ''}" style="--group-accent:${group.accent}">
+            <div class="task-view-group-header ${isEmpty ? 'is-empty' : ''}">
+              <div class="task-view-group-title">
+                <strong>${escHtml(group.title)}</strong>
+                <span>${escHtml(group.subtitle)}</span>
+              </div>
+              <span class="task-view-group-count">${groupedTasks.length}</span>
+            </div>
+            <div class="task-agenda-list">
+              ${groupedTasks.length
+                ? groupedTasks.map(task => getCompactTaskCardMarkup(task, { context: 'agenda' })).join('')
+                : '<div class="task-agenda-empty">No tasks in this date bucket for the current filters.</div>'}
+            </div>
+          </section>`;
+      }).join('');
+    }
+
+    function renderTaskListMarkup(tasksToRender, sortMode) {
+      if (currentViewMode === 'compact') {
+        return tasksToRender.map(task => getCompactTaskCardMarkup(task, { context: 'compact' })).join('');
+      }
+
+      if (currentViewMode === 'board') {
+        return renderBoardTaskList(tasksToRender);
+      }
+
+      if (currentViewMode === 'agenda') {
+        return renderAgendaTaskList(tasksToRender, sortMode);
+      }
+
+      return tasksToRender.map(task => getStandardTaskCardMarkup(task)).join('');
+    }
+
     function getTaskExportRows() {
       return tasks.map(task => {
         const taskLogs = getLogsByTaskId(task.id);
@@ -5384,6 +5997,8 @@
       renderTaskOptionSets();
 
       const filters = getCurrentFilters();
+      const activeViewMode = normalizeTaskViewMode(currentViewMode);
+      currentViewMode = activeViewMode;
 
       let visible = tasks.filter(t => {
         if (hideDone && isTaskCompleted(t)) return false;
@@ -5395,6 +6010,7 @@
       });
 
       const list = document.getElementById('taskList');
+      setTaskListViewMode(list, activeViewMode);
 
       if (visible.length === 0) {
         selectedTaskId = null;
@@ -5418,70 +6034,7 @@
         selectedTaskId = visible[0]?.id || null;
       }
 
-      list.innerHTML = visible.map(t => {
-        const priority = normalizePriority(t.priority);
-        const status = normalizeStatus(t.status);
-        const priorityClass = `priority-${toClassToken(priority)}`;
-        const statusClass   = `status-${toClassToken(status)}`;
-        const overdue = isOverdue(t.dueDate) && !isTaskCompleted(t);
-        const dueTxt  = t.dueDate ? `Due ${formatDate(t.dueDate)}` : '';
-        const categoryColor = getCategoryColor(t.category);
-
-        const isActive = t.id === selectedTaskId;
-        const logData = getLogPreview(t.id);
-        const workflowItemCount = getItemsForTask(t.id).length;
-        return `
-          <div class="task-card ${priorityClass} ${statusClass} ${isActive ? 'is-active' : ''}" data-id="${t.id}" style="--category-color:${escHtml(categoryColor)}">
-            <div class="task-card-body">
-              <div class="task-main">
-                <div class="task-heading">
-                  <button class="quick-toggle ${isTaskCompleted(t) ? 'is-done' : ''}" data-toggle-complete="${t.id}" title="Toggle complete">${isTaskCompleted(t) ? '✓' : ''}</button>
-                  <div class="task-heading-main">
-                    <div class="task-title">${escHtml(t.title)}</div>
-                    ${t.emailSubject ? `<div class="task-email-subject">Email: ${escHtml(t.emailSubject)}</div>` : ''}
-                    <div class="task-info-strip">
-                      <div class="task-meta">
-                        ${getCategoryMarkup(t.category)}
-                        <span class="badge badge-${toClassToken(priority)}">${escHtml(priority)}</span>
-                        <span class="badge badge-${toClassToken(status)}">${escHtml(status)}</span>
-                        <span class="task-date">${workflowItemCount} item${workflowItemCount === 1 ? '' : 's'}</span>
-                        <span class="task-date">${logData.count} log${logData.count === 1 ? '' : 's'}</span>
-                      </div>
-                      <div class="task-preview-list">
-                        <div class="task-preview-dates">
-                          ${t.createdAt ? `<div class="task-preview-date is-created"><span class="task-preview-date-label">Created</span><span class="task-preview-date-value">${escHtml(formatDate(t.createdAt))}</span></div>` : ''}
-                          ${t.receivedAt ? `<div class="task-preview-date is-received"><span class="task-preview-date-label">Received</span><span class="task-preview-date-value">${escHtml(formatDate(t.receivedAt))}</span></div>` : ''}
-                          ${t.dueDate ? `<div class="task-preview-date is-due ${overdue ? 'overdue' : ''}"><span class="task-preview-date-label">Due</span><span class="task-preview-date-value">${overdue ? 'Overdue ' : ''}${escHtml(formatDate(t.dueDate))}</span></div>` : ''}
-                        </div>
-                      </div>
-                    </div>
-                    <div class="task-description-block ${t.description ? '' : 'is-empty'}">${t.description ? escHtml(t.description) : 'No description'}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="task-actions">
-                <div class="task-action-item is-wide">
-                  <span class="task-action-label">Priority</span>
-                  <select class="priority-select" data-id="${t.id}" title="Change priority">
-                    ${buildOptionMarkup(PRIORITY_OPTIONS, priority)}
-                  </select>
-                </div>
-                <div class="task-action-item is-wide">
-                  <span class="task-action-label">Status</span>
-                  <select class="status-select" data-id="${t.id}" title="Change status">
-                    ${buildOptionMarkup(STATUS_OPTIONS, status)}
-                  </select>
-                </div>
-                <div class="task-action-item">
-                  <button class="btn btn-ghost" data-edit="${t.id}" title="Edit task">Edit</button>
-                </div>
-                <div class="task-action-item">
-                  <button class="btn btn-danger" data-delete="${t.id}" title="Delete task">Delete</button>
-                </div>
-              </div>
-            </div>
-          </div>`;
-      }).join('');
+      list.innerHTML = renderTaskListMarkup(visible, filters.sort);
 
       renderTaskDetails({ preserveScrollTop: detailScrollTop });
 
@@ -6592,6 +7145,18 @@
     document.getElementById('sortTasks').addEventListener('change', e => {
       currentSortMode = normalizeTaskSortMode(e.target.value);
       saveSortModePreference();
+      renderTasks();
+    });
+
+    document.getElementById('taskViewSwitch').addEventListener('click', e => {
+      const nextViewMode = e.target.closest('[data-view-mode]')?.dataset.viewMode;
+      if (!nextViewMode) return;
+
+      const normalizedViewMode = normalizeTaskViewMode(nextViewMode);
+      if (normalizedViewMode === currentViewMode) return;
+
+      currentViewMode = normalizedViewMode;
+      saveViewModePreference();
       renderTasks();
     });
 
