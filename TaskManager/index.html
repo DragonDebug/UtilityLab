@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Task Manager</title>
+  <!-- Pre-paint theme bootstrap: reads saved preference and sets the class on <html>
+       before the stylesheet loads, preventing a flash of the wrong theme. -->
   <script>
     (() => {
       const themeKey = 'tm_theme';
@@ -15,11 +17,14 @@
       document.documentElement.classList.add(`theme-${preferredTheme}`);
       document.documentElement.dataset.theme = preferredTheme;
     })();
-  </script>
+    </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap');
 
-    /* ── Reset & Base ── */
+    /* ── Reset & Base ──
+       Removes default margins/padding and sets the CSS custom-property colour
+       tokens used everywhere. Dark-mode values live in :root; light-mode
+       overrides are in :root.theme-light below. ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -93,7 +98,9 @@
       min-height: 100vh;
     }
 
-    /* ── Layout ── */
+    /* ── Layout ──
+       Top-level structure: sticky header, two-column workspace grid
+       (list panel left, detail panel right). ── */
     .app-header {
       background: var(--panel-bg);
       border-bottom: 1px solid var(--border);
@@ -155,7 +162,9 @@
       backdrop-filter: blur(12px);
     }
 
-    /* ── Buttons ── */
+    /* ── Buttons ──
+       Base .btn class plus variants: btn-primary (accent fill),
+       btn-ghost (transparent with border), btn-danger (red text, red border). ── */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -203,7 +212,57 @@
     }
     .btn-danger:hover { border-color: var(--high); background: rgba(239,68,68,.08); }
 
-    /* ── Modal ── */
+    .btn-header-theme {
+      background: rgba(79,124,255,.12);
+      color: var(--accent-h);
+      border: 1px solid rgba(79,124,255,.28);
+    }
+
+    .btn-header-theme:hover {
+      background: rgba(79,124,255,.2);
+      color: #fff;
+      border-color: rgba(106,144,255,.45);
+    }
+
+    .btn-header-manage {
+      background: rgba(52,195,143,.1);
+      color: #5de3b0;
+      border: 1px solid rgba(52,195,143,.24);
+    }
+
+    .btn-header-manage:hover {
+      background: rgba(52,195,143,.18);
+      color: #dffff4;
+      border-color: rgba(52,195,143,.42);
+    }
+
+    .btn-header-clear {
+      background: rgba(239,68,68,.1);
+      color: #ff8c8c;
+      border: 1px solid rgba(239,68,68,.24);
+    }
+
+    .btn-header-clear:hover {
+      background: rgba(239,68,68,.18);
+      color: #ffe0e0;
+      border-color: rgba(239,68,68,.42);
+    }
+
+    .btn-header-export {
+      background: rgba(245,158,11,.1);
+      color: #ffcb70;
+      border: 1px solid rgba(245,158,11,.24);
+    }
+
+    .btn-header-export:hover {
+      background: rgba(245,158,11,.18);
+      color: #fff1d8;
+      border-color: rgba(245,158,11,.42);
+    }
+
+    /* ── Modal ──
+       Full-screen backdrop that shows/hides via .open class.
+       Centred .modal container holds the form content. ── */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -243,7 +302,9 @@
       margin-bottom: 18px;
     }
 
-    /* ── Form ── */
+    /* ── Form ──
+       .form-group wraps a label + input/select/textarea pair.
+       .form-row puts multiple groups side-by-side in a grid. ── */
     .form-group {
       margin-bottom: 14px;
     }
@@ -278,7 +339,11 @@
       border-color: var(--accent);
     }
 
-    .form-group textarea { resize: vertical; min-height: 70px; }
+    .form-group textarea {
+      resize: none;
+      min-height: 70px;
+      overflow-y: auto;
+    }
 
     .form-row {
       display: grid;
@@ -293,7 +358,38 @@
       margin-top: 20px;
     }
 
-    /* ── Filters Bar ── */
+    .input-counter {
+      margin-top: 5px;
+      font-size: 11px;
+      line-height: 1.2;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .input-counter-wrap {
+      display: grid;
+      gap: 0;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .input-counter-wrap > input,
+    .input-counter-wrap > textarea,
+    .input-counter-wrap > select {
+      width: 100%;
+    }
+
+    .input-counter.is-near-limit {
+      color: var(--medium);
+    }
+
+    .input-counter.is-at-limit {
+      color: var(--high);
+    }
+
+    /* ── Filters Bar ──
+       Horizontal bar above the task list with search, category/priority/status
+       dropdowns, a sort picker, and the Hide Completed toggle. ── */
     .filters-bar {
       display: flex;
       align-items: center;
@@ -343,7 +439,9 @@
       margin-left: auto;
     }
 
-    /* ── Task Stats ── */
+    /* ── Task Stats ──
+       Primary row: 4 large stat chips (Total, Ongoing, Done, Critical/High).
+       Secondary grid: micro-stats for every status, priority, and category. ── */
     .task-stats {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -433,7 +531,9 @@
       color: var(--text);
     }
 
-    /* ── Task List ── */
+    /* ── Task List ──
+       Scrollable column of task cards. Max-height is calculated from viewport
+       so it never grows taller than the visible area. ── */
     .task-list {
       display: flex;
       flex-direction: column;
@@ -501,7 +601,10 @@
       line-height: 1.55;
     }
 
-    /* ── Task Card ── */
+    /* ── Task Card ──
+       Each task is a card with a coloured left border (priority colour) and a
+       subtle category-colour glow overlay. The body is a two-column grid:
+       task-main (content) on the left, task-actions (controls) on the right. ── */
     .task-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -564,7 +667,7 @@
       min-width: 0;
       grid-column: 1;
       display: grid;
-      gap: 6px;
+      gap: 5px;
       align-content: start;
       padding-right: 4px;
     }
@@ -580,6 +683,8 @@
       width: 100%;
       min-width: 0;
       flex: 1 1 auto;
+      display: grid;
+      gap: 4px;
     }
 
     .task-title {
@@ -598,15 +703,17 @@
     }
 
     .task-email-subject,
-    .task-summary,
-    .task-log-preview,
-    .task-subtasks-preview {
-      font-size: 11px;
+    .task-summary {
+      font-size: 10px;
       color: var(--text-muted);
-      line-height: 1.45;
+      line-height: 1.35;
       max-width: 100%;
       overflow-wrap: anywhere;
       word-break: break-word;
+    }
+
+    .task-email-subject {
+      color: color-mix(in srgb, var(--text-muted) 82%, var(--accent-h) 18%);
     }
 
     .task-email-subject,
@@ -619,10 +726,13 @@
       overflow: hidden;
     }
 
-    .task-subtasks-preview {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .task-log-preview {
+      padding: 4px 7px;
+      border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--border));
+      border-left: 2px solid var(--accent);
+      border-radius: 7px;
+      background: linear-gradient(90deg, rgba(79,124,255,.12), rgba(255,255,255,.02));
+      color: color-mix(in srgb, var(--text-muted) 68%, var(--accent-h) 32%);
     }
 
     .quick-toggle {
@@ -653,7 +763,17 @@
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 5px;
+      gap: 4px;
+      min-width: 0;
+      flex: 1 1 220px;
+    }
+
+    .task-info-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
       min-width: 0;
     }
 
@@ -661,9 +781,9 @@
       display: inline-flex;
       align-items: center;
       gap: 3px;
-      padding: 2px 8px;
+      padding: 1px 7px;
       border-radius: 99px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 500;
     }
 
@@ -695,7 +815,7 @@
     }
 
     .task-date {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-muted);
     }
 
@@ -770,18 +890,127 @@
 
     .task-preview-list {
       display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      align-items: start;
+      min-width: 0;
+      flex: 0 1 auto;
+    }
+
+    .task-preview-main {
+      display: grid;
       gap: 3px;
       min-width: 0;
     }
 
+    .task-preview-dates {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 3px;
+      justify-items: stretch;
+      justify-self: end;
+      align-content: start;
+      min-width: 0;
+      max-width: 280px;
+      width: 100%;
+    }
+
+    .task-preview-date {
+      width: 100%;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 3px;
+      padding: 4px 7px;
+      border-radius: 8px;
+      border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
+      background: rgba(255,255,255,.025);
+      text-align: left;
+      min-width: 0;
+    }
+
+    .task-preview-date-label {
+      font-size: 8px;
+      line-height: 1.1;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+
+    .task-preview-date-value {
+      font-size: 9px;
+      line-height: 1.2;
+      font-weight: 600;
+      color: var(--text);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .task-description-block {
+      font-size: 11px;
+      line-height: 1.45;
+      color: var(--text-muted);
+      margin-top: 2px;
+      padding-top: 6px;
+      border-top: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      line-clamp: 2;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+
+    .task-description-block.is-empty {
+      color: color-mix(in srgb, var(--text-muted) 88%, transparent);
+      font-style: italic;
+    }
+
+    .task-preview-date.is-due {
+      border-color: color-mix(in srgb, var(--medium) 45%, var(--border));
+      background: linear-gradient(180deg, rgba(245,158,11,.11), rgba(255,255,255,.025));
+    }
+
+    .task-preview-date.is-due .task-preview-date-value {
+      color: var(--medium);
+    }
+
+    .task-preview-date.is-due.overdue {
+      border-color: color-mix(in srgb, var(--high) 60%, var(--border));
+      background: linear-gradient(180deg, rgba(239,68,68,.14), rgba(255,255,255,.025));
+    }
+
+    .task-preview-date.is-due.overdue .task-preview-date-value {
+      color: var(--high);
+    }
+
+    .task-preview-date.is-received {
+      border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+      background: linear-gradient(180deg, rgba(79,124,255,.11), rgba(255,255,255,.025));
+    }
+
+    .task-preview-date.is-received .task-preview-date-value {
+      color: var(--accent-h);
+    }
+
     .detail-panel {
-      background: var(--panel-bg);
-      border: 1px solid var(--border);
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--accent) 6%, transparent), transparent 22%),
+        var(--panel-bg);
+      border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
       border-radius: 14px;
       padding: 18px;
       position: sticky;
       top: var(--sticky-panel-top);
-      box-shadow: var(--shadow-panel);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.025),
+        var(--shadow-panel);
     }
 
     .detail-empty {
@@ -824,6 +1053,8 @@
       justify-content: space-between;
       gap: 12px;
       margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border));
     }
 
     .detail-title {
@@ -832,64 +1063,144 @@
       line-height: 1.3;
       margin-bottom: 8px;
       word-break: break-word;
+      color: color-mix(in srgb, var(--text) 84%, var(--accent-h) 16%);
     }
 
     .detail-submeta {
       display: grid;
-      gap: 8px;
-      margin: 14px 0;
-      padding: 12px;
-      border: 1px solid var(--border);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 5px;
+      margin: 10px 0;
+      padding: 9px 10px;
+      border: 1px solid color-mix(in srgb, var(--medium) 18%, var(--border));
       border-radius: 10px;
-      background: rgba(255,255,255,.02);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--medium) 10%, transparent), rgba(255,255,255,.02));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
     }
 
     .detail-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      font-size: 12px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 9px;
+      padding: 5px 7px;
+      border: 1px solid color-mix(in srgb, var(--medium) 14%, var(--border));
+      border-radius: 7px;
+      border-left: 3px solid color-mix(in srgb, var(--medium) 52%, transparent);
+      background: linear-gradient(90deg, color-mix(in srgb, var(--medium) 11%, transparent), rgba(255,255,255,.025));
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .detail-row.is-full-width {
+      grid-column: 1 / -1;
     }
 
     .detail-row span:first-child {
-      color: var(--text-muted);
+      color: color-mix(in srgb, var(--text-muted) 56%, var(--medium) 44%);
       text-transform: uppercase;
       letter-spacing: .05em;
+      font-weight: 700;
+    }
+
+    .detail-row strong {
+      text-align: left;
+      color: color-mix(in srgb, var(--text) 76%, var(--medium) 24%);
     }
 
     .detail-notes {
       margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
+      padding: 12px 12px 4px;
+      border: 1px solid color-mix(in srgb, var(--low) 18%, var(--border));
+      border-radius: 12px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--low) 8%, transparent), rgba(255,255,255,.02));
     }
 
     .detail-description {
       margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
+      padding: 14px 14px 12px;
+      border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+      border-radius: 12px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, transparent), rgba(255,255,255,.025));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
     }
 
     .detail-notes p,
     .detail-description p {
-      color: var(--text-muted);
+      color: color-mix(in srgb, var(--text) 82%, var(--text-muted) 18%);
       white-space: pre-wrap;
       line-height: 1.5;
       margin-top: 8px;
     }
 
+    .detail-notes p {
+      color: color-mix(in srgb, var(--text) 80%, var(--low) 20%);
+    }
+
+    .detail-description .section-title {
+      color: color-mix(in srgb, var(--accent-h) 48%, var(--text-muted) 52%);
+    }
+
+    .detail-description .section-title::before {
+      background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 85%, white 15%), color-mix(in srgb, var(--accent) 24%, transparent));
+    }
+
     .section-title {
       font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 600;
+      color: color-mix(in srgb, var(--text-muted) 78%, var(--accent) 22%);
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: .06em;
       margin-bottom: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 20%, transparent));
     }
 
     .logs-section {
       margin-top: 20px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
+      padding: 14px 14px 12px;
+      border: 1px solid color-mix(in srgb, var(--status-ongoing) 18%, var(--border));
+      border-radius: 12px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--status-ongoing) 8%, transparent), rgba(255,255,255,.02));
+    }
+
+    .detail-notes .section-title,
+    .logs-section .section-title,
+    .subtasks-section .section-title {
+      color: color-mix(in srgb, var(--text-muted) 72%, var(--accent) 28%);
+    }
+
+    .detail-notes .section-title {
+      color: color-mix(in srgb, var(--text-muted) 52%, var(--low) 48%);
+    }
+
+    .detail-notes .section-title::before {
+      background: linear-gradient(90deg, var(--low), color-mix(in srgb, var(--low) 22%, transparent));
+    }
+
+    .logs-section .section-title {
+      color: color-mix(in srgb, var(--text-muted) 48%, var(--status-ongoing) 52%);
+    }
+
+    .logs-section .section-title::before {
+      background: linear-gradient(90deg, var(--status-ongoing), color-mix(in srgb, var(--status-ongoing) 24%, transparent));
+    }
+
+    .subtasks-section .section-title {
+      color: color-mix(in srgb, var(--text-muted) 52%, var(--medium) 48%);
+    }
+
+    .subtasks-section .section-title::before {
+      background: linear-gradient(90deg, var(--medium), color-mix(in srgb, var(--medium) 24%, transparent));
     }
 
     .logs-form {
@@ -921,6 +1232,8 @@
       caret-color: var(--accent-h);
       line-height: 1.55;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+      resize: none;
+      overflow-y: auto;
     }
 
     .log-input:focus {
@@ -936,16 +1249,25 @@
       justify-self: end;
     }
 
+    .log-list-shell {
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 6px;
+      scrollbar-gutter: stable;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(129,140,248,.28) transparent;
+    }
+
     .log-list {
       display: grid;
       gap: 10px;
     }
 
     .log-entry {
-      border: 1px solid var(--border);
+      border: 1px solid color-mix(in srgb, var(--status-ongoing) 14%, var(--border));
       border-radius: 10px;
       padding: 12px;
-      background: var(--surface2);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--status-ongoing) 6%, var(--surface2)), var(--surface2));
       box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
     }
 
@@ -971,6 +1293,21 @@
       text-align: center;
       border: 1px dashed var(--border);
       border-radius: 10px;
+    }
+
+    .log-list-shell::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .log-list-shell::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .log-list-shell::-webkit-scrollbar-thumb {
+      background: rgba(129,140,248,.22);
+      border: 2px solid transparent;
+      border-radius: 999px;
+      background-clip: padding-box;
     }
 
     .category-form-row {
@@ -1065,7 +1402,7 @@
     .subtasks-section {
       margin-top: 20px;
       padding-top: 18px;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
     }
 
     .subtask-list {
@@ -1123,12 +1460,27 @@
       flex-shrink: 0;
     }
 
+    .subtask-item span {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .subtask-delete-btn {
+      flex: 0 0 auto;
+      min-height: 28px;
+      padding: 4px 8px;
+    }
+
     .subtask-item.is-done span {
       text-decoration: line-through;
       color: var(--text-muted);
     }
 
-    /* ── Responsive ── */
+    /* ── Responsive ──
+       980 px: collapse to single column, un-sticky panels.
+       760 px: stack header buttons, grid the filters bar.
+       540 px: single-column everything, stack task-card body vertically. ── */
     @media (max-width: 980px) {
       .workspace-grid { grid-template-columns: 1fr; }
       .list-panel {
@@ -1213,6 +1565,14 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         width: 100%;
       }
+      .task-preview-list {
+        grid-template-columns: 1fr;
+      }
+      .task-preview-dates {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        justify-items: stretch;
+        min-width: 0;
+      }
       .task-actions .btn,
       .task-actions .status-select,
       .task-actions .priority-select {
@@ -1233,6 +1593,9 @@
         min-height: 220px;
         padding: 28px 16px;
       }
+      .detail-submeta {
+        grid-template-columns: 1fr;
+      }
       .logs-form { padding: 12px; }
       .log-submit-btn {
         width: 100%;
@@ -1251,10 +1614,11 @@
   <header class="app-header">
     <h1>Task <span>Manager</span></h1>
     <div class="header-actions">
-      <button class="btn btn-ghost" id="themeToggleBtn">Light Mode</button>
-      <button class="btn btn-ghost" id="manageCategoriesBtn">Categories</button>
-      <button class="btn btn-ghost" id="manageTemplatesBtn">Templates</button>
-      <button class="btn btn-ghost" id="exportExcelBtn">Export Excel</button>
+      <button class="btn btn-ghost btn-header-theme" id="themeToggleBtn">Light Mode</button>
+      <button class="btn btn-ghost btn-header-manage" id="manageCategoriesBtn">Categories</button>
+      <button class="btn btn-ghost btn-header-manage" id="manageTemplatesBtn">Templates</button>
+      <button class="btn btn-ghost btn-header-clear" id="clearCompletedBtn">Clear Completed</button>
+      <button class="btn btn-ghost btn-header-export" id="exportExcelBtn">Export Excel</button>
       <button class="btn btn-primary" id="newTaskBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         New Task
@@ -1438,9 +1802,11 @@
     </div>
   </div>
 
+  <!-- XLSX library (cdn) used for the Export Excel feature. -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
     // ── Storage Keys ──
+    // Centralised localStorage key names so they never get mis-typed elsewhere.
     const KEYS = {
       tasks: 'tm_tasks',
       logs: 'tm_logs',
@@ -1473,6 +1839,8 @@
     }
 
     // ── State ──
+    // In-memory arrays kept in sync with localStorage via the save* helpers.
+    // selectedTaskId tracks which card is active / shown in the detail panel.
     let tasks       = [];
     let logs        = [];
     let categories  = [];
@@ -1484,10 +1852,23 @@
     let editingTemplateId = null;
     let selectedTaskId = null;
 
+    const INPUT_LIMITS = {
+      searchTasks: 60,
+      taskTitle: 100,
+      taskEmailSubject: 120,
+      taskDescription: 500,
+      taskNotes: 500,
+      categoryName: 60,
+      templateName: 80,
+      templateSubtasks: 800,
+      subtaskTitle: 80,
+      logContent: 800,
+    };
+
     const PRIORITY_OPTIONS = ['Critical', 'High', 'Medium', 'Low', 'Very Low'];
-    const STATUS_OPTIONS = ['Pending', 'Not Started', 'Ongoing', 'Waiting for Someone Else', 'Done'];
+    const STATUS_OPTIONS = ['Not Started','Pending','Ongoing', 'Waiting for Someone Else', 'Completed'];
     const DEFAULT_PRIORITY = 'Medium';
-    const DEFAULT_STATUS = 'Pending';
+    const DEFAULT_STATUS = 'Not Started';
     const LEGACY_STATUS_ALIASES = {};
     const ATTENTION_PRIORITIES = new Set(['Critical', 'High']);
     const PRIORITY_ORDER = Object.fromEntries(PRIORITY_OPTIONS.map((priority, index) => [priority, index]));
@@ -1501,7 +1882,50 @@
 
     const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+    function updateInputCounter(field, counter, limit) {
+      const currentLength = field.value.length;
+      counter.textContent = `${currentLength}/${limit}`;
+      counter.classList.toggle('is-near-limit', currentLength >= Math.floor(limit * 0.85) && currentLength < limit);
+      counter.classList.toggle('is-at-limit', currentLength >= limit);
+    }
+
+    function ensureInputCounter(fieldId, limit) {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+
+      field.maxLength = limit;
+
+      let wrapper = field.parentElement;
+      if (!wrapper?.classList.contains('input-counter-wrap')) {
+        wrapper = document.createElement('div');
+        wrapper.className = 'input-counter-wrap';
+        field.insertAdjacentElement('beforebegin', wrapper);
+        wrapper.appendChild(field);
+      }
+
+      let counter = wrapper.querySelector(`.input-counter[data-for="${fieldId}"]`);
+      if (!counter) {
+        counter = document.createElement('div');
+        counter.className = 'input-counter';
+        counter.dataset.for = fieldId;
+        field.insertAdjacentElement('afterend', counter);
+      }
+
+      updateInputCounter(field, counter, limit);
+
+      if (!field.dataset.counterBound) {
+        field.addEventListener('input', () => updateInputCounter(field, counter, limit));
+        field.dataset.counterBound = 'true';
+      }
+    }
+
+    function applyInputLimits() {
+      Object.entries(INPUT_LIMITS).forEach(([fieldId, limit]) => ensureInputCounter(fieldId, limit));
+    }
+
     // ── Persistence ──
+    // loadState() reads everything from localStorage on startup,
+    // normalises legacy values, and ensures required defaults exist.
     function loadState() {
       tasks = loadJson(KEYS.tasks, []);
       logs = loadJson(KEYS.logs, []);
@@ -1578,6 +2002,7 @@
     }
 
     // ── ID Generator ──
+    // Collision-resistant short ID built from timestamp + random suffix.
     function genId() {
       return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
     }
@@ -1655,6 +2080,8 @@
     }
 
     // ── Date Helpers ──
+    // formatDate() converts an ISO string (YYYY-MM-DD) to dd-MMM-yyyy.
+    // isOverdue() compares a due-date string against today's ISO date string.
     function today() {
       return new Date().toISOString().slice(0, 10);
     }
@@ -1706,6 +2133,11 @@
 
     function getTaskById(taskId) {
       return tasks.find(task => task.id === taskId) || null;
+    }
+
+    function isTaskCompleted(task) {
+      const status = String(task?.status || '').trim();
+      return status === 'Done' || status === 'Completed';
     }
 
     function getCategoryByName(categoryName) {
@@ -1880,7 +2312,32 @@
       selectedTaskId = tasks[0]?.id || null;
     }
 
+    function clearCompletedTasks() {
+      const completedTaskIds = tasks
+        .filter(task => isTaskCompleted(task))
+        .map(task => task.id);
+
+      if (!completedTaskIds.length) {
+        return false;
+      }
+
+      const completedTaskIdSet = new Set(completedTaskIds);
+      tasks = tasks.filter(task => !completedTaskIdSet.has(task.id));
+      logs = logs.filter(log => !completedTaskIdSet.has(log.taskId));
+
+      if (selectedTaskId && completedTaskIdSet.has(selectedTaskId)) {
+        selectedTaskId = null;
+      }
+
+      saveTasks();
+      saveLogs();
+      renderTasks();
+      return true;
+    }
+
     // ── Render Stats ──
+    // Rebuilds both the primary stat chips and the secondary micro-stat grid.
+    // Called as part of renderTasks() so counts always stay in sync.
     function renderStats() {
       const total   = tasks.length;
       const ongoing = tasks.filter(t => normalizeStatus(t.status) === 'Ongoing').length;
@@ -2004,6 +2461,8 @@
     }
 
     // ── Render Task List ──
+    // Master render function: refreshes stats, filters, sorts, then rebuilds
+    // the task card list and the detail panel for the selected task.
     function renderTasks() {
       renderStats();
       renderCategoryOptions();
@@ -2052,8 +2511,6 @@
 
         const isActive = t.id === selectedTaskId;
         const logData = getLogPreview(t.id);
-        const subtaskProgress = getSubtaskProgress(t);
-
         return `
           <div class="task-card ${priorityClass} ${statusClass} ${isActive ? 'is-active' : ''}" data-id="${t.id}" style="--category-color:${escHtml(categoryColor)}">
             <div class="task-card-body">
@@ -2063,20 +2520,22 @@
                   <div class="task-heading-main">
                     <div class="task-title">${escHtml(t.title)}</div>
                     ${t.emailSubject ? `<div class="task-email-subject">Email: ${escHtml(t.emailSubject)}</div>` : ''}
-                    ${t.description ? `<div class="task-summary">${escHtml(t.description)}</div>` : ''}
+                    <div class="task-info-strip">
+                      <div class="task-meta">
+                        ${getCategoryMarkup(t.category)}
+                        <span class="badge badge-${toClassToken(priority)}">${escHtml(priority)}</span>
+                        <span class="badge badge-${toClassToken(status)}">${escHtml(status)}</span>
+                        <span class="task-date">${logData.count} log${logData.count === 1 ? '' : 's'}</span>
+                      </div>
+                      <div class="task-preview-list">
+                        <div class="task-preview-dates">
+                          ${t.receivedAt ? `<div class="task-preview-date is-received"><span class="task-preview-date-label">Received</span><span class="task-preview-date-value">${escHtml(formatDate(t.receivedAt))}</span></div>` : ''}
+                          ${t.dueDate ? `<div class="task-preview-date is-due ${overdue ? 'overdue' : ''}"><span class="task-preview-date-label">Due</span><span class="task-preview-date-value">${overdue ? 'Overdue ' : ''}${escHtml(formatDate(t.dueDate))}</span></div>` : ''}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="task-description-block ${t.description ? '' : 'is-empty'}">${t.description ? escHtml(t.description) : 'No description'}</div>
                   </div>
-                </div>
-                <div class="task-meta">
-                  ${getCategoryMarkup(t.category)}
-                  <span class="badge badge-${toClassToken(priority)}">${escHtml(priority)}</span>
-                  <span class="badge badge-${toClassToken(status)}">${escHtml(status)}</span>
-                  <span class="task-date">${logData.count} log${logData.count === 1 ? '' : 's'}</span>
-                  ${dueTxt ? `<span class="task-date ${overdue ? 'overdue' : ''}">${overdue ? '⚠ ' : ''}${escHtml(dueTxt)}</span>` : ''}
-                  ${t.receivedAt ? `<span class="task-date">Received ${formatDate(t.receivedAt)}</span>` : ''}
-                </div>
-                <div class="task-preview-list">
-                  <div class="task-subtasks-preview">Subtasks ${subtaskProgress.completedCount}/${subtaskProgress.subtaskCount}: ${escHtml(getSubtaskPreview(t))}</div>
-                  <div class="task-log-preview">Latest log: ${escHtml(logData.preview)}</div>
                 </div>
               </div>
               <div class="task-actions">
@@ -2149,9 +2608,7 @@
         </div>
 
         <div class="detail-submeta">
-          <div class="detail-row"><span>Category</span><strong>${escHtml(task.category || 'N/A')}</strong></div>
-          <div class="detail-row"><span>Template</span><strong>${escHtml(template?.name || 'None')}</strong></div>
-          ${task.emailSubject ? `<div class="detail-row"><span>Email Subject</span><strong>${escHtml(task.emailSubject)}</strong></div>` : ''}
+          <div class="detail-row is-full-width"><span>Email Subject</span><strong>${task.emailSubject ? escHtml(task.emailSubject) : 'N/A'}</strong></div>
           <div class="detail-row"><span>Created</span><strong>${task.createdAt ? escHtml(formatDate(task.createdAt)) : 'N/A'}</strong></div>
           <div class="detail-row"><span>Received</span><strong>${task.receivedAt ? escHtml(formatDate(task.receivedAt)) : 'N/A'}</strong></div>
           <div class="detail-row"><span>Due</span><strong class="task-date ${dueClass}">${task.dueDate ? escHtml(formatDate(task.dueDate)) : 'N/A'}</strong></div>
@@ -2176,6 +2633,7 @@
                 <label class="subtask-item ${subtask.done ? 'is-done' : ''}">
                   <input type="checkbox" data-toggle-subtask="${subtask.id}" ${subtask.done ? 'checked' : ''} />
                   <span>${escHtml(subtask.title)}</span>
+                  <button type="button" class="btn btn-danger subtask-delete-btn" data-delete-subtask="${subtask.id}">Remove</button>
                 </label>`).join('')}
             </div>` : '<div class="subtask-empty">No subtasks yet. Add one above.</div>'}
         </section>
@@ -2195,20 +2653,25 @@
               <button type="submit" class="btn btn-primary log-submit-btn">Add Log</button>
             </div>
           </form>
-          <div class="log-list">
-            ${taskLogs.length ? taskLogs.map(log => `
-              <article class="log-entry">
-                <div class="log-entry-header">
-                  <span>${escHtml(formatDateTime(log.createdAt) || '')}</span>
-                  <button class="btn btn-danger" data-delete-log="${log.id}">Delete</button>
-                </div>
-                <p>${escHtml(log.content)}</p>
-              </article>`).join('') : '<div class="log-empty">No logs yet for this task.</div>'}
+          <div class="log-list-shell">
+            <div class="log-list">
+              ${taskLogs.length ? taskLogs.map(log => `
+                <article class="log-entry">
+                  <div class="log-entry-header">
+                    <span>${escHtml(formatDateTime(log.createdAt) || '')}</span>
+                    <button class="btn btn-danger" data-delete-log="${log.id}">Delete</button>
+                  </div>
+                  <p>${escHtml(log.content)}</p>
+                </article>`).join('') : '<div class="log-empty">No logs yet for this task.</div>'}
+            </div>
           </div>
         </section>`;
+
+      applyInputLimits();
     }
 
     // ── Escape HTML ──
+    // Sanitises any user-supplied string before inserting it into innerHTML.
     function escHtml(str) {
       return String(str)
         .replace(/&/g, '&amp;')
@@ -2218,6 +2681,8 @@
     }
 
     // ── Modal Helpers ──
+    // openModal(id) populates the task form for editing an existing task,
+    // or resets it to defaults when id is null (new task).
     function openModal(taskId = null) {
       editingId = taskId;
       const modal = document.getElementById('taskModal');
@@ -2265,6 +2730,8 @@
     }
 
     // ── Form Submit ──
+    // Handles both create and edit: updates the in-memory tasks array,
+    // persists to localStorage, and re-renders.
     document.getElementById('taskForm').addEventListener('submit', e => {
       e.preventDefault();
       const title = document.getElementById('taskTitle').value.trim();
@@ -2311,7 +2778,9 @@
       closeModal();
     });
 
-    // ── Event Delegation: list actions ──
+    // ── Event Delegation: task list ──
+    // Single click listener on the list container handles quick-toggle (circle
+    // button), card selection, edit, and delete via data-* attributes.
     document.getElementById('taskList').addEventListener('click', e => {
       const editId   = e.target.closest('[data-edit]')?.dataset.edit;
       const deleteId = e.target.closest('[data-delete]')?.dataset.delete;
@@ -2374,9 +2843,19 @@
       const editId = e.target.closest('[data-edit]')?.dataset.edit;
       const deleteLogId = e.target.closest('[data-delete-log]')?.dataset.deleteLog;
       const toggleSubtaskId = e.target.closest('[data-toggle-subtask]')?.dataset.toggleSubtask;
+      const deleteSubtaskId = e.target.closest('[data-delete-subtask]')?.dataset.deleteSubtask;
 
       if (editId) {
         openModal(editId);
+        return;
+      }
+
+      if (deleteSubtaskId) {
+        const task = getTaskById(selectedTaskId);
+        if (!task) return;
+        task.subtasks = (task.subtasks || []).filter(subtask => subtask.id !== deleteSubtaskId);
+        saveTasks();
+        renderTasks();
         return;
       }
 
@@ -2514,6 +2993,8 @@
     });
 
     // ── Filters ──
+    // All filter/sort controls call renderTasks() directly; no state is
+    // persisted for filters (they reset on page reload by design).
     document.getElementById('searchTasks').addEventListener('input', renderTasks);
     document.getElementById('filterCategory').addEventListener('change', renderTasks);
     document.getElementById('filterPriority').addEventListener('change', renderTasks);
@@ -2521,6 +3002,7 @@
     document.getElementById('sortTasks').addEventListener('change', renderTasks);
 
     // ── Toggle Done ──
+    // hideDone is persisted to localStorage so the preference survives reloads.
     document.getElementById('toggleDoneBtn').addEventListener('click', () => {
       hideDone = !hideDone;
       saveHideDonePreference();
@@ -2529,10 +3011,18 @@
     });
 
     // ── Modal Open/Close ──
+    // Wire up header buttons and backdrop clicks to open/close each modal.
     document.getElementById('newTaskBtn').addEventListener('click', () => openModal());
     document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
     document.getElementById('manageCategoriesBtn').addEventListener('click', () => openCategoryModal());
     document.getElementById('manageTemplatesBtn').addEventListener('click', () => openTemplateModal());
+    document.getElementById('clearCompletedBtn').addEventListener('click', () => {
+      const completedCount = tasks.filter(task => isTaskCompleted(task)).length;
+      if (!completedCount) return;
+      if (confirm(`Permanently delete ${completedCount} completed task${completedCount === 1 ? '' : 's'} and their logs?`)) {
+        clearCompletedTasks();
+      }
+    });
     document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
     document.getElementById('cancelTaskBtn').addEventListener('click', closeModal);
     document.getElementById('cancelCategoryBtn').addEventListener('click', closeCategoryModal);
@@ -2656,6 +3146,7 @@
     renderCategoryList();
     renderTemplateList();
     renderTasks();
+    applyInputLimits();
   </script>
 </body>
 </html>
