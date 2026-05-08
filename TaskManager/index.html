@@ -1015,8 +1015,24 @@
     }
 
     .task-card.is-active {
-      border-color: var(--accent-h);
-      box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-h) 36%, transparent), 0 16px 30px rgba(2, 6, 23, .14);
+      border-color: color-mix(in srgb, var(--accent-h) 74%, white 10%);
+      border-left-width: 7px;
+      outline: 2px solid color-mix(in srgb, var(--accent-h) 72%, white 8%);
+      outline-offset: -2px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 24%, var(--surface2)), color-mix(in srgb, var(--accent) 10%, var(--surface)));
+    }
+
+    .task-card.is-active::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      border-radius: 11px;
+      border: 1px solid color-mix(in srgb, var(--accent-h) 58%, var(--accent) 42%);
+      pointer-events: none;
+    }
+
+    .task-card.is-active .task-title {
+      color: color-mix(in srgb, var(--text) 72%, var(--accent-h) 28%);
     }
 
     .task-card.priority-critical { border-left-color: var(--critical); }
@@ -1768,7 +1784,10 @@
       padding: 8px;
       border-radius: 14px;
       border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 6%, var(--surface2)), color-mix(in srgb, var(--surface) 96%, transparent));
+      background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 14%, transparent), transparent 38%),
+        radial-gradient(circle at bottom left, color-mix(in srgb, var(--low) 12%, transparent), transparent 42%),
+        linear-gradient(180deg, color-mix(in srgb, var(--accent) 6%, var(--surface2)), color-mix(in srgb, var(--surface) 96%, transparent));
       box-shadow: var(--shadow-panel);
       backdrop-filter: blur(12px);
       display: grid;
@@ -1789,6 +1808,7 @@
     }
 
     .context-menu-btn {
+      --menu-accent: var(--accent);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1796,10 +1816,10 @@
       width: 100%;
       min-height: 34px;
       padding: 7px 10px;
-      border: 1px solid color-mix(in srgb, var(--accent) 8%, var(--border));
+      border: 1px solid color-mix(in srgb, var(--menu-accent) 20%, var(--border));
       border-radius: 10px;
-      background: color-mix(in srgb, var(--accent) 6%, var(--surface));
-      color: color-mix(in srgb, var(--text) 84%, var(--accent) 16%);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--menu-accent) 12%, var(--surface)), color-mix(in srgb, var(--menu-accent) 7%, var(--surface2)));
+      color: color-mix(in srgb, var(--text) 84%, var(--menu-accent) 16%);
       font-size: 12px;
       font-weight: 600;
       text-align: left;
@@ -1808,8 +1828,8 @@
     }
 
     .context-menu-btn:hover {
-      border-color: color-mix(in srgb, var(--accent) 24%, var(--border));
-      background: color-mix(in srgb, var(--accent) 11%, var(--surface2));
+      border-color: color-mix(in srgb, var(--menu-accent) 46%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--menu-accent) 18%, var(--surface2)), color-mix(in srgb, var(--menu-accent) 9%, var(--surface3)));
       color: var(--text);
     }
 
@@ -1818,7 +1838,53 @@
       font-weight: 700;
       letter-spacing: .06em;
       text-transform: uppercase;
-      color: color-mix(in srgb, var(--text-muted) 78%, var(--accent) 22%);
+      color: color-mix(in srgb, var(--text-muted) 72%, var(--menu-accent) 28%);
+    }
+
+    .context-menu-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .context-menu-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: color-mix(in srgb, var(--menu-accent) 74%, white 26%);
+      flex: 0 0 auto;
+    }
+
+    .context-menu-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .context-menu-btn.is-edit { --menu-accent: #3b82f6; }
+
+    .context-menu-btn.is-toggle { --menu-accent: #22c55e; }
+
+    .context-menu-btn.is-description { --menu-accent: #8b5cf6; }
+
+    .context-menu-btn.is-subtasks { --menu-accent: #f59e0b; }
+
+    .context-menu-btn.is-logs { --menu-accent: #06b6d4; }
+
+    .context-menu-btn.is-duplicate { --menu-accent: #14b8a6; }
+
+    .context-menu-btn.is-delete { --menu-accent: #ef4444; }
+
+    .context-menu-btn.is-delete strong,
+    .context-menu-btn.is-delete .context-menu-icon {
+      color: color-mix(in srgb, var(--menu-accent) 72%, white 28%);
     }
 
     .detail-notes {
@@ -2114,11 +2180,27 @@
 
     .category-item-actions {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: auto auto auto;
       gap: 6px;
       width: auto;
-      min-width: 132px;
+      min-width: 206px;
       align-self: center;
+    }
+
+    .category-move-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      min-width: 34px;
+    }
+
+    .category-move-btn {
+      min-height: 30px;
+      padding: 4px 8px;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 800;
+      justify-content: center;
     }
 
     .category-item-actions .btn {
@@ -2547,6 +2629,12 @@
       .detail-row,
       .logs-meta { display: grid; }
     }
+
+    /* Flat UI mode requested by user: remove all shadows globally. */
+    *, *::before, *::after {
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
   </style>
 </head>
 <body>
@@ -2782,25 +2870,54 @@
 
   <div class="context-menu" id="detailContextMenu" role="menu" aria-label="Task detail actions" hidden>
     <div class="context-menu-label">Task Actions</div>
-    <button type="button" class="context-menu-btn" data-context-action="edit" role="menuitem">
-      <span>Edit task</span>
+    <button type="button" class="context-menu-btn is-edit" data-context-action="edit" role="menuitem">
+      <span class="context-menu-main">
+        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16v4Z"/><path d="m12.5 7.5 4 4"/></svg></span>
+        <span>Edit task</span>
+      </span>
       <strong>Open</strong>
     </button>
-    <button type="button" class="context-menu-btn" data-context-action="toggle-status" role="menuitem">
-      <span id="detailContextToggleLabel">Mark done</span>
+    <button type="button" class="context-menu-btn is-toggle" data-context-action="toggle-status" role="menuitem">
+      <span class="context-menu-main">
+        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span id="detailContextToggleLabel">Mark done</span>
+      </span>
       <strong>State</strong>
     </button>
-    <button type="button" class="context-menu-btn" data-context-action="show-description" role="menuitem">
-      <span>Open description</span>
+    <button type="button" class="context-menu-btn is-description" data-context-action="show-description" role="menuitem">
+      <span class="context-menu-main">
+        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4.5h10l3 3V19.5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1Z"/><path d="M17 4.5V8h3"/><path d="M9 12h6"/><path d="M9 15.5h6"/></svg></span>
+        <span>Open description</span>
+      </span>
       <strong>Tab</strong>
     </button>
-    <button type="button" class="context-menu-btn" data-context-action="show-subtasks" role="menuitem">
-      <span>Open subtasks</span>
+    <button type="button" class="context-menu-btn is-subtasks" data-context-action="show-subtasks" role="menuitem">
+      <span class="context-menu-main">
+        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 7h10"/><path d="M9 12h10"/><path d="M9 17h10"/><path d="M4 7h.01"/><path d="M4 12h.01"/><path d="M4 17h.01"/></svg></span>
+        <span>Open subtasks</span>
+      </span>
       <strong>Tab</strong>
     </button>
-    <button type="button" class="context-menu-btn" data-context-action="show-logs" role="menuitem">
-      <span>Open logs</span>
+    <button type="button" class="context-menu-btn is-logs" data-context-action="show-logs" role="menuitem">
+      <span class="context-menu-main">
+        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/><path d="M8.5 9h7"/><path d="M8.5 12h7"/><path d="M8.5 15h5"/></svg></span>
+        <span>Open logs</span>
+      </span>
       <strong>Tab</strong>
+    </button>
+    <button type="button" class="context-menu-btn is-duplicate" data-context-action="duplicate" role="menuitem">
+      <span class="context-menu-main">
+        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg></span>
+        <span>Duplicate task</span>
+      </span>
+      <strong>Copy</strong>
+    </button>
+    <button type="button" class="context-menu-btn is-delete" data-context-action="delete" role="menuitem">
+      <span class="context-menu-main">
+        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3.5h6"/><path d="M4 7.5h16"/><path d="M6.5 7.5 7.3 19a1 1 0 0 0 1 .9h7.4a1 1 0 0 0 1-.9l.8-11.5"/><path d="M10 11v5"/><path d="M14 11v5"/></svg></span>
+        <span>Delete task</span>
+      </span>
+      <strong>Danger</strong>
     </button>
   </div>
 
@@ -3593,6 +3710,9 @@
 
       list.innerHTML = categories.map(category => {
         const isLocked = isProtectedCategory(category.name);
+        const categoryIndex = categories.findIndex(item => item.name === category.name);
+        const canMoveUp = !isLocked && categoryIndex > 1;
+        const canMoveDown = !isLocked && categoryIndex < categories.length - 1;
         return `
           <div class="category-item">
             <div class="category-item-main">
@@ -3605,6 +3725,10 @@
             ${isLocked
               ? '<div class="category-item-locked">Required</div>'
               : `<div class="category-item-actions">
+                  <div class="category-move-actions" aria-label="Reorder category">
+                    <button class="btn btn-ghost category-move-btn" type="button" data-move-category="${escHtml(category.name)}" data-move-direction="up" ${canMoveUp ? '' : 'disabled'} aria-label="Move category up" title="Move up">↑</button>
+                    <button class="btn btn-ghost category-move-btn" type="button" data-move-category="${escHtml(category.name)}" data-move-direction="down" ${canMoveDown ? '' : 'disabled'} aria-label="Move category down" title="Move down">↓</button>
+                  </div>
                   <button class="btn btn-ghost task-open-btn" type="button" data-edit-category="${escHtml(category.name)}">Edit</button>
                   <button class="btn btn-danger" type="button" data-delete-category="${escHtml(category.name)}">Delete</button>
                 </div>`}
@@ -4005,6 +4129,43 @@
       editingId = null;
     }
 
+    function bindBackdropDismiss(backdropId, closeHandler) {
+      const backdrop = document.getElementById(backdropId);
+      if (!backdrop || typeof closeHandler !== 'function') return;
+
+      let startedOnBackdrop = false;
+
+      backdrop.addEventListener('pointerdown', event => {
+        startedOnBackdrop = event.target === backdrop;
+      });
+
+      backdrop.addEventListener('pointercancel', () => {
+        startedOnBackdrop = false;
+      });
+
+      backdrop.addEventListener('click', event => {
+        const clickedBackdrop = event.target === backdrop;
+        const shouldClose = clickedBackdrop && startedOnBackdrop;
+        startedOnBackdrop = false;
+        if (shouldClose) {
+          closeHandler();
+        }
+      });
+    }
+
+    function moveCategory(categoryName, direction) {
+      if (isProtectedCategory(categoryName)) return false;
+
+      const currentIndex = categories.findIndex(category => category.name === categoryName);
+      if (currentIndex === -1) return false;
+
+      const nextIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+      if (nextIndex < 1 || nextIndex >= categories.length) return false;
+
+      [categories[currentIndex], categories[nextIndex]] = [categories[nextIndex], categories[currentIndex]];
+      return true;
+    }
+
     // ── Form Submit ──
     // Handles both create and edit: updates the in-memory tasks array,
     // persists to localStorage, and re-renders.
@@ -4229,6 +4390,37 @@
       if (action === 'show-logs') {
         activeDetailTab = 'logs';
         renderTaskDetails();
+        return;
+      }
+
+      if (action === 'duplicate') {
+        const duplicatedTask = {
+          ...task,
+          id: genId(),
+          title: `${task.title} (Copy)`,
+          createdAt: today(),
+          subtasks: (task.subtasks || []).map(subtask => ({
+            ...subtask,
+            id: genId()
+          }))
+        };
+        tasks.unshift(duplicatedTask);
+        selectedTaskId = duplicatedTask.id;
+        saveTasks();
+        renderTasks();
+        return;
+      }
+
+      if (action === 'delete') {
+        if (!confirm('Delete this task?')) return;
+        tasks = tasks.filter(item => item.id !== task.id);
+        logs = logs.filter(log => log.taskId !== task.id);
+        if (selectedTaskId === task.id) {
+          selectedTaskId = null;
+        }
+        saveTasks();
+        saveLogs();
+        renderTasks();
       }
     });
 
@@ -4408,21 +4600,24 @@
     document.getElementById('cancelCategoryBtn').addEventListener('click', closeCategoryModal);
     document.getElementById('cancelTemplateBtn').addEventListener('click', closeTemplateModal);
 
-    document.getElementById('taskModal').addEventListener('click', e => {
-      if (e.target === document.getElementById('taskModal')) closeModal();
-    });
-
-    document.getElementById('categoryModal').addEventListener('click', e => {
-      if (e.target === document.getElementById('categoryModal')) closeCategoryModal();
-    });
-
-    document.getElementById('templateModal').addEventListener('click', e => {
-      if (e.target === document.getElementById('templateModal')) closeTemplateModal();
-    });
+    bindBackdropDismiss('taskModal', closeModal);
+    bindBackdropDismiss('categoryModal', closeCategoryModal);
+    bindBackdropDismiss('templateModal', closeTemplateModal);
 
     document.getElementById('categoryList').addEventListener('click', e => {
+      const moveName = e.target.closest('[data-move-category]')?.dataset.moveCategory;
+      const moveDirection = e.target.closest('[data-move-direction]')?.dataset.moveDirection;
       const editName = e.target.closest('[data-edit-category]')?.dataset.editCategory;
       const deleteName = e.target.closest('[data-delete-category]')?.dataset.deleteCategory;
+
+      if (moveName) {
+        if (!moveDirection) return;
+        if (!moveCategory(moveName, moveDirection)) return;
+        saveCategories();
+        renderCategoryList();
+        renderTasks();
+        return;
+      }
 
       if (editName) {
         const category = getCategoryByName(editName);
