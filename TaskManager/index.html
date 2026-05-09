@@ -535,6 +535,11 @@
       --task-group-accent: #ec4899;
     }
 
+    #taskForm .task-field-title textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
     .task-field-template {
       --task-group-accent: #f59e0b;
     }
@@ -2923,15 +2928,20 @@
       margin-bottom: 12px;
     }
 
+    .subtask-form .btn {
+      align-self: start;
+    }
+
     .subtask-input {
       width: 100%;
-      min-height: 38px;
+      min-height: 74px;
       padding: 8px 10px;
       border: 1px solid color-mix(in srgb, var(--medium) 14%, var(--border));
       border-radius: 10px;
       background: linear-gradient(180deg, var(--field-bg-strong), var(--field-bg));
       color: var(--text);
       outline: none;
+      resize: vertical;
     }
 
     .subtask-input:focus {
@@ -4030,8 +4040,8 @@
         <div class="task-form-section-label is-core"><span class="task-form-section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19.5h4.5L19 9a1.4 1.4 0 0 0 0-2l-2-2a1.4 1.4 0 0 0-2 0L4.5 15.5V19.5Z"/><path d="m13.5 6.5 4 4"/></svg></span>Core Details</div>
 
         <div class="form-group task-form-field task-field-title">
-          <label for="taskTitle">Title *</label>
-          <input type="text" id="taskTitle" placeholder="Task title…" required />
+          <label for="taskTitle" id="taskTitleLabel">Titles *</label>
+          <textarea id="taskTitle" placeholder="One task title per line to create several tasks at once..." required></textarea>
         </div>
 
         <div class="form-group task-form-field task-field-template">
@@ -4395,14 +4405,14 @@
 
     const INPUT_LIMITS = {
       searchTasks: 60,
-      taskTitle: 100,
+      taskTitle: 2400,
       taskEmailSubject: 120,
       taskDescription: 500,
       taskNotes: 500,
       categoryName: 60,
       templateName: 80,
       templateSubtasks: 800,
-      subtaskTitle: 80,
+      subtaskTitle: 1600,
       workflowItemBulkInput: 1500,
       logContent: 800,
     };
@@ -4903,6 +4913,18 @@
       return String(text || '')
         .split(/\r?\n/)
         .map(line => line.trim())
+        .filter(Boolean);
+    }
+
+    function normalizeSingleLineText(text) {
+      return String(text || '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function parseTaskTitleLines(text) {
+      return parseSubtaskLines(text)
+        .map(line => normalizeSingleLineText(line))
         .filter(Boolean);
     }
 
@@ -6106,8 +6128,8 @@
               <span class="detail-section-meta">${completedSubtasks}/${subtaskCount} complete</span>
             </div>
             <form class="subtask-form" id="subtaskForm">
-              <input type="text" id="subtaskTitle" class="subtask-input" placeholder="Add a subtask to this task..." required />
-              <button type="submit" class="btn btn-primary">Add Subtask</button>
+              <textarea id="subtaskTitle" class="subtask-input" placeholder="Add one subtask per line..." required></textarea>
+              <button type="submit" class="btn btn-primary">Add Subtasks</button>
             </form>
             ${task.subtasks?.length ? `
               <div class="subtask-list-shell">
@@ -6270,6 +6292,8 @@
       const form  = document.getElementById('taskForm');
       const title = document.getElementById('modalTitle');
       const submitLabel = document.getElementById('submitTaskBtnLabel');
+      const titleLabel = document.getElementById('taskTitleLabel');
+      const titleField = document.getElementById('taskTitle');
 
       form.reset();
       renderTaskOptionSets();
@@ -6279,6 +6303,8 @@
         if (!t) return;
         title.textContent  = 'Edit Task';
         submitLabel.textContent = 'Save Changes';
+        titleLabel.textContent = 'Title *';
+        titleField.placeholder = 'Task title...';
         document.getElementById('taskTitle').value      = t.title;
         document.getElementById('taskTemplate').value   = getTemplateById(t.templateId)?.id || '';
         document.getElementById('taskEmailSubject').value = t.emailSubject || '';
@@ -6292,6 +6318,8 @@
       } else {
         title.textContent  = 'New Task';
         submitLabel.textContent = 'Create Task';
+        titleLabel.textContent = 'Titles *';
+        titleField.placeholder = 'One task title per line to create several tasks at once...';
         document.getElementById('taskTemplate').value   = '';
         document.getElementById('taskEmailSubject').value = '';
         document.getElementById('taskDescription').value = '';
@@ -6353,7 +6381,12 @@
     // persists to localStorage, and re-renders.
     document.getElementById('taskForm').addEventListener('submit', e => {
       e.preventDefault();
-      const title = document.getElementById('taskTitle').value.trim();
+      const titleField = document.getElementById('taskTitle');
+      const enteredTitles = parseTaskTitleLines(titleField.value);
+      const title = editingId
+        ? normalizeSingleLineText(titleField.value)
+        : enteredTitles[0] || '';
+
       if (!title) {
         document.getElementById('taskTitle').focus();
         return;
@@ -6387,14 +6420,15 @@
           });
         }
       } else {
-        const newTask = {
+        const newTasks = enteredTitles.map(taskTitle => ({
           id: genId(),
           createdAt: today(),
           subtasks: buildTaskSubtasks(data.templateId),
-          ...data
-        };
-        tasks.unshift(newTask);
-        selectedTaskId = newTask.id;
+          ...data,
+          title: taskTitle
+        }));
+        tasks = [...newTasks, ...tasks];
+        selectedTaskId = newTasks[0]?.id || selectedTaskId;
       }
 
       saveTasks();
@@ -6693,15 +6727,18 @@
       if (e.target.id === 'subtaskForm') {
         e.preventDefault();
         const subtaskField = document.getElementById('subtaskTitle');
-        const subtaskTitle = subtaskField.value.trim();
+        const subtaskTitles = parseSubtaskLines(subtaskField.value).map(title => normalizeSingleLineText(title));
         const task = getTaskById(selectedTaskId);
 
-        if (!subtaskTitle || !task) {
+        if (!subtaskTitles.length || !task) {
           subtaskField?.focus();
           return;
         }
 
-        task.subtasks = [...(task.subtasks || []), { id: genId(), title: subtaskTitle, done: false }];
+        task.subtasks = [
+          ...(task.subtasks || []),
+          ...subtaskTitles.map(title => ({ id: genId(), title, done: false }))
+        ];
         saveTasks();
         renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         document.getElementById('subtaskTitle')?.focus();
