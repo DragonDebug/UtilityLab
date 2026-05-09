@@ -315,6 +315,8 @@
 
     .btn-header-export { --header-btn-color: #22c55e; }
 
+    .btn-header-export-detailed { --header-btn-color: #0ea5e9; }
+
     .btn-header-new {
       --header-btn-color: #ec4899;
       --header-btn-text: color-mix(in srgb, var(--text) 72%, #ffd4ea 28%);
@@ -414,7 +416,11 @@
     }
 
     #taskForm > .task-field-email {
-      grid-column: 1 / -1;
+        grid-column: 1 / span 2;
+      }
+
+      #taskForm > .task-field-sender {
+        grid-column: 3 / -1;
     }
 
     .task-form-section-label {
@@ -548,6 +554,10 @@
       --task-group-accent: #5b8def;
     }
 
+      .task-field-sender {
+        --task-group-accent: #38bdf8;
+      }
+
     .task-field-description {
       --task-group-accent: #8b5cf6;
     }
@@ -612,7 +622,9 @@
       }
 
       #taskForm > .task-field-title,
-      #taskForm > .task-field-description {
+      #taskForm > .task-field-description,
+      #taskForm > .task-field-email,
+      #taskForm > .task-field-sender {
         grid-column: 1 / -1;
       }
     }
@@ -623,7 +635,8 @@
       }
 
       #taskForm > .task-field-template,
-      #taskForm > .task-field-email {
+      #taskForm > .task-field-email,
+      #taskForm > .task-field-sender {
         grid-column: 1 / -1;
       }
     }
@@ -723,7 +736,7 @@
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       min-width: 0;
     }
 
@@ -737,8 +750,8 @@
     }
 
     .category-color-preset {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       border-radius: 999px;
       border: 2px solid color-mix(in srgb, var(--preset-color, var(--accent)) 28%, var(--border));
       background: var(--preset-color, var(--accent));
@@ -791,6 +804,11 @@
 
     .input-counter.is-at-limit {
       color: var(--high);
+    }
+
+    .filters-strip {
+      display: grid;
+      gap: 8px;
     }
 
     /* ── Filters Bar ──
@@ -924,6 +942,48 @@
     .toggle-done-btn {
       margin-left: auto;
       flex: 0 0 auto;
+    }
+
+    .hidden-filters-summary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 8px 10px;
+      border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
+      border-radius: 14px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 3%, transparent), rgba(255,255,255,.02));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .hidden-filters-summary[hidden] {
+      display: none;
+    }
+
+    .hidden-filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 30px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--chip-accent, var(--accent)) 24%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--chip-accent, var(--accent)) 12%, transparent), color-mix(in srgb, var(--chip-accent, var(--accent)) 4%, transparent));
+      color: color-mix(in srgb, var(--text) 84%, var(--chip-accent, var(--accent)) 16%);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .hidden-filter-chip.is-clear {
+      --chip-accent: var(--text-muted);
+    }
+
+    .hidden-filter-chip strong {
+      font-size: 10px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text-muted) 58%, var(--chip-accent, var(--accent)) 42%);
     }
 
     /* ── Task Stats ──
@@ -1170,6 +1230,8 @@
     }
 
     .micro-stat {
+      appearance: none;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1180,6 +1242,20 @@
       background: color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 16%, transparent);
       min-height: 0;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color .12s ease, background-color .12s ease, box-shadow .12s ease, transform .12s ease;
+    }
+
+    .micro-stat:hover {
+      border-color: color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 34%, transparent);
+      transform: translateY(-1px);
+    }
+
+    .micro-stat.is-excluded {
+      border-color: color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 42%, transparent);
+      background: color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 24%, transparent);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 16%, transparent), 0 10px 20px rgba(2, 6, 23, .08);
     }
 
     .micro-stat-label {
@@ -1411,19 +1487,29 @@
 
     .task-email-subject,
     .task-summary {
-      font-size: 10px;
-      color: var(--text-muted);
-      line-height: 1.35;
-      max-width: 100%;
-      overflow-wrap: anywhere;
-      word-break: break-word;
+        font-size: 10px;
+        color: var(--text-muted);
+        line-height: 1.35;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
+
+      .task-sender-label {
+        font-size: 10px;
+        color: color-mix(in srgb, var(--text-muted) 74%, #38bdf8 26%);
+        line-height: 1.35;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
 
     .task-email-subject {
       color: color-mix(in srgb, var(--text-muted) 68%, var(--accent-h) 32%);
     }
 
     .task-email-subject,
+    .task-sender-label,
     .task-summary,
     .task-log-preview {
       line-clamp: 1;
@@ -1496,6 +1582,20 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
     }
 
+    .filter-badge-btn {
+      cursor: pointer;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+    }
+
+    .filter-badge-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .filter-badge-btn.is-excluded {
+      border-color: color-mix(in srgb, currentColor 34%, var(--border));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 18%, transparent), 0 0 0 2px rgba(255,255,255,.04);
+    }
+
     .badge-critical { background: color-mix(in srgb, var(--critical) 16%, transparent); color: var(--critical); border-color: color-mix(in srgb, var(--critical) 28%, transparent); }
     .badge-high     { background: color-mix(in srgb, var(--high) 15%, transparent); color: var(--high); border-color: color-mix(in srgb, var(--high) 26%, transparent); }
     .badge-medium   { background: color-mix(in srgb, var(--medium) 15%, transparent); color: var(--medium); border-color: color-mix(in srgb, var(--medium) 26%, transparent); }
@@ -1526,6 +1626,10 @@
     .task-date {
       font-size: 10px;
       color: var(--text-muted);
+    }
+
+    .task-sender-inline {
+      color: color-mix(in srgb, var(--text-muted) 76%, #38bdf8 24%);
     }
 
     .task-date.overdue { color: var(--high); }
@@ -2719,7 +2823,7 @@
 
     .category-list {
       display: grid;
-      gap: 10px;
+      gap: 8px;
       margin-top: 18px;
     }
 
@@ -2727,8 +2831,8 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: start;
-      gap: 12px;
-      padding: 14px;
+      gap: 10px;
+      padding: 10px 12px;
       border: 1px solid color-mix(in srgb, var(--accent) 8%, var(--border));
       border-radius: 14px;
       background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 4%, var(--surface2)), var(--surface2));
@@ -2747,8 +2851,8 @@
     }
 
     .category-dot {
-      width: 14px;
-      height: 14px;
+      width: 11px;
+      height: 11px;
       border-radius: 999px;
       background: var(--category-color, var(--accent));
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
@@ -2756,16 +2860,16 @@
     }
 
     .category-item-name {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
-      line-height: 1.35;
+      line-height: 1.2;
       color: color-mix(in srgb, var(--text) 88%, var(--accent-h) 12%);
     }
 
     .category-item-meta {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-muted);
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .category-item-locked {
@@ -2774,7 +2878,7 @@
       color: color-mix(in srgb, var(--text-muted) 56%, var(--accent) 44%);
       text-transform: uppercase;
       letter-spacing: .05em;
-      padding: 6px 10px;
+      padding: 4px 9px;
       border-radius: 999px;
       border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
       background: color-mix(in srgb, var(--accent) 8%, var(--surface));
@@ -2786,7 +2890,7 @@
       grid-template-columns: auto auto auto;
       gap: 6px;
       width: auto;
-      min-width: 206px;
+      min-width: 188px;
       align-self: center;
     }
 
@@ -2798,7 +2902,7 @@
     }
 
     .category-move-btn {
-      min-height: 30px;
+      min-height: 28px;
       padding: 4px 8px;
       font-size: 14px;
       line-height: 1;
@@ -2807,8 +2911,8 @@
     }
 
     .category-item-actions .btn {
-      min-height: 30px;
-      padding: 4px 10px;
+      min-height: 28px;
+      padding: 3px 9px;
       font-size: 10px;
       width: 100%;
     }
@@ -3952,7 +4056,7 @@
       </button>
       <button class="btn btn-header btn-header-settings" id="manageItemSettingsBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.2 15a1 1 0 0 0 .2 1.1l.1.1a1.7 1.7 0 0 1 0 2.4 1.7 1.7 0 0 1-2.4 0l-.1-.1a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9v.3a1.7 1.7 0 0 1-1.7 1.7 1.7 1.7 0 0 1-1.7-1.7V19a1 1 0 0 0-.6-.9 1 1 0 0 0-1.1.2l-.1.1a1.7 1.7 0 0 1-2.4 0 1.7 1.7 0 0 1 0-2.4l.1-.1a1 1 0 0 0 .2-1.1 1 1 0 0 0-.9-.6H4.5A1.7 1.7 0 0 1 2.8 12a1.7 1.7 0 0 1 1.7-1.7H4.8a1 1 0 0 0 .9-.6 1 1 0 0 0-.2-1.1l-.1-.1a1.7 1.7 0 0 1 0-2.4 1.7 1.7 0 0 1 2.4 0l.1.1a1 1 0 0 0 1.1.2 1 1 0 0 0 .6-.9V4.5A1.7 1.7 0 0 1 12 2.8a1.7 1.7 0 0 1 1.7 1.7v.3a1 1 0 0 0 .6.9 1 1 0 0 0 1.1-.2l.1-.1a1.7 1.7 0 0 1 2.4 0 1.7 1.7 0 0 1 0 2.4l-.1.1a1 1 0 0 0-.2 1.1 1 1 0 0 0 .9.6h.3A1.7 1.7 0 0 1 21.2 12a1.7 1.7 0 0 1-1.7 1.7h-.3a1 1 0 0 0-.9.6Z"/></svg>
-        <span class="btn-header-label">Item Settings</span>
+          <span class="btn-header-label">Settings</span>
       </button>
       <button class="btn btn-header btn-header-clear" id="clearCompletedBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M9 3.5h6"/><path d="M4 7.5h16"/><path d="M6.5 7.5 7.3 19a1 1 0 0 0 1 .9h7.4a1 1 0 0 0 1-.9l.8-11.5"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
@@ -3961,6 +4065,10 @@
       <button class="btn btn-header btn-header-export" id="exportExcelBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18.5h14"/></svg>
         <span class="btn-header-label">Export Excel</span>
+      </button>
+      <button class="btn btn-header btn-header-export-detailed" id="exportDetailedExcelBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18.5h14"/><path d="M7 7.5h10"/></svg>
+        <span class="btn-header-label">Detailed Excel</span>
       </button>
       <button class="btn btn-header btn-header-new" id="newTaskBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -4007,6 +4115,7 @@
       </div>
       <button class="btn btn-ghost toggle-done-btn" id="toggleDoneBtn">Hide Completed</button>
     </div>
+    <div class="hidden-filters-summary" id="hiddenFiltersSummary" hidden></div>
   </div>
 
   <!-- ── Main ── -->
@@ -4055,6 +4164,13 @@
           <label for="taskEmailSubject">Email Subject</label>
           <input type="text" id="taskEmailSubject" placeholder="Optional subject line" />
         </div>
+
+          <div class="form-group task-form-field task-field-sender">
+            <label for="taskSender">Sender</label>
+            <select id="taskSender">
+              <option value="">No Sender</option>
+            </select>
+          </div>
 
         <div class="form-group task-form-field task-field-description">
           <label for="taskDescription">Description</label>
@@ -4140,6 +4256,15 @@
             <button type="button" class="category-color-preset" data-category-color="#8b5cf6" style="--preset-color:#8b5cf6" aria-label="Use violet color"></button>
             <button type="button" class="category-color-preset" data-category-color="#ec4899" style="--preset-color:#ec4899" aria-label="Use pink color"></button>
             <button type="button" class="category-color-preset" data-category-color="#14b8a6" style="--preset-color:#14b8a6" aria-label="Use teal color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#dc2626" style="--preset-color:#dc2626" aria-label="Use red color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#ea580c" style="--preset-color:#ea580c" aria-label="Use burnt orange color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#65a30d" style="--preset-color:#65a30d" aria-label="Use lime color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#0891b2" style="--preset-color:#0891b2" aria-label="Use cyan color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#1d4ed8" style="--preset-color:#1d4ed8" aria-label="Use royal blue color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#7c3aed" style="--preset-color:#7c3aed" aria-label="Use indigo color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#a21caf" style="--preset-color:#a21caf" aria-label="Use magenta color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#92400e" style="--preset-color:#92400e" aria-label="Use brown color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#334155" style="--preset-color:#334155" aria-label="Use steel color"></button>
           </div>
           <div class="category-form-buttons">
             <button type="button" class="btn btn-ghost" id="cancelCategoryBtn">Close</button>
@@ -4176,10 +4301,15 @@
 
   <div class="modal-backdrop" id="itemSettingsModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="itemSettingsModalTitle">
-      <h2 id="itemSettingsModalTitle">Item Settings</h2>
+        <h2 id="itemSettingsModalTitle">Settings</h2>
       <form id="itemSettingsForm" class="item-settings-form" novalidate>
-        <p class="item-settings-intro">Suppliers and projects here feed the item editors and the batch-create defaults. The first supplier in the list becomes the default for new items.</p>
+          <p class="item-settings-intro">Manage shared task and item options here. Email senders feed the task form, while suppliers and projects feed the item editors and batch-create defaults.</p>
         <div class="item-settings-grid">
+            <div class="item-settings-group">
+              <label for="taskSenderOptionsInput">Email Senders</label>
+              <textarea id="taskSenderOptionsInput" placeholder="One sender per line"></textarea>
+              <p class="item-settings-help">These names appear in the task form sender list. Existing tasks keep their sender even if you later remove an option here.</p>
+            </div>
           <div class="item-settings-group">
             <label for="itemSupplierOptionsInput">Suppliers</label>
             <textarea id="itemSupplierOptionsInput" placeholder="One supplier per line"></textarea>
@@ -4296,6 +4426,8 @@
     </button>
   </div>
 
+  <!-- ExcelJS library (cdn) used for the detailed Excel export feature. -->
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <!-- XLSX library (cdn) used for the Export Excel feature. -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
@@ -4305,6 +4437,7 @@
       tasks: 'tm_tasks',
       items: 'tm_items',
       itemSettings: 'tm_item_settings',
+      hiddenFilters: 'tm_hidden_filters',
       logs: 'tm_logs',
       categories: 'tm_categories',
       templates: 'tm_templates',
@@ -4361,10 +4494,12 @@
           : DEFAULT_ITEM_SUPPLIER_OPTIONS
       );
       const projectOptions = normalizeOptionList(settings?.projectOptions || DEFAULT_ITEM_PROJECT_OPTIONS);
+      const senderOptions = normalizeOptionList(settings?.senderOptions || []);
 
       return {
         supplierOptions: supplierOptions.length ? supplierOptions : [...DEFAULT_ITEM_SUPPLIER_OPTIONS],
-        projectOptions
+        projectOptions,
+        senderOptions
       };
     }
 
@@ -4374,6 +4509,10 @@
 
     function getProjectOptions(extraValue = '') {
       return normalizeOptionList([...(itemSettings?.projectOptions || DEFAULT_ITEM_PROJECT_OPTIONS), extraValue]);
+    }
+
+    function getSenderOptions(extraValue = '') {
+      return normalizeOptionList([...(itemSettings?.senderOptions || []), extraValue]);
     }
 
     function getDefaultItemSupplier() {
@@ -4389,6 +4528,7 @@
     let categories  = [];
     let templates   = [];
     let itemSettings = null;
+    let hiddenFilters = { status: [], priority: [], category: [] };
     let hideDone    = false;
     let showSecondaryStats = true;
     let currentTheme = 'dark';
@@ -4419,6 +4559,8 @@
 
     const PRIORITY_OPTIONS = ['Critical', 'High', 'Medium', 'Low', 'Very Low'];
     const STATUS_OPTIONS = ['Not Started','Pending','Ongoing', 'Waiting for Someone Else', 'Completed'];
+    const YES_NO_OPTIONS = ['Yes', 'No'];
+    const HIDDEN_FILTER_GROUPS = ['status', 'priority', 'category'];
     const TASK_VIEW_OPTIONS = ['standard', 'compact', 'board', 'agenda'];
     const TASK_SORT_OPTIONS = ['workflow', 'due-date', 'created-date', 'priority', 'title'];
     const DEFAULT_PRIORITY = 'Medium';
@@ -4564,6 +4706,8 @@
         categories.unshift({ name: 'General', color: '#64748b' });
       }
 
+      hiddenFilters = normalizeHiddenFilters(loadJson(KEYS.hiddenFilters, null));
+
       const fallbackCategory = 'General';
       const legacyItems = storedItems === null
         ? tasks.flatMap(task => normalizeLegacyTaskItems(task.workflowItems, task.id, task.title))
@@ -4574,6 +4718,7 @@
           ...task,
           description: String(task.description || '').trim() || null,
           emailSubject: String(task.emailSubject || '').trim() || null,
+          sender: String(task.sender || '').trim() || null,
           category: getCategoryByName(task.category)?.name || fallbackCategory,
           priority: normalizePriority(task.priority),
           status: normalizeStatus(task.status),
@@ -4597,6 +4742,10 @@
 
     function saveItemSettings() {
       saveJson(KEYS.itemSettings, itemSettings);
+    }
+
+    function saveHiddenFilters() {
+      saveJson(KEYS.hiddenFilters, hiddenFilters);
     }
 
     function saveLogs() {
@@ -4711,6 +4860,17 @@
       return options.find(option => option.toLowerCase() === String(resolvedValue).toLowerCase()) || fallback;
     }
 
+    function resolveExactOptionValue(value, options, aliases = {}) {
+      const rawValue = String(value || '').trim();
+      if (!rawValue) return '';
+
+      const aliasMatch = Object.entries(aliases)
+        .find(([key]) => key.toLowerCase() === rawValue.toLowerCase());
+      const resolvedValue = aliasMatch ? aliasMatch[1] : rawValue;
+
+      return options.find(option => option.toLowerCase() === String(resolvedValue).toLowerCase()) || '';
+    }
+
     function syncTaskModalFieldAccents() {
       const categoryField = document.querySelector('#taskForm .task-field-category');
       const priorityField = document.querySelector('#taskForm .task-field-priority');
@@ -4750,6 +4910,124 @@
       return TASK_VIEW_OPTIONS.includes(normalizedViewMode) ? normalizedViewMode : 'standard';
     }
 
+    function normalizeHiddenFilterValue(filterType, value) {
+      if (filterType === 'status') {
+        return resolveExactOptionValue(value, STATUS_OPTIONS, LEGACY_STATUS_ALIASES);
+      }
+
+      if (filterType === 'priority') {
+        return resolveExactOptionValue(value, PRIORITY_OPTIONS);
+      }
+
+      if (filterType === 'category') {
+        const normalizedName = normalizeCategoryName(value);
+        return getCategoryByName(normalizedName)?.name || '';
+      }
+
+      return '';
+    }
+
+    function normalizeHiddenFilterValues(filterType, values = []) {
+      const list = Array.isArray(values) ? values : [values];
+      const seen = new Set();
+
+      return list
+        .map(value => normalizeHiddenFilterValue(filterType, value))
+        .filter(value => {
+          if (!value) return false;
+          const key = value.toLowerCase();
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+    }
+
+    function normalizeHiddenFilters(filters = {}) {
+      return {
+        status: normalizeHiddenFilterValues('status', filters?.status),
+        priority: normalizeHiddenFilterValues('priority', filters?.priority),
+        category: normalizeHiddenFilterValues('category', filters?.category)
+      };
+    }
+
+    function isFilterValueHidden(filterType, value) {
+      const normalizedValue = normalizeHiddenFilterValue(filterType, value);
+      return Boolean(normalizedValue) && (hiddenFilters?.[filterType] || []).includes(normalizedValue);
+    }
+
+    function toggleHiddenFilter(filterType, value) {
+      if (!HIDDEN_FILTER_GROUPS.includes(filterType)) return false;
+
+      const normalizedValue = normalizeHiddenFilterValue(filterType, value);
+      if (!normalizedValue) return false;
+
+      const currentValues = new Set(hiddenFilters?.[filterType] || []);
+      if (currentValues.has(normalizedValue)) {
+        currentValues.delete(normalizedValue);
+      } else {
+        currentValues.add(normalizedValue);
+      }
+
+      hiddenFilters = {
+        ...hiddenFilters,
+        [filterType]: [...currentValues]
+      };
+      saveHiddenFilters();
+      return true;
+    }
+
+    function clearHiddenFilters(filterType = '', value = '') {
+      if (!filterType) {
+        hiddenFilters = { status: [], priority: [], category: [] };
+        saveHiddenFilters();
+        return;
+      }
+
+      if (!HIDDEN_FILTER_GROUPS.includes(filterType)) return;
+
+      if (!value) {
+        hiddenFilters = {
+          ...hiddenFilters,
+          [filterType]: []
+        };
+        saveHiddenFilters();
+        return;
+      }
+
+      const normalizedValue = normalizeHiddenFilterValue(filterType, value);
+      if (!normalizedValue) return;
+
+      hiddenFilters = {
+        ...hiddenFilters,
+        [filterType]: (hiddenFilters?.[filterType] || []).filter(item => item !== normalizedValue)
+      };
+      saveHiddenFilters();
+    }
+
+    function getHiddenFilterAccent(filterType, value) {
+      if (filterType === 'status') {
+        return STATUS_ACCENTS[normalizeStatus(value)] || 'var(--accent)';
+      }
+
+      if (filterType === 'priority') {
+        return PRIORITY_ACCENTS[normalizePriority(value)] || 'var(--accent)';
+      }
+
+      if (filterType === 'category') {
+        return getCategoryColor(value) || 'var(--accent)';
+      }
+
+      return 'var(--accent)';
+    }
+
+    function getHiddenFilterLabel(filterType) {
+      return {
+        status: 'Status',
+        priority: 'Priority',
+        category: 'Category'
+      }[filterType] || 'Filter';
+    }
+
     function toClassToken(value) {
       return String(value || '')
         .trim()
@@ -4766,6 +5044,7 @@
     function renderTaskOptionSets() {
       const taskPriority = document.getElementById('taskPriority');
       const taskStatus = document.getElementById('taskStatus');
+      const taskSender = document.getElementById('taskSender');
       const filterPriority = document.getElementById('filterPriority');
       const filterStatus = document.getElementById('filterStatus');
 
@@ -4779,6 +5058,12 @@
         const selectedStatus = normalizeStatus(taskStatus.value || DEFAULT_STATUS);
         taskStatus.innerHTML = buildOptionMarkup(STATUS_OPTIONS, selectedStatus);
         taskStatus.value = selectedStatus;
+      }
+
+      if (taskSender) {
+        const selectedSender = taskSender.value || '';
+        taskSender.innerHTML = `<option value="">No Sender</option>${buildOptionMarkup(getSenderOptions(selectedSender), selectedSender)}`;
+        taskSender.value = selectedSender;
       }
 
       if (filterPriority) {
@@ -4895,10 +5180,30 @@
       return String(name || '').trim().replace(/\s+/g, ' ');
     }
 
+    function getFilterBadgeMarkup(filterType, value, options = {}) {
+      const normalizedValue = normalizeHiddenFilterValue(filterType, value);
+      if (!normalizedValue) return '';
+
+      const classes = ['badge', 'filter-badge-btn'];
+      let styleAttribute = '';
+      if (filterType === 'category') {
+        classes.push('badge-category');
+        styleAttribute = ` style="--category-color:${escHtml(options.accent || getCategoryColor(normalizedValue) || 'transparent')}"`;
+      } else {
+        classes.push(`badge-${toClassToken(normalizedValue)}`);
+      }
+
+      if (isFilterValueHidden(filterType, normalizedValue)) {
+        classes.push('is-excluded');
+      }
+
+      return `<button type="button" class="${classes.join(' ')}" data-hidden-filter-type="${escHtml(filterType)}" data-hidden-filter-value="${escHtml(normalizedValue)}" aria-pressed="${isFilterValueHidden(filterType, normalizedValue) ? 'true' : 'false'}"${styleAttribute}>${escHtml(normalizedValue)}</button>`;
+    }
+
     function getCategoryMarkup(categoryName) {
       const category = getCategoryByName(categoryName) || categories[0];
       if (!category) return '';
-      return `<span class="badge badge-category" style="--category-color:${escHtml(category.color)}">${escHtml(category.name)}</span>`;
+      return getFilterBadgeMarkup('category', category.name, { accent: category.color });
     }
 
     function getCategoryColor(categoryName) {
@@ -4920,6 +5225,15 @@
       return String(text || '')
         .replace(/\s+/g, ' ')
         .trim();
+    }
+
+    function getTaskCategoryCountWeight(task) {
+      const title = String(task?.title || '');
+      const match = title.match(/\b(\d+)\s*nos\b/i);
+      if (!match) return 1;
+
+      const quantity = Number.parseInt(match[1], 10);
+      return Number.isFinite(quantity) && quantity > 0 ? quantity : 1;
     }
 
     function parseTaskTitleLines(text) {
@@ -5498,12 +5812,13 @@
                 <button class="quick-toggle ${isTaskCompleted(task) ? 'is-done' : ''}" data-toggle-complete="${task.id}" title="Toggle complete">${isTaskCompleted(task) ? '✓' : ''}</button>
                 <div class="task-heading-main">
                   <div class="task-title">${escHtml(task.title)}</div>
+                  ${task.sender ? `<div class="task-sender-label">From: ${escHtml(task.sender)}</div>` : ''}
                   ${task.emailSubject ? `<div class="task-email-subject">Email: ${escHtml(task.emailSubject)}</div>` : ''}
                   <div class="task-info-strip">
                     <div class="task-meta">
                       ${getCategoryMarkup(task.category)}
-                      <span class="badge badge-${toClassToken(taskData.priority)}">${escHtml(taskData.priority)}</span>
-                      <span class="badge badge-${toClassToken(taskData.status)}">${escHtml(taskData.status)}</span>
+                      ${getFilterBadgeMarkup('priority', taskData.priority)}
+                      ${getFilterBadgeMarkup('status', taskData.status)}
                       <span class="task-date">${taskData.workflowItemCount} item${taskData.workflowItemCount === 1 ? '' : 's'}</span>
                       <span class="task-date">${taskData.logData.count} log${taskData.logData.count === 1 ? '' : 's'}</span>
                     </div>
@@ -5561,8 +5876,9 @@
                   <div class="task-title">${escHtml(task.title)}</div>
                   <div class="task-meta">
                     ${getCategoryMarkup(task.category)}
-                    <span class="badge badge-${toClassToken(taskData.priority)}">${escHtml(taskData.priority)}</span>
-                    ${options.hideStatusBadge ? '' : `<span class="badge badge-${toClassToken(taskData.status)}">${escHtml(taskData.status)}</span>`}
+                    ${getFilterBadgeMarkup('priority', taskData.priority)}
+                    ${options.hideStatusBadge ? '' : getFilterBadgeMarkup('status', taskData.status)}
+                    ${task.sender ? `<span class="task-date task-sender-inline">From ${escHtml(task.sender)}</span>` : ''}
                     <span class="task-date ${taskData.overdue ? 'overdue' : ''}">${escHtml(dueSummary)}</span>
                   </div>
                 </div>
@@ -5739,6 +6055,648 @@
       XLSX.writeFile(workbook, `task-manager-export-${stamp}.xlsx`);
     }
 
+    function getItemExportRows() {
+      return items.map(item => ({
+        ID: item.id,
+        TaskID: item.taskId || '',
+        TaskTitle: getTaskById(item.taskId)?.title || item.taskTitleSnapshot || '',
+        BIDReference: item.bidReference || '',
+        TIDReference: item.tidReference || '',
+        Project: item.project || '',
+        Supplier: item.supplier || '',
+        VaultStatus: item.vaultStatus || '',
+        PLMStatus: item.plmStatus || '',
+        CounterDieApproval: item.counterDieApprovalStatus ? 'Approved' : 'Pending',
+        SAMApproval: item.samApprovalStatus ? 'Approved' : 'Pending',
+        DrawingSentAt: item.drawingSentAt || '',
+        ChecklistProgress: `${getItemChecklistCompletedCount(item)}/${ITEM_WORKFLOW_STEPS.length}`,
+        DetailsCaptured: item.checklist?.detailsCaptured ? 'Yes' : 'No',
+        DrawnAddedToVault: item.checklist?.drawnAddedToVault ? 'Yes' : 'No',
+        DrawingSentToSupplier: item.checklist?.drawingSentToSupplier ? 'Yes' : 'No',
+        CreatedAt: item.createdAt || '',
+        Details: item.details || '',
+        ImageName: item.imageName || '',
+        HasImage: item.imageDataUrl ? 'Yes' : 'No'
+      }));
+    }
+
+    function getExportTimestampStamp() {
+      return new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-');
+    }
+
+    function downloadExcelBuffer(buffer, fileName) {
+      const blob = new Blob([
+        buffer instanceof ArrayBuffer ? buffer : new Uint8Array(buffer)
+      ], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    }
+
+    function getExcelColumnLetter(columnNumber) {
+      let current = columnNumber;
+      let columnName = '';
+
+      while (current > 0) {
+        const remainder = (current - 1) % 26;
+        columnName = String.fromCharCode(65 + remainder) + columnName;
+        current = Math.floor((current - 1) / 26);
+      }
+
+      return columnName || 'A';
+    }
+
+    function formatExcelDateDisplay(value) {
+      const parts = toDateParts(value);
+      if (!parts) return '';
+
+      const day = String(parts.day).padStart(2, '0');
+      const month = String(MONTH_LABELS[parts.month - 1] || '').toLowerCase();
+      return `${day}-${month}-${parts.year}`;
+    }
+
+    function toExcelDateValue(value) {
+      const parts = toDateParts(value);
+      if (!parts) return null;
+
+      return new Date(parts.year, parts.month - 1, parts.day);
+    }
+
+    function formatExcelDateTimeDisplay(value) {
+      if (!value) return '';
+
+      const parsed = new Date(value);
+      if (Number.isNaN(parsed.getTime())) {
+        return formatExcelDateDisplay(value);
+      }
+
+      const day = String(parsed.getDate()).padStart(2, '0');
+      const month = String(MONTH_LABELS[parsed.getMonth()] || '').toLowerCase();
+      const year = parsed.getFullYear();
+      const hours = String(parsed.getHours()).padStart(2, '0');
+      const minutes = String(parsed.getMinutes()).padStart(2, '0');
+      return `${day}-${month}-${year} ${hours}:${minutes}`;
+    }
+
+    const DETAILED_EXPORT_ROW_HEIGHT = 42;
+    const DETAILED_EXPORT_COUNTER_HEADER_HEIGHT = 26;
+    const DETAILED_EXPORT_COUNTER_ROW_HEIGHT = 30;
+
+    function getStatusStatsRows() {
+      return STATUS_OPTIONS.map(status => ({
+        label: status,
+        value: status === 'Completed'
+          ? tasks.filter(task => isTaskCompleted(task)).length
+          : tasks.filter(task => normalizeStatus(task.status) === status).length
+      }));
+    }
+
+    function getPriorityStatsRows() {
+      return PRIORITY_OPTIONS.map(priority => ({
+        label: priority,
+        value: tasks.filter(task => normalizePriority(task.priority) === priority).length
+      }));
+    }
+
+    function getCategoryStatsRows() {
+      return categories.map(category => ({
+        label: category.name,
+        value: tasks
+          .filter(task => task.category === category.name)
+          .reduce((sum, task) => sum + getTaskCategoryCountWeight(task), 0),
+        color: category.color
+      }));
+    }
+
+    function getDetailedTaskExportRows() {
+      return tasks.map((task, index) => {
+        return {
+          No: index + 1,
+          Title: task.title,
+          Quantity: getTaskCategoryCountWeight(task),
+          Category: task.category || '',
+          Priority: normalizePriority(task.priority),
+          Status: normalizeStatus(task.status),
+          Sender: task.sender || '',
+          EmailSubject: task.emailSubject || '',
+          Description: task.description || '',
+          Notes: task.notes || '',
+          Created: toExcelDateValue(task.createdAt),
+          Received: toExcelDateValue(task.receivedAt),
+          Due: toExcelDateValue(task.dueDate)
+        };
+      });
+    }
+
+    function getDetailedItemExportRows() {
+      return items.map(item => ({
+        TaskTitle: getTaskById(item.taskId)?.title || item.taskTitleSnapshot || '',
+        BIDReference: item.bidReference || '',
+        TIDReference: item.tidReference || '',
+        Project: item.project || '',
+        Supplier: item.supplier || '',
+        VaultStatus: item.vaultStatus || '',
+        PLMStatus: item.plmStatus || '',
+        CounterDieApproval: item.counterDieApprovalStatus ? 'Approved' : 'Pending',
+        SAMApproval: item.samApprovalStatus ? 'Approved' : 'Pending',
+        DrawingSent: formatExcelDateDisplay(item.drawingSentAt),
+        ChecklistProgress: `${getItemChecklistCompletedCount(item)}/${ITEM_WORKFLOW_STEPS.length}`,
+        DetailsCaptured: item.checklist?.detailsCaptured ? 'Yes' : 'No',
+        DrawnAddedToVault: item.checklist?.drawnAddedToVault ? 'Yes' : 'No',
+        DrawingSentToSupplier: item.checklist?.drawingSentToSupplier ? 'Yes' : 'No',
+        Created: formatExcelDateDisplay(item.createdAt),
+        Details: item.details || '',
+        ImageName: item.imageName || '',
+        HasImage: item.imageDataUrl ? 'Yes' : 'No'
+      }));
+    }
+
+    function getDetailedLogExportRows() {
+      return logs.map(log => ({
+        TaskTitle: getTaskById(log.taskId)?.title || '',
+        Date: formatExcelDateTimeDisplay(log.createdAt),
+        Content: log.content || ''
+      }));
+    }
+
+    function safeAddConditionalFormatting(worksheet, ref, rules) {
+      if (typeof worksheet.addConditionalFormatting !== 'function') return;
+
+      try {
+        worksheet.addConditionalFormatting({ ref, rules });
+      } catch {
+        // Ignore conditional-formatting support issues in older ExcelJS builds.
+      }
+    }
+
+    function buildValidationListSheet(workbook) {
+      const worksheet = workbook.addWorksheet('Lists');
+      worksheet.state = 'veryHidden';
+
+      const listGroups = [
+        { title: 'Categories', values: categories.map(category => category.name) },
+        { title: 'Priorities', values: PRIORITY_OPTIONS },
+        { title: 'Statuses', values: STATUS_OPTIONS },
+        { title: 'Senders', values: getSenderOptions() }
+      ];
+
+      listGroups.forEach((group, index) => {
+        const columnNumber = index + 1;
+        const headerCell = worksheet.getCell(1, columnNumber);
+        headerCell.value = group.title;
+        group.values.forEach((value, valueIndex) => {
+          worksheet.getCell(valueIndex + 2, columnNumber).value = value;
+        });
+        worksheet.getColumn(columnNumber).width = Math.max(group.title.length + 2, ...group.values.map(value => String(value).length + 2), 12);
+      });
+
+      return {
+        categories: `'Lists'!$A$2:$A$${Math.max(categories.length + 1, 2)}`,
+        priorities: `'Lists'!$B$2:$B$${Math.max(PRIORITY_OPTIONS.length + 1, 2)}`,
+        statuses: `'Lists'!$C$2:$C$${Math.max(STATUS_OPTIONS.length + 1, 2)}`,
+        senders: `'Lists'!$D$2:$D$${Math.max(getSenderOptions().length + 1, 2)}`
+      };
+    }
+
+    function applyListValidation(worksheet, columnLetter, startRow, endRow, formula) {
+      for (let rowNumber = startRow; rowNumber <= endRow; rowNumber += 1) {
+        worksheet.getCell(`${columnLetter}${rowNumber}`).dataValidation = {
+          type: 'list',
+          allowBlank: true,
+          showErrorMessage: true,
+          errorTitle: 'Invalid value',
+          error: 'Choose a value from the existing Task Manager options.',
+          formulae: [formula]
+        };
+      }
+    }
+
+    function normalizeExcelHexColor(value, fallback = '64748B') {
+      const matched = String(value || '').trim().match(/^#?([0-9a-fA-F]{6})$/);
+      return matched ? matched[1].toUpperCase() : fallback;
+    }
+
+    function blendExcelHexColors(base, mixWith = 'FFFFFF', mixRatio = 0.84) {
+      const baseHex = normalizeExcelHexColor(base);
+      const mixHex = normalizeExcelHexColor(mixWith, 'FFFFFF');
+      const ratio = Math.max(0, Math.min(1, mixRatio));
+      const channels = [0, 2, 4].map(offset => {
+        const baseChannel = Number.parseInt(baseHex.slice(offset, offset + 2), 16);
+        const mixChannel = Number.parseInt(mixHex.slice(offset, offset + 2), 16);
+        const value = Math.round((baseChannel * (1 - ratio)) + (mixChannel * ratio));
+        return value.toString(16).padStart(2, '0').toUpperCase();
+      });
+
+      return channels.join('');
+    }
+
+    function getExcelTextRuleFormula(value) {
+      return `"${String(value ?? '').replace(/"/g, '""')}"`;
+    }
+
+    function getTaskSheetHeaderLayout() {
+      const headerRows = [
+        { label: 'Total Tasks', value: tasks.length, accent: '1D4ED8' },
+        { label: 'Ongoing', value: tasks.filter(task => normalizeStatus(task.status) === 'Ongoing').length, accent: '1D4ED8' },
+        { label: 'Completed', value: tasks.filter(task => isTaskCompleted(task)).length, accent: '16A34A' },
+        { label: 'Overdue', value: tasks.filter(task => isOverdue(task.dueDate) && !isTaskCompleted(task)).length, accent: 'DC2626' },
+        ...getCategoryStatsRows().map(category => ({
+          label: category.label,
+          value: category.value,
+          accent: normalizeExcelHexColor(category.color)
+        }))
+      ];
+
+      return {
+        headerRows,
+        tableHeaderRow: 3,
+        firstDataRow: 4,
+        tableStartRow: 4 + headerRows.length
+      };
+    }
+
+    function buildTaskSheetDashboardHeader(worksheet, lastColumn, layout = getTaskSheetHeaderLayout()) {
+      const headerFill = 'FFF8FAFC';
+      const headerBorder = 'FFCBD5E1';
+      const numberHeaderCell = worksheet.getCell(`A${layout.tableHeaderRow}`);
+      const nameHeaderCell = worksheet.getCell(`B${layout.tableHeaderRow}`);
+      const quantityHeaderCell = worksheet.getCell(`C${layout.tableHeaderRow}`);
+
+      numberHeaderCell.value = 'No.';
+      nameHeaderCell.value = 'Name';
+      quantityHeaderCell.value = 'Quantity';
+      [numberHeaderCell, nameHeaderCell, quantityHeaderCell].forEach(cell => {
+        cell.font = { size: 12, bold: true, color: { argb: 'FF0F172A' } };
+        cell.alignment = { vertical: 'middle', horizontal: cell.col === 2 ? 'left' : 'center' };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: headerFill }
+        };
+        cell.border = {
+          top: { style: 'thin', color: { argb: headerBorder } },
+          left: { style: 'thin', color: { argb: headerBorder } },
+          bottom: { style: 'thin', color: { argb: headerBorder } },
+          right: { style: 'thin', color: { argb: headerBorder } }
+        };
+      });
+
+      layout.headerRows.forEach((row, index) => {
+        const rowNumber = layout.firstDataRow + index;
+        const accent = normalizeExcelHexColor(row.accent);
+        const numberCell = worksheet.getCell(`A${rowNumber}`);
+        const labelCell = worksheet.getCell(`B${rowNumber}`);
+        const valueCell = worksheet.getCell(`C${rowNumber}`);
+
+        numberCell.value = index + 1;
+        labelCell.value = row.label;
+        valueCell.value = row.value;
+
+        [numberCell, labelCell, valueCell].forEach(cell => {
+          cell.font = { size: 13, bold: true, color: { argb: `FF${accent}` } };
+          cell.alignment = { vertical: 'middle', horizontal: cell.col === 2 ? 'left' : 'center' };
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.92)}` }
+          };
+          cell.border = {
+            top: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
+            left: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
+            bottom: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
+            right: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } }
+          };
+        });
+      });
+
+      worksheet.getRow(layout.tableHeaderRow).height = DETAILED_EXPORT_COUNTER_HEADER_HEIGHT;
+      for (let rowNumber = layout.firstDataRow; rowNumber < layout.tableStartRow; rowNumber += 1) {
+        worksheet.getRow(rowNumber).height = DETAILED_EXPORT_COUNTER_ROW_HEIGHT;
+      }
+    }
+
+    function styleDetailedWorksheet(worksheet, columns, rows, options = {}) {
+      const accentColor = options.accentColor || '2563EB';
+      const title = options.title || worksheet.name;
+      const subtitle = options.subtitle || '';
+      const lastColumn = getExcelColumnLetter(columns.length);
+      const tableStartRow = options.tableStartRow || 4;
+      const dateColumnKeys = new Set(options.dateColumns || []);
+      const tableGridColor = options.tableGridColor || 'FFCBD5E1';
+
+      worksheet.columns = columns.map(column => ({
+        key: column.key,
+        width: column.width || 18
+      }));
+      worksheet.properties.defaultRowHeight = DETAILED_EXPORT_ROW_HEIGHT;
+      worksheet.views = [{ state: 'frozen', ySplit: tableStartRow, showGridLines: true }];
+      worksheet.pageSetup = { ...(worksheet.pageSetup || {}), showGridLines: true };
+
+      worksheet.mergeCells(`A1:${lastColumn}1`);
+      worksheet.mergeCells(`A2:${lastColumn}2`);
+      worksheet.getCell('A1').value = title;
+      worksheet.getCell('A2').value = subtitle;
+      worksheet.getCell('A1').font = { size: 16, bold: true, color: { argb: 'FF0F172A' } };
+      worksheet.getCell('A2').font = { size: 10, color: { argb: 'FF475569' } };
+      worksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'left' };
+      worksheet.getCell('A2').alignment = { vertical: 'middle', horizontal: 'left' };
+      worksheet.getRow(1).height = DETAILED_EXPORT_ROW_HEIGHT;
+      worksheet.getRow(2).height = DETAILED_EXPORT_ROW_HEIGHT;
+
+      if (typeof options.beforeTable === 'function') {
+        options.beforeTable(worksheet, columns, { lastColumn, tableStartRow });
+      }
+
+      const headerRow = worksheet.getRow(tableStartRow);
+      columns.forEach((column, index) => {
+        headerRow.getCell(index + 1).value = column.header;
+      });
+      headerRow.height = DETAILED_EXPORT_ROW_HEIGHT;
+      headerRow.eachCell(cell => {
+        cell.font = { bold: true, color: { argb: `FF${accentColor}` } };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: `FF${blendExcelHexColors(accentColor, 'FFFFFF', 0.9)}` }
+        };
+        cell.border = {
+          top: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accentColor, 'FFFFFF', 0.55)}` } },
+          left: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accentColor, 'FFFFFF', 0.55)}` } },
+          bottom: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accentColor, 'FFFFFF', 0.55)}` } },
+          right: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accentColor, 'FFFFFF', 0.55)}` } }
+        };
+        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+      });
+
+      rows.forEach((row, index) => {
+        const worksheetRow = worksheet.getRow(tableStartRow + 1 + index);
+        columns.forEach((column, columnIndex) => {
+          const cell = worksheetRow.getCell(columnIndex + 1);
+          cell.value = row[column.key] ?? '';
+          if (dateColumnKeys.has(column.key) && cell.value instanceof Date) {
+            cell.numFmt = 'd-mmm-yy';
+          }
+        });
+        worksheetRow.height = DETAILED_EXPORT_ROW_HEIGHT;
+        worksheetRow.eachCell(cell => {
+          cell.alignment = {
+            vertical: 'middle',
+            wrapText: true,
+            horizontal: options.centerColumns?.includes(cell.col) ? 'center' : 'left'
+          };
+          cell.border = {
+            top: { style: 'thin', color: { argb: tableGridColor } },
+            left: { style: 'thin', color: { argb: tableGridColor } },
+            bottom: { style: 'thin', color: { argb: tableGridColor } },
+            right: { style: 'thin', color: { argb: tableGridColor } }
+          };
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: index % 2 === 0 ? 'FFFFFFFF' : 'FFFCFDFE' }
+          };
+        });
+      });
+
+      worksheet.autoFilter = {
+        from: `A${tableStartRow}`,
+        to: `${lastColumn}${tableStartRow}`
+      };
+
+      if (!rows.length) {
+        const emptyRow = worksheet.getRow(tableStartRow + 1);
+        emptyRow.getCell(1).value = options.emptyMessage || 'No records available.';
+        emptyRow.height = DETAILED_EXPORT_ROW_HEIGHT;
+        emptyRow.getCell(1).font = { italic: true, color: { argb: 'FF64748B' } };
+      }
+
+      if (typeof options.afterBuild === 'function') {
+        options.afterBuild(worksheet, rows, columns, { tableStartRow });
+      }
+    }
+
+    function buildDetailedDashboardSheet(workbook) {
+      const worksheet = workbook.addWorksheet('Dashboard');
+      worksheet.views = [{ showGridLines: false }];
+      worksheet.columns = [
+        { width: 18 },
+        { width: 18 },
+        { width: 4 },
+        { width: 18 },
+        { width: 18 },
+        { width: 4 },
+        { width: 20 },
+        { width: 18 }
+      ];
+
+      worksheet.mergeCells('A1:H1');
+      worksheet.mergeCells('A2:H2');
+      worksheet.getCell('A1').value = 'Task Manager Dashboard';
+      worksheet.getCell('A2').value = `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())} with live task totals and breakdowns.`;
+      worksheet.getCell('A1').font = { size: 20, bold: true, color: { argb: 'FF0F172A' } };
+      worksheet.getCell('A2').font = { size: 10, color: { argb: 'FF475569' } };
+
+      const cards = [
+        { label: 'Total Tasks', value: tasks.length, range: ['A4', 'B6'], accent: 'FF1D4ED8' },
+        { label: 'Category Units', value: tasks.reduce((sum, task) => sum + getTaskCategoryCountWeight(task), 0), range: ['D4', 'E6'], accent: 'FF0F766E' },
+        { label: 'Ongoing Tasks', value: tasks.filter(task => normalizeStatus(task.status) === 'Ongoing').length, range: ['G4', 'H6'], accent: 'FFF59E0B' },
+        { label: 'Completed Tasks', value: tasks.filter(task => isTaskCompleted(task)).length, range: ['A8', 'B10'], accent: 'FF16A34A' }
+      ];
+
+      cards.forEach(card => {
+        const [startCell, endCell] = card.range;
+        worksheet.mergeCells(`${startCell}:${endCell}`);
+        const cell = worksheet.getCell(startCell);
+        cell.value = `${card.label}\n${card.value}`;
+        cell.font = { size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
+        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: card.accent }
+        };
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FFFFFFFF' } },
+          left: { style: 'thin', color: { argb: 'FFFFFFFF' } },
+          bottom: { style: 'thin', color: { argb: 'FFFFFFFF' } },
+          right: { style: 'thin', color: { argb: 'FFFFFFFF' } }
+        };
+      });
+
+      const sectionDefinitions = [
+        { title: 'Status Breakdown', startCell: 'D8', accent: 'FF334155', rows: getStatusStatsRows() },
+        { title: 'Priority Breakdown', startCell: 'G8', accent: 'FF7C2D12', rows: getPriorityStatsRows() },
+        { title: 'Category Breakdown', startCell: 'A12', accent: 'FF115E59', rows: getCategoryStatsRows() }
+      ];
+
+      sectionDefinitions.forEach(section => {
+        const startColumn = section.startCell.match(/[A-Z]+/)[0];
+        const startRow = Number(section.startCell.match(/\d+/)[0]);
+        const nextColumn = getExcelColumnLetter(startColumn.charCodeAt(0) - 64 + 1);
+        worksheet.mergeCells(`${startColumn}${startRow}:${nextColumn}${startRow}`);
+        const titleCell = worksheet.getCell(`${startColumn}${startRow}`);
+        titleCell.value = section.title;
+        titleCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+        titleCell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: section.accent }
+        };
+
+        const headerRow = worksheet.getRow(startRow + 1);
+        headerRow.getCell(startColumn).value = 'Label';
+        headerRow.getCell(nextColumn).value = 'Count';
+        [headerRow.getCell(startColumn), headerRow.getCell(nextColumn)].forEach(cell => {
+          cell.font = { bold: true, color: { argb: 'FF0F172A' } };
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFE2E8F0' }
+          };
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+            left: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+            bottom: { style: 'thin', color: { argb: 'FFCBD5E1' } },
+            right: { style: 'thin', color: { argb: 'FFCBD5E1' } }
+          };
+        });
+
+        section.rows.forEach((row, index) => {
+          const targetRow = worksheet.getRow(startRow + 2 + index);
+          targetRow.getCell(startColumn).value = row.label;
+          targetRow.getCell(nextColumn).value = row.value;
+          [targetRow.getCell(startColumn), targetRow.getCell(nextColumn)].forEach(cell => {
+            cell.alignment = { vertical: 'middle', horizontal: cell.col === targetRow.getCell(nextColumn).col ? 'center' : 'left' };
+            cell.border = {
+              left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+              bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+              right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+            };
+            cell.fill = {
+              type: 'pattern',
+              pattern: 'solid',
+              fgColor: { argb: index % 2 === 0 ? 'FFF8FAFC' : 'FFFFFFFF' }
+            };
+          });
+        });
+      });
+    }
+
+    async function exportDetailedToExcel() {
+      if (typeof ExcelJS === 'undefined') {
+        alert('Detailed Excel export is unavailable because the ExcelJS library did not load. Reload the page and try again.');
+        return;
+      }
+
+      if (!confirm(`Create a detailed Excel workbook for ${tasks.length} task${tasks.length === 1 ? '' : 's'}?`)) {
+        return;
+      }
+
+      try {
+        const workbook = new ExcelJS.Workbook();
+        const stamp = getExportTimestampStamp();
+        workbook.creator = 'GitHub Copilot';
+        workbook.lastModifiedBy = 'GitHub Copilot';
+        workbook.created = new Date();
+        workbook.modified = new Date();
+        workbook.company = 'FolderStandards';
+        workbook.subject = 'Task Manager Detailed Export';
+        workbook.title = `Task Manager Detailed Export ${stamp}`;
+
+        const validationLists = buildValidationListSheet(workbook);
+        const taskRows = getDetailedTaskExportRows();
+        const taskColumns = [
+          { key: 'No', header: 'No.', width: 8 },
+          { key: 'Title', header: 'Title', width: 34 },
+          { key: 'Description', header: 'Description', width: 46 },
+          { key: 'Category', header: 'Category', width: 24 },
+          { key: 'Priority', header: 'Priority', width: 14 },
+          { key: 'EmailSubject', header: 'Email Subject', width: 38 },
+          { key: 'Sender', header: 'Sender', width: 22 },
+          { key: 'Notes', header: 'Notes', width: 40 },
+          { key: 'Created', header: 'Created', width: 14 },
+          { key: 'Received', header: 'Received', width: 14 },
+          { key: 'Due', header: 'Due', width: 14 },
+          { key: 'Quantity', header: 'Quantity', width: 14 },
+          { key: 'Status', header: 'Status', width: 20 }
+        ];
+        const taskHeaderLayout = getTaskSheetHeaderLayout();
+        const getTaskColumnLetter = key => getExcelColumnLetter(taskColumns.findIndex(column => column.key === key) + 1);
+
+        styleDetailedWorksheet(workbook.addWorksheet('Tasks'), taskColumns, taskRows, {
+          title: 'Tasks Dashboard',
+          subtitle: `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())} with the current task register and summary totals in the sheet header.`,
+          accentColor: '1D4ED8',
+          emptyMessage: 'No tasks available.',
+          tableStartRow: taskHeaderLayout.tableStartRow,
+          centerColumns: [1, 4, 5, 9, 10, 11, 12, 13],
+          dateColumns: ['Created', 'Received', 'Due'],
+          beforeTable: (worksheet, columns, context) => {
+            buildTaskSheetDashboardHeader(worksheet, context.lastColumn, taskHeaderLayout);
+          },
+          afterBuild: (worksheet, rows, columns, context) => {
+            const startRow = context.tableStartRow + 1;
+            const endRow = Math.max(rows.length + context.tableStartRow, startRow);
+            applyListValidation(worksheet, getTaskColumnLetter('Category'), startRow, endRow, validationLists.categories);
+            applyListValidation(worksheet, getTaskColumnLetter('Priority'), startRow, endRow, validationLists.priorities);
+            applyListValidation(worksheet, getTaskColumnLetter('Sender'), startRow, endRow, validationLists.senders);
+            applyListValidation(worksheet, getTaskColumnLetter('Status'), startRow, endRow, validationLists.statuses);
+
+            safeAddConditionalFormatting(worksheet, `${getTaskColumnLetter('Priority')}${startRow}:${getTaskColumnLetter('Priority')}${endRow}`, [
+              { type: 'cellIs', operator: 'equal', formulae: ['"Critical"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFF1F2' }, fgColor: { argb: 'FFFFF1F2' } }, font: { color: { argb: 'FF991B1B' }, bold: true } } },
+              { type: 'cellIs', operator: 'equal', formulae: ['"High"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFF7ED' }, fgColor: { argb: 'FFFFF7ED' } }, font: { color: { argb: 'FF9A3412' }, bold: true } } },
+              { type: 'cellIs', operator: 'equal', formulae: ['"Medium"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFFBEB' }, fgColor: { argb: 'FFFFFBEB' } }, font: { color: { argb: 'FFB45309' }, bold: true } } },
+              { type: 'cellIs', operator: 'equal', formulae: ['"Low"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF2FBF5' }, fgColor: { argb: 'FFF2FBF5' } }, font: { color: { argb: 'FF15803D' }, bold: true } } },
+              { type: 'cellIs', operator: 'equal', formulae: ['"Very Low"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF1F9FE' }, fgColor: { argb: 'FFF1F9FE' } }, font: { color: { argb: 'FF0369A1' }, bold: true } } }
+            ]);
+            safeAddConditionalFormatting(worksheet, `${getTaskColumnLetter('Status')}${startRow}:${getTaskColumnLetter('Status')}${endRow}`, [
+              { type: 'cellIs', operator: 'equal', formulae: ['"Pending"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFFBEB' }, fgColor: { argb: 'FFFFFBEB' } }, font: { color: { argb: 'FFB45309' }, bold: true } } },
+              { type: 'cellIs', operator: 'equal', formulae: ['"Not Started"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF8FAFC' }, fgColor: { argb: 'FFF8FAFC' } }, font: { color: { argb: 'FF475569' }, bold: true } } },
+              { type: 'cellIs', operator: 'equal', formulae: ['"Ongoing"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF2F7FF' }, fgColor: { argb: 'FFF2F7FF' } }, font: { color: { argb: 'FF1D4ED8' }, bold: true } } },
+              { type: 'cellIs', operator: 'equal', formulae: ['"Waiting for Someone Else"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFF5F0' }, fgColor: { argb: 'FFFFF5F0' } }, font: { color: { argb: 'FF9A3412' }, bold: true } } },
+              { type: 'cellIs', operator: 'equal', formulae: ['"Completed"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF1FBF4' }, fgColor: { argb: 'FFF1FBF4' } }, font: { color: { argb: 'FF166534' }, bold: true } } }
+            ]);
+            safeAddConditionalFormatting(worksheet, `${getTaskColumnLetter('Quantity')}${startRow}:${getTaskColumnLetter('Quantity')}${endRow}`, [
+              { type: 'cellIs', operator: 'greaterThan', formulae: ['1'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF2FBF7' }, fgColor: { argb: 'FFF2FBF7' } }, font: { color: { argb: 'FF115E59' }, bold: true } } }
+            ]);
+
+            if (categories.length) {
+              safeAddConditionalFormatting(worksheet, `${getTaskColumnLetter('Category')}${startRow}:${getTaskColumnLetter('Category')}${endRow}`, categories.map(category => {
+                const accent = normalizeExcelHexColor(category.color);
+                return {
+                  type: 'cellIs',
+                  operator: 'equal',
+                  formulae: [getExcelTextRuleFormula(category.name)],
+                  style: {
+                    fill: {
+                      type: 'pattern',
+                      pattern: 'solid',
+                      bgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.9)}` },
+                      fgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.9)}` }
+                    },
+                    font: { color: { argb: `FF${accent}` }, bold: true }
+                  }
+                };
+              }));
+            }
+          }
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        downloadExcelBuffer(buffer, `task-manager-detailed-export-${stamp}.xlsx`);
+      } catch (error) {
+        alert(error?.message || 'Detailed Excel export failed.');
+      }
+    }
+
     function getLogsByTaskId(taskId) {
       return logs
         .filter(log => log.taskId === taskId)
@@ -5802,6 +6760,41 @@
       });
     }
 
+    function renderHiddenFiltersSummary() {
+      const summary = document.getElementById('hiddenFiltersSummary');
+      if (!summary) return;
+
+      const activeFilters = HIDDEN_FILTER_GROUPS.flatMap(filterType =>
+        (hiddenFilters?.[filterType] || []).map(value => ({
+          filterType,
+          value,
+          accent: getHiddenFilterAccent(filterType, value)
+        }))
+      );
+
+      if (!activeFilters.length) {
+        summary.hidden = true;
+        summary.innerHTML = '';
+        return;
+      }
+
+      summary.hidden = false;
+      summary.innerHTML = `
+        <span class="filter-label">Hidden</span>
+        ${activeFilters.map(filter => `
+          <button
+            type="button"
+            class="hidden-filter-chip"
+            style="--chip-accent:${escHtml(filter.accent)}"
+            data-clear-hidden-filter-type="${escHtml(filter.filterType)}"
+            data-clear-hidden-filter-value="${escHtml(filter.value)}"
+          >
+            <strong>${escHtml(getHiddenFilterLabel(filter.filterType))}</strong>
+            <span>${escHtml(filter.value)}</span>
+          </button>`).join('')}
+        <button type="button" class="hidden-filter-chip is-clear" data-clear-all-hidden-filters="true">Clear All</button>`;
+    }
+
     // ── Render Stats ──
     // Rebuilds both the primary stat chips and the secondary micro-stat grid.
     // Called as part of renderTasks() so counts always stay in sync.
@@ -5812,6 +6805,8 @@
       const attention = tasks.filter(task => ATTENTION_PRIORITIES.has(normalizePriority(task.priority)) && !isTaskCompleted(task)).length;
       const statusStats = STATUS_OPTIONS.map(status => ({
         label: status,
+        filterType: 'status',
+        filterValue: status,
         value: status === 'Completed'
           ? tasks.filter(task => isTaskCompleted(task)).length
           : tasks.filter(task => normalizeStatus(task.status) === status).length,
@@ -5820,13 +6815,19 @@
       }));
       const priorityStats = PRIORITY_OPTIONS.map(priority => ({
         label: priority,
+        filterType: 'priority',
+        filterValue: priority,
         value: tasks.filter(task => normalizePriority(task.priority) === priority).length,
         accent: PRIORITY_ACCENTS[priority] || 'var(--accent)',
         itemClass: `is-${toClassToken(priority)}`
       }));
       const categoryStats = categories.map(category => ({
         label: category.name,
-        value: tasks.filter(task => task.category === category.name).length,
+        filterType: 'category',
+        filterValue: category.name,
+        value: tasks
+          .filter(task => task.category === category.name)
+          .reduce((sum, task) => sum + getTaskCategoryCountWeight(task), 0),
         accent: category.color,
         itemClass: 'is-category'
       }));
@@ -5905,10 +6906,17 @@
           </div>
           <div class="stats-group-list">
             ${group.items.map(stat => `
-              <div class="micro-stat ${stat.itemClass || ''}" style="--micro-accent:${stat.accent || group.accent}">
+              <button
+                type="button"
+                class="micro-stat ${stat.itemClass || ''} ${isFilterValueHidden(stat.filterType, stat.filterValue) ? 'is-excluded' : ''}"
+                style="--micro-accent:${stat.accent || group.accent}"
+                data-hidden-filter-type="${escHtml(stat.filterType)}"
+                data-hidden-filter-value="${escHtml(stat.filterValue)}"
+                aria-pressed="${isFilterValueHidden(stat.filterType, stat.filterValue) ? 'true' : 'false'}"
+              >
                 <span class="micro-stat-label">${escHtml(stat.label)}</span>
                 <strong class="micro-stat-value">${stat.value}</strong>
-              </div>`).join('')}
+              </button>`).join('')}
           </div>
         </section>`).join('')}`;
 
@@ -6017,6 +7025,7 @@
       renderCategoryOptions();
       renderTemplateOptions();
       renderTaskOptionSets();
+      renderHiddenFiltersSummary();
 
       const filters = getCurrentFilters();
       const activeViewMode = normalizeTaskViewMode(currentViewMode);
@@ -6024,6 +7033,9 @@
 
       let visible = tasks.filter(t => {
         if (hideDone && isTaskCompleted(t)) return false;
+        if ((hiddenFilters.category || []).includes(t.category)) return false;
+        if ((hiddenFilters.priority || []).includes(normalizePriority(t.priority))) return false;
+        if ((hiddenFilters.status || []).includes(normalizeStatus(t.status))) return false;
         if (filters.category && t.category !== filters.category) return false;
         if (filters.priority && t.priority !== filters.priority) return false;
         if (filters.status && t.status !== filters.status) return false;
@@ -6220,8 +7232,8 @@
             <div class="detail-title">${escHtml(task.title)}</div>
             <div class="task-meta">
               ${getCategoryMarkup(task.category)}
-              <span class="badge badge-${toClassToken(priority)}">${escHtml(priority)}</span>
-              <span class="badge badge-${toClassToken(status)}">${escHtml(status)}</span>
+              ${getFilterBadgeMarkup('priority', priority)}
+              ${getFilterBadgeMarkup('status', status)}
               <span class="badge badge-category" style="--category-color:#14b8a6">${workflowItemCount} item${workflowItemCount === 1 ? '' : 's'}</span>
               ${template ? `<span class="badge badge-category" style="--category-color:${escHtml(categoryColor)}">Template: ${escHtml(template.name)}</span>` : ''}
             </div>
@@ -6230,6 +7242,7 @@
         </div>
 
         <div class="detail-submeta">
+          <div class="detail-row"><span>Sender</span><strong>${task.sender ? escHtml(task.sender) : 'N/A'}</strong></div>
           <div class="detail-row is-full-width"><span>Email Subject</span><strong>${task.emailSubject ? escHtml(task.emailSubject) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-created"><span>Created</span><strong>${task.createdAt ? escHtml(formatDate(task.createdAt)) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-received"><span>Received</span><strong>${task.receivedAt ? escHtml(formatDate(task.receivedAt)) : 'N/A'}</strong></div>
@@ -6308,6 +7321,7 @@
         document.getElementById('taskTitle').value      = t.title;
         document.getElementById('taskTemplate').value   = getTemplateById(t.templateId)?.id || '';
         document.getElementById('taskEmailSubject').value = t.emailSubject || '';
+        document.getElementById('taskSender').value = t.sender || '';
         document.getElementById('taskDescription').value = t.description || '';
         document.getElementById('taskCategory').value   = getCategoryByName(t.category)?.name || categories[0]?.name || '';
         document.getElementById('taskPriority').value   = normalizePriority(t.priority);
@@ -6322,6 +7336,7 @@
         titleField.placeholder = 'One task title per line to create several tasks at once...';
         document.getElementById('taskTemplate').value   = '';
         document.getElementById('taskEmailSubject').value = '';
+        document.getElementById('taskSender').value = '';
         document.getElementById('taskDescription').value = '';
         document.getElementById('taskCategory').value   = categories[0]?.name || '';
         document.getElementById('taskPriority').value   = DEFAULT_PRIORITY;
@@ -6396,6 +7411,7 @@
         title,
         templateId: document.getElementById('taskTemplate').value || null,
         emailSubject: document.getElementById('taskEmailSubject').value.trim() || null,
+        sender: document.getElementById('taskSender').value.trim() || null,
         description: document.getElementById('taskDescription').value.trim() || null,
         category:   document.getElementById('taskCategory').value,
         priority:   normalizePriority(document.getElementById('taskPriority').value),
@@ -6446,6 +7462,13 @@
     // Single click listener on the list container handles quick-toggle (circle
     // button), card selection, edit, and delete via data-* attributes.
     document.getElementById('taskList').addEventListener('click', e => {
+      const hiddenFilterButton = e.target.closest('[data-hidden-filter-type]');
+      if (hiddenFilterButton) {
+        if (!toggleHiddenFilter(hiddenFilterButton.dataset.hiddenFilterType, hiddenFilterButton.dataset.hiddenFilterValue)) return;
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
       const editId   = e.target.closest('[data-edit]')?.dataset.edit;
       const deleteId = e.target.closest('[data-delete]')?.dataset.delete;
       const completeId = e.target.closest('[data-toggle-complete]')?.dataset.toggleComplete;
@@ -6519,6 +7542,13 @@
     });
 
     document.getElementById('taskDetailPanel').addEventListener('click', e => {
+      const hiddenFilterButton = e.target.closest('[data-hidden-filter-type]');
+      if (hiddenFilterButton) {
+        if (!toggleHiddenFilter(hiddenFilterButton.dataset.hiddenFilterType, hiddenFilterButton.dataset.hiddenFilterValue)) return;
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
       const editId = e.target.closest('[data-edit]')?.dataset.edit;
       const detailTabId = e.target.closest('[data-detail-tab]')?.dataset.detailTab;
       const deleteLogId = e.target.closest('[data-delete-log]')?.dataset.deleteLog;
@@ -7096,6 +8126,13 @@
           return { name, color };
         });
         tasks = tasks.map(task => task.category === editingCategoryName ? { ...task, category: name } : task);
+        hiddenFilters = {
+          ...hiddenFilters,
+          category: normalizeHiddenFilterValues(
+            'category',
+            (hiddenFilters.category || []).map(categoryName => categoryName === editingCategoryName ? name : categoryName)
+          )
+        };
       } else {
         categories.push({ name, color });
       }
@@ -7107,6 +8144,7 @@
       syncCategoryColorPresets('#5b8def');
       saveCategories();
       saveTasks();
+      saveHiddenFilters();
       renderCategoryList();
       renderTasks();
     });
@@ -7157,6 +8195,7 @@
     document.getElementById('itemSettingsForm').addEventListener('submit', e => {
       e.preventDefault();
 
+      const senderOptions = normalizeOptionList(document.getElementById('taskSenderOptionsInput').value);
       const supplierOptions = normalizeOptionList(document.getElementById('itemSupplierOptionsInput').value);
       const projectOptions = normalizeOptionList(document.getElementById('itemProjectOptionsInput').value);
 
@@ -7165,7 +8204,7 @@
         return;
       }
 
-      itemSettings = normalizeItemSettings({ supplierOptions, projectOptions });
+      itemSettings = normalizeItemSettings({ senderOptions, supplierOptions, projectOptions });
       saveItemSettings();
       closeItemSettingsModal();
       renderTasks();
@@ -7213,10 +8252,31 @@
     });
 
     document.getElementById('taskStatsSecondary').addEventListener('click', e => {
+      const hiddenFilterButton = e.target.closest('[data-hidden-filter-type]');
+      if (hiddenFilterButton) {
+        if (!toggleHiddenFilter(hiddenFilterButton.dataset.hiddenFilterType, hiddenFilterButton.dataset.hiddenFilterValue)) return;
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
       const statsTabId = e.target.closest('[data-stats-tab]')?.dataset.statsTab;
       if (!statsTabId || statsTabId === activeSecondaryStatsTab) return;
       activeSecondaryStatsTab = statsTabId;
       renderStats();
+    });
+
+    document.getElementById('hiddenFiltersSummary').addEventListener('click', e => {
+      const clearAll = e.target.closest('[data-clear-all-hidden-filters]');
+      if (clearAll) {
+        clearHiddenFilters();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
+      const clearFilterButton = e.target.closest('[data-clear-hidden-filter-type]');
+      if (!clearFilterButton) return;
+      clearHiddenFilters(clearFilterButton.dataset.clearHiddenFilterType, clearFilterButton.dataset.clearHiddenFilterValue);
+      renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
     });
 
     // ── Modal Open/Close ──
@@ -7235,6 +8295,9 @@
       }
     });
     document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
+    document.getElementById('exportDetailedExcelBtn').addEventListener('click', () => {
+      exportDetailedToExcel();
+    });
     document.getElementById('cancelTaskBtn').addEventListener('click', closeModal);
     document.getElementById('cancelCategoryBtn').addEventListener('click', closeCategoryModal);
     document.getElementById('cancelTemplateBtn').addEventListener('click', closeTemplateModal);
@@ -7285,11 +8348,16 @@
         if (confirm(`Delete category "${deleteName}"? Tasks in it will move to General.`)) {
           categories = categories.filter(category => category.name !== deleteName);
           tasks = tasks.map(task => task.category === deleteName ? { ...task, category: 'General' } : task);
+          hiddenFilters = {
+            ...hiddenFilters,
+            category: (hiddenFilters.category || []).filter(categoryName => categoryName !== deleteName)
+          };
           if (document.getElementById('filterCategory').value === deleteName) {
             document.getElementById('filterCategory').value = '';
           }
           saveCategories();
           saveTasks();
+          saveHiddenFilters();
           renderCategoryList();
           renderTasks();
         }
@@ -7342,6 +8410,7 @@
     document.addEventListener('scroll', closeDetailContextMenu, true);
 
     function fillItemSettingsForm() {
+      document.getElementById('taskSenderOptionsInput').value = (itemSettings?.senderOptions || []).join('\n');
       document.getElementById('itemSupplierOptionsInput').value = (itemSettings?.supplierOptions || DEFAULT_ITEM_SUPPLIER_OPTIONS).join('\n');
       document.getElementById('itemProjectOptionsInput').value = (itemSettings?.projectOptions || []).join('\n');
     }
@@ -7349,7 +8418,7 @@
     function openItemSettingsModal() {
       fillItemSettingsForm();
       document.getElementById('itemSettingsModal').classList.add('open');
-      document.getElementById('itemSupplierOptionsInput').focus();
+      document.getElementById('taskSenderOptionsInput').focus();
     }
 
     function closeItemSettingsModal() {
@@ -7394,6 +8463,7 @@
     saveTasks();
     saveItems();
     saveItemSettings();
+    saveHiddenFilters();
     saveTemplates();
     document.getElementById('sortTasks').value = currentSortMode;
     document.getElementById('toggleDoneBtn').textContent = hideDone ? 'Show Completed' : 'Hide Completed';
