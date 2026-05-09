@@ -67,10 +67,10 @@
       --status-ongoing: #3b82f6;
       --status-done:    #475569;
 
-      --sticky-panel-top: 82px;
+      --sticky-panel-top: 92px;
       --sticky-panel-gap: 16px;
       --task-list-offset: 270px;
-      --workspace-height-offset: 170px;
+      --workspace-height-offset: 180px;
     }
 
     :root.theme-light {
@@ -131,11 +131,11 @@
     .app-header {
       background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, var(--panel-bg)), var(--panel-bg));
       border-bottom: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: minmax(300px, 1.05fr) minmax(560px, 1.35fr);
+      align-items: start;
+      gap: 10px 14px;
       position: sticky;
       top: 0;
       z-index: 10;
@@ -144,15 +144,15 @@
     }
 
     .app-header-main {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
       align-items: center;
-      gap: 16px;
+      gap: 10px 12px;
       min-width: 0;
-      flex: 1 1 auto;
     }
 
     .app-header h1 {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       letter-spacing: .02em;
       color: color-mix(in srgb, var(--text) 88%, var(--accent-h) 12%);
@@ -163,12 +163,27 @@
     .app-header h1 span { color: var(--accent); }
 
     .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-auto-flow: row dense;
+      align-self: start;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .header-actions .btn-header {
+      width: 100%;
+      min-width: 0;
+      max-width: none;
+      justify-content: center;
+      min-height: 32px;
+      padding: 5px 9px;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+
+    .header-actions .btn-header-new {
+      grid-column: span 2;
     }
 
     .main-content {
@@ -284,8 +299,8 @@
     }
 
     .btn-header svg {
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       flex: 0 0 auto;
     }
 
@@ -293,6 +308,12 @@
       display: inline-flex;
       align-items: center;
       min-width: 0;
+      justify-content: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      line-height: 1.05;
     }
 
     .btn-header:hover {
@@ -329,10 +350,12 @@
       display: none;
       position: fixed;
       inset: 0;
+      padding: 12px;
       background: rgba(6,10,18,.64);
       z-index: 100;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
+      overflow: auto;
       backdrop-filter: blur(10px);
     }
     .modal-backdrop.open {
@@ -344,23 +367,28 @@
       border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
       border-radius: 18px;
       padding: 24px;
-      width: 100%;
+      width: min(100%, calc(100vw - 24px));
       max-width: 480px;
-      max-height: 90vh;
+      max-height: calc(100dvh - 24px);
+      margin: auto 0;
       overflow-y: auto;
       box-shadow: var(--shadow-panel);
     }
 
     #taskModal .modal {
+      width: min(810px, calc(100vw - 24px));
       max-width: 810px;
+      max-height: calc(100dvh - 24px);
       background:
         radial-gradient(circle at top right, color-mix(in srgb, #ec4899 10%, transparent), transparent 34%),
         radial-gradient(circle at top left, color-mix(in srgb, #14b8a6 8%, transparent), transparent 30%),
         linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, var(--surface)), var(--surface));
       border-color: color-mix(in srgb, #ec4899 14%, var(--border));
       position: relative;
-      overflow: hidden;
-      padding: 20px 22px 18px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: clamp(14px, 2vw, 20px) clamp(14px, 2.25vw, 22px) clamp(14px, 2vw, 18px);
+      overscroll-behavior: contain;
     }
 
     #taskModal .modal::before {
@@ -376,11 +404,11 @@
     }
 
     #taskForm .form-row.form-row-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
     }
 
     #taskForm .form-row.form-row-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
     }
 
     #taskForm {
@@ -390,6 +418,7 @@
       position: relative;
       z-index: 1;
       align-items: start;
+      min-width: 0;
     }
 
     #taskForm .form-row {
@@ -630,6 +659,13 @@
     }
 
     @media (max-width: 540px) {
+      #taskModal .modal {
+        width: calc(100vw - 16px);
+        max-height: calc(100dvh - 16px);
+        padding: 14px 12px;
+        border-radius: 16px;
+      }
+
       #taskForm {
         grid-template-columns: 1fr;
       }
@@ -944,48 +980,6 @@
       flex: 0 0 auto;
     }
 
-    .hidden-filters-summary {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      padding: 8px 10px;
-      border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
-      border-radius: 14px;
-      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 3%, transparent), rgba(255,255,255,.02));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
-    }
-
-    .hidden-filters-summary[hidden] {
-      display: none;
-    }
-
-    .hidden-filter-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      min-height: 30px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid color-mix(in srgb, var(--chip-accent, var(--accent)) 24%, var(--border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--chip-accent, var(--accent)) 12%, transparent), color-mix(in srgb, var(--chip-accent, var(--accent)) 4%, transparent));
-      color: color-mix(in srgb, var(--text) 84%, var(--chip-accent, var(--accent)) 16%);
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .hidden-filter-chip.is-clear {
-      --chip-accent: var(--text-muted);
-    }
-
-    .hidden-filter-chip strong {
-      font-size: 10px;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-      color: color-mix(in srgb, var(--text-muted) 58%, var(--chip-accent, var(--accent)) 42%);
-    }
-
     /* ── Task Stats ──
        Primary row: 4 large stat chips (Total, Ongoing, Done, Critical/High).
        Secondary grid: micro-stats for every status, priority, and category. ── */
@@ -1000,9 +994,9 @@
     .task-stats-header {
       flex: 1 1 auto;
       min-width: 0;
-      max-width: 620px;
+      max-width: none;
       margin-bottom: 0;
-      gap: 8px;
+      gap: 6px;
       align-items: stretch;
     }
 
@@ -1071,10 +1065,10 @@
     }
 
     .task-stats-secondary-shell {
-      margin-bottom: 14px;
-      padding: 10px;
+      margin-bottom: 10px;
+      padding: 8px;
       border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
-      border-radius: 16px;
+      border-radius: 14px;
       background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, transparent), rgba(255,255,255,.02));
       box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
     }
@@ -1084,7 +1078,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .task-stats-secondary-shell.is-collapsed .task-stats-secondary {
@@ -1139,6 +1133,21 @@
       grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
       gap: 6px;
       min-width: 0;
+    }
+
+    .stats-group--category {
+      gap: 6px;
+      padding: 8px;
+    }
+
+    .stats-group--category .stats-group-list {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-auto-rows: minmax(0, auto);
+      max-height: calc((32px * 2) + 6px);
+      overflow-y: auto;
+      padding-right: 2px;
+      align-content: start;
+      scrollbar-width: thin;
     }
 
     .stat-chip {
@@ -1200,9 +1209,9 @@
 
     .task-stats-header .stat-chip {
       min-height: 0;
-      padding: 8px 10px 9px;
-      border-radius: 14px;
-      gap: 3px;
+      padding: 7px 8px 8px;
+      border-radius: 12px;
+      gap: 2px;
     }
 
     .task-stats-header .stat-chip::before {
@@ -1216,12 +1225,12 @@
     }
 
     .task-stats-header .stat-label {
-      font-size: 9px;
-      letter-spacing: .07em;
+      font-size: 8px;
+      letter-spacing: .06em;
     }
 
     .task-stats-header .stat-value {
-      font-size: 20px;
+      font-size: 18px;
       line-height: 1.05;
     }
 
@@ -1242,7 +1251,7 @@
       background: color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 16%, transparent);
       min-height: 0;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
-      cursor: pointer;
+      cursor: default;
       text-align: left;
       transition: border-color .12s ease, background-color .12s ease, box-shadow .12s ease, transform .12s ease;
     }
@@ -1294,6 +1303,29 @@
       font-size: 11px;
       font-weight: 800;
       color: color-mix(in srgb, var(--text) 12%, var(--micro-accent, var(--group-accent, var(--accent))) 88%);
+    }
+
+    .stats-group--category .micro-stat {
+      gap: 6px;
+      padding: 4px 7px 4px 8px;
+      min-height: 32px;
+    }
+
+    .stats-group--category .micro-stat-label {
+      gap: 4px;
+      font-size: 9px;
+      letter-spacing: .05em;
+    }
+
+    .stats-group--category .micro-stat.is-category .micro-stat-label::before {
+      width: 6px;
+      height: 6px;
+    }
+
+    .stats-group--category .micro-stat-value {
+      min-width: 20px;
+      padding: 1px 6px;
+      font-size: 10px;
     }
 
     /* ── Task List ──
@@ -3786,13 +3818,18 @@
         overflow: visible;
       }
       .app-header {
-        align-items: flex-start;
-        flex-wrap: wrap;
+        grid-template-columns: 1fr;
       }
       .app-header-main {
         width: 100%;
-        flex-direction: column;
+        grid-template-columns: 1fr;
         align-items: stretch;
+      }
+      .header-actions {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      .header-actions .btn-header-new {
+        grid-column: span 2;
       }
       .list-panel {
         position: static;
@@ -3826,8 +3863,6 @@
 
     @media (max-width: 760px) {
       .app-header {
-        align-items: flex-start;
-        flex-wrap: wrap;
         gap: 12px;
       }
       .app-header-main {
@@ -3848,13 +3883,19 @@
         flex: 1 1 calc(33.333% - 5px);
         justify-content: center;
       }
-      .header-actions {
-        width: 100%;
-        justify-content: flex-start;
+      .stats-group--category .stats-group-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
       }
-      .header-actions .btn {
-        flex: 1 1 calc(50% - 10px);
-        justify-content: center;
+      .header-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .header-actions .btn-header,
+      .header-actions .btn-header-new {
+        grid-column: auto;
+        min-height: 34px;
       }
       .main-content { padding: 12px 10px 20px; }
       .filters-strip {
@@ -3931,8 +3972,14 @@
       .app-header-main h1 {
         white-space: normal;
       }
-      .header-actions { gap: 8px; }
-      .header-actions .btn { flex-basis: 100%; }
+      .header-actions {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .header-actions .btn-header,
+      .header-actions .btn-header-new {
+        grid-column: auto;
+      }
       .form-row { grid-template-columns: 1fr; }
       .category-form-row { grid-template-columns: 1fr; }
       .subtask-form { grid-template-columns: 1fr; }
@@ -4038,9 +4085,9 @@
       <div class="task-stats task-stats-header" id="taskStats"></div>
     </div>
     <div class="header-actions">
-      <button class="btn btn-header btn-header-theme" id="themeToggleBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
-        <span class="btn-header-label">Light Mode</span>
+      <button class="btn btn-header btn-header-new" id="newTaskBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span class="btn-header-label">New Task</span>
       </button>
       <button class="btn btn-header btn-header-categories" id="manageCategoriesBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h7"/><circle cx="18" cy="12" r="2.5"/><circle cx="14" cy="17" r="2.5"/></svg>
@@ -4052,27 +4099,27 @@
       </button>
       <button class="btn btn-header btn-header-items" id="manageItemsBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 6.5h16"/><path d="M4 12h16"/><path d="M4 17.5h16"/><circle cx="8" cy="6.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="17.5" r="1.2" fill="currentColor" stroke="none"/></svg>
-        <span class="btn-header-label">All Items</span>
+        <span class="btn-header-label">Items</span>
       </button>
       <button class="btn btn-header btn-header-settings" id="manageItemSettingsBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.2 15a1 1 0 0 0 .2 1.1l.1.1a1.7 1.7 0 0 1 0 2.4 1.7 1.7 0 0 1-2.4 0l-.1-.1a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9v.3a1.7 1.7 0 0 1-1.7 1.7 1.7 1.7 0 0 1-1.7-1.7V19a1 1 0 0 0-.6-.9 1 1 0 0 0-1.1.2l-.1.1a1.7 1.7 0 0 1-2.4 0 1.7 1.7 0 0 1 0-2.4l.1-.1a1 1 0 0 0 .2-1.1 1 1 0 0 0-.9-.6H4.5A1.7 1.7 0 0 1 2.8 12a1.7 1.7 0 0 1 1.7-1.7H4.8a1 1 0 0 0 .9-.6 1 1 0 0 0-.2-1.1l-.1-.1a1.7 1.7 0 0 1 0-2.4 1.7 1.7 0 0 1 2.4 0l.1.1a1 1 0 0 0 1.1.2 1 1 0 0 0 .6-.9V4.5A1.7 1.7 0 0 1 12 2.8a1.7 1.7 0 0 1 1.7 1.7v.3a1 1 0 0 0 .6.9 1 1 0 0 0 1.1-.2l.1-.1a1.7 1.7 0 0 1 2.4 0 1.7 1.7 0 0 1 0 2.4l-.1.1a1 1 0 0 0-.2 1.1 1 1 0 0 0 .9.6h.3A1.7 1.7 0 0 1 21.2 12a1.7 1.7 0 0 1-1.7 1.7h-.3a1 1 0 0 0-.9.6Z"/></svg>
           <span class="btn-header-label">Settings</span>
       </button>
-      <button class="btn btn-header btn-header-clear" id="clearCompletedBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M9 3.5h6"/><path d="M4 7.5h16"/><path d="M6.5 7.5 7.3 19a1 1 0 0 0 1 .9h7.4a1 1 0 0 0 1-.9l.8-11.5"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
-        <span class="btn-header-label">Clear Completed</span>
+      <button class="btn btn-header btn-header-theme" id="themeToggleBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <span class="btn-header-label">Light</span>
       </button>
       <button class="btn btn-header btn-header-export" id="exportExcelBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18.5h14"/></svg>
-        <span class="btn-header-label">Export Excel</span>
+        <span class="btn-header-label">Export</span>
       </button>
       <button class="btn btn-header btn-header-export-detailed" id="exportDetailedExcelBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18.5h14"/><path d="M7 7.5h10"/></svg>
-        <span class="btn-header-label">Detailed Excel</span>
+        <span class="btn-header-label">Detailed</span>
       </button>
-      <button class="btn btn-header btn-header-new" id="newTaskBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span class="btn-header-label">New Task</span>
+      <button class="btn btn-header btn-header-clear" id="clearCompletedBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M9 3.5h6"/><path d="M4 7.5h16"/><path d="M6.5 7.5 7.3 19a1 1 0 0 0 1 .9h7.4a1 1 0 0 0 1-.9l.8-11.5"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+        <span class="btn-header-label">Clear Done</span>
       </button>
     </div>
   </header>
@@ -4115,7 +4162,6 @@
       </div>
       <button class="btn btn-ghost toggle-done-btn" id="toggleDoneBtn">Hide Completed</button>
     </div>
-    <div class="hidden-filters-summary" id="hiddenFiltersSummary" hidden></div>
   </div>
 
   <!-- ── Main ── -->
@@ -4706,7 +4752,7 @@
         categories.unshift({ name: 'General', color: '#64748b' });
       }
 
-      hiddenFilters = normalizeHiddenFilters(loadJson(KEYS.hiddenFilters, null));
+      hiddenFilters = { status: [], priority: [], category: [] };
 
       const fallbackCategory = 'General';
       const legacyItems = storedItems === null
@@ -4796,7 +4842,7 @@
       const iconMarkup = currentTheme === 'dark'
         ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>'
         : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2"/><path d="M12 19.3v2.2"/><path d="m4.9 4.9 1.6 1.6"/><path d="m17.5 17.5 1.6 1.6"/><path d="M2.5 12h2.2"/><path d="M19.3 12h2.2"/><path d="m4.9 19.1 1.6-1.6"/><path d="m17.5 6.5 1.6-1.6"/></svg>';
-      toggleButton.innerHTML = `${iconMarkup}<span class="btn-header-label">${currentTheme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>`;
+      toggleButton.innerHTML = `${iconMarkup}<span class="btn-header-label">${currentTheme === 'dark' ? 'Light' : 'Dark'}</span>`;
     }
 
     function syncCategoryColorPresets(colorValue = '') {
@@ -5197,7 +5243,7 @@
         classes.push('is-excluded');
       }
 
-      return `<button type="button" class="${classes.join(' ')}" data-hidden-filter-type="${escHtml(filterType)}" data-hidden-filter-value="${escHtml(normalizedValue)}" aria-pressed="${isFilterValueHidden(filterType, normalizedValue) ? 'true' : 'false'}"${styleAttribute}>${escHtml(normalizedValue)}</button>`;
+      return `<span class="${classes.join(' ')}"${styleAttribute}>${escHtml(normalizedValue)}</span>`;
     }
 
     function getCategoryMarkup(categoryName) {
@@ -6465,11 +6511,6 @@
         });
       });
 
-      worksheet.autoFilter = {
-        from: `A${tableStartRow}`,
-        to: `${lastColumn}${tableStartRow}`
-      };
-
       if (!rows.length) {
         const emptyRow = worksheet.getRow(tableStartRow + 1);
         emptyRow.getCell(1).value = options.emptyMessage || 'No records available.';
@@ -6760,41 +6801,6 @@
       });
     }
 
-    function renderHiddenFiltersSummary() {
-      const summary = document.getElementById('hiddenFiltersSummary');
-      if (!summary) return;
-
-      const activeFilters = HIDDEN_FILTER_GROUPS.flatMap(filterType =>
-        (hiddenFilters?.[filterType] || []).map(value => ({
-          filterType,
-          value,
-          accent: getHiddenFilterAccent(filterType, value)
-        }))
-      );
-
-      if (!activeFilters.length) {
-        summary.hidden = true;
-        summary.innerHTML = '';
-        return;
-      }
-
-      summary.hidden = false;
-      summary.innerHTML = `
-        <span class="filter-label">Hidden</span>
-        ${activeFilters.map(filter => `
-          <button
-            type="button"
-            class="hidden-filter-chip"
-            style="--chip-accent:${escHtml(filter.accent)}"
-            data-clear-hidden-filter-type="${escHtml(filter.filterType)}"
-            data-clear-hidden-filter-value="${escHtml(filter.value)}"
-          >
-            <strong>${escHtml(getHiddenFilterLabel(filter.filterType))}</strong>
-            <span>${escHtml(filter.value)}</span>
-          </button>`).join('')}
-        <button type="button" class="hidden-filter-chip is-clear" data-clear-all-hidden-filters="true">Clear All</button>`;
-    }
-
     // ── Render Stats ──
     // Rebuilds both the primary stat chips and the secondary micro-stat grid.
     // Called as part of renderTasks() so counts always stay in sync.
@@ -6899,24 +6905,20 @@
             </button>`).join('')}
         </div>
         ${secondaryGroups.map(group => `
-        <section class="stats-group ${group.id === activeSecondaryStatsTab ? 'is-active' : ''}" id="stats-group-${group.id}" style="--group-accent:${group.accent}" role="tabpanel" ${group.id === activeSecondaryStatsTab ? '' : 'hidden'}>
+        <section class="stats-group stats-group--${group.id} ${group.id === activeSecondaryStatsTab ? 'is-active' : ''}" id="stats-group-${group.id}" style="--group-accent:${group.accent}" role="tabpanel" ${group.id === activeSecondaryStatsTab ? '' : 'hidden'}>
           <div class="stats-group-header">
             <span class="stats-group-title">${group.title}</span>
             <span class="stats-group-total">${group.total}</span>
           </div>
           <div class="stats-group-list">
             ${group.items.map(stat => `
-              <button
-                type="button"
-                class="micro-stat ${stat.itemClass || ''} ${isFilterValueHidden(stat.filterType, stat.filterValue) ? 'is-excluded' : ''}"
+              <div
+                class="micro-stat ${stat.itemClass || ''}"
                 style="--micro-accent:${stat.accent || group.accent}"
-                data-hidden-filter-type="${escHtml(stat.filterType)}"
-                data-hidden-filter-value="${escHtml(stat.filterValue)}"
-                aria-pressed="${isFilterValueHidden(stat.filterType, stat.filterValue) ? 'true' : 'false'}"
               >
                 <span class="micro-stat-label">${escHtml(stat.label)}</span>
                 <strong class="micro-stat-value">${stat.value}</strong>
-              </button>`).join('')}
+              </div>`).join('')}
           </div>
         </section>`).join('')}`;
 
@@ -7025,7 +7027,6 @@
       renderCategoryOptions();
       renderTemplateOptions();
       renderTaskOptionSets();
-      renderHiddenFiltersSummary();
 
       const filters = getCurrentFilters();
       const activeViewMode = normalizeTaskViewMode(currentViewMode);
@@ -7033,9 +7034,6 @@
 
       let visible = tasks.filter(t => {
         if (hideDone && isTaskCompleted(t)) return false;
-        if ((hiddenFilters.category || []).includes(t.category)) return false;
-        if ((hiddenFilters.priority || []).includes(normalizePriority(t.priority))) return false;
-        if ((hiddenFilters.status || []).includes(normalizeStatus(t.status))) return false;
         if (filters.category && t.category !== filters.category) return false;
         if (filters.priority && t.priority !== filters.priority) return false;
         if (filters.status && t.status !== filters.status) return false;
@@ -7462,13 +7460,6 @@
     // Single click listener on the list container handles quick-toggle (circle
     // button), card selection, edit, and delete via data-* attributes.
     document.getElementById('taskList').addEventListener('click', e => {
-      const hiddenFilterButton = e.target.closest('[data-hidden-filter-type]');
-      if (hiddenFilterButton) {
-        if (!toggleHiddenFilter(hiddenFilterButton.dataset.hiddenFilterType, hiddenFilterButton.dataset.hiddenFilterValue)) return;
-        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
-        return;
-      }
-
       const editId   = e.target.closest('[data-edit]')?.dataset.edit;
       const deleteId = e.target.closest('[data-delete]')?.dataset.delete;
       const completeId = e.target.closest('[data-toggle-complete]')?.dataset.toggleComplete;
@@ -7542,13 +7533,6 @@
     });
 
     document.getElementById('taskDetailPanel').addEventListener('click', e => {
-      const hiddenFilterButton = e.target.closest('[data-hidden-filter-type]');
-      if (hiddenFilterButton) {
-        if (!toggleHiddenFilter(hiddenFilterButton.dataset.hiddenFilterType, hiddenFilterButton.dataset.hiddenFilterValue)) return;
-        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
-        return;
-      }
-
       const editId = e.target.closest('[data-edit]')?.dataset.edit;
       const detailTabId = e.target.closest('[data-detail-tab]')?.dataset.detailTab;
       const deleteLogId = e.target.closest('[data-delete-log]')?.dataset.deleteLog;
@@ -8252,31 +8236,10 @@
     });
 
     document.getElementById('taskStatsSecondary').addEventListener('click', e => {
-      const hiddenFilterButton = e.target.closest('[data-hidden-filter-type]');
-      if (hiddenFilterButton) {
-        if (!toggleHiddenFilter(hiddenFilterButton.dataset.hiddenFilterType, hiddenFilterButton.dataset.hiddenFilterValue)) return;
-        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
-        return;
-      }
-
       const statsTabId = e.target.closest('[data-stats-tab]')?.dataset.statsTab;
       if (!statsTabId || statsTabId === activeSecondaryStatsTab) return;
       activeSecondaryStatsTab = statsTabId;
       renderStats();
-    });
-
-    document.getElementById('hiddenFiltersSummary').addEventListener('click', e => {
-      const clearAll = e.target.closest('[data-clear-all-hidden-filters]');
-      if (clearAll) {
-        clearHiddenFilters();
-        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
-        return;
-      }
-
-      const clearFilterButton = e.target.closest('[data-clear-hidden-filter-type]');
-      if (!clearFilterButton) return;
-      clearHiddenFilters(clearFilterButton.dataset.clearHiddenFilterType, clearFilterButton.dataset.clearHiddenFilterValue);
-      renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
     });
 
     // ── Modal Open/Close ──
