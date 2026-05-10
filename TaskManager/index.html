@@ -440,6 +440,14 @@
       grid-column: 1 / -1;
     }
 
+    #taskForm > .task-field-project {
+      grid-column: 1 / span 2;
+    }
+
+    #taskForm > .task-field-image {
+      grid-column: 3 / -1;
+    }
+
     #taskForm > .task-field-template {
       grid-column: 3 / -1;
     }
@@ -591,6 +599,14 @@
       --task-group-accent: #8b5cf6;
     }
 
+    .task-field-project {
+      --task-group-accent: #0ea5e9;
+    }
+
+    .task-field-image {
+      --task-group-accent: #f97316;
+    }
+
     .task-field-category {
       --task-group-accent: #64748b;
     }
@@ -613,6 +629,102 @@
 
     .task-field-notes {
       --task-group-accent: #64748b;
+    }
+
+    .task-image-picker {
+      display: grid;
+      gap: 10px;
+    }
+
+    .task-image-picker-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .task-image-meta {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .task-image-meta strong {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.35;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .task-image-meta span {
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .task-image-clear-btn {
+      padding: 6px 10px;
+      min-height: auto;
+    }
+
+    .task-image-upload {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 146px;
+      border-radius: 14px;
+      border: 1px dashed color-mix(in srgb, var(--task-group-accent) 34%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 9%, transparent), rgba(255,255,255,.025));
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .task-image-upload input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .task-image-upload.is-empty {
+      padding: 14px;
+    }
+
+    .task-image-placeholder {
+      display: grid;
+      place-items: center;
+      gap: 8px;
+      text-align: center;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .task-image-placeholder strong {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--task-group-accent) 28%, var(--border));
+      background: color-mix(in srgb, var(--task-group-accent) 12%, transparent);
+      font-size: 20px;
+      color: color-mix(in srgb, var(--text) 82%, var(--task-group-accent) 18%);
+    }
+
+    .task-image-placeholder span {
+      font-size: 11px;
+      line-height: 1.45;
+      max-width: 22ch;
+    }
+
+    .task-image-preview {
+      display: block;
+      width: 100%;
+      max-height: 176px;
+      object-fit: cover;
     }
 
     #taskForm .form-actions {
@@ -652,6 +764,8 @@
 
       #taskForm > .task-field-title,
       #taskForm > .task-field-description,
+      #taskForm > .task-field-project,
+      #taskForm > .task-field-image,
       #taskForm > .task-field-email,
       #taskForm > .task-field-sender {
         grid-column: 1 / -1;
@@ -671,6 +785,8 @@
       }
 
       #taskForm > .task-field-template,
+      #taskForm > .task-field-project,
+      #taskForm > .task-field-image,
       #taskForm > .task-field-email,
       #taskForm > .task-field-sender {
         grid-column: 1 / -1;
@@ -1403,25 +1519,25 @@
        subtle category-colour glow overlay. The body is a two-column grid:
        task-main (content) on the left, task-actions (controls) on the right. ── */
     .task-card {
-      background: linear-gradient(180deg, rgba(255,255,255,.025), var(--surface));
+      background: linear-gradient(180deg, color-mix(in srgb, white 2.5%, var(--surface)), var(--surface));
       border: 1px solid color-mix(in srgb, var(--accent) 8%, var(--border));
       border-left: 3px solid var(--border);
-      border-radius: 14px;
+      border-radius: 16px;
       display: block;
       flex: 0 0 auto;
       transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease, background-color .12s ease;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 8px 18px rgba(2, 6, 23, .08), inset 0 1px 0 rgba(255,255,255,.02);
+      box-shadow: 0 12px 28px rgba(2, 6, 23, .1), inset 0 1px 0 rgba(255,255,255,.03);
     }
 
     .task-card-body {
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(220px, 260px);
-      gap: 10px;
-      padding: 12px 13px;
+      grid-template-columns: minmax(0, 1fr) minmax(184px, 228px);
+      gap: 12px;
+      padding: 13px 14px;
       align-items: start;
     }
 
@@ -1438,28 +1554,30 @@
     .task-card:hover {
       border-color: var(--accent);
       transform: translateY(-1px);
-      box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 14px 28px rgba(2, 6, 23, .12);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent), 0 18px 34px rgba(2, 6, 23, .14);
     }
 
     .task-card.is-active {
-      border-color: color-mix(in srgb, var(--accent-h) 74%, white 10%);
-      border-left-width: 7px;
-      outline: 2px solid color-mix(in srgb, var(--accent-h) 72%, white 8%);
-      outline-offset: -2px;
-      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 24%, var(--surface2)), color-mix(in srgb, var(--accent) 10%, var(--surface)));
+      border-color: color-mix(in srgb, var(--accent-h) 52%, var(--border-strong) 48%);
+      border-left-width: 6px;
+      background: linear-gradient(180deg, color-mix(in srgb, white 3.5%, var(--surface)), color-mix(in srgb, white 1.5%, var(--surface)));
+    }
+
+    .task-card.is-active::before {
+      opacity: .42;
     }
 
     .task-card.is-active::after {
       content: '';
       position: absolute;
       inset: 2px;
-      border-radius: 11px;
-      border: 1px solid color-mix(in srgb, var(--accent-h) 58%, var(--accent) 42%);
+      border-radius: 13px;
+      border: 1px solid color-mix(in srgb, var(--accent-h) 34%, transparent);
       pointer-events: none;
     }
 
     .task-card.is-active .task-title {
-      color: color-mix(in srgb, var(--text) 72%, var(--accent-h) 28%);
+      color: color-mix(in srgb, var(--text) 82%, var(--accent-h) 18%);
     }
 
     .task-card.priority-critical { border-left-color: var(--critical); }
@@ -1489,8 +1607,27 @@
     .task-heading {
       display: flex;
       align-items: flex-start;
-      gap: 8px;
+      gap: 10px;
       min-width: 0;
+    }
+
+    .task-card-media {
+      width: 96px;
+      min-width: 96px;
+      aspect-ratio: 1;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+      background: color-mix(in srgb, var(--surface2) 74%, var(--surface));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+      flex: 0 0 auto;
+    }
+
+    .task-card-media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .task-heading-main {
@@ -1498,14 +1635,166 @@
       min-width: 0;
       flex: 1 1 auto;
       display: grid;
-      gap: 4px;
+      gap: 6px;
+    }
+
+    .task-signal-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      min-width: 0;
+    }
+
+    .task-project-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      max-width: 100%;
+      min-height: 28px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, #0ea5e9 22%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, #0ea5e9 14%, transparent), rgba(255,255,255,.02));
+      color: color-mix(in srgb, var(--text) 78%, #8ed8ff 22%);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .task-project-pill::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, .12);
+      flex: 0 0 auto;
+    }
+
+    .task-project-pill span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .task-heading-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .task-heading-copy {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .task-type-line {
+      display: inline-grid;
+      gap: 5px;
+      max-width: 100%;
+      align-self: flex-start;
+      justify-self: start;
+      padding: 0;
+      border: 0;
+      background: none;
+      box-shadow: none;
+    }
+
+    .task-type-line::before {
+      content: '';
+      width: 48px;
+      max-width: 100%;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--task-type-color, var(--accent)), color-mix(in srgb, var(--task-type-color, var(--accent)) 18%, transparent));
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--task-type-color, var(--accent)) 18%, transparent);
+    }
+
+    .task-type-dot {
+      display: none;
+    }
+
+    .task-type-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--task-type-color, var(--accent)) 62%, var(--text-muted) 38%);
+    }
+
+    .task-priority {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 0;
+      max-width: 100%;
+      min-height: 28px;
+      padding: 0 2px;
+      align-self: flex-start;
+    }
+
+    .task-priority-bar {
+      position: relative;
+      width: 56px;
+      height: 6px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--priority-color, var(--accent)) 22%, var(--border));
+      background: color-mix(in srgb, var(--priority-color, var(--accent)) 8%, transparent);
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+      flex: 0 0 auto;
+    }
+
+    .task-priority-bar::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: var(--priority-fill, 58%);
+      border-radius: inherit;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--priority-color, var(--accent)) 78%, white 5%), color-mix(in srgb, var(--priority-color, var(--accent)) 52%, transparent));
+      opacity: .92;
+    }
+
+    .task-priority-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      font-size: 9px;
+      line-height: 1.1;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 800;
+      color: color-mix(in srgb, var(--priority-color, var(--accent)) 62%, var(--text-muted) 38%);
+    }
+
+    .task-priority-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--priority-color, var(--accent));
+      flex: 0 0 auto;
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--priority-color, var(--accent)) 14%, transparent);
     }
 
     .task-title {
-      font-size: 13px;
+      font-size: 16px;
       font-weight: 700;
-      line-height: 1.35;
-      margin-bottom: 2px;
+      line-height: 1.34;
+      margin-bottom: 0;
       color: color-mix(in srgb, var(--text) 88%, var(--accent-h) 12%);
       max-width: 100%;
       overflow-wrap: anywhere;
@@ -1595,9 +1884,9 @@
 
     .task-info-strip {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
       min-width: 0;
     }
@@ -1656,7 +1945,7 @@
     }
 
     .task-date {
-      font-size: 10px;
+      font-size: 11px;
       color: var(--text-muted);
     }
 
@@ -1671,10 +1960,11 @@
       grid-column: 2;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: start;
-      gap: 5px;
+      gap: 6px;
       width: 100%;
       justify-self: end;
       min-width: 0;
+      align-content: start;
     }
 
     .task-action-item {
@@ -1707,6 +1997,58 @@
       min-height: 28px;
       padding: 4px 8px;
       font-size: 10px;
+    }
+
+    .task-action-tools {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+
+    .task-action-icon-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015));
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform .12s ease, color .12s ease, border-color .12s ease, background-color .12s ease, box-shadow .12s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .task-action-icon-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
+    .task-action-icon-btn:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--accent) 26%, var(--border));
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
+      color: var(--text);
+    }
+
+    .task-action-icon-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+
+    .task-action-icon-btn.is-delete:hover {
+      border-color: color-mix(in srgb, var(--high) 45%, var(--border));
+      background: color-mix(in srgb, var(--high) 11%, transparent);
+      color: var(--high);
     }
 
     .task-actions .btn-danger {
@@ -1778,7 +2120,7 @@
     }
 
     .task-preview-date-label {
-      font-size: 8px;
+      font-size: 9px;
       line-height: 1.1;
       color: color-mix(in srgb, var(--text-muted) 76%, var(--accent) 24%);
       text-transform: uppercase;
@@ -1787,7 +2129,7 @@
     }
 
     .task-preview-date-value {
-      font-size: 9px;
+      font-size: 10px;
       line-height: 1.2;
       font-weight: 600;
       color: var(--text);
@@ -1802,8 +2144,8 @@
       font-size: 11px;
       line-height: 1.45;
       color: color-mix(in srgb, var(--text-muted) 82%, var(--text) 18%);
-      margin-top: 2px;
-      padding-top: 6px;
+      margin-top: 4px;
+      padding-top: 8px;
       border-top: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
       max-width: 100%;
       overflow-wrap: anywhere;
@@ -1844,8 +2186,8 @@
     }
 
     .task-card-compact .task-card-body {
-      grid-template-columns: minmax(0, 1fr) minmax(84px, 108px);
-      padding: 10px 11px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      padding: 11px 12px;
       align-items: center;
     }
 
@@ -1859,6 +2201,58 @@
       -webkit-line-clamp: 1;
       line-clamp: 1;
       margin-bottom: 0;
+    }
+
+    .task-card-compact .task-type-line {
+      gap: 4px;
+    }
+
+    .task-card-compact .task-type-name {
+      font-size: 8px;
+    }
+
+    .task-card-compact .task-priority-bar {
+      width: 46px;
+      height: 5px;
+    }
+
+    .task-card-compact .task-priority-label {
+      font-size: 7px;
+    }
+
+    .task-card-compact .task-card-media {
+      width: 82px;
+      min-width: 82px;
+      border-radius: 12px;
+    }
+
+    .task-card-compact .task-project-pill {
+      font-size: 9px;
+      padding: 4px 8px;
+      min-height: 26px;
+    }
+
+    .task-card-compact .task-title {
+      font-size: 15px;
+    }
+
+    @media (max-width: 760px) {
+      .task-card-media {
+        width: 84px;
+        min-width: 84px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .task-heading {
+        gap: 8px;
+      }
+
+      .task-card-media {
+        width: 72px;
+        min-width: 72px;
+        border-radius: 10px;
+      }
     }
 
     .task-card-compact .task-heading {
@@ -1898,12 +2292,16 @@
       align-self: stretch;
       justify-self: stretch;
       min-width: 0;
+      width: auto;
     }
 
-    .task-card-compact .task-actions .btn {
-      min-height: 32px;
-      padding: 6px 8px;
-      font-size: 10px;
+    .task-card-compact .task-action-tools {
+      align-self: start;
+    }
+
+    .task-card-compact .task-action-icon-btn {
+      width: 28px;
+      height: 28px;
     }
 
     .task-card-compact.is-board .task-card-body,
@@ -1921,6 +2319,11 @@
     .task-card-compact.is-board .task-heading,
     .task-card-compact.is-agenda .task-heading {
       align-items: flex-start;
+    }
+
+    .task-card-compact.is-board .task-heading-top,
+    .task-card-compact.is-agenda .task-heading-top {
+      gap: 8px;
     }
 
     .task-card-compact.is-board .task-heading-main,
@@ -1965,6 +2368,7 @@
     .task-card-compact.is-board .task-actions,
     .task-card-compact.is-agenda .task-actions {
       margin-top: 2px;
+      justify-self: end;
     }
 
     .task-view-group {
@@ -4222,6 +4626,29 @@
           <label for="taskDescription">Description</label>
           <textarea id="taskDescription" placeholder="Short task summary or context..."></textarea>
         </div>
+        <div class="form-group task-form-field task-field-project">
+          <label for="taskProject">Project</label>
+          <input type="text" id="taskProject" list="taskProjectOptions" placeholder="Type or pick a project" />
+          <datalist id="taskProjectOptions"></datalist>
+        </div>
+
+        <div class="form-group task-form-field task-field-image">
+          <label for="taskImageInput">Task Image</label>
+          <div class="task-image-picker">
+            <div class="task-image-picker-top">
+              <div class="task-image-meta">
+                <strong id="taskImageName">No image selected</strong>
+                <span id="taskImageHint">One optional image per task. It will appear on the left side of the card.</span>
+              </div>
+              <button type="button" class="btn btn-ghost task-image-clear-btn" id="clearTaskImageBtn" hidden>Remove</button>
+            </div>
+            <label class="task-image-upload is-empty" id="taskImageUpload" for="taskImageInput">
+              <span class="task-image-placeholder" id="taskImagePlaceholder"><strong>+</strong><span>Add an image for this task</span></span>
+              <img id="taskImagePreview" class="task-image-preview" alt="Task preview" hidden />
+              <input type="file" id="taskImageInput" accept="image/*" />
+            </label>
+          </div>
+        </div>
 
         <div class="task-form-section-label is-workflow"><span class="task-form-section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 7h12"/><path d="M6 12h8"/><path d="M6 17h10"/><circle cx="17" cy="7" r="1.5"/><circle cx="13" cy="12" r="1.5"/><circle cx="15" cy="17" r="1.5"/></svg></span>Workflow</div>
         <div class="form-row form-row-3">
@@ -4588,12 +5015,15 @@
     let activeDetailTab = 'description';
     let itemSearchQuery = '';
     let selectedItemIds = new Set();
+    let taskDraftImageDataUrl = '';
+    let taskDraftImageName = '';
 
     const INPUT_LIMITS = {
       searchTasks: 60,
       taskTitle: 2400,
       taskEmailSubject: 120,
       taskDescription: 500,
+      taskProject: 120,
       taskNotes: 500,
       categoryName: 60,
       templateName: 80,
@@ -4768,7 +5198,10 @@
           category: getCategoryByName(task.category)?.name || fallbackCategory,
           priority: normalizePriority(task.priority),
           status: normalizeStatus(task.status),
-          subtasks: Array.isArray(task.subtasks) ? task.subtasks : []
+          subtasks: Array.isArray(task.subtasks) ? task.subtasks : [],
+          project: String(task.project || '').trim() || null,
+          imageDataUrl: String(task.imageDataUrl || '').trim(),
+          imageName: String(task.imageName || '').trim(),
         };
 
         delete normalizedTask.workflowItems;
@@ -5112,6 +5545,8 @@
         taskSender.value = selectedSender;
       }
 
+      renderTaskProjectOptions();
+
       if (filterPriority) {
         const selectedPriority = filterPriority.value ? normalizePriority(filterPriority.value) : '';
         filterPriority.innerHTML = `<option value="">All Priorities</option>${buildOptionMarkup(PRIORITY_OPTIONS, selectedPriority)}`;
@@ -5250,6 +5685,73 @@
       const category = getCategoryByName(categoryName) || categories[0];
       if (!category) return '';
       return getFilterBadgeMarkup('category', category.name, { accent: category.color });
+    }
+
+    function getTaskTypeMarkup(categoryName) {
+      const category = getCategoryByName(categoryName) || categories[0];
+      if (!category) return '';
+
+      return `
+        <div class="task-type-line" style="--task-type-color:${escHtml(category.color || 'var(--accent)')}">
+          <span class="task-type-dot" aria-hidden="true"></span>
+          <span class="task-type-name">${escHtml(category.name)}</span>
+        </div>`;
+    }
+
+    function getTaskProjectMarkup(projectName) {
+      const normalizedProject = String(projectName || '').trim();
+      if (!normalizedProject) return '';
+
+      return `<div class="task-project-pill" title="${escHtml(normalizedProject)}"><span>${escHtml(normalizedProject)}</span></div>`;
+    }
+
+    function getTaskMediaMarkup(task) {
+      if (!task?.imageDataUrl) return '';
+
+      const imageAlt = task.imageName
+        ? `${task.title} image (${task.imageName})`
+        : `${task.title} image`;
+
+      return `
+        <div class="task-card-media">
+          <img src="${escHtml(task.imageDataUrl)}" alt="${escHtml(imageAlt)}" loading="lazy" />
+        </div>`;
+    }
+
+    function getTaskPriorityMarkup(priority) {
+      const normalizedPriority = normalizePriority(priority);
+      const accent = PRIORITY_ACCENTS[normalizedPriority] || 'var(--accent)';
+      const priorityFill = {
+        Critical: '100%',
+        High: '82%',
+        Medium: '62%',
+        Low: '42%',
+        'Very Low': '28%'
+      }[normalizedPriority] || '58%';
+
+      return `
+        <div class="task-priority" style="--priority-color:${escHtml(accent)};--priority-fill:${escHtml(priorityFill)}">
+          <div class="task-priority-bar" aria-hidden="true"></div>
+          <div class="task-priority-label"><span class="task-priority-dot" aria-hidden="true"></span>${escHtml(normalizedPriority)} Priority</div>
+        </div>`;
+    }
+
+    function getTaskActionToolsMarkup(taskId) {
+      return `
+        <div class="task-action-tools">
+          <button class="task-action-icon-btn is-edit" type="button" data-edit="${taskId}" title="Edit task" aria-label="Edit task">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
+            </svg>
+          </button>
+          <button class="task-action-icon-btn is-delete" type="button" data-delete="${taskId}" title="Delete task" aria-label="Delete task">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 6 6 18" />
+              <path d="M6 6l12 12" />
+            </svg>
+          </button>
+        </div>`;
     }
 
     function getCategoryColor(categoryName) {
@@ -5731,10 +6233,54 @@
         item.samApprovalStatus ? 'sam approval approved' : ''
       ].filter(Boolean).join(' ')).join(' ');
 
-      return [task.title, task.description, task.emailSubject, task.notes, workflowText]
+      return [task.title, task.description, task.emailSubject, task.notes, task.project, workflowText]
         .filter(Boolean)
         .join(' ')
         .toLowerCase();
+    }
+
+    function renderTaskProjectOptions() {
+      const projectField = document.getElementById('taskProject');
+      const projectOptions = document.getElementById('taskProjectOptions');
+      if (!projectField || !projectOptions) return;
+
+      const currentValue = projectField.value || '';
+      projectOptions.innerHTML = getProjectOptions(currentValue).map(option => `
+        <option value="${escHtml(option)}"></option>`).join('');
+    }
+
+    function updateTaskImagePreview() {
+      const preview = document.getElementById('taskImagePreview');
+      const placeholder = document.getElementById('taskImagePlaceholder');
+      const upload = document.getElementById('taskImageUpload');
+      const name = document.getElementById('taskImageName');
+      const hint = document.getElementById('taskImageHint');
+      const clearButton = document.getElementById('clearTaskImageBtn');
+      if (!preview || !placeholder || !upload || !name || !hint || !clearButton) return;
+
+      const hasImage = Boolean(taskDraftImageDataUrl);
+      preview.hidden = !hasImage;
+      placeholder.hidden = hasImage;
+      clearButton.hidden = !hasImage;
+      upload.classList.toggle('is-empty', !hasImage);
+
+      if (hasImage) {
+        preview.src = taskDraftImageDataUrl;
+        name.textContent = taskDraftImageName || 'Selected image';
+        hint.textContent = 'Shown on the left side of the task card.';
+      } else {
+        preview.removeAttribute('src');
+        name.textContent = 'No image selected';
+        hint.textContent = 'One optional image per task. It will appear on the left side of the card.';
+      }
+    }
+
+    function clearTaskDraftImage() {
+      taskDraftImageDataUrl = '';
+      taskDraftImageName = '';
+      const input = document.getElementById('taskImageInput');
+      if (input) input.value = '';
+      updateTaskImagePreview();
     }
 
     function getSubtaskProgress(task) {
@@ -5856,17 +6402,27 @@
             <div class="task-main">
               <div class="task-heading">
                 <button class="quick-toggle ${isTaskCompleted(task) ? 'is-done' : ''}" data-toggle-complete="${task.id}" title="Toggle complete">${isTaskCompleted(task) ? '✓' : ''}</button>
+                ${getTaskMediaMarkup(task)}
                 <div class="task-heading-main">
+                  <div class="task-heading-top">
+                    <div class="task-heading-copy">
+                      ${getTaskTypeMarkup(task.category)}
+                    </div>
+                    ${getTaskActionToolsMarkup(task.id)}
+                  </div>
                   <div class="task-title">${escHtml(task.title)}</div>
+                  <div class="task-signal-row">
+                    ${getTaskProjectMarkup(task.project)}
+                    ${getTaskPriorityMarkup(taskData.priority)}
+                  </div>
                   ${task.sender ? `<div class="task-sender-label">From: ${escHtml(task.sender)}</div>` : ''}
                   ${task.emailSubject ? `<div class="task-email-subject">Email: ${escHtml(task.emailSubject)}</div>` : ''}
                   <div class="task-info-strip">
                     <div class="task-meta">
-                      ${getCategoryMarkup(task.category)}
-                      ${getFilterBadgeMarkup('priority', taskData.priority)}
                       ${getFilterBadgeMarkup('status', taskData.status)}
                       <span class="task-date">${taskData.workflowItemCount} item${taskData.workflowItemCount === 1 ? '' : 's'}</span>
                       <span class="task-date">${taskData.logData.count} log${taskData.logData.count === 1 ? '' : 's'}</span>
+                      ${taskData.subtaskCount ? `<span class="task-date">${taskData.completedCount}/${taskData.subtaskCount} subtasks</span>` : ''}
                     </div>
                     <div class="task-preview-list">
                       <div class="task-preview-dates">
@@ -5893,12 +6449,6 @@
                   ${buildOptionMarkup(STATUS_OPTIONS, taskData.status)}
                 </select>
               </div>
-              <div class="task-action-item">
-                <button class="btn btn-ghost" data-edit="${task.id}" title="Edit task">Edit</button>
-              </div>
-              <div class="task-action-item">
-                <button class="btn btn-danger" data-delete="${task.id}" title="Delete task">Delete</button>
-              </div>
             </div>
           </div>
         </div>`;
@@ -5907,7 +6457,6 @@
     function getCompactTaskCardMarkup(task, options = {}) {
       const taskData = getTaskCardData(task);
       const contextClass = options.context ? ` is-${options.context}` : '';
-      const compactSummary = getTaskCompactSummary(task, taskData);
       const dueSummary = task.dueDate
         ? `${taskData.overdue ? 'Overdue' : 'Due'} ${formatDate(task.dueDate)}`
         : (task.receivedAt ? `Received ${formatDate(task.receivedAt)}` : 'No due date');
@@ -5918,31 +6467,27 @@
             <div class="task-main">
               <div class="task-heading">
                 <button class="quick-toggle ${isTaskCompleted(task) ? 'is-done' : ''}" data-toggle-complete="${task.id}" title="Toggle complete">${isTaskCompleted(task) ? '✓' : ''}</button>
+                ${getTaskMediaMarkup(task)}
                 <div class="task-heading-main">
+                  <div class="task-heading-top">
+                    <div class="task-heading-copy">
+                      ${getTaskTypeMarkup(task.category)}
+                    </div>
+                    ${getTaskActionToolsMarkup(task.id)}
+                  </div>
                   <div class="task-title">${escHtml(task.title)}</div>
+                  <div class="task-signal-row">
+                    ${getTaskProjectMarkup(task.project)}
+                    ${getTaskPriorityMarkup(taskData.priority)}
+                  </div>
                   <div class="task-meta">
-                    ${getCategoryMarkup(task.category)}
-                    ${getFilterBadgeMarkup('priority', taskData.priority)}
                     ${options.hideStatusBadge ? '' : getFilterBadgeMarkup('status', taskData.status)}
-                    ${task.sender ? `<span class="task-date task-sender-inline">From ${escHtml(task.sender)}</span>` : ''}
                     <span class="task-date ${taskData.overdue ? 'overdue' : ''}">${escHtml(dueSummary)}</span>
                   </div>
                 </div>
               </div>
-              <div class="task-compact-support">
-                <div class="task-compact-metrics">
-                  <span class="task-date">${taskData.workflowItemCount} item${taskData.workflowItemCount === 1 ? '' : 's'}</span>
-                  <span class="task-date">${taskData.logData.count} log${taskData.logData.count === 1 ? '' : 's'}</span>
-                  ${taskData.subtaskCount ? `<span class="task-date">${taskData.completedCount}/${taskData.subtaskCount} subtasks</span>` : ''}
-                </div>
-                <div class="task-compact-summary">${escHtml(compactSummary)}</div>
-              </div>
             </div>
-            <div class="task-actions task-actions-compact">
-              <div class="task-action-item is-wide">
-                <button class="btn btn-ghost" data-edit="${task.id}" title="Edit task">Edit</button>
-              </div>
-            </div>
+            <div class="task-actions task-actions-compact"></div>
           </div>
         </div>`;
     }
@@ -6944,6 +7489,7 @@
       }
 
       syncTaskModalFieldAccents();
+      renderTaskProjectOptions();
     }
 
     function renderCategoryList() {
@@ -7308,6 +7854,7 @@
 
       form.reset();
       renderTaskOptionSets();
+      clearTaskDraftImage();
 
       if (taskId) {
         const t = tasks.find(x => x.id === taskId);
@@ -7321,12 +7868,15 @@
         document.getElementById('taskEmailSubject').value = t.emailSubject || '';
         document.getElementById('taskSender').value = t.sender || '';
         document.getElementById('taskDescription').value = t.description || '';
+        document.getElementById('taskProject').value = t.project || '';
         document.getElementById('taskCategory').value   = getCategoryByName(t.category)?.name || categories[0]?.name || '';
         document.getElementById('taskPriority').value   = normalizePriority(t.priority);
         document.getElementById('taskStatus').value     = normalizeStatus(t.status);
         document.getElementById('taskReceivedAt').value = t.receivedAt || '';
         document.getElementById('taskDueDate').value    = t.dueDate    || '';
         document.getElementById('taskNotes').value      = t.notes      || '';
+        taskDraftImageDataUrl = String(t.imageDataUrl || '').trim();
+        taskDraftImageName = String(t.imageName || '').trim();
       } else {
         title.textContent  = 'New Task';
         submitLabel.textContent = 'Create Task';
@@ -7336,12 +7886,15 @@
         document.getElementById('taskEmailSubject').value = '';
         document.getElementById('taskSender').value = '';
         document.getElementById('taskDescription').value = '';
+        document.getElementById('taskProject').value = '';
         document.getElementById('taskCategory').value   = categories[0]?.name || '';
         document.getElementById('taskPriority').value   = DEFAULT_PRIORITY;
         document.getElementById('taskStatus').value     = DEFAULT_STATUS;
         document.getElementById('taskReceivedAt').value = today();
       }
 
+      renderTaskProjectOptions();
+      updateTaskImagePreview();
       modal.classList.add('open');
       syncTaskModalFieldAccents();
       document.getElementById('taskTitle').focus();
@@ -7411,6 +7964,9 @@
         emailSubject: document.getElementById('taskEmailSubject').value.trim() || null,
         sender: document.getElementById('taskSender').value.trim() || null,
         description: document.getElementById('taskDescription').value.trim() || null,
+        project: normalizeSingleLineText(document.getElementById('taskProject').value) || null,
+        imageDataUrl: taskDraftImageDataUrl || '',
+        imageName: taskDraftImageName || '',
         category:   document.getElementById('taskCategory').value,
         priority:   normalizePriority(document.getElementById('taskPriority').value),
         status:     normalizeStatus(document.getElementById('taskStatus').value),
@@ -7456,6 +8012,24 @@
       syncTaskModalFieldAccents();
     });
 
+    document.getElementById('taskImageInput').addEventListener('change', async e => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      try {
+        taskDraftImageDataUrl = await buildItemImageData(file);
+        taskDraftImageName = file.name;
+        updateTaskImagePreview();
+      } catch (error) {
+        alert(error?.message || 'Unable to process the selected image.');
+        clearTaskDraftImage();
+      }
+    });
+
+    document.getElementById('clearTaskImageBtn').addEventListener('click', () => {
+      clearTaskDraftImage();
+    });
+
     // ── Event Delegation: task list ──
     // Single click listener on the list container handles quick-toggle (circle
     // button), card selection, edit, and delete via data-* attributes.
@@ -7469,13 +8043,6 @@
         if (!task) return;
         task.status = isTaskCompleted(task) ? DEFAULT_STATUS : 'Completed';
         saveTasks();
-        renderTasks();
-        return;
-      }
-
-      const card = e.target.closest('.task-card');
-      if (card && !e.target.closest('.task-actions')) {
-        selectedTaskId = card.dataset.id;
         renderTasks();
         return;
       }
@@ -7497,6 +8064,14 @@
           saveItems();
           renderTasks();
         }
+        return;
+      }
+
+      const card = e.target.closest('.task-card');
+      if (card && !e.target.closest('.task-actions, .task-action-tools')) {
+        selectedTaskId = card.dataset.id;
+        renderTasks();
+        return;
       }
     });
 
