@@ -3009,66 +3009,80 @@
 
     .log-list {
       display: grid;
-      gap: 6px;
+      gap: 8px;
     }
 
     .log-entry {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: start;
-      gap: 8px 10px;
-      border: 1px solid color-mix(in srgb, var(--status-ongoing) 14%, var(--border));
-      border-radius: 10px;
-      padding: 8px 10px;
-      background: linear-gradient(180deg, color-mix(in srgb, var(--status-ongoing) 8%, var(--surface2)), var(--surface2));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+      gap: 10px 12px;
+      border: 1px solid color-mix(in srgb, var(--status-ongoing) 18%, var(--border));
+      border-radius: 14px;
+      padding: 11px 13px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--status-ongoing) 10%, var(--surface2)), var(--surface2));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
     }
 
     .log-entry-main {
-      display: grid;
-      gap: 4px;
+      display: block;
       min-width: 0;
     }
 
     .log-entry-header {
-      display: grid;
-      gap: 2px;
-      justify-items: start;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 6px;
       min-width: 0;
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .log-entry-header strong {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      color: color-mix(in srgb, var(--text-muted) 58%, var(--status-ongoing) 42%);
     }
 
     .log-entry-time {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      font-size: 10px;
+      gap: 6px;
+      padding: 4px 9px;
+      border: 1px solid color-mix(in srgb, var(--status-ongoing) 24%, var(--border));
+      border-radius: 999px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--status-ongoing) 18%, transparent), color-mix(in srgb, var(--status-ongoing) 8%, transparent));
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .02em;
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
-      color: color-mix(in srgb, var(--text-muted) 88%, var(--status-ongoing) 12%);
+      color: color-mix(in srgb, var(--text) 80%, var(--status-ongoing) 20%);
+    }
+
+    .log-entry-separator {
+      padding-top: 3px;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: color-mix(in srgb, var(--text-muted) 46%, var(--status-ongoing) 54%);
     }
 
     .log-entry-body {
-      font-size: 11px;
-      line-height: 1.38;
+      flex: 1 1 240px;
+      min-width: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 500;
       color: color-mix(in srgb, var(--text) 86%, var(--status-ongoing) 14%);
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
 
     .log-entry .btn-danger {
-      min-height: 24px;
-      padding: 2px 8px;
-      font-size: 10px;
+      align-self: center;
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      min-width: 28px;
+      min-height: 28px;
+      padding: 0;
+      border-radius: 999px;
+      font-size: 17px;
+      line-height: 1;
     }
 
     .log-empty {
@@ -5604,6 +5618,21 @@
       return `${formattedDate} ${formattedTime}`;
     }
 
+    function formatLogDateTime(iso) {
+      if (!iso) return null;
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) return null;
+
+      const weekday = date.toLocaleDateString([], { weekday: 'short' });
+      const formattedDate = formatDate(date.toISOString().slice(0, 10));
+      const formattedTime = date.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      return `${weekday} ${formattedDate}, ${formattedTime}`;
+    }
+
     function getTaskById(taskId) {
       return tasks.find(task => task.id === taskId) || null;
     }
@@ -7484,12 +7513,12 @@
                   <article class="log-entry">
                     <div class="log-entry-main">
                       <div class="log-entry-header">
-                        <strong>Update</strong>
-                        <span class="log-entry-time">${escHtml(formatDateTime(log.createdAt) || '')}</span>
+                        <span class="log-entry-time">${escHtml(formatLogDateTime(log.createdAt) || '')}</span>
+                        <span class="log-entry-separator" aria-hidden="true">:</span>
+                        <div class="log-entry-body">${escHtml(log.content)}</div>
                       </div>
-                      <div class="log-entry-body">${escHtml(log.content)}</div>
                     </div>
-                    <button class="btn btn-danger" data-delete-log="${log.id}">Delete</button>
+                    <button class="btn btn-danger" type="button" data-delete-log="${log.id}" aria-label="Delete log" title="Delete log">&times;</button>
                   </article>`).join('') : '<div class="log-empty">No logs yet for this task.</div>'}
               </div>
             </div>`
