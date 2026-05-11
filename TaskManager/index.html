@@ -3561,7 +3561,7 @@
       min-width: 0;
     }
 
-    .subtask-item input {
+    .subtask-item input[type="checkbox"] {
       width: 16px;
       height: 16px;
       accent-color: var(--accent);
@@ -3590,6 +3590,7 @@
     .subtask-inline-form {
       display: grid;
       gap: 8px;
+      width: 100%;
       min-width: 0;
     }
 
@@ -7968,8 +7969,8 @@
                 <div class="subtask-list">
                   ${task.subtasks.map((subtask, index) => `
                     <div class="subtask-item ${subtask.done ? 'is-done' : ''} ${activeSubtaskEditTaskId === task.id && activeSubtaskEditId === subtask.id ? 'is-editing' : ''}">
-                      <label class="subtask-item-main">
-                        <input type="checkbox" data-toggle-subtask="${subtask.id}" ${subtask.done ? 'checked' : ''} ${activeSubtaskEditTaskId === task.id && activeSubtaskEditId === subtask.id ? 'disabled' : ''} />
+                      <div class="subtask-item-main">
+                        <input id="subtask-toggle-${subtask.id}" type="checkbox" data-toggle-subtask="${subtask.id}" ${subtask.done ? 'checked' : ''} ${activeSubtaskEditTaskId === task.id && activeSubtaskEditId === subtask.id ? 'disabled' : ''} />
                         ${activeSubtaskEditTaskId === task.id && activeSubtaskEditId === subtask.id ? `
                           <form class="subtask-inline-form" data-subtask-edit-form="${subtask.id}">
                             <input type="text" class="subtask-inline-input" data-subtask-edit-input="${subtask.id}" value="${escHtml(subtask.title)}" maxlength="${INPUT_LIMITS.subtaskTitle}" />
@@ -7978,8 +7979,8 @@
                               <button type="button" class="btn btn-ghost subtask-inline-btn" data-cancel-subtask-edit="${subtask.id}">Cancel</button>
                             </div>
                           </form>` : `
-                          <span class="subtask-item-title">${escHtml(subtask.title)}</span>`}
-                      </label>
+                          <label class="subtask-item-title" for="subtask-toggle-${subtask.id}">${escHtml(subtask.title)}</label>`}
+                      </div>
                       ${activeSubtaskEditTaskId === task.id && activeSubtaskEditId === subtask.id ? '' : `
                         <div class="subtask-item-actions">
                           <button type="button" class="btn btn-ghost subtask-edit-btn" data-edit-subtask="${subtask.id}">Edit</button>
