@@ -5161,16 +5161,16 @@
     let taskDraftImageName = '';
 
     const INPUT_LIMITS = {
-      searchTasks: 60,
-      taskTitle: 2400,
+      searchTasks: 120,
+      taskTitle: 800,
       taskEmailSubject: 120,
-      taskDescription: 500,
-      taskProject: 120,
-      taskNotes: 500,
-      categoryName: 60,
-      templateName: 80,
+      taskDescription: 2400,
+      taskProject: 60,
+      taskNotes: 2400,
+      categoryName: 40,
+      templateName: 60,
       templateSubtasks: 800,
-      subtaskTitle: 1600,
+      subtaskTitle: 800,
       logContent: 800,
     };
 
@@ -5222,17 +5222,16 @@
       counter.classList.toggle('is-at-limit', currentLength >= limit);
     }
 
-    function ensureInputCounter(fieldId, limit) {
-      const field = document.getElementById(fieldId);
-      if (!field) return;
+    function ensureInputCounterForField(field, counterKey, limit) {
+      if (!field || !counterKey || !Number.isFinite(limit)) return;
 
       field.maxLength = limit;
 
-      if (INPUT_FIELDS_WITHOUT_COUNTER.has(fieldId)) {
+      if (INPUT_FIELDS_WITHOUT_COUNTER.has(counterKey)) {
         const existingWrapper = field.parentElement?.classList.contains('input-counter-wrap')
           ? field.parentElement
           : null;
-        const existingCounter = existingWrapper?.querySelector(`.input-counter[data-for="${fieldId}"]`);
+        const existingCounter = existingWrapper?.querySelector(`.input-counter[data-for="${counterKey}"]`);
 
         existingCounter?.remove();
 
@@ -5252,11 +5251,11 @@
         wrapper.appendChild(field);
       }
 
-      let counter = wrapper.querySelector(`.input-counter[data-for="${fieldId}"]`);
+      let counter = wrapper.querySelector(`.input-counter[data-for="${counterKey}"]`);
       if (!counter) {
         counter = document.createElement('div');
         counter.className = 'input-counter';
-        counter.dataset.for = fieldId;
+        counter.dataset.for = counterKey;
         field.insertAdjacentElement('afterend', counter);
       }
 
@@ -5266,6 +5265,38 @@
         field.addEventListener('input', () => updateInputCounter(field, counter, limit));
         field.dataset.counterBound = 'true';
       }
+    }
+
+    function ensureInputCounter(fieldId, limit) {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+      ensureInputCounterForField(field, fieldId, limit);
+    }
+
+    function getDetailInlineFieldLimit(fieldName) {
+      const fieldLimitKey = {
+        description: 'taskDescription',
+        notes: 'taskNotes'
+      }[fieldName] || '';
+
+      return INPUT_LIMITS[fieldLimitKey] || 0;
+    }
+
+    function syncInputCounterForField(field, counterKey, limit) {
+      const counter = field.parentElement?.querySelector(`.input-counter[data-for="${counterKey}"]`);
+      if (counter) {
+        updateInputCounter(field, counter, limit);
+      }
+    }
+
+    function applyDetailInlineInputLimits(root = document) {
+      root.querySelectorAll('[data-task-detail-field]').forEach(field => {
+        const fieldName = field.dataset.taskDetailField;
+        const limit = getDetailInlineFieldLimit(fieldName);
+        if (!limit) return;
+
+        ensureInputCounterForField(field, `detail-${fieldName}`, limit);
+      });
     }
 
     function applyInputLimits() {
@@ -7867,6 +7898,7 @@
         </div>`;
 
       applyInputLimits();
+      applyDetailInlineInputLimits(panel);
       if (activeDetailEditTaskId === task.id && activeDetailEditField) {
         const activeEditor = panel.querySelector(`[data-task-detail-field="${activeDetailEditField}"]`);
         if (activeEditor) {
@@ -8298,6 +8330,12 @@
         const fieldName = detailField.dataset.taskDetailField;
         if (!task || !fieldName) return;
 
+        const limit = getDetailInlineFieldLimit(fieldName);
+        if (limit && detailField.value.length > limit) {
+          detailField.value = detailField.value.slice(0, limit);
+          syncInputCounterForField(detailField, `detail-${fieldName}`, limit);
+        }
+
         task[fieldName] = String(detailField.value || '').trim() || null;
         activeDetailEditField = fieldName;
         activeDetailEditTaskId = task.id;
@@ -8362,6 +8400,12 @@
       const task = getTaskById(selectedTaskId);
       const fieldName = detailField.dataset.taskDetailField;
       if (!task || !fieldName) return;
+
+      const limit = getDetailInlineFieldLimit(fieldName);
+      if (limit && detailField.value.length > limit) {
+        detailField.value = detailField.value.slice(0, limit);
+        syncInputCounterForField(detailField, `detail-${fieldName}`, limit);
+      }
 
       task[fieldName] = detailField.value;
       saveTasks();
