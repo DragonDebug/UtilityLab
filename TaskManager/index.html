@@ -388,57 +388,82 @@
       overflow-y: auto;
     }
 
+    #taskModal .modal {
+      width: min(100%, 1120px);
+      max-height: calc(100dvh - 12px);
+      min-height: min(94dvh, 1040px);
+      padding: clamp(16px, 2vw, 24px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #taskModal {
+      padding: 6px;
+    }
+
+    #itemsModal .modal {
+      width: min(96vw, 1380px);
+      max-height: min(94dvh, 1120px);
+    }
+
     .task-modal-header {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
+      gap: 8px;
+      margin-bottom: 6px;
     }
 
     .task-modal-heading {
       display: grid;
-      gap: 6px;
+      gap: 2px;
       min-width: 0;
+    }
+
+    .task-modal-heading h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.15;
     }
 
     .task-modal-eyebrow {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
       color: var(--text-muted);
-      font-size: 11px;
-      line-height: 1.4;
+      font-size: 10px;
+      line-height: 1.2;
     }
 
     .task-mode-badge {
       display: inline-flex;
       align-items: center;
-      padding: 5px 10px;
+      padding: 3px 8px;
       border-radius: 999px;
       background: color-mix(in srgb, var(--accent) 14%, var(--surface2));
       border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
       color: color-mix(in srgb, var(--text) 84%, var(--accent) 16%);
-      font-size: 11px;
+      font-size: 9px;
       font-weight: 800;
-      letter-spacing: .08em;
+      letter-spacing: .07em;
       text-transform: uppercase;
     }
 
     .task-modal-subtitle {
       max-width: 56ch;
       color: var(--text-muted);
-      font-size: 12px;
-      line-height: 1.45;
+      font-size: 10px;
+      line-height: 1.25;
+      margin: 0;
     }
 
     .task-modal-close {
       display: inline-grid;
       place-items: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
       border: 1px solid color-mix(in srgb, var(--text) 10%, var(--border));
       background: color-mix(in srgb, var(--surface2) 86%, transparent);
       color: var(--text-muted);
@@ -459,8 +484,8 @@
     }
 
     .task-modal-close svg {
-      width: 18px;
-      height: 18px;
+      width: 14px;
+      height: 14px;
       stroke: currentColor;
       stroke-width: 2.2;
       fill: none;
@@ -502,6 +527,13 @@
       margin-bottom: 10px;
     }
 
+    .task-modal-panel-headline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
     .task-modal-panel-header h3 {
       font-size: 13px;
       font-weight: 700;
@@ -512,6 +544,23 @@
       color: var(--text-muted);
       font-size: 11px;
       line-height: 1.35;
+    }
+
+    .task-dates-toggle {
+      min-height: 28px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .task-dates-group {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
     }
 
     .task-core-layout {
@@ -758,8 +807,9 @@
 
     @media (max-width: 640px) {
       #taskModal .modal {
-        width: calc(100vw - 16px);
-        max-height: calc(100dvh - 16px);
+        width: calc(100vw - 8px);
+        max-height: calc(100dvh - 8px);
+        min-height: calc(100dvh - 8px);
         padding: 14px;
         border-radius: 22px;
       }
@@ -863,7 +913,7 @@
       display: flex;
       justify-content: flex-end;
       gap: 8px;
-      margin-top: 20px;
+      margin-top: 0px;
     }
 
     .category-form-actions {
@@ -874,14 +924,16 @@
     }
 
     .category-color-presets {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(9, 30px);
+      grid-auto-rows: 30px;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
+      gap: 8px;
       min-width: 0;
     }
 
     .category-color-presets-label {
+      grid-column: 1 / -1;
       font-size: 10px;
       font-weight: 700;
       color: color-mix(in srgb, var(--text-muted) 70%, var(--accent) 30%);
@@ -891,8 +943,8 @@
     }
 
     .category-color-preset {
-      width: 20px;
-      height: 20px;
+      width: 30px;
+      height: 30px;
       border-radius: 999px;
       border: 2px solid color-mix(in srgb, var(--preset-color, var(--accent)) 28%, var(--border));
       background: var(--preset-color, var(--accent));
@@ -4074,6 +4126,51 @@
       margin-bottom: 16px;
     }
 
+    #itemsModal .workflow-item-list-shell {
+      padding-right: 0;
+    }
+
+    #itemsModal .workflow-item-list {
+      grid-template-columns: repeat(auto-fit, minmax(680px, 1fr));
+      gap: 10px;
+    }
+
+    #itemsModal .workflow-item {
+      gap: 10px;
+      padding: 8px 10px;
+    }
+
+    #itemsModal .workflow-item-media {
+      min-width: 88px;
+    }
+
+    #itemsModal .workflow-item-image-frame {
+      min-height: 88px;
+    }
+
+    #itemsModal .workflow-item-body {
+      gap: 6px;
+    }
+
+    #itemsModal .workflow-item-top {
+      gap: 6px 10px;
+    }
+
+    #itemsModal .workflow-item-number {
+      font-size: 13px;
+    }
+
+    #itemsModal .workflow-item-grid {
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    #itemsModal .workflow-item .workflow-item-field-group select,
+    #itemsModal .workflow-item .workflow-item-field-group input {
+      min-height: 34px;
+      padding: 6px 9px;
+    }
+
     .items-modal-search,
     .items-modal-summary-card,
     .items-modal-bulk,
@@ -4276,6 +4373,10 @@
       body { overflow: auto; }
       .workspace-grid { grid-template-columns: 1fr; }
       .workspace-grid {
+
+      #itemsModal .workflow-item-list {
+        grid-template-columns: 1fr;
+      }
         height: auto;
         overflow: visible;
       }
@@ -4715,7 +4816,10 @@
 
             <section class="task-modal-panel">
               <div class="task-modal-panel-header">
-                <h3>Workflow</h3>
+                <div class="task-modal-panel-headline">
+                  <h3>Workflow</h3>
+                  <button type="button" class="btn btn-ghost task-dates-toggle" id="taskDatesToggleBtn" aria-expanded="false" aria-controls="taskDatesGroup">Show Dates</button>
+                </div>
               </div>
 
               <div class="form-row form-row-3">
@@ -4745,25 +4849,27 @@
                 </div>
               </div>
 
-              <div class="form-row form-row-2">
-                <div class="form-group task-form-field task-field-received">
-                  <label for="taskReceivedAt">Received Date</label>
-                  <input type="date" id="taskReceivedAt" />
+              <div class="task-dates-group" id="taskDatesGroup" hidden>
+                <div class="form-row form-row-2">
+                  <div class="form-group task-form-field task-field-received">
+                    <label for="taskReceivedAt">Received Date</label>
+                    <input type="date" id="taskReceivedAt" />
+                  </div>
+                  <div class="form-group task-form-field task-field-due">
+                    <label for="taskDueDate">Due Date</label>
+                    <input type="date" id="taskDueDate" />
+                  </div>
                 </div>
-                <div class="form-group task-form-field task-field-due">
-                  <label for="taskDueDate">Due Date</label>
-                  <input type="date" id="taskDueDate" />
-                </div>
-              </div>
 
-              <div class="form-row form-row-2">
-                <div class="form-group task-form-field task-field-started">
-                  <label for="taskStartedAt">Start Date</label>
-                  <input type="date" id="taskStartedAt" readonly />
-                </div>
-                <div class="form-group task-form-field task-field-completed">
-                  <label for="taskCompletedAt">Completion Date</label>
-                  <input type="date" id="taskCompletedAt" readonly />
+                <div class="form-row form-row-2">
+                  <div class="form-group task-form-field task-field-started">
+                    <label for="taskStartedAt">Start Date</label>
+                    <input type="date" id="taskStartedAt" readonly />
+                  </div>
+                  <div class="form-group task-form-field task-field-completed">
+                    <label for="taskCompletedAt">Completion Date</label>
+                    <input type="date" id="taskCompletedAt" readonly />
+                  </div>
                 </div>
               </div>
             </section>
@@ -4837,6 +4943,7 @@
             <button type="button" class="category-color-preset" data-category-color="#1d4ed8" style="--preset-color:#1d4ed8" aria-label="Use royal blue color"></button>
             <button type="button" class="category-color-preset" data-category-color="#7c3aed" style="--preset-color:#7c3aed" aria-label="Use indigo color"></button>
             <button type="button" class="category-color-preset" data-category-color="#a21caf" style="--preset-color:#a21caf" aria-label="Use magenta color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#be123c" style="--preset-color:#be123c" aria-label="Use rose color"></button>
             <button type="button" class="category-color-preset" data-category-color="#92400e" style="--preset-color:#92400e" aria-label="Use brown color"></button>
             <button type="button" class="category-color-preset" data-category-color="#334155" style="--preset-color:#334155" aria-label="Use steel color"></button>
           </div>
@@ -7849,6 +7956,7 @@
       syncTaskLifecycleDraftDates();
       renderTaskProjectOptions();
       updateTaskImagePreview();
+      setTaskDatesExpanded(false);
       modal.classList.add('open');
       syncTaskModalFieldAccents();
       document.getElementById('taskTitle').focus();
@@ -7857,6 +7965,17 @@
     function closeModal() {
       document.getElementById('taskModal').classList.remove('open');
       editingId = null;
+    }
+
+    function setTaskDatesExpanded(expanded) {
+      const toggleButton = document.getElementById('taskDatesToggleBtn');
+      const dateGroup = document.getElementById('taskDatesGroup');
+      if (!toggleButton || !dateGroup) return;
+
+      const nextExpanded = expanded === true;
+      dateGroup.hidden = !nextExpanded;
+      toggleButton.setAttribute('aria-expanded', nextExpanded ? 'true' : 'false');
+      toggleButton.textContent = nextExpanded ? 'Hide Dates' : 'Show Dates';
     }
 
     function bindBackdropDismiss(backdropId, closeHandler) {
@@ -9298,6 +9417,10 @@
     });
     document.getElementById('cancelTaskBtn').addEventListener('click', closeModal);
     document.getElementById('closeTaskModalBtn').addEventListener('click', closeModal);
+    document.getElementById('taskDatesToggleBtn').addEventListener('click', () => {
+      const isExpanded = document.getElementById('taskDatesToggleBtn').getAttribute('aria-expanded') === 'true';
+      setTaskDatesExpanded(!isExpanded);
+    });
     document.getElementById('cancelCategoryBtn').addEventListener('click', closeCategoryModal);
     document.getElementById('cancelTemplateBtn').addEventListener('click', closeTemplateModal);
     document.getElementById('cancelItemSettingsBtn').addEventListener('click', closeItemSettingsModal);
