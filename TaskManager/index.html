@@ -27,6 +27,10 @@
        overrides are in :root.theme-light below. ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    [hidden] {
+      display: none !important;
+    }
+
     :root {
       --bg:        #0f1622;
       --surface:   #182130;
@@ -375,26 +379,6 @@
       box-shadow: var(--shadow-panel);
     }
 
-    #taskModal .modal {
-      width: min(810px, calc(100vw - 24px));
-      max-width: 810px;
-      max-height: calc(100dvh - 24px);
-      background:
-        radial-gradient(circle at top right, color-mix(in srgb, #ec4899 10%, transparent), transparent 34%),
-        radial-gradient(circle at top left, color-mix(in srgb, #14b8a6 8%, transparent), transparent 30%),
-        linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, var(--surface)), var(--surface));
-      border-color: color-mix(in srgb, #ec4899 14%, var(--border));
-      position: relative;
-      overflow-x: hidden;
-      overflow-y: auto;
-      padding: clamp(14px, 2vw, 20px) clamp(14px, 2.25vw, 22px) clamp(14px, 2vw, 18px);
-      overscroll-behavior: contain;
-    }
-
-    #taskModal .modal::before {
-      content: none;
-    }
-
     #categoryModal .modal {
       max-width: 620px;
     }
@@ -403,208 +387,236 @@
       max-width: 1160px;
     }
 
-    #taskForm .form-row.form-row-3 {
-      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+    #taskModal .modal {
+      width: min(1180px, calc(100vw - 24px));
+      max-width: 1180px;
+      max-height: calc(100dvh - 24px);
+      padding: clamp(16px, 2vw, 22px);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 8%, transparent), transparent 36%),
+        linear-gradient(180deg, color-mix(in srgb, var(--surface2) 82%, white 18%), var(--surface));
+      border-color: color-mix(in srgb, var(--accent) 10%, var(--border));
+      box-shadow: 0 28px 80px rgba(2, 6, 23, .38);
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
-    #taskForm .form-row.form-row-2 {
-      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+    .task-modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
-    #taskForm {
+    .task-modal-heading {
       display: grid;
-      grid-template-columns: 1.2fr .9fr .9fr;
-      gap: 10px 12px;
-      position: relative;
-      z-index: 1;
-      align-items: start;
+      gap: 6px;
       min-width: 0;
     }
 
-    #taskForm .form-row {
-      margin: 0;
-    }
-
-    #taskForm > .task-form-section-label,
-    #taskForm > .form-row,
-    #taskForm > .task-field-notes,
-    #taskForm > .form-actions {
-      grid-column: 1 / -1;
-    }
-
-    #taskForm > .task-field-title {
-      grid-column: 1 / span 2;
-    }
-
-    #taskForm > .task-field-description {
-      grid-column: 1 / -1;
-    }
-
-    #taskForm > .task-field-project {
-      grid-column: 1 / span 2;
-    }
-
-    #taskForm > .task-field-image {
-      grid-column: 3 / -1;
-    }
-
-    #taskForm > .task-field-template {
-      grid-column: 3 / -1;
-    }
-
-    #taskForm > .task-field-email {
-        grid-column: 1 / span 2;
-      }
-
-      #taskForm > .task-field-sender {
-        grid-column: 3 / -1;
-    }
-
-    .task-form-section-label {
-      --section-accent: var(--accent);
-      display: inline-flex;
+    .task-modal-eyebrow {
+      display: flex;
       align-items: center;
       gap: 8px;
-      min-height: 0;
-      margin-top: 2px;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .task-mode-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 14%, var(--surface2));
+      border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
+      color: color-mix(in srgb, var(--text) 84%, var(--accent) 16%);
       font-size: 11px;
       font-weight: 800;
       letter-spacing: .08em;
       text-transform: uppercase;
-      color: color-mix(in srgb, var(--text) 72%, var(--section-accent) 28%);
     }
 
-    .task-form-section-label::before {
-      content: '';
-      width: 26px;
-      height: 2px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--section-accent), color-mix(in srgb, var(--section-accent) 18%, transparent));
+    .task-modal-subtitle {
+      max-width: 56ch;
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.45;
     }
 
-    .task-form-section-icon {
+    .task-modal-close {
       display: inline-grid;
       place-items: center;
-      width: 22px;
-      height: 22px;
-      border-radius: 999px;
-      border: 1px solid color-mix(in srgb, var(--section-accent) 24%, var(--border));
-      background: color-mix(in srgb, var(--section-accent) 12%, transparent);
-      color: var(--section-accent);
-      flex: 0 0 auto;
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid color-mix(in srgb, var(--text) 10%, var(--border));
+      background: color-mix(in srgb, var(--surface2) 86%, transparent);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background-color .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
     }
 
-    .task-form-section-icon svg {
-      width: 12px;
-      height: 12px;
+    .task-modal-close:hover {
+      transform: translateY(-1px);
+      color: var(--text);
+      border-color: color-mix(in srgb, var(--accent) 32%, var(--border));
+      background: color-mix(in srgb, var(--accent) 10%, var(--surface2));
+    }
+
+    .task-modal-close:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+
+    .task-modal-close svg {
+      width: 18px;
+      height: 18px;
       stroke: currentColor;
-      stroke-width: 2;
+      stroke-width: 2.2;
       fill: none;
     }
 
-    .task-form-section-label.is-core {
-      --section-accent: #ec4899;
+    #taskForm {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
     }
 
-    .task-form-section-label.is-workflow {
-      --section-accent: #14b8a6;
+    .task-modal-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      min-width: 0;
     }
 
-    .task-form-section-label.is-schedule {
-      --section-accent: #5b8def;
+    .task-modal-main {
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+      align-content: start;
+    }
+
+    .task-modal-panel {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--surface2) 84%, transparent), color-mix(in srgb, var(--surface) 92%, transparent));
+      border: 1px solid color-mix(in srgb, var(--text) 8%, var(--border));
+      border-radius: 20px;
+      padding: 14px;
+      min-width: 0;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .task-modal-panel-header {
+      display: grid;
+      gap: 2px;
+      margin-bottom: 10px;
+    }
+
+    .task-modal-panel-header h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: color-mix(in srgb, var(--text) 90%, var(--accent-h) 10%);
+    }
+
+    .task-modal-panel-header p {
+      color: var(--text-muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .task-core-layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+      gap: 12px;
+      align-items: stretch;
+      margin-bottom: 12px;
+    }
+
+    .task-core-main {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+      align-content: start;
+    }
+
+    #taskForm .form-row {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+    }
+
+    #taskForm .form-row.form-row-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #taskForm .form-row.form-row-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     #taskForm .task-form-field {
       --task-group-accent: var(--accent);
       margin-bottom: 0;
-      padding: 10px 11px 11px;
-      border: 1px solid color-mix(in srgb, var(--task-group-accent) 18%, var(--border));
-      border-radius: 14px;
-      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 8%, transparent), rgba(255,255,255,.02));
-      position: relative;
-      overflow: hidden;
-    }
-
-    #taskForm .task-form-field::before {
-      content: '';
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--task-group-accent), color-mix(in srgb, var(--task-group-accent) 14%, transparent));
-      opacity: .92;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid color-mix(in srgb, var(--task-group-accent) 16%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 5%, transparent), rgba(255,255,255,.02));
     }
 
     #taskForm .task-form-field label {
-      color: color-mix(in srgb, var(--text-muted) 42%, var(--task-group-accent) 58%);
-      margin-bottom: 4px;
+      margin-bottom: 5px;
+      color: color-mix(in srgb, var(--text-muted) 74%, var(--task-group-accent) 26%);
     }
 
     #taskForm .task-form-field input,
     #taskForm .task-form-field select,
     #taskForm .task-form-field textarea {
-      border-color: color-mix(in srgb, var(--task-group-accent) 22%, var(--border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 10%, var(--field-bg-strong)), var(--field-bg));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 4%, var(--field-bg-strong)), var(--field-bg));
+      border-color: color-mix(in srgb, var(--task-group-accent) 18%, var(--border));
+      border-radius: 14px;
+      min-height: 42px;
     }
 
     #taskForm .task-form-field input:focus,
     #taskForm .task-form-field select:focus,
     #taskForm .task-form-field textarea:focus {
-      border-color: color-mix(in srgb, var(--task-group-accent) 74%, white 26%);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--task-group-accent) 18%, transparent), inset 0 1px 0 rgba(255,255,255,.03);
+      border-color: color-mix(in srgb, var(--task-group-accent) 58%, white 42%);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--task-group-accent) 16%, transparent), inset 0 1px 0 rgba(255,255,255,.03);
     }
 
     #taskForm .task-form-field textarea {
-      min-height: 78px;
-    }
-
-    #taskForm .task-field-priority,
-    #taskForm .task-field-status {
-      border-color: color-mix(in srgb, var(--task-group-accent) 34%, var(--border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 14%, transparent), rgba(255,255,255,.025));
-    }
-
-    #taskForm .task-field-priority label,
-    #taskForm .task-field-status label {
-      color: color-mix(in srgb, var(--text) 26%, var(--task-group-accent) 74%);
-    }
-
-    #taskForm .task-field-priority select,
-    #taskForm .task-field-status select {
-      border-color: color-mix(in srgb, var(--task-group-accent) 32%, var(--border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 15%, var(--field-bg-strong)), var(--field-bg));
-    }
-
-    .task-field-title {
-      --task-group-accent: #ec4899;
+      min-height: 84px;
+      resize: vertical;
     }
 
     #taskForm .task-field-title textarea {
-      min-height: 92px;
-      resize: vertical;
+      min-height: 108px;
+    }
+
+    .task-field-help {
+      margin-top: 6px;
+      color: var(--text-muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .task-field-title {
+      --task-group-accent: #d946ef;
     }
 
     .task-field-template {
       --task-group-accent: #f59e0b;
     }
 
-    .task-field-email {
-      --task-group-accent: #5b8def;
-    }
-
-      .task-field-sender {
-        --task-group-accent: #38bdf8;
-      }
-
-    .task-field-description {
-      --task-group-accent: #8b5cf6;
-    }
-
     .task-field-project {
       --task-group-accent: #0ea5e9;
     }
 
-    .task-field-image {
-      --task-group-accent: #f97316;
+    .task-field-description {
+      --task-group-accent: #6366f1;
     }
 
     .task-field-category {
@@ -627,57 +639,54 @@
       --task-group-accent: #ef7d57;
     }
 
+    .task-field-email {
+      --task-group-accent: #5b8def;
+    }
+
+    .task-field-sender {
+      --task-group-accent: #38bdf8;
+    }
+
     .task-field-notes {
       --task-group-accent: #64748b;
     }
 
+    .task-field-image {
+      --task-group-accent: #f97316;
+    }
+
+    .task-core-layout .task-field-image {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .task-core-layout .task-image-picker {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
     .task-image-picker {
       display: grid;
-      gap: 10px;
-    }
-
-    .task-image-picker-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .task-image-meta {
-      display: grid;
-      gap: 3px;
-      min-width: 0;
-    }
-
-    .task-image-meta strong {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1.35;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .task-image-meta span {
-      font-size: 10px;
-      color: var(--text-muted);
-      line-height: 1.35;
+      gap: 8px;
     }
 
     .task-image-clear-btn {
+      min-height: 36px;
       padding: 6px 10px;
-      min-height: auto;
+      width: auto;
+      justify-content: center;
+      justify-self: start;
     }
 
     .task-image-upload {
       position: relative;
       display: grid;
       place-items: center;
-      min-height: 146px;
-      border-radius: 14px;
-      border: 1px dashed color-mix(in srgb, var(--task-group-accent) 34%, var(--border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 9%, transparent), rgba(255,255,255,.025));
+      min-height: 188px;
+      border-radius: 18px;
+      border: 1px dashed color-mix(in srgb, var(--task-group-accent) 28%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--task-group-accent) 8%, transparent), rgba(255,255,255,.03));
       overflow: hidden;
       cursor: pointer;
     }
@@ -696,7 +705,7 @@
     .task-image-placeholder {
       display: grid;
       place-items: center;
-      gap: 8px;
+      gap: 10px;
       text-align: center;
       color: var(--text-muted);
       pointer-events: none;
@@ -705,46 +714,48 @@
     .task-image-placeholder strong {
       display: grid;
       place-items: center;
-      width: 38px;
-      height: 38px;
+      width: 44px;
+      height: 44px;
       border-radius: 999px;
       border: 1px solid color-mix(in srgb, var(--task-group-accent) 28%, var(--border));
       background: color-mix(in srgb, var(--task-group-accent) 12%, transparent);
-      font-size: 20px;
+      font-size: 22px;
       color: color-mix(in srgb, var(--text) 82%, var(--task-group-accent) 18%);
     }
 
     .task-image-placeholder span {
       font-size: 11px;
-      line-height: 1.45;
-      max-width: 22ch;
+      line-height: 1.5;
+      max-width: 24ch;
     }
 
     .task-image-preview {
       display: block;
       width: 100%;
-      max-height: 176px;
+      max-height: 260px;
+      height: 100%;
       object-fit: cover;
     }
 
     #taskForm .form-actions {
-      margin-top: 2px;
+      margin-top: 0;
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 2px;
     }
 
     #taskForm #submitTaskBtn {
-      --header-btn-color: #ec4899;
-      --header-btn-text: color-mix(in srgb, var(--text) 72%, #ffd4ea 28%);
       justify-content: center;
-      min-width: 148px;
-      background: color-mix(in srgb, var(--header-btn-color) 12%, var(--surface2));
-      color: var(--header-btn-text);
-      border: 1px solid color-mix(in srgb, var(--header-btn-color) 28%, var(--border));
+      min-width: 160px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent-h) 24%, var(--accent)), var(--accent));
+      color: #fff;
+      border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+      box-shadow: 0 16px 30px color-mix(in srgb, var(--accent) 18%, transparent);
     }
 
     #taskForm #submitTaskBtn:hover {
-      background: color-mix(in srgb, var(--header-btn-color) 17%, var(--surface3));
-      color: color-mix(in srgb, var(--text) 84%, var(--header-btn-color) 16%);
-      border-color: color-mix(in srgb, var(--header-btn-color) 40%, var(--border-strong));
+      filter: brightness(1.06);
+      transform: translateY(-1px);
     }
 
     #taskForm #submitTaskBtn svg {
@@ -753,43 +764,35 @@
       flex: 0 0 auto;
     }
 
-    @media (max-width: 760px) {
-      #taskModal .modal {
-        max-width: min(740px, calc(100vw - 24px));
-      }
-
-      #taskForm {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      #taskForm > .task-field-title,
-      #taskForm > .task-field-description,
-      #taskForm > .task-field-project,
-      #taskForm > .task-field-image,
-      #taskForm > .task-field-email,
-      #taskForm > .task-field-sender {
-        grid-column: 1 / -1;
+    @media (max-width: 900px) {
+      .task-core-layout {
+        grid-template-columns: 1fr;
       }
     }
 
-    @media (max-width: 540px) {
+    @media (max-width: 640px) {
       #taskModal .modal {
         width: calc(100vw - 16px);
         max-height: calc(100dvh - 16px);
-        padding: 14px 12px;
-        border-radius: 16px;
+        padding: 14px;
+        border-radius: 22px;
       }
 
-      #taskForm {
+      .task-modal-header {
+        gap: 12px;
+      }
+
+      #taskForm .form-row.form-row-2,
+      #taskForm .form-row.form-row-3 {
         grid-template-columns: 1fr;
       }
 
-      #taskForm > .task-field-template,
-      #taskForm > .task-field-project,
-      #taskForm > .task-field-image,
-      #taskForm > .task-field-email,
-      #taskForm > .task-field-sender {
-        grid-column: 1 / -1;
+      #taskForm .form-actions {
+        flex-direction: column-reverse;
+      }
+
+      #taskForm .form-actions .btn {
+        width: 100%;
       }
     }
 
@@ -4593,111 +4596,143 @@
   <!-- ── New Task Modal ── -->
   <div class="modal-backdrop" id="taskModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <h2 id="modalTitle">New Task</h2>
+      <div class="task-modal-header">
+        <div class="task-modal-heading">
+          <div class="task-modal-eyebrow">
+            <span class="task-mode-badge" id="taskModeBadge">Create mode</span>
+          </div>
+          <h2 id="modalTitle">New Task</h2>
+          <p class="task-modal-subtitle" id="taskModalSubtitle">Add the essentials and keep moving.</p>
+        </div>
+        <button type="button" class="task-modal-close" id="closeTaskModalBtn" aria-label="Close task editor">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg>
+        </button>
+      </div>
       <form id="taskForm" novalidate>
-
-        <div class="task-form-section-label is-core"><span class="task-form-section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19.5h4.5L19 9a1.4 1.4 0 0 0 0-2l-2-2a1.4 1.4 0 0 0-2 0L4.5 15.5V19.5Z"/><path d="m13.5 6.5 4 4"/></svg></span>Core Details</div>
-
-        <div class="form-group task-form-field task-field-title">
-          <label for="taskTitle" id="taskTitleLabel">Titles *</label>
-          <textarea id="taskTitle" placeholder="One task title per line to create several tasks at once..." required></textarea>
-        </div>
-
-        <div class="form-group task-form-field task-field-template">
-          <label for="taskTemplate">Template</label>
-          <select id="taskTemplate">
-            <option value="">No Template</option>
-          </select>
-        </div>
-
-        <div class="form-group task-form-field task-field-email">
-          <label for="taskEmailSubject">Email Subject</label>
-          <input type="text" id="taskEmailSubject" placeholder="Optional subject line" />
-        </div>
-
-          <div class="form-group task-form-field task-field-sender">
-            <label for="taskSender">Sender</label>
-            <select id="taskSender">
-              <option value="">No Sender</option>
-            </select>
-          </div>
-
-        <div class="form-group task-form-field task-field-description">
-          <label for="taskDescription">Description</label>
-          <textarea id="taskDescription" placeholder="Short task summary or context..."></textarea>
-        </div>
-        <div class="form-group task-form-field task-field-project">
-          <label for="taskProject">Project</label>
-          <input type="text" id="taskProject" list="taskProjectOptions" placeholder="Type or pick a project" />
-          <datalist id="taskProjectOptions"></datalist>
-        </div>
-
-        <div class="form-group task-form-field task-field-image">
-          <label for="taskImageInput">Task Image</label>
-          <div class="task-image-picker">
-            <div class="task-image-picker-top">
-              <div class="task-image-meta">
-                <strong id="taskImageName">No image selected</strong>
-                <span id="taskImageHint">One optional image per task. It will appear on the left side of the card.</span>
+        <div class="task-modal-layout">
+          <div class="task-modal-main">
+            <section class="task-modal-panel">
+              <div class="task-modal-panel-header">
+                <h3>Core</h3>
               </div>
-              <button type="button" class="btn btn-ghost task-image-clear-btn" id="clearTaskImageBtn" hidden>Remove</button>
-            </div>
-            <label class="task-image-upload is-empty" id="taskImageUpload" for="taskImageInput">
-              <span class="task-image-placeholder" id="taskImagePlaceholder"><strong>+</strong><span>Add an image for this task</span></span>
-              <img id="taskImagePreview" class="task-image-preview" alt="Task preview" hidden />
-              <input type="file" id="taskImageInput" accept="image/*" />
-            </label>
-          </div>
-        </div>
 
-        <div class="task-form-section-label is-workflow"><span class="task-form-section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 7h12"/><path d="M6 12h8"/><path d="M6 17h10"/><circle cx="17" cy="7" r="1.5"/><circle cx="13" cy="12" r="1.5"/><circle cx="15" cy="17" r="1.5"/></svg></span>Workflow</div>
-        <div class="form-row form-row-3">
-          <div class="form-group task-form-field task-field-priority">
-            <label for="taskPriority">Priority</label>
-            <select id="taskPriority">
-              <option value="Critical">Critical</option>
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-              <option value="Very Low">Very Low</option>
-            </select>
-          </div>
-          <div class="form-group task-form-field task-field-category">
-            <label for="taskCategory">Category</label>
-            <select id="taskCategory"></select>
-          </div>
-          <div class="form-group task-form-field task-field-status">
-            <label for="taskStatus">Status</label>
-            <select id="taskStatus">
-              <option value="Pending">Pending</option>
-              <option value="Not Started">Not Started</option>
-              <option value="Ongoing">Ongoing</option>
-              <option value="Waiting for Someone Else">Waiting for Someone Else</option>
-              <option value="Completed">Completed</option>
-            </select>
-          </div>
-        </div>
+              <div class="task-core-layout">
+                <div class="form-group task-form-field task-field-image">
+                  <label for="taskImageInput">Task Image</label>
+                  <div class="task-image-picker">
+                    <label class="task-image-upload is-empty" id="taskImageUpload" for="taskImageInput">
+                      <span class="task-image-placeholder" id="taskImagePlaceholder"><strong>+</strong><span>Add a reference image</span></span>
+                      <img id="taskImagePreview" class="task-image-preview" alt="Task preview" hidden />
+                      <input type="file" id="taskImageInput" accept="image/*" />
+                    </label>
+                    <button type="button" class="btn btn-ghost task-image-clear-btn" id="clearTaskImageBtn" hidden>Remove image</button>
+                  </div>
+                </div>
 
-        <div class="task-form-section-label is-schedule"><span class="task-form-section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M4 10h16"/></svg></span>Schedule And Notes</div>
-        <div class="form-row form-row-2">
-          <div class="form-group task-form-field task-field-received">
-            <label for="taskReceivedAt">Received Date</label>
-            <input type="date" id="taskReceivedAt" />
-          </div>
-          <div class="form-group task-form-field task-field-due">
-            <label for="taskDueDate">Due Date</label>
-            <input type="date" id="taskDueDate" />
-          </div>
-        </div>
+                <div class="task-core-main">
+                  <div class="form-group task-form-field task-field-title">
+                    <label for="taskTitle" id="taskTitleLabel">Titles *</label>
+                    <textarea id="taskTitle" placeholder="One task title per line to create several tasks at once..." required></textarea>
+                    <p class="task-field-help" id="taskTitleHelp">One line = one task.</p>
+                  </div>
 
-        <div class="form-group task-form-field task-field-notes">
-          <label for="taskNotes">Notes</label>
-          <textarea id="taskNotes" placeholder="Optional notes…"></textarea>
+                  <div class="form-row form-row-2">
+                    <div class="form-group task-form-field task-field-template">
+                      <label for="taskTemplate">Template</label>
+                      <select id="taskTemplate">
+                        <option value="">No Template</option>
+                      </select>
+                    </div>
+                    <div class="form-group task-form-field task-field-project">
+                      <label for="taskProject">Project</label>
+                      <input type="text" id="taskProject" list="taskProjectOptions" placeholder="Type or pick a project" />
+                      <datalist id="taskProjectOptions"></datalist>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group task-form-field task-field-description">
+                <label for="taskDescription">Description</label>
+                <textarea id="taskDescription" placeholder="Short task summary or context..."></textarea>
+              </div>
+            </section>
+
+            <section class="task-modal-panel">
+              <div class="task-modal-panel-header">
+                <h3>Workflow</h3>
+              </div>
+
+              <div class="form-row form-row-3">
+                <div class="form-group task-form-field task-field-priority">
+                  <label for="taskPriority">Priority</label>
+                  <select id="taskPriority">
+                    <option value="Critical">Critical</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                    <option value="Very Low">Very Low</option>
+                  </select>
+                </div>
+                <div class="form-group task-form-field task-field-category">
+                  <label for="taskCategory">Category</label>
+                  <select id="taskCategory"></select>
+                </div>
+                <div class="form-group task-form-field task-field-status">
+                  <label for="taskStatus">Status</label>
+                  <select id="taskStatus">
+                    <option value="Pending">Pending</option>
+                    <option value="Not Started">Not Started</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Waiting for Someone Else">Waiting for Someone Else</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row form-row-2">
+                <div class="form-group task-form-field task-field-received">
+                  <label for="taskReceivedAt">Received Date</label>
+                  <input type="date" id="taskReceivedAt" />
+                </div>
+                <div class="form-group task-form-field task-field-due">
+                  <label for="taskDueDate">Due Date</label>
+                  <input type="date" id="taskDueDate" />
+                </div>
+              </div>
+            </section>
+
+            <section class="task-modal-panel">
+              <div class="task-modal-panel-header">
+                <h3>Context</h3>
+              </div>
+
+              <div class="form-row form-row-2">
+                <div class="form-group task-form-field task-field-email">
+                  <label for="taskEmailSubject">Email Subject</label>
+                  <input type="text" id="taskEmailSubject" placeholder="Optional subject line" />
+                </div>
+
+                <div class="form-group task-form-field task-field-sender">
+                  <label for="taskSender">Sender</label>
+                  <select id="taskSender">
+                    <option value="">No Sender</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group task-form-field task-field-notes">
+                <label for="taskNotes">Notes</label>
+                <textarea id="taskNotes" placeholder="Optional notes…"></textarea>
+              </div>
+            </section>
+          </div>
+
         </div>
 
         <div class="form-actions">
           <button type="button" class="btn btn-ghost" id="cancelTaskBtn">Cancel</button>
-          <button type="submit" class="btn" id="submitTaskBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="btn-header-label" id="submitTaskBtnLabel">Create Task</span></button>
+          <button type="submit" class="btn btn-primary" id="submitTaskBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="btn-header-label" id="submitTaskBtnLabel">Create Task</span></button>
         </div>
       </form>
     </div>
@@ -5369,6 +5404,34 @@
       if (statusField) {
         statusField.style.setProperty('--task-group-accent', STATUS_ACCENTS[normalizeStatus(statusValue)] || 'var(--status-pending)');
       }
+    }
+
+    function getTaskModalDueSoonCount() {
+      return tasks.filter(task => {
+        if (isTaskCompleted(task)) return false;
+        const parts = toDateParts(task?.dueDate);
+        const todayParts = toDateParts(today());
+        if (!parts || !todayParts) return false;
+
+        const dueDate = new Date(parts.year, parts.month - 1, parts.day);
+        const currentDate = new Date(todayParts.year, todayParts.month - 1, todayParts.day);
+        const dayDelta = Math.round((dueDate - currentDate) / 86400000);
+        return dayDelta >= 0 && dayDelta <= 7;
+      }).length;
+    }
+
+    function buildTaskModalTimelineLabel(receivedAt, dueDate) {
+      const segments = [];
+
+      if (receivedAt) {
+        segments.push(`Received ${receivedAt === today() ? 'today' : formatDate(receivedAt) || receivedAt}`);
+      }
+
+      if (dueDate) {
+        segments.push(`Due ${dueDate === today() ? 'today' : formatDate(dueDate) || dueDate}`);
+      }
+
+      return segments.join(' | ') || 'No dates set';
     }
 
     function normalizePriority(priority) {
@@ -6253,10 +6316,8 @@
       const preview = document.getElementById('taskImagePreview');
       const placeholder = document.getElementById('taskImagePlaceholder');
       const upload = document.getElementById('taskImageUpload');
-      const name = document.getElementById('taskImageName');
-      const hint = document.getElementById('taskImageHint');
       const clearButton = document.getElementById('clearTaskImageBtn');
-      if (!preview || !placeholder || !upload || !name || !hint || !clearButton) return;
+      if (!preview || !placeholder || !upload || !clearButton) return;
 
       const hasImage = Boolean(taskDraftImageDataUrl);
       preview.hidden = !hasImage;
@@ -6266,12 +6327,10 @@
 
       if (hasImage) {
         preview.src = taskDraftImageDataUrl;
-        name.textContent = taskDraftImageName || 'Selected image';
-        hint.textContent = 'Shown on the left side of the task card.';
+        upload.setAttribute('aria-label', taskDraftImageName || 'Selected image');
       } else {
         preview.removeAttribute('src');
-        name.textContent = 'No image selected';
-        hint.textContent = 'One optional image per task. It will appear on the left side of the card.';
+        upload.setAttribute('aria-label', 'Add a reference image');
       }
     }
 
@@ -7848,8 +7907,11 @@
       const modal = document.getElementById('taskModal');
       const form  = document.getElementById('taskForm');
       const title = document.getElementById('modalTitle');
+      const subtitle = document.getElementById('taskModalSubtitle');
+      const modeBadge = document.getElementById('taskModeBadge');
       const submitLabel = document.getElementById('submitTaskBtnLabel');
       const titleLabel = document.getElementById('taskTitleLabel');
+      const titleHelp = document.getElementById('taskTitleHelp');
       const titleField = document.getElementById('taskTitle');
 
       form.reset();
@@ -7860,8 +7922,11 @@
         const t = tasks.find(x => x.id === taskId);
         if (!t) return;
         title.textContent  = 'Edit Task';
+        subtitle.textContent = 'Update the task and keep its history intact.';
+        modeBadge.textContent = 'Edit mode';
         submitLabel.textContent = 'Save Changes';
         titleLabel.textContent = 'Title *';
+        titleHelp.textContent = 'Single task only in edit mode.';
         titleField.placeholder = 'Task title...';
         document.getElementById('taskTitle').value      = t.title;
         document.getElementById('taskTemplate').value   = getTemplateById(t.templateId)?.id || '';
@@ -7879,8 +7944,11 @@
         taskDraftImageName = String(t.imageName || '').trim();
       } else {
         title.textContent  = 'New Task';
+        subtitle.textContent = 'Set shared details once, then create.';
+        modeBadge.textContent = 'Create mode';
         submitLabel.textContent = 'Create Task';
         titleLabel.textContent = 'Titles *';
+        titleHelp.textContent = 'One line = one task.';
         titleField.placeholder = 'One task title per line to create several tasks at once...';
         document.getElementById('taskTemplate').value   = '';
         document.getElementById('taskEmailSubject').value = '';
@@ -8007,8 +8075,7 @@
       closeModal();
     });
 
-    document.getElementById('taskForm').addEventListener('change', e => {
-      if (!['taskCategory', 'taskPriority', 'taskStatus'].includes(e.target.id)) return;
+    document.getElementById('taskForm').addEventListener('change', () => {
       syncTaskModalFieldAccents();
     });
 
@@ -8837,6 +8904,7 @@
       exportDetailedToExcel();
     });
     document.getElementById('cancelTaskBtn').addEventListener('click', closeModal);
+    document.getElementById('closeTaskModalBtn').addEventListener('click', closeModal);
     document.getElementById('cancelCategoryBtn').addEventListener('click', closeCategoryModal);
     document.getElementById('cancelTemplateBtn').addEventListener('click', closeTemplateModal);
     document.getElementById('cancelItemSettingsBtn').addEventListener('click', closeItemSettingsModal);
