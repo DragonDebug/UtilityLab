@@ -129,6 +129,14 @@
       overflow: hidden;
     }
 
+    mark.search-highlight {
+      background: color-mix(in srgb, var(--warning-soft) 76%, #ffd76a 24%);
+      color: var(--text);
+      padding: 0 .18em;
+      border-radius: .32em;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--warning-soft) 55%, var(--border));
+    }
+
     /* ── Layout ──
        Top-level structure: sticky header, two-column workspace grid
        (list panel left, detail panel right). ── */
@@ -351,46 +359,24 @@
        Full-screen backdrop that shows/hides via .open class.
        Centred .modal container holds the form content. ── */
     .modal-backdrop {
-      display: none;
       position: fixed;
       inset: 0;
-      padding: 12px;
-      background: rgba(6,10,18,.64);
-      z-index: 100;
-      align-items: flex-start;
+      z-index: 70;
+      display: none;
+      align-items: center;
       justify-content: center;
-      overflow: auto;
+      padding: clamp(12px, 2vw, 24px);
+      background: rgba(15, 23, 42, .55);
       backdrop-filter: blur(10px);
     }
+
     .modal-backdrop.open {
       display: flex;
     }
 
     .modal {
-      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, var(--surface)), var(--surface));
-      border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
-      border-radius: 18px;
-      padding: 24px;
-      width: min(100%, calc(100vw - 24px));
-      max-width: 480px;
-      max-height: calc(100dvh - 24px);
-      margin: auto 0;
-      overflow-y: auto;
-      box-shadow: var(--shadow-panel);
-    }
-
-    #categoryModal .modal {
-      max-width: 620px;
-    }
-
-    #itemsModal .modal {
-      max-width: 1160px;
-    }
-
-    #taskModal .modal {
-      width: min(1180px, calc(100vw - 24px));
-      max-width: 1180px;
-      max-height: calc(100dvh - 24px);
+      width: min(100%, 1040px);
+      max-height: min(92vh, 960px);
       padding: clamp(16px, 2vw, 22px);
       border-radius: 28px;
       background:
@@ -2868,6 +2854,16 @@
       min-width: 0;
     }
 
+    .detail-section-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-left: auto;
+      min-width: 0;
+    }
+
     .detail-section-meta {
       font-size: 10px;
       font-weight: 700;
@@ -3670,7 +3666,9 @@
 
     .workflow-item-list {
       display: grid;
-      gap: 7px;
+      grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
+      gap: 6px;
+      align-items: start;
     }
 
     .workflow-item-empty {
@@ -3684,48 +3682,58 @@
     }
 
     .workflow-item {
-      display: grid;
+      --item-status-accent: color-mix(in srgb, var(--section-accent, var(--accent)) 42%, var(--border));
+      display: flex;
       gap: 8px;
-      padding: 8px;
-      border: 1px solid color-mix(in srgb, var(--section-accent, var(--accent)) 18%, var(--border));
+      align-items: stretch;
+      padding: 5px 6px;
+      border: 1px solid color-mix(in srgb, var(--item-status-accent) 24%, var(--border));
       border-radius: 12px;
-      background: linear-gradient(180deg, color-mix(in srgb, var(--section-accent, var(--accent)) 8%, transparent), rgba(255,255,255,.02));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--item-status-accent) 7%, transparent), rgba(255,255,255,.02));
+      box-shadow: inset 3px 0 0 color-mix(in srgb, var(--item-status-accent) 72%, transparent);
     }
 
-    .workflow-item-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: flex-start;
+    .workflow-item.status-110 {
+      --item-status-accent: #ef7d57;
+    }
+
+    .workflow-item.status-235 {
+      --item-status-accent: #34c38f;
+    }
+
+    .workflow-item-body {
+      min-width: 0;
+      display: grid;
+      flex: 1 1 auto;
+      gap: 4px;
+    }
+
+    .workflow-item-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 4px 8px;
+      align-items: start;
     }
 
     .workflow-item-header-main {
       display: grid;
-      gap: 5px;
+      gap: 1px;
       min-width: 0;
-      flex: 1 1 auto;
     }
 
     .workflow-item-heading {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       min-width: 0;
     }
 
     .workflow-item-number {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
-      color: color-mix(in srgb, var(--text) 76%, var(--section-accent, var(--accent)) 24%);
+      color: color-mix(in srgb, var(--text) 72%, var(--item-status-accent) 28%);
       overflow-wrap: anywhere;
-    }
-
-    .workflow-item-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      min-width: 0;
     }
 
     .workflow-item-chip,
@@ -3816,31 +3824,61 @@
       display: inline-flex;
       flex-wrap: wrap;
       justify-content: flex-end;
-      gap: 6px;
+      gap: 4px;
       flex: 0 0 auto;
     }
 
-    .workflow-item-actions .btn {
-      min-height: 24px;
-      padding: 3px 8px;
-      font-size: 10px;
+    .workflow-item-delete-btn {
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border: 1px solid color-mix(in srgb, var(--danger) 24%, var(--border));
+      border-radius: 999px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, transparent), color-mix(in srgb, var(--danger) 8%, transparent));
+      color: color-mix(in srgb, var(--danger) 74%, var(--text) 26%);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      transition: transform .16s ease, background .16s ease, border-color .16s ease;
     }
 
-    .workflow-item-header {
-      align-items: stretch;
-      gap: 8px;
+    .workflow-item-delete-btn:hover {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--danger) 16%, var(--surface)), color-mix(in srgb, var(--danger) 10%, transparent));
+      border-color: color-mix(in srgb, var(--danger) 38%, var(--border));
+      transform: translateY(-1px);
+    }
+
+    .workflow-item-delete-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 20%, transparent);
     }
 
     .workflow-item-grid {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 5px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+      align-items: start;
     }
 
     .workflow-item-field-group {
       display: grid;
-      gap: 4px;
+      gap: 3px;
       min-width: 0;
+    }
+
+    .workflow-item .workflow-item-field-group label {
+      font-size: 9px;
+      letter-spacing: .05em;
+    }
+
+    .workflow-item .workflow-item-field-group select,
+    .workflow-item .workflow-item-field-group input {
+      min-height: 30px;
+      padding: 5px 7px;
+      font-size: 11px;
+      border-radius: 9px;
     }
 
     .workflow-item-field-group.is-wide {
@@ -3849,14 +3887,14 @@
 
     .workflow-item-media {
       position: relative;
-      width: 72px;
-      min-width: 72px;
-      flex: 0 0 72px;
-      align-self: flex-start;
+      min-width: 0;
+      flex: 0 0 auto;
+      align-self: stretch;
     }
 
     .workflow-item-media-inline {
       position: relative;
+      height: 100%;
     }
 
     .workflow-item-approval-toggle {
@@ -3870,8 +3908,10 @@
     .workflow-item-image-frame {
       display: grid;
       place-items: center;
-      width: 72px;
+      width: auto;
       min-height: 72px;
+      height: 100%;
+      aspect-ratio: 1 / 1;
       border: 1px dashed color-mix(in srgb, var(--section-accent, var(--accent)) 22%, var(--border));
       border-radius: 10px;
       background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
@@ -3890,7 +3930,7 @@
     .workflow-item-image-preview {
       display: block;
       width: 100%;
-      height: 72px;
+      height: 100%;
       object-fit: cover;
       background: rgba(0,0,0,.08);
     }
@@ -3939,6 +3979,21 @@
 
     .workflow-item-image-clear:hover {
       background: color-mix(in srgb, var(--danger) 12%, var(--surface));
+    }
+
+    @media (max-width: 720px) {
+      .workflow-item-list {
+        grid-template-columns: 1fr;
+      }
+
+      .workflow-item-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .workflow-item-status-select {
+      border-color: color-mix(in srgb, var(--item-status-accent) 34%, var(--border)) !important;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--item-status-accent) 10%, transparent);
     }
 
     .workflow-item-check {
@@ -4013,7 +4068,7 @@
 
     .items-modal-toolbar {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr) auto auto;
       gap: 12px;
       align-items: stretch;
       margin-bottom: 16px;
@@ -4700,6 +4755,17 @@
                   <input type="date" id="taskDueDate" />
                 </div>
               </div>
+
+              <div class="form-row form-row-2">
+                <div class="form-group task-form-field task-field-started">
+                  <label for="taskStartedAt">Start Date</label>
+                  <input type="date" id="taskStartedAt" readonly />
+                </div>
+                <div class="form-group task-form-field task-field-completed">
+                  <label for="taskCompletedAt">Completion Date</label>
+                  <input type="date" id="taskCompletedAt" readonly />
+                </div>
+              </div>
             </section>
 
             <section class="task-modal-panel">
@@ -4811,7 +4877,7 @@
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="itemSettingsModalTitle">
         <h2 id="itemSettingsModalTitle">Settings</h2>
       <form id="itemSettingsForm" class="item-settings-form" novalidate>
-          <p class="item-settings-intro">Manage shared task and item options here. Email senders feed the task form, while suppliers and projects feed the item editors and batch-create defaults.</p>
+          <p class="item-settings-intro">Manage shared task and item options here. Email senders feed the task form, while suppliers feed the item editors and import flow.</p>
         <div class="item-settings-grid">
             <div class="item-settings-group">
               <label for="taskSenderOptionsInput">Email Senders</label>
@@ -4822,11 +4888,6 @@
             <label for="itemSupplierOptionsInput">Suppliers</label>
             <textarea id="itemSupplierOptionsInput" placeholder="One supplier per line"></textarea>
             <p class="item-settings-help">Keep one supplier per line. Existing item values stay intact even if you later remove an option here.</p>
-          </div>
-          <div class="item-settings-group">
-            <label for="itemProjectOptionsInput">Projects</label>
-            <textarea id="itemProjectOptionsInput" placeholder="One project per line"></textarea>
-            <p class="item-settings-help">Projects will appear as selectable options when you create or edit an item.</p>
           </div>
         </div>
         <div class="form-actions">
@@ -4844,35 +4905,14 @@
         <div class="items-modal-search">
           <div class="items-modal-section-label">Find Items</div>
           <label for="itemSearchInput">Search Items</label>
-          <input type="search" id="itemSearchInput" placeholder="Search TID, BID, project, supplier, or task" />
+          <input type="search" id="itemSearchInput" placeholder="Search TID, BID, status, supplier, or task" />
         </div>
         <div class="items-modal-summary-card">
           <div class="items-modal-section-label">Registry</div>
           <div class="items-modal-summary" id="itemsModalSummary">0 items</div>
         </div>
       </div>
-      <div class="items-modal-bulk" id="itemsModalBulkTools">
-        <div class="items-modal-bulk-heading">
-          <div>
-            <div class="items-modal-section-label">Quick Update</div>
-            <div class="items-modal-note">BID-linked approvals, vault state, and PLM state stay synchronized automatically across duplicates.</div>
-          </div>
-          <div class="items-modal-bulk-summary" id="itemsBulkSummary">0 selected</div>
-        </div>
-        <div class="items-modal-bulk-actions">
-          <button type="button" class="btn btn-ghost" data-select-visible-items>Select Visible</button>
-          <button type="button" class="btn btn-ghost" data-clear-selected-items>Clear Selection</button>
-          <button type="button" class="btn btn-ghost" data-bulk-update-field="counterDieApprovalStatus" data-bulk-update-value="true">CDD Approved</button>
-          <button type="button" class="btn btn-ghost" data-bulk-update-field="counterDieApprovalStatus" data-bulk-update-value="false">CDD Pending</button>
-          <button type="button" class="btn btn-ghost" data-bulk-update-field="samApprovalStatus" data-bulk-update-value="true">SAM Approved</button>
-          <button type="button" class="btn btn-ghost" data-bulk-update-field="samApprovalStatus" data-bulk-update-value="false">SAM Pending</button>
-          <button type="button" class="btn btn-ghost" data-bulk-update-field="vaultStatus" data-bulk-update-value="true">Vault Released</button>
-          <button type="button" class="btn btn-ghost" data-bulk-update-field="vaultStatus" data-bulk-update-value="false">Vault In Work</button>
-          <button type="button" class="btn btn-ghost" data-bulk-update-field="plmStatus" data-bulk-update-value="true">PLM 235</button>
-          <button type="button" class="btn btn-ghost" data-bulk-update-field="plmStatus" data-bulk-update-value="false">PLM 110</button>
-        </div>
-      </div>
-      <div class="workflow-item-list-shell items-modal-list-shell">
+      <div class="workflow-item-list-shell">
         <div class="workflow-item-list" id="allItemsList"></div>
       </div>
       <div class="form-actions">
@@ -4881,7 +4921,7 @@
     </div>
   </div>
 
-  <div class="context-menu" id="detailContextMenu" role="menu" aria-label="Task detail actions" hidden>
+  <div class="context-menu" id="detailContextMenu" role="menu" aria-label="Task actions">
     <div class="context-menu-label">Task Actions</div>
     <button type="button" class="context-menu-btn is-edit" data-context-action="edit" role="menuitem">
       <span class="context-menu-main">
@@ -5001,12 +5041,10 @@
           ? settings.supplierOptions
           : DEFAULT_ITEM_SUPPLIER_OPTIONS
       );
-      const projectOptions = normalizeOptionList(settings?.projectOptions || DEFAULT_ITEM_PROJECT_OPTIONS);
       const senderOptions = normalizeOptionList(settings?.senderOptions || []);
 
       return {
         supplierOptions: supplierOptions.length ? supplierOptions : [...DEFAULT_ITEM_SUPPLIER_OPTIONS],
-        projectOptions,
         senderOptions
       };
     }
@@ -5016,7 +5054,7 @@
     }
 
     function getProjectOptions(extraValue = '') {
-      return normalizeOptionList([...(itemSettings?.projectOptions || DEFAULT_ITEM_PROJECT_OPTIONS), extraValue]);
+      return normalizeOptionList([...(tasks || []).map(task => task?.project || ''), extraValue]);
     }
 
     function getSenderOptions(extraValue = '') {
@@ -5064,7 +5102,6 @@
       templateName: 80,
       templateSubtasks: 800,
       subtaskTitle: 1600,
-      workflowItemBulkInput: 1500,
       logContent: 800,
     };
 
@@ -5104,28 +5141,8 @@
     };
 
     const DEFAULT_ITEM_SUPPLIER_OPTIONS = ['Supplier A', 'Supplier B', 'Supplier C'];
-    const DEFAULT_ITEM_PROJECT_OPTIONS = [];
-    const ITEM_VAULT_STATUS_OPTIONS = ['In Work', 'Released'];
-    const ITEM_PLM_STATUS_OPTIONS = ['110', '235'];
-    const DEFAULT_ITEM_VAULT_STATUS = ITEM_VAULT_STATUS_OPTIONS[0] || '';
-    const DEFAULT_ITEM_PLM_STATUS = ITEM_PLM_STATUS_OPTIONS[0] || '';
-    const ITEM_APPROVAL_FIELDS = ['counterDieApprovalStatus', 'samApprovalStatus'];
-    const SHARED_ITEM_FIELDS = ['vaultStatus', 'plmStatus', 'counterDieApprovalStatus', 'samApprovalStatus'];
-    const ITEM_CHECKLIST_FIELDS = [
-      { key: 'detailsCaptured', label: 'Detail Captured' },
-      { key: 'drawnAddedToVault', label: 'Drawn & Added To Vault' },
-      { key: 'drawingSentToSupplier', label: 'Drawing Sent To Supplier' }
-    ];
-    const ITEM_WORKFLOW_STEPS = [
-      { type: 'checklist', key: 'detailsCaptured', label: 'Detail Captured' },
-      { type: 'checklist', key: 'drawnAddedToVault', label: 'Drawn & Added To Vault' },
-      { type: 'checklist', key: 'drawingSentToSupplier', label: 'Drawing Sent To Supplier' },
-      { type: 'field', key: 'counterDieApprovalStatus', label: 'CDD Approval', className: 'is-approval-step' },
-      { type: 'field', key: 'samApprovalStatus', label: 'SAM Approval', className: 'is-approval-step' },
-      { type: 'field', key: 'vaultStatus', label: 'Vault Released', className: 'is-release-step' },
-      { type: 'field', key: 'plmStatus', label: 'PLM 235', className: 'is-release-step' }
-    ];
-
+    const ITEM_STATUS_OPTIONS = ['110', '235'];
+    const DEFAULT_ITEM_STATUS = ITEM_STATUS_OPTIONS[0] || '';
     const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const INPUT_FIELDS_WITHOUT_COUNTER = new Set(['searchTasks', 'categoryName']);
 
@@ -5220,9 +5237,7 @@
       hiddenFilters = { status: [], priority: [], category: [] };
 
       const fallbackCategory = 'General';
-      const legacyItems = storedItems === null
-        ? tasks.flatMap(task => normalizeLegacyTaskItems(task.workflowItems, task.id, task.title))
-        : [];
+      const legacyItems = [];
 
       tasks = tasks.map(task => {
         const normalizedTask = {
@@ -5235,6 +5250,8 @@
           status: normalizeStatus(task.status),
           subtasks: Array.isArray(task.subtasks) ? task.subtasks : [],
           project: String(task.project || '').trim() || null,
+          startedAt: String(task.startedAt || '').trim() || null,
+          completedAt: String(task.completedAt || '').trim() || null,
           imageDataUrl: String(task.imageDataUrl || '').trim(),
           imageName: String(task.imageName || '').trim(),
         };
@@ -5712,6 +5729,50 @@
       return normalizeStatus(task?.status) === 'Completed';
     }
 
+    function applyTaskStatusChange(task, nextStatus) {
+      if (!task) return false;
+
+      const normalizedStatus = normalizeStatus(nextStatus);
+      task.status = normalizedStatus;
+
+      if (normalizedStatus === 'Ongoing') {
+        task.startedAt = today();
+      }
+
+      if (normalizedStatus === 'Completed') {
+        task.completedAt = today();
+      } else {
+        task.completedAt = null;
+      }
+
+      return true;
+    }
+
+    function syncTaskLifecycleDraftDates() {
+      const startedField = document.getElementById('taskStartedAt');
+      const completedField = document.getElementById('taskCompletedAt');
+      const statusField = document.getElementById('taskStatus');
+      if (!startedField || !completedField || !statusField) return;
+
+      const currentTask = editingId ? getTaskById(editingId) : null;
+      const normalizedStatus = normalizeStatus(statusField.value || currentTask?.status || DEFAULT_STATUS);
+      let startedAt = currentTask?.startedAt || '';
+      let completedAt = currentTask?.completedAt || '';
+
+      if (normalizedStatus === 'Ongoing') {
+        startedAt = today();
+      }
+
+      if (normalizedStatus === 'Completed') {
+        completedAt = today();
+      } else {
+        completedAt = '';
+      }
+
+      startedField.value = startedAt;
+      completedField.value = completedAt;
+    }
+
     function getCategoryByName(categoryName) {
       return categories.find(category => category.name === categoryName) || null;
     }
@@ -5722,6 +5783,31 @@
 
     function normalizeCategoryName(name) {
       return String(name || '').trim().replace(/\s+/g, ' ');
+    }
+
+    function escapeRegExp(value) {
+      return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function getHighlightedMarkup(text, query) {
+      const source = String(text || '');
+      const searchQuery = String(query || '').trim();
+      if (!source) return '';
+      if (!searchQuery) return escHtml(source);
+
+      const pattern = new RegExp(escapeRegExp(searchQuery), 'ig');
+      let markup = '';
+      let lastIndex = 0;
+
+      source.replace(pattern, (match, offset) => {
+        markup += escHtml(source.slice(lastIndex, offset));
+        markup += `<mark class="search-highlight">${escHtml(match)}</mark>`;
+        lastIndex = offset + match.length;
+        return match;
+      });
+
+      markup += escHtml(source.slice(lastIndex));
+      return markup;
     }
 
     function getFilterBadgeMarkup(filterType, value, options = {}) {
@@ -5761,11 +5847,11 @@
         </div>`;
     }
 
-    function getTaskProjectMarkup(projectName) {
+    function getTaskProjectMarkup(projectName, searchQuery = '') {
       const normalizedProject = String(projectName || '').trim();
       if (!normalizedProject) return '';
 
-      return `<div class="task-project-pill" title="${escHtml(normalizedProject)}"><span>${escHtml(normalizedProject)}</span></div>`;
+      return `<div class="task-project-pill" title="${escHtml(normalizedProject)}"><span>${getHighlightedMarkup(normalizedProject, searchQuery)}</span></div>`;
     }
 
     function getTaskMediaMarkup(task) {
@@ -5863,52 +5949,28 @@
       return String(value || '').trim();
     }
 
-    function normalizeItemBoolean(value) {
-      if (typeof value === 'boolean') return value;
-
-      const normalizedValue = String(value || '').trim().toLowerCase();
-      return normalizedValue === 'true'
-        || normalizedValue === 'yes'
-        || normalizedValue === 'approved'
-        || normalizedValue === 'done';
-    }
-
-    function normalizeItemChecklist(checklist = {}, completedStageCount = 0) {
-      const normalizedChecklist = {};
-
-      ITEM_CHECKLIST_FIELDS.forEach((field, index) => {
-        normalizedChecklist[field.key] = typeof checklist?.[field.key] === 'boolean'
-          ? checklist[field.key]
-          : index < completedStageCount;
-      });
-
-      return normalizedChecklist;
-    }
-
     function normalizeLegacyTaskItems(legacyItems, taskId, taskTitle) {
-      if (!Array.isArray(legacyItems)) return [];
+      return [];
+    }
 
-      return legacyItems
-        .map(item => ({
-          id: item?.id || genId(),
-          taskId,
-          taskTitleSnapshot: String(taskTitle || '').trim(),
-          tidReference: normalizeUniqueReference(item?.tidReference),
-          bidReference: normalizeUniqueReference(item?.bidReference || item?.number),
-          project: '',
-          supplier: normalizeUniqueReference(item?.supplier) || getDefaultItemSupplier(),
-          vaultStatus: ITEM_VAULT_STATUS_OPTIONS.includes(item?.vaultStatus) ? item.vaultStatus : DEFAULT_ITEM_VAULT_STATUS,
-          plmStatus: DEFAULT_ITEM_PLM_STATUS,
-          drawingSentAt: item?.drawingSentAt || '',
-          counterDieApprovalStatus: normalizeItemBoolean(item?.counterDieApprovalStatus),
-          samApprovalStatus: normalizeItemBoolean(item?.samApprovalStatus),
-          details: String(item?.details || '').trim(),
-          imageDataUrl: '',
-          imageName: '',
-          createdAt: item?.createdAt || new Date().toISOString(),
-          checklist: normalizeItemChecklist(item?.checklist, Math.max(Number(item?.currentStageIndex) || 0, 0) + 1)
-        }))
-        .filter(item => item.bidReference);
+    function normalizeItemStatus(value) {
+      const normalizedValue = String(value || '').trim();
+      return ITEM_STATUS_OPTIONS.includes(normalizedValue) ? normalizedValue : DEFAULT_ITEM_STATUS;
+    }
+
+    function getItemStatusMeta(status) {
+      const normalizedStatus = normalizeItemStatus(status);
+      return normalizedStatus === '235'
+        ? {
+            value: normalizedStatus,
+            label: 'Status 235',
+            accent: '#34c38f'
+          }
+        : {
+            value: normalizedStatus,
+            label: 'Status 110',
+            accent: '#ef7d57'
+          };
     }
 
     function normalizeItems(itemList) {
@@ -5916,32 +5978,24 @@
 
       return itemList
         .map(item => {
-          const normalizedBidReference = normalizeUniqueReference(item?.bidReference || '');
-          const normalizedTidReference = normalizeUniqueReference(item?.tidReference || item?.number);
-          const bidReference = normalizedBidReference || normalizedTidReference;
-          const tidReference = normalizedBidReference ? normalizedTidReference : '';
+          const bid = normalizeUniqueReference(item?.bid ?? item?.BID ?? '');
+          const tid = normalizeUniqueReference(item?.tid ?? item?.TID ?? '');
+          if (!bid && !tid) return null;
 
           return {
             id: item?.id || genId(),
             taskId: item?.taskId || null,
             taskTitleSnapshot: String(item?.taskTitleSnapshot || '').trim(),
-            tidReference,
-            bidReference,
-            project: String(item?.project || '').trim(),
-            supplier: normalizeUniqueReference(item?.supplier) || getDefaultItemSupplier(),
-            vaultStatus: ITEM_VAULT_STATUS_OPTIONS.includes(item?.vaultStatus) ? item.vaultStatus : DEFAULT_ITEM_VAULT_STATUS,
-            plmStatus: ITEM_PLM_STATUS_OPTIONS.includes(String(item?.plmStatus || '')) ? String(item.plmStatus) : DEFAULT_ITEM_PLM_STATUS,
-            drawingSentAt: item?.drawingSentAt || '',
-            counterDieApprovalStatus: normalizeItemBoolean(item?.counterDieApprovalStatus),
-            samApprovalStatus: normalizeItemBoolean(item?.samApprovalStatus),
-            details: String(item?.details || '').trim(),
+            tid,
+            bid,
+            status: normalizeItemStatus(item?.status ?? item?.Status),
+            supplier: normalizeUniqueReference(item?.supplier ?? item?.Supplier),
             imageDataUrl: String(item?.imageDataUrl || '').trim(),
             imageName: String(item?.imageName || '').trim(),
-            createdAt: item?.createdAt || new Date().toISOString(),
-            checklist: normalizeItemChecklist(item?.checklist)
+            createdAt: item?.createdAt || new Date().toISOString()
           };
         })
-        .filter(item => item.bidReference);
+        .filter(item => item && (item.bid || item.tid));
     }
 
     function buildSelectOptions(options, selectedValue, placeholderLabel = 'Select') {
@@ -5963,189 +6017,29 @@
     }
 
     function getItemPrimaryReference(item) {
-      return item?.bidReference || item?.tidReference || 'Item';
+      return item?.bid || item?.tid || 'Item';
     }
 
     function getItemReferenceSummary(item) {
-      if (item?.bidReference && item?.tidReference) {
-        return `${item.bidReference} / TID ${item.tidReference}`;
+      if (item?.bid && item?.tid) {
+        return `${item.bid} / TID ${item.tid}`;
       }
 
       return getItemPrimaryReference(item);
     }
-
-    function getBinaryItemFieldConfig(fieldName) {
-      if (fieldName === 'vaultStatus') {
-        return {
-          defaultValue: DEFAULT_ITEM_VAULT_STATUS,
-          checkedValue: ITEM_VAULT_STATUS_OPTIONS[1] || DEFAULT_ITEM_VAULT_STATUS,
-          label: 'Vault Status'
-        };
-      }
-
-      if (fieldName === 'plmStatus') {
-        return {
-          defaultValue: DEFAULT_ITEM_PLM_STATUS,
-          checkedValue: ITEM_PLM_STATUS_OPTIONS[1] || DEFAULT_ITEM_PLM_STATUS,
-          label: 'PLM Status'
-        };
-      }
-
-      return null;
-    }
-
-    function getBinaryItemFieldState(item, fieldName) {
-      const config = getBinaryItemFieldConfig(fieldName);
-      if (!config) return { checked: false, value: '' };
-      const currentValue = String(item?.[fieldName] || config.defaultValue);
-      return {
-        checked: currentValue === config.checkedValue,
-        value: currentValue === config.checkedValue ? config.checkedValue : config.defaultValue
-      };
-    }
-
-    function getSharedItemKey(bidReference) {
-      return normalizeUniqueReference(bidReference).toLowerCase();
-    }
-
-    function getItemsBySharedKey(bidReference, excludeId = null) {
-      const sharedKey = getSharedItemKey(bidReference);
-      if (!sharedKey) return [];
-
-      return items.filter(item => {
-        if (excludeId && item.id === excludeId) return false;
-        return getSharedItemKey(item.bidReference) === sharedKey;
-      });
-    }
-
-    function getSharedItemValues(source) {
-      return {
-        vaultStatus: source?.vaultStatus || DEFAULT_ITEM_VAULT_STATUS,
-        plmStatus: source?.plmStatus || DEFAULT_ITEM_PLM_STATUS,
-        counterDieApprovalStatus: Boolean(source?.counterDieApprovalStatus),
-        samApprovalStatus: Boolean(source?.samApprovalStatus)
-      };
-    }
-
-    function syncSharedFieldsForBid(bidReference, sourceValues) {
-      const sharedKey = getSharedItemKey(bidReference);
-      if (!sharedKey) return;
-
-      const sharedValues = getSharedItemValues(sourceValues);
-      items.forEach(item => {
-        if (getSharedItemKey(item.bidReference) !== sharedKey) return;
-        SHARED_ITEM_FIELDS.forEach(fieldName => {
-          item[fieldName] = sharedValues[fieldName];
-        });
-      });
-    }
-
-    function getItemChecklistCompletedCount(item) {
-      return ITEM_WORKFLOW_STEPS.filter(step => {
-        if (step.type === 'checklist') {
-          return Boolean(item?.checklist?.[step.key]);
-        }
-
-        if (step.key === 'vaultStatus' || step.key === 'plmStatus') {
-          return getBinaryItemFieldState(item, step.key).checked;
-        }
-
-        return Boolean(item?.[step.key]);
-      }).length;
-    }
-
-    function getWorkflowDefaultControlId(fieldName) {
-      return {
-        counterDieApprovalStatus: 'workflowItemCddApprovalDefault',
-        samApprovalStatus: 'workflowItemSamApprovalDefault',
-        vaultStatus: 'workflowItemVaultStatusDefault',
-        plmStatus: 'workflowItemPlmStatusDefault'
-      }[fieldName] || '';
-    }
-
-    function getItemWorkflowChecklistMarkup(item) {
-      return ITEM_WORKFLOW_STEPS.map((step, index) => {
-        const isChecked = step.type === 'checklist'
-          ? Boolean(item?.checklist?.[step.key])
-          : step.key === 'vaultStatus' || step.key === 'plmStatus'
-            ? getBinaryItemFieldState(item, step.key).checked
-            : Boolean(item?.[step.key]);
-        const dataAttribute = step.type === 'checklist'
-          ? `data-item-id="${item.id}" data-item-checklist="${step.key}"`
-          : `data-item-id="${item.id}" data-item-field="${step.key}"`;
-        const classNames = ['workflow-item-check'];
-        if (step.type === 'field') classNames.push('workflow-item-approval-toggle');
-        if (step.className) classNames.push(step.className);
-        if (isChecked) classNames.push('is-checked');
-
-        return `
-          <label class="${classNames.join(' ')}">
-            <span class="workflow-item-step-index">${index + 1}</span>
-            <input type="checkbox" ${dataAttribute} ${isChecked ? 'checked' : ''} />
-            <span class="workflow-item-check-copy">${escHtml(step.label)}</span>
-          </label>`;
-      }).join('');
-    }
-
-    function getWorkflowDefaultChecklistMarkup() {
-      return ITEM_WORKFLOW_STEPS.map((step, index) => {
-        const inputId = step.type === 'checklist'
-          ? `workflowItemChecklist-${step.key}`
-          : getWorkflowDefaultControlId(step.key);
-        const dataAttribute = step.type === 'checklist'
-          ? `data-workflow-default-checklist="${step.key}"`
-          : '';
-        const classNames = ['workflow-item-check'];
-        if (step.type === 'field') classNames.push('workflow-item-approval-toggle');
-        if (step.className) classNames.push(step.className);
-
-        return `
-          <label class="${classNames.join(' ')}">
-            <span class="workflow-item-step-index">${index + 1}</span>
-            <input type="checkbox" id="${inputId}" ${dataAttribute} />
-            <span class="workflow-item-check-copy">${escHtml(step.label)}</span>
-          </label>`;
-      }).join('');
-    }
-
-    function parseItemBatchLines(text) {
-      return String(text || '')
-        .split(/\r?\n/)
-        .map(line => line.trim())
-        .filter(Boolean)
-        .map(line => {
-          const [bidReference = '', tidReference = ''] = line.split(/\s*(?:\||,|\t)\s*/, 2);
-          return {
-            tidReference: normalizeUniqueReference(tidReference),
-            bidReference: normalizeUniqueReference(bidReference)
-          };
-        })
-        .filter(item => item.bidReference);
-    }
-
-    function createGlobalItem(itemRefs, defaults = {}, task = null) {
-      const existingGroupSource = getItemsBySharedKey(itemRefs.bidReference)[0] || null;
-      const sharedDefaults = existingGroupSource ? getSharedItemValues(existingGroupSource) : getSharedItemValues(defaults);
-
+    function createTaskItem(values = {}, task = null) {
       return normalizeItems([{
         id: genId(),
         taskId: task?.id || null,
         taskTitleSnapshot: String(task?.title || '').trim(),
-        tidReference: itemRefs.tidReference,
-        bidReference: itemRefs.bidReference,
-        project: String(defaults.project || '').trim(),
-        supplier: defaults.supplier || getDefaultItemSupplier(),
-        vaultStatus: sharedDefaults.vaultStatus,
-        plmStatus: sharedDefaults.plmStatus,
-        drawingSentAt: defaults.drawingSentAt || '',
-        counterDieApprovalStatus: sharedDefaults.counterDieApprovalStatus,
-        samApprovalStatus: sharedDefaults.samApprovalStatus,
-        details: '',
-        imageDataUrl: '',
-        imageName: '',
-        createdAt: new Date().toISOString(),
-        checklist: defaults.checklist || {}
-      }])[0];
+        tid: normalizeUniqueReference(values.tid),
+        bid: normalizeUniqueReference(values.bid),
+        status: normalizeItemStatus(values.status),
+        supplier: normalizeUniqueReference(values.supplier),
+        imageDataUrl: String(values.imageDataUrl || '').trim(),
+        imageName: String(values.imageName || '').trim(),
+        createdAt: new Date().toISOString()
+      }])[0] || null;
     }
 
     function getDuplicateItemMessages(candidate, excludeId = null) {
@@ -6158,119 +6052,106 @@
 
     function getItemSearchText(item) {
       return [
-        item.bidReference,
-        item.tidReference,
-        item.project,
+        item.bid,
+        item.tid,
+        item.status,
         item.supplier,
-        item.vaultStatus,
-        item.plmStatus,
-        item.counterDieApprovalStatus ? 'counter die approved cdd approval' : '',
-        item.samApprovalStatus ? 'sam approval approved' : '',
         getItemTaskLabel(item)
       ].filter(Boolean).join(' ').toLowerCase();
     }
 
     function getItemEditorMarkup(item, options = {}) {
       const showTaskLink = options.showTaskLink === true;
-      const selectable = options.selectable === true;
-      const isSelected = options.isSelected === true;
-      const checklistCompletedCount = getItemChecklistCompletedCount(item);
+      const statusMeta = getItemStatusMeta(item.status);
+      const supplierValue = String(item.supplier || '').trim();
 
       return `
-        <article class="workflow-item${isSelected ? ' is-selected' : ''}">
-          <div class="workflow-item-header">
-            <div class="workflow-item-media">
-              <div class="workflow-item-media-inline">
-                ${item.imageDataUrl ? `<button type="button" class="workflow-item-image-clear" data-clear-item-image="${item.id}" aria-label="Remove image">x</button>` : ''}
-                <label class="workflow-item-image-frame workflow-item-upload${item.imageDataUrl ? '' : ' is-empty'}">
-                  ${item.imageDataUrl
-                    ? `<img class="workflow-item-image-preview" src="${escHtml(item.imageDataUrl)}" alt="${escHtml(getItemReferenceSummary(item))}" />`
-                    : '<span class="workflow-item-image-placeholder"><strong>+</strong><span>Add image</span></span>'}
-                  <input type="file" accept="image/*" data-item-image-upload="${item.id}" />
-                </label>
-              </div>
-            </div>
-            <div class="workflow-item-header-main">
-              <div class="workflow-item-heading">
-                <strong class="workflow-item-number">${escHtml(item.bidReference)}</strong>
-                ${item.tidReference ? `<span class="workflow-item-stage">TID ${escHtml(item.tidReference)}</span>` : ''}
-                <span class="workflow-item-progress">${checklistCompletedCount}/${ITEM_WORKFLOW_STEPS.length} done</span>
-              </div>
-              <div class="workflow-item-meta">
-                ${item.project ? `<span class="workflow-item-chip is-project">${escHtml(item.project)}</span>` : ''}
-                <span class="workflow-item-chip is-supplier">${escHtml(item.supplier || getDefaultItemSupplier())}</span>
-                <span class="workflow-item-chip is-vault">${escHtml(item.vaultStatus || DEFAULT_ITEM_VAULT_STATUS)}</span>
-                <span class="workflow-item-chip is-plm">PLM ${escHtml(item.plmStatus || DEFAULT_ITEM_PLM_STATUS)}</span>
-                ${item.counterDieApprovalStatus ? '<span class="workflow-item-chip is-cdd">CDD</span>' : ''}
-                ${item.samApprovalStatus ? '<span class="workflow-item-chip is-sam">SAM</span>' : ''}
-              </div>
-              ${showTaskLink ? `<div class="workflow-item-task-link">Task: ${escHtml(getItemTaskLabel(item))}</div>` : ''}
-            </div>
-            <div class="workflow-item-actions">
-              ${selectable ? `<label class="workflow-item-select"><input type="checkbox" data-select-item="${item.id}" ${isSelected ? 'checked' : ''} /><span>Select</span></label>` : ''}
-              <button type="button" class="btn btn-danger" data-delete-item="${item.id}">Delete</button>
+        <article class="workflow-item status-${toClassToken(statusMeta.value)}" style="--item-status-accent:${statusMeta.accent}">
+          <div class="workflow-item-media">
+            <div class="workflow-item-media-inline">
+              ${item.imageDataUrl ? `<button type="button" class="workflow-item-image-clear" data-clear-item-image="${item.id}" aria-label="Remove image">x</button>` : ''}
+              <label class="workflow-item-image-frame workflow-item-upload${item.imageDataUrl ? '' : ' is-empty'}">
+                ${item.imageDataUrl
+                  ? `<img class="workflow-item-image-preview" src="${escHtml(item.imageDataUrl)}" alt="${escHtml(getItemReferenceSummary(item))}" />`
+                  : '<span class="workflow-item-image-placeholder"><strong>+</strong><span>Add image</span></span>'}
+                <input type="file" accept="image/*" data-item-image-upload="${item.id}" />
+              </label>
             </div>
           </div>
-          <div class="workflow-item-grid">
-            <div class="workflow-item-field-group">
-              <label>BID Reference</label>
-              <input type="text" value="${escHtml(item.bidReference)}" data-item-id="${item.id}" data-item-field="bidReference" placeholder="Unique BID reference" />
+          <div class="workflow-item-body">
+            <div class="workflow-item-top">
+              <div class="workflow-item-header-main">
+                <div class="workflow-item-heading">
+                  <strong class="workflow-item-number">${escHtml(item.bid || item.tid || 'Item')}</strong>
+                </div>
+                ${showTaskLink ? `<div class="workflow-item-task-link">Task: ${escHtml(getItemTaskLabel(item))}</div>` : ''}
+              </div>
+              <div class="workflow-item-actions">
+                <button type="button" class="workflow-item-delete-btn" data-delete-item="${item.id}" aria-label="Delete item" title="Delete item">&times;</button>
+              </div>
             </div>
-            <div class="workflow-item-field-group">
-              <label>TID Reference</label>
-              <input type="text" value="${escHtml(item.tidReference)}" data-item-id="${item.id}" data-item-field="tidReference" placeholder="Optional unique TID reference" />
-            </div>
-            <div class="workflow-item-field-group">
-              <label>Project</label>
-              <select data-item-id="${item.id}" data-item-field="project">${buildSelectOptions(getProjectOptions(item.project), item.project, 'Select project')}</select>
-            </div>
-            <div class="workflow-item-field-group">
-              <label>Supplier</label>
-              <select data-item-id="${item.id}" data-item-field="supplier">${buildSelectOptions(getSupplierOptions(item.supplier), item.supplier || getDefaultItemSupplier(), 'Select supplier')}</select>
-            </div>
-            <div class="workflow-item-field-group">
-              <label>Drawing Sent Date</label>
-              <input type="date" value="${escHtml(item.drawingSentAt)}" data-item-id="${item.id}" data-item-field="drawingSentAt" />
+            <div class="workflow-item-grid">
+              <div class="workflow-item-field-group">
+                <label>BID</label>
+                <input type="text" value="${escHtml(item.bid)}" data-item-id="${item.id}" data-item-field="bid" placeholder="BID" />
+              </div>
+              <div class="workflow-item-field-group">
+                <label>TID</label>
+                <input type="text" value="${escHtml(item.tid)}" data-item-id="${item.id}" data-item-field="tid" placeholder="TID" />
+              </div>
+              <div class="workflow-item-field-group">
+                <label>Status</label>
+                <select class="workflow-item-status-select" data-item-id="${item.id}" data-item-field="status">${buildSelectOptions(ITEM_STATUS_OPTIONS, item.status || DEFAULT_ITEM_STATUS, 'Select status')}</select>
+              </div>
+              <div class="workflow-item-field-group">
+                <label>Supplier</label>
+                <select data-item-id="${item.id}" data-item-field="supplier">${buildSelectOptions(getSupplierOptions(supplierValue), supplierValue, 'No supplier')}</select>
+              </div>
             </div>
           </div>
-          <div class="workflow-item-checklist">${getItemWorkflowChecklistMarkup(item)}</div>
         </article>`;
     }
 
     function getWorkflowItemsSectionMarkup(task) {
       const taskItems = getItemsForTask(task.id);
-      const completedCount = taskItems.filter(item => getItemChecklistCompletedCount(item) === ITEM_WORKFLOW_STEPS.length).length;
 
       return `
         <div class="detail-section-header">
           <div class="section-title">Items</div>
-          <span class="detail-section-meta">${completedCount}/${taskItems.length} fully complete</span>
+          <span class="detail-section-meta">${taskItems.length} linked</span>
         </div>
         <form class="workflow-item-form" id="workflowItemForm">
-          <div class="workflow-item-bulk">
-            <label class="workflow-item-label" for="workflowItemBulkInput">Items To Create</label>
-            <textarea id="workflowItemBulkInput" class="workflow-item-bulk-input" placeholder="One item per line using: BID Reference[, TID Reference]" required></textarea>
-          </div>
           <div class="workflow-item-defaults">
             <div class="workflow-item-field-group">
-              <label for="workflowItemProjectDefault">Project</label>
-              <select id="workflowItemProjectDefault" class="workflow-item-default-input is-select">${buildSelectOptions(getProjectOptions(), '', 'Select project')}</select>
+              <label for="workflowItemBidInput">BID</label>
+              <input type="text" id="workflowItemBidInput" class="workflow-item-default-input" placeholder="BID" />
             </div>
             <div class="workflow-item-field-group">
-              <label for="workflowItemSupplierDefault">Supplier</label>
-              <select id="workflowItemSupplierDefault" class="workflow-item-default-input is-select">${buildSelectOptions(getSupplierOptions(), getDefaultItemSupplier(), 'Select supplier')}</select>
+              <label for="workflowItemTidInput">TID</label>
+              <input type="text" id="workflowItemTidInput" class="workflow-item-default-input" placeholder="TID" />
             </div>
             <div class="workflow-item-field-group">
-              <label for="workflowItemDrawingSentDefault">Drawing Sent Date</label>
-              <input type="date" id="workflowItemDrawingSentDefault" class="workflow-item-default-input" />
+              <label for="workflowItemStatusInput">Status</label>
+              <select id="workflowItemStatusInput" class="workflow-item-default-input is-select">${buildSelectOptions(ITEM_STATUS_OPTIONS, DEFAULT_ITEM_STATUS, 'Select status')}</select>
+            </div>
+            <div class="workflow-item-field-group">
+              <label for="workflowItemSupplierInput">Supplier</label>
+              <select id="workflowItemSupplierInput" class="workflow-item-default-input is-select">${buildSelectOptions(getSupplierOptions(), '', 'No supplier')}</select>
+            </div>
+            <div class="workflow-item-field-group">
+              <label for="workflowItemImageInput">Image</label>
+              <input type="file" id="workflowItemImageInput" class="workflow-item-default-input" accept="image/*" />
             </div>
           </div>
-          <div class="workflow-item-checklist-defaults">${getWorkflowDefaultChecklistMarkup()}</div>
-          <button type="submit" class="btn btn-primary workflow-item-submit-btn">Add Items</button>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary workflow-item-submit-btn">Add Item</button>
+            <button type="button" class="btn btn-ghost" data-open-item-import>Import Excel</button>
+            <input type="file" id="workflowItemImportInput" accept=".xlsx,.xls" hidden />
+          </div>
         </form>
         ${taskItems.length
           ? `<div class="workflow-item-list-shell"><div class="workflow-item-list">${taskItems.map(item => getItemEditorMarkup(item)).join('')}</div></div>`
-          : '<div class="workflow-item-empty">No items linked to this task yet. Add a batch above or manage them from All Items.</div>'}`;
+          : '<div class="workflow-item-empty">No items linked to this task yet. Add one above or import an Excel sheet into this task.</div>'}`;
     }
 
     function getCurrentFilters() {
@@ -6286,14 +6167,10 @@
     function getTaskSearchText(task) {
       const taskItems = getItemsForTask(task.id);
       const workflowText = taskItems.map(item => [
-        item.bidReference,
-        item.tidReference,
-        item.project,
+        item.bid,
+        item.tid,
+        item.status,
         item.supplier,
-        item.vaultStatus,
-        item.plmStatus,
-        item.counterDieApprovalStatus ? 'counter die approved cdd approval' : '',
-        item.samApprovalStatus ? 'sam approval approved' : ''
       ].filter(Boolean).join(' ')).join(' ');
 
       return [task.title, task.description, task.emailSubject, task.notes, task.project, workflowText]
@@ -6452,7 +6329,7 @@
       return taskData.logData.preview;
     }
 
-    function getStandardTaskCardMarkup(task) {
+    function getStandardTaskCardMarkup(task, searchQuery = '') {
       const taskData = getTaskCardData(task);
 
       return `
@@ -6469,13 +6346,13 @@
                     </div>
                     ${getTaskActionToolsMarkup(task.id)}
                   </div>
-                  <div class="task-title">${escHtml(task.title)}</div>
+                  <div class="task-title">${getHighlightedMarkup(task.title, searchQuery)}</div>
                   <div class="task-signal-row">
-                    ${getTaskProjectMarkup(task.project)}
+                    ${getTaskProjectMarkup(task.project, searchQuery)}
                     ${getTaskPriorityMarkup(taskData.priority)}
                   </div>
-                  ${task.sender ? `<div class="task-sender-label">From: ${escHtml(task.sender)}</div>` : ''}
-                  ${task.emailSubject ? `<div class="task-email-subject">Email: ${escHtml(task.emailSubject)}</div>` : ''}
+                  ${task.sender ? `<div class="task-sender-label">From: ${getHighlightedMarkup(task.sender, searchQuery)}</div>` : ''}
+                  ${task.emailSubject ? `<div class="task-email-subject">Email: ${getHighlightedMarkup(task.emailSubject, searchQuery)}</div>` : ''}
                   <div class="task-info-strip">
                     <div class="task-meta">
                       ${getFilterBadgeMarkup('status', taskData.status)}
@@ -6491,7 +6368,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="task-description-block ${task.description ? '' : 'is-empty'}">${task.description ? escHtml(task.description) : 'No description'}</div>
+                  <div class="task-description-block ${task.description ? '' : 'is-empty'}">${task.description ? getHighlightedMarkup(task.description, searchQuery) : 'No description'}</div>
                 </div>
               </div>
             </div>
@@ -6519,6 +6396,7 @@
       const dueSummary = task.dueDate
         ? `${taskData.overdue ? 'Overdue' : 'Due'} ${formatDate(task.dueDate)}`
         : (task.receivedAt ? `Received ${formatDate(task.receivedAt)}` : 'No due date');
+      const searchQuery = options.searchQuery || '';
 
       return `
         <div class="task-card task-card-compact ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isActive ? 'is-active' : ''}${contextClass}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
@@ -6534,9 +6412,9 @@
                     </div>
                     ${getTaskActionToolsMarkup(task.id)}
                   </div>
-                  <div class="task-title">${escHtml(task.title)}</div>
+                  <div class="task-title">${getHighlightedMarkup(task.title, searchQuery)}</div>
                   <div class="task-signal-row">
-                    ${getTaskProjectMarkup(task.project)}
+                    ${getTaskProjectMarkup(task.project, searchQuery)}
                     ${getTaskPriorityMarkup(taskData.priority)}
                   </div>
                   <div class="task-meta">
@@ -6551,7 +6429,7 @@
         </div>`;
     }
 
-    function renderBoardTaskList(tasksToRender) {
+    function renderBoardTaskList(tasksToRender, searchQuery = '') {
       const orderedStatuses = [...STATUS_OPTIONS].sort((a, b) => (STATUS_ORDER[a] ?? STATUS_OPTIONS.length) - (STATUS_ORDER[b] ?? STATUS_OPTIONS.length));
 
       return orderedStatuses.map(status => {
@@ -6571,7 +6449,7 @@
             </div>
             <div class="task-board-list">
               ${groupedTasks.length
-                ? groupedTasks.map(task => getCompactTaskCardMarkup(task, { context: 'board', hideStatusBadge: true })).join('')
+                ? groupedTasks.map(task => getCompactTaskCardMarkup(task, { context: 'board', hideStatusBadge: true, searchQuery })).join('')
                 : '<div class="task-board-empty">Nothing in this status for the current filters.</div>'}
             </div>
           </section>`;
@@ -6591,7 +6469,7 @@
       return compareTasks(a, b, sortMode);
     }
 
-    function renderAgendaTaskList(tasksToRender, sortMode) {
+    function renderAgendaTaskList(tasksToRender, sortMode, searchQuery = '') {
       const agendaGroups = [
         { id: 'overdue', title: 'Overdue', subtitle: 'Past-due work first', accent: 'var(--high)' },
         { id: 'today', title: 'Due Today', subtitle: 'Tasks landing today', accent: 'var(--medium)' },
@@ -6616,27 +6494,27 @@
             </div>
             <div class="task-agenda-list">
               ${groupedTasks.length
-                ? groupedTasks.map(task => getCompactTaskCardMarkup(task, { context: 'agenda' })).join('')
+                ? groupedTasks.map(task => getCompactTaskCardMarkup(task, { context: 'agenda', searchQuery })).join('')
                 : '<div class="task-agenda-empty">No tasks in this date bucket for the current filters.</div>'}
             </div>
           </section>`;
       }).join('');
     }
 
-    function renderTaskListMarkup(tasksToRender, sortMode) {
+    function renderTaskListMarkup(tasksToRender, sortMode, searchQuery = '') {
       if (currentViewMode === 'compact') {
-        return tasksToRender.map(task => getCompactTaskCardMarkup(task, { context: 'compact' })).join('');
+        return tasksToRender.map(task => getCompactTaskCardMarkup(task, { context: 'compact', searchQuery })).join('');
       }
 
       if (currentViewMode === 'board') {
-        return renderBoardTaskList(tasksToRender);
+        return renderBoardTaskList(tasksToRender, searchQuery);
       }
 
       if (currentViewMode === 'agenda') {
-        return renderAgendaTaskList(tasksToRender, sortMode);
+        return renderAgendaTaskList(tasksToRender, sortMode, searchQuery);
       }
 
-      return tasksToRender.map(task => getStandardTaskCardMarkup(task)).join('');
+      return tasksToRender.map(task => getStandardTaskCardMarkup(task, searchQuery)).join('');
     }
 
     function getTaskExportRows() {
@@ -6655,6 +6533,8 @@
           TemplateID: task.templateId || '',
           TemplateName: getTemplateById(task.templateId)?.name || '',
           CreatedAt: task.createdAt || '',
+          StartedAt: task.startedAt || '',
+          CompletedAt: task.completedAt || '',
           ReceivedAt: task.receivedAt || '',
           DueDate: task.dueDate || '',
           Notes: task.notes || '',
@@ -6695,7 +6575,7 @@
       }
 
       const workbook = XLSX.utils.book_new();
-      const taskHeaders = ['ID', 'Title', 'EmailSubject', 'Description', 'Category', 'Priority', 'Status', 'IsCompleted', 'TemplateID', 'TemplateName', 'CreatedAt', 'ReceivedAt', 'DueDate', 'Notes', 'SubtaskCount', 'CompletedSubtaskCount', 'OpenSubtaskCount', 'LogCount', 'LatestLogAt', 'Subtasks'];
+  const taskHeaders = ['ID', 'Title', 'EmailSubject', 'Description', 'Category', 'Priority', 'Status', 'IsCompleted', 'TemplateID', 'TemplateName', 'CreatedAt', 'StartedAt', 'CompletedAt', 'ReceivedAt', 'DueDate', 'Notes', 'SubtaskCount', 'CompletedSubtaskCount', 'OpenSubtaskCount', 'LogCount', 'LatestLogAt', 'Subtasks'];
       const logHeaders = ['ID', 'TaskID', 'TaskTitle', 'Date', 'Content'];
 
       XLSX.utils.book_append_sheet(workbook, buildSheet(getTaskExportRows(), taskHeaders), 'Tasks');
@@ -6710,21 +6590,11 @@
         ID: item.id,
         TaskID: item.taskId || '',
         TaskTitle: getTaskById(item.taskId)?.title || item.taskTitleSnapshot || '',
-        BIDReference: item.bidReference || '',
-        TIDReference: item.tidReference || '',
-        Project: item.project || '',
+        BID: item.bid || '',
+        TID: item.tid || '',
+        Status: item.status || '',
         Supplier: item.supplier || '',
-        VaultStatus: item.vaultStatus || '',
-        PLMStatus: item.plmStatus || '',
-        CounterDieApproval: item.counterDieApprovalStatus ? 'Approved' : 'Pending',
-        SAMApproval: item.samApprovalStatus ? 'Approved' : 'Pending',
-        DrawingSentAt: item.drawingSentAt || '',
-        ChecklistProgress: `${getItemChecklistCompletedCount(item)}/${ITEM_WORKFLOW_STEPS.length}`,
-        DetailsCaptured: item.checklist?.detailsCaptured ? 'Yes' : 'No',
-        DrawnAddedToVault: item.checklist?.drawnAddedToVault ? 'Yes' : 'No',
-        DrawingSentToSupplier: item.checklist?.drawingSentToSupplier ? 'Yes' : 'No',
         CreatedAt: item.createdAt || '',
-        Details: item.details || '',
         ImageName: item.imageName || '',
         HasImage: item.imageDataUrl ? 'Yes' : 'No'
       }));
@@ -6839,6 +6709,8 @@
           Description: task.description || '',
           Notes: task.notes || '',
           Created: toExcelDateValue(task.createdAt),
+          Started: toExcelDateValue(task.startedAt),
+          Completed: toExcelDateValue(task.completedAt),
           Received: toExcelDateValue(task.receivedAt),
           Due: toExcelDateValue(task.dueDate)
         };
@@ -6848,21 +6720,11 @@
     function getDetailedItemExportRows() {
       return items.map(item => ({
         TaskTitle: getTaskById(item.taskId)?.title || item.taskTitleSnapshot || '',
-        BIDReference: item.bidReference || '',
-        TIDReference: item.tidReference || '',
-        Project: item.project || '',
+        BID: item.bid || '',
+        TID: item.tid || '',
+        Status: item.status || '',
         Supplier: item.supplier || '',
-        VaultStatus: item.vaultStatus || '',
-        PLMStatus: item.plmStatus || '',
-        CounterDieApproval: item.counterDieApprovalStatus ? 'Approved' : 'Pending',
-        SAMApproval: item.samApprovalStatus ? 'Approved' : 'Pending',
-        DrawingSent: formatExcelDateDisplay(item.drawingSentAt),
-        ChecklistProgress: `${getItemChecklistCompletedCount(item)}/${ITEM_WORKFLOW_STEPS.length}`,
-        DetailsCaptured: item.checklist?.detailsCaptured ? 'Yes' : 'No',
-        DrawnAddedToVault: item.checklist?.drawnAddedToVault ? 'Yes' : 'No',
-        DrawingSentToSupplier: item.checklist?.drawingSentToSupplier ? 'Yes' : 'No',
         Created: formatExcelDateDisplay(item.createdAt),
-        Details: item.details || '',
         ImageName: item.imageName || '',
         HasImage: item.imageDataUrl ? 'Yes' : 'No'
       }));
@@ -7348,6 +7210,31 @@
         .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
     }
 
+    function deleteItemsByTaskIds(taskIds) {
+      const taskIdSet = taskIds instanceof Set ? taskIds : new Set(taskIds || []);
+      if (!taskIdSet.size) return;
+
+      const nextItems = items.filter(item => !taskIdSet.has(item.taskId));
+      const remainingItemIds = new Set(nextItems.map(item => item.id));
+      selectedItemIds = new Set([...selectedItemIds].filter(itemId => remainingItemIds.has(itemId)));
+      items = nextItems;
+    }
+
+    function deleteTasksAndLinkedData(taskIds) {
+      const taskIdSet = taskIds instanceof Set ? taskIds : new Set(taskIds || []);
+      if (!taskIdSet.size) return false;
+
+      tasks = tasks.filter(task => !taskIdSet.has(task.id));
+      logs = logs.filter(log => !taskIdSet.has(log.taskId));
+      deleteItemsByTaskIds(taskIdSet);
+
+      if (selectedTaskId && taskIdSet.has(selectedTaskId)) {
+        selectedTaskId = null;
+      }
+
+      return true;
+    }
+
     function clearCompletedTasks() {
       const completedTaskIds = tasks
         .filter(task => isTaskCompleted(task))
@@ -7358,15 +7245,7 @@
       }
 
       const completedTaskIdSet = new Set(completedTaskIds);
-      tasks = tasks.filter(task => !completedTaskIdSet.has(task.id));
-      logs = logs.filter(log => !completedTaskIdSet.has(log.taskId));
-      items = items.map(item => completedTaskIdSet.has(item.taskId)
-        ? { ...item, taskId: null }
-        : item);
-
-      if (selectedTaskId && completedTaskIdSet.has(selectedTaskId)) {
-        selectedTaskId = null;
-      }
+      deleteTasksAndLinkedData(completedTaskIdSet);
 
       saveTasks();
       saveLogs();
@@ -7671,7 +7550,7 @@
         selectedTaskId = visible[0]?.id || null;
       }
 
-      list.innerHTML = renderTaskListMarkup(visible, filters.sort);
+      list.innerHTML = renderTaskListMarkup(visible, filters.sort, filters.search);
 
       renderTaskDetails({ preserveScrollTop: detailScrollTop });
 
@@ -7848,6 +7727,8 @@
           <div class="detail-row"><span>Sender</span><strong>${task.sender ? escHtml(task.sender) : 'N/A'}</strong></div>
           <div class="detail-row is-full-width"><span>Email Subject</span><strong>${task.emailSubject ? escHtml(task.emailSubject) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-created"><span>Created</span><strong>${task.createdAt ? escHtml(formatDate(task.createdAt)) : 'N/A'}</strong></div>
+          <div class="detail-row is-date is-started"><span>Started</span><strong>${task.startedAt ? escHtml(formatDate(task.startedAt)) : 'N/A'}</strong></div>
+          <div class="detail-row is-date is-completed"><span>Completed</span><strong>${task.completedAt ? escHtml(formatDate(task.completedAt)) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-received"><span>Received</span><strong>${task.receivedAt ? escHtml(formatDate(task.receivedAt)) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-due ${dueClass}"><span>Due</span><strong>${task.dueDate ? escHtml(formatDate(task.dueDate)) : 'N/A'}</strong></div>
         </div>
@@ -7939,6 +7820,8 @@
         document.getElementById('taskStatus').value     = normalizeStatus(t.status);
         document.getElementById('taskReceivedAt').value = t.receivedAt || '';
         document.getElementById('taskDueDate').value    = t.dueDate    || '';
+        document.getElementById('taskStartedAt').value  = t.startedAt  || '';
+        document.getElementById('taskCompletedAt').value = t.completedAt || '';
         document.getElementById('taskNotes').value      = t.notes      || '';
         taskDraftImageDataUrl = String(t.imageDataUrl || '').trim();
         taskDraftImageName = String(t.imageName || '').trim();
@@ -7959,8 +7842,11 @@
         document.getElementById('taskPriority').value   = DEFAULT_PRIORITY;
         document.getElementById('taskStatus').value     = DEFAULT_STATUS;
         document.getElementById('taskReceivedAt').value = today();
+        document.getElementById('taskStartedAt').value  = '';
+        document.getElementById('taskCompletedAt').value = '';
       }
 
+      syncTaskLifecycleDraftDates();
       renderTaskProjectOptions();
       updateTaskImagePreview();
       modal.classList.add('open');
@@ -8056,15 +7942,22 @@
           Object.assign(tasks[idx], data, {
             subtasks: nextSubtasks
           });
+          applyTaskStatusChange(tasks[idx], data.status);
         }
       } else {
-        const newTasks = enteredTitles.map(taskTitle => ({
-          id: genId(),
-          createdAt: today(),
-          subtasks: buildTaskSubtasks(data.templateId),
-          ...data,
-          title: taskTitle
-        }));
+        const newTasks = enteredTitles.map(taskTitle => {
+          const newTask = {
+            id: genId(),
+            createdAt: today(),
+            startedAt: null,
+            completedAt: null,
+            subtasks: buildTaskSubtasks(data.templateId),
+            ...data,
+            title: taskTitle
+          };
+          applyTaskStatusChange(newTask, data.status);
+          return newTask;
+        });
         tasks = [...newTasks, ...tasks];
         selectedTaskId = newTasks[0]?.id || selectedTaskId;
       }
@@ -8076,6 +7969,7 @@
     });
 
     document.getElementById('taskForm').addEventListener('change', () => {
+      syncTaskLifecycleDraftDates();
       syncTaskModalFieldAccents();
     });
 
@@ -8108,7 +8002,7 @@
       if (completeId) {
         const task = tasks.find(item => item.id === completeId);
         if (!task) return;
-        task.status = isTaskCompleted(task) ? DEFAULT_STATUS : 'Completed';
+        applyTaskStatusChange(task, isTaskCompleted(task) ? DEFAULT_STATUS : 'Completed');
         saveTasks();
         renderTasks();
         return;
@@ -8118,14 +8012,7 @@
 
       if (deleteId) {
         if (confirm('Delete this task?')) {
-          tasks = tasks.filter(t => t.id !== deleteId);
-          logs = logs.filter(log => log.taskId !== deleteId);
-          items = items.map(item => item.taskId === deleteId
-            ? { ...item, taskId: null }
-            : item);
-          if (selectedTaskId === deleteId) {
-            selectedTaskId = null;
-          }
+          deleteTasksAndLinkedData([deleteId]);
           saveTasks();
           saveLogs();
           saveItems();
@@ -8157,7 +8044,7 @@
       if (!select) return;
       const task = tasks.find(t => t.id === select.dataset.id);
       if (task) {
-        task.status = normalizeStatus(select.value);
+        applyTaskStatusChange(task, select.value);
         saveTasks();
         renderTasks();
       }
@@ -8251,14 +8138,36 @@
           renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         }
       }
+
+      const openImport = e.target.closest('[data-open-item-import]');
+      if (openImport) {
+        document.getElementById('workflowItemImportInput')?.click();
+      }
     });
 
     document.getElementById('taskDetailPanel').addEventListener('change', e => {
       const field = e.target.closest('[data-item-field]');
-      const checklistField = e.target.closest('[data-item-checklist]');
       const imageField = e.target.closest('[data-item-image-upload]');
+      const importField = e.target.id === 'workflowItemImportInput' ? e.target : null;
 
-      if (!field && !checklistField && !imageField) return;
+      if (!field && !imageField && !importField) return;
+
+      if (importField) {
+        importItemsFromWorkbook(importField.files?.[0], selectedTaskId)
+          .then(result => {
+            importField.value = '';
+            if (!result) return;
+            activeDetailTab = 'items';
+            saveItems();
+            renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+            alert(result.message);
+          })
+          .catch(error => {
+            importField.value = '';
+            alert(error.message || 'Unable to import the workbook.');
+          });
+        return;
+      }
 
       if (imageField) {
         applyItemImageChange(imageField.dataset.itemImageUpload, imageField.files?.[0])
@@ -8287,13 +8196,9 @@
         }
       }
 
-      if (checklistField) {
-        applyItemChecklistChange(checklistField.dataset.itemId, checklistField.dataset.itemChecklist, checklistField.checked);
-      }
-
       activeDetailTab = 'items';
       saveItems();
-  renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+      renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
     });
 
     document.getElementById('taskDetailPanel').addEventListener('contextmenu', e => {
@@ -8319,7 +8224,7 @@
       }
 
       if (action === 'toggle-status') {
-        task.status = isTaskCompleted(task) ? DEFAULT_STATUS : 'Completed';
+        applyTaskStatusChange(task, isTaskCompleted(task) ? DEFAULT_STATUS : 'Completed');
         saveTasks();
         renderTasks();
         return;
@@ -8348,10 +8253,14 @@
           ...task,
           id: genId(),
           title: `${task.title} (Copy)`,
-          createdAt: today(),
+          status: DEFAULT_STATUS,
+          startedAt: null,
+          completedAt: null,
+          createdAt: new Date().toISOString(),
           subtasks: (task.subtasks || []).map(subtask => ({
             ...subtask,
-            id: genId()
+            id: genId(),
+            done: false
           }))
         };
         delete duplicatedTask.workflowItems;
@@ -8364,14 +8273,7 @@
 
       if (action === 'delete') {
         if (!confirm('Delete this task?')) return;
-        tasks = tasks.filter(item => item.id !== task.id);
-        logs = logs.filter(log => log.taskId !== task.id);
-        items = items.map(item => item.taskId === task.id
-          ? { ...item, taskId: null }
-          : item);
-        if (selectedTaskId === task.id) {
-          selectedTaskId = null;
-        }
+        deleteTasksAndLinkedData([task.id]);
         saveTasks();
         saveLogs();
         saveItems();
@@ -8405,42 +8307,42 @@
         e.preventDefault();
 
         const task = getTaskById(selectedTaskId);
-        const bulkInput = document.getElementById('workflowItemBulkInput');
-        if (!task || !bulkInput) return;
+        const bidField = document.getElementById('workflowItemBidInput');
+        const tidField = document.getElementById('workflowItemTidInput');
+        const statusField = document.getElementById('workflowItemStatusInput');
+        const supplierField = document.getElementById('workflowItemSupplierInput');
+        const imageField = document.getElementById('workflowItemImageInput');
+        if (!task || !bidField || !tidField || !statusField || !supplierField || !imageField) return;
 
-        const batchItems = parseItemBatchLines(bulkInput.value);
-        if (!batchItems.length) {
-          bulkInput.focus();
+        const bid = normalizeUniqueReference(bidField.value);
+        const tid = normalizeUniqueReference(tidField.value);
+        if (!bid && !tid) {
+          bidField.focus();
           return;
         }
 
-        const defaults = {
-          project: document.getElementById('workflowItemProjectDefault')?.value || '',
-          supplier: document.getElementById('workflowItemSupplierDefault')?.value || getDefaultItemSupplier(),
-          vaultStatus: document.getElementById('workflowItemVaultStatusDefault')?.checked
-            ? (ITEM_VAULT_STATUS_OPTIONS[1] || DEFAULT_ITEM_VAULT_STATUS)
-            : DEFAULT_ITEM_VAULT_STATUS,
-          plmStatus: document.getElementById('workflowItemPlmStatusDefault')?.checked
-            ? (ITEM_PLM_STATUS_OPTIONS[1] || DEFAULT_ITEM_PLM_STATUS)
-            : DEFAULT_ITEM_PLM_STATUS,
-          drawingSentAt: document.getElementById('workflowItemDrawingSentDefault')?.value || '',
-          counterDieApprovalStatus: Boolean(document.getElementById('workflowItemCddApprovalDefault')?.checked),
-          samApprovalStatus: Boolean(document.getElementById('workflowItemSamApprovalDefault')?.checked),
-          checklist: Object.fromEntries(ITEM_CHECKLIST_FIELDS.map(field => [
-            field.key,
-            Boolean(document.getElementById(`workflowItemChecklist-${field.key}`)?.checked)
-          ]))
-        };
+        Promise.resolve(imageField.files?.[0] ? buildItemImageData(imageField.files[0]) : '')
+          .then(imageDataUrl => {
+            const nextItem = createTaskItem({
+              bid,
+              tid,
+              status: statusField.value,
+              supplier: supplierField.value,
+              imageDataUrl,
+              imageName: imageField.files?.[0]?.name || ''
+            }, task);
 
-        items = [
-          ...items,
-          ...batchItems.map(batchItem => createGlobalItem(batchItem, defaults, task))
-        ];
+            if (!nextItem) {
+              bidField.focus();
+              return;
+            }
 
-        activeDetailTab = 'items';
-        saveItems();
-        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
-        document.getElementById('workflowItemBulkInput')?.focus();
+            items = [nextItem, ...items];
+            activeDetailTab = 'items';
+            saveItems();
+            renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+          })
+          .catch(error => alert(error.message || 'Unable to save the item image.'));
         return;
       }
 
@@ -8470,36 +8372,27 @@
       const item = getItemById(itemId);
       if (!item || !fieldName) return { ok: false, message: '' };
 
-      const binaryConfig = getBinaryItemFieldConfig(fieldName);
-
-      const nextValue = binaryConfig
-        ? (Boolean(rawValue) ? binaryConfig.checkedValue : binaryConfig.defaultValue)
-        : fieldName === 'drawingSentAt'
-        ? rawValue
-        : ITEM_APPROVAL_FIELDS.includes(fieldName)
-          ? Boolean(rawValue)
-          : rawValue.trim();
-
-      if (fieldName === 'bidReference' && !nextValue) {
-        return { ok: false, message: 'BID Reference is required for every item.' };
+      if (fieldName === 'status') {
+        item.status = normalizeItemStatus(rawValue);
+        return { ok: true, message: '' };
       }
 
-      item[fieldName] = fieldName === 'supplier'
-        ? (nextValue || getDefaultItemSupplier())
-        : nextValue;
+      const nextValue = normalizeUniqueReference(rawValue);
 
-      if (SHARED_ITEM_FIELDS.includes(fieldName)) {
-        syncSharedFieldsForBid(item.bidReference, item);
+      if (fieldName === 'supplier') {
+        item.supplier = nextValue;
+        return { ok: true, message: '' };
       }
 
-      if (fieldName === 'bidReference') {
-        const existingGroupSource = getItemsBySharedKey(item.bidReference, item.id)[0];
-        if (existingGroupSource) {
-          SHARED_ITEM_FIELDS.forEach(sharedField => {
-            item[sharedField] = existingGroupSource[sharedField];
-          });
-          syncSharedFieldsForBid(item.bidReference, item);
+      if (fieldName === 'bid' || fieldName === 'tid') {
+        const nextBid = fieldName === 'bid' ? nextValue : item.bid;
+        const nextTid = fieldName === 'tid' ? nextValue : item.tid;
+        if (!nextBid && !nextTid) {
+          return { ok: false, message: 'Each item needs at least a BID or TID value.' };
         }
+
+        item[fieldName] = nextValue;
+        return { ok: true, message: '' };
       }
 
       return { ok: true, message: '' };
@@ -8562,36 +8455,592 @@
       return true;
     }
 
-    function applyItemChecklistChange(itemId, checklistKey, checked) {
-      const item = getItemById(itemId);
-      if (!item || !checklistKey) return false;
-      item.checklist = {
-        ...item.checklist,
-        [checklistKey]: Boolean(checked)
+    function readFileAsArrayBuffer(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Unable to read the selected workbook.'));
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    function arrayBufferToBase64(value) {
+      const bytes = value instanceof Uint8Array ? value : new Uint8Array(value);
+      let binary = '';
+
+      for (let index = 0; index < bytes.length; index += 1) {
+        binary += String.fromCharCode(bytes[index]);
+      }
+
+      return btoa(binary);
+    }
+
+    function getPackageMimeType(extension) {
+      return {
+        png: 'image/png',
+        jpg: 'image/jpeg',
+        jpeg: 'image/jpeg',
+        gif: 'image/gif',
+        webp: 'image/webp',
+        bmp: 'image/bmp',
+        svg: 'image/svg+xml'
+      }[String(extension || '').toLowerCase()] || 'application/octet-stream';
+    }
+
+    function getPackageEntryPayload(entry) {
+      if (entry == null) return null;
+      if (typeof entry === 'string' || entry instanceof ArrayBuffer || entry instanceof Uint8Array || Array.isArray(entry)) {
+        return entry;
+      }
+      if (entry.content != null) return entry.content;
+      if (entry.data != null) return entry.data;
+      if (entry.body != null) return entry.body;
+      if (typeof entry.asNodeBuffer === 'function') {
+        try {
+          return entry.asNodeBuffer();
+        } catch (error) {
+          return null;
+        }
+      }
+      return null;
+    }
+
+    function toUint8Array(value) {
+      if (value == null) return null;
+      if (value instanceof Uint8Array) return value;
+      if (value instanceof ArrayBuffer) return new Uint8Array(value);
+      if (ArrayBuffer.isView(value)) return new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
+      if (Array.isArray(value)) return Uint8Array.from(value);
+      if (typeof value === 'string') {
+        return Uint8Array.from(value, character => character.charCodeAt(0) & 255);
+      }
+      return null;
+    }
+
+    function decodeUtf8(value) {
+      if (typeof value === 'string') return value;
+      const bytes = toUint8Array(value);
+      if (!bytes) return '';
+
+      try {
+        return new TextDecoder('utf-8').decode(bytes);
+      } catch (error) {
+        let text = '';
+        bytes.forEach(byte => {
+          text += String.fromCharCode(byte);
+        });
+        return text;
+      }
+    }
+
+    function getPackageFileEntry(packageBook, path) {
+      const normalizedPath = String(path || '').replace(/^\/+/, '');
+      const files = packageBook?.files;
+      if (!files) return null;
+      if (files[normalizedPath]) return files[normalizedPath];
+
+      const matchingKey = Object.keys(files).find(key => key.toLowerCase() === normalizedPath.toLowerCase());
+      return matchingKey ? files[matchingKey] : null;
+    }
+
+    function getPackageFileText(packageBook, path) {
+      const payload = getPackageEntryPayload(getPackageFileEntry(packageBook, path));
+      return decodeUtf8(payload);
+    }
+
+    function getPackageFileBytes(packageBook, path) {
+      const payload = getPackageEntryPayload(getPackageFileEntry(packageBook, path));
+      return toUint8Array(payload);
+    }
+
+    function parseXmlDocument(text) {
+      if (!text) return null;
+
+      const documentNode = new DOMParser().parseFromString(text, 'application/xml');
+      if (documentNode.querySelector('parsererror')) return null;
+      return documentNode;
+    }
+
+    function getXmlNodesByLocalName(root, localName) {
+      if (!root) return [];
+      return Array.from(root.getElementsByTagName('*')).filter(node => node.localName === localName);
+    }
+
+    function getXmlChildNodesByLocalName(root, localName) {
+      if (!root) return [];
+      return Array.from(root.children || []).filter(node => node.localName === localName);
+    }
+
+    function getXmlFirstNodeByLocalName(root, localName) {
+      return getXmlNodesByLocalName(root, localName)[0] || null;
+    }
+
+    function resolvePackagePath(basePath, relativePath) {
+      if (!relativePath) return '';
+      if (/^[a-z]+:/i.test(relativePath)) return relativePath;
+
+      const targetParts = String(relativePath).replace(/\\/g, '/').split('/');
+      const baseParts = String(basePath || '').replace(/\\/g, '/').split('/');
+      baseParts.pop();
+
+      targetParts.forEach(part => {
+        if (!part || part === '.') return;
+        if (part === '..') {
+          baseParts.pop();
+          return;
+        }
+        baseParts.push(part);
+      });
+
+      return baseParts.join('/');
+    }
+
+    function getSheetPathByWorksheetName(packageBook, worksheetName) {
+      const workbookDoc = parseXmlDocument(getPackageFileText(packageBook, 'xl/workbook.xml'));
+      const workbookRelsDoc = parseXmlDocument(getPackageFileText(packageBook, 'xl/_rels/workbook.xml.rels'));
+      if (!workbookDoc || !workbookRelsDoc) return '';
+
+      const relationshipTargetById = new Map();
+      getXmlNodesByLocalName(workbookRelsDoc, 'Relationship').forEach(node => {
+        relationshipTargetById.set(node.getAttribute('Id'), node.getAttribute('Target') || '');
+      });
+
+      const sheetNode = getXmlNodesByLocalName(workbookDoc, 'sheet')
+        .find(node => (node.getAttribute('name') || '') === worksheetName);
+      if (!sheetNode) return '';
+
+      const relationId = sheetNode.getAttribute('r:id') || sheetNode.getAttribute('id') || '';
+      const target = relationshipTargetById.get(relationId) || '';
+      return target ? resolvePackagePath('xl/workbook.xml', target) : '';
+    }
+
+    function getCellAddressFromIndexes(columnNumber, rowNumber) {
+      if (!columnNumber || !rowNumber) return '';
+      return `${getExcelColumnLetter(columnNumber)}${rowNumber}`;
+    }
+
+    function parseCellAddress(address) {
+      const match = String(address || '').match(/^([A-Z]+)(\d+)$/i);
+      if (!match) return null;
+
+      let columnNumber = 0;
+      const columnLabel = match[1].toUpperCase();
+      for (let index = 0; index < columnLabel.length; index += 1) {
+        columnNumber = (columnNumber * 26) + (columnLabel.charCodeAt(index) - 64);
+      }
+
+      return {
+        columnNumber,
+        rowNumber: Number(match[2])
       };
-      return true;
+    }
+
+    function getCellRichValueIndexes(metadataDoc) {
+      const valueMetadataNode = getXmlFirstNodeByLocalName(metadataDoc, 'valueMetadata');
+      const futureMetadataNode = getXmlFirstNodeByLocalName(metadataDoc, 'futureMetadata');
+      const valueIndexes = getXmlChildNodesByLocalName(valueMetadataNode, 'bk').map(node => {
+        const richValueNode = getXmlNodesByLocalName(node, 'rc').find(child => child.getAttribute('t') === '1');
+        return richValueNode ? Number(richValueNode.getAttribute('v')) : NaN;
+      });
+      const futureIndexes = getXmlChildNodesByLocalName(futureMetadataNode, 'bk').map(node => {
+        const richValueBinding = getXmlNodesByLocalName(node, 'rvb')[0];
+        return richValueBinding ? Number(richValueBinding.getAttribute('i')) : NaN;
+      });
+
+      return valueIndexes.map((valueIndex, index) => {
+        if (Number.isFinite(valueIndex)) return valueIndex;
+        return Number.isFinite(futureIndexes[index]) ? futureIndexes[index] : NaN;
+      });
+    }
+
+    function getRichValueRelationIndexes(rvDataDoc) {
+      return getXmlNodesByLocalName(rvDataDoc, 'rv').map(node => {
+        const valueNodes = getXmlChildNodesByLocalName(node, 'v');
+        return valueNodes.length ? Number(valueNodes[0].textContent || '') : NaN;
+      });
+    }
+
+    function getRichDataImageCellMap(arrayBuffer, worksheetName) {
+      if (!window.XLSX?.read || !window.DOMParser) return new Map();
+
+      let packageBook = null;
+      try {
+        packageBook = XLSX.read(arrayBuffer, { type: 'array', bookFiles: true, dense: false });
+      } catch (error) {
+        return new Map();
+      }
+
+      const sheetPath = getSheetPathByWorksheetName(packageBook, worksheetName);
+      if (!sheetPath) return new Map();
+
+      const sheetDoc = parseXmlDocument(getPackageFileText(packageBook, sheetPath));
+      const metadataDoc = parseXmlDocument(getPackageFileText(packageBook, 'xl/metadata.xml'));
+      const richValueRelDoc = parseXmlDocument(getPackageFileText(packageBook, 'xl/richData/richValueRel.xml'));
+      const richValueRelRelsDoc = parseXmlDocument(getPackageFileText(packageBook, 'xl/richData/_rels/richValueRel.xml.rels'));
+      const richValueDataDoc = parseXmlDocument(getPackageFileText(packageBook, 'xl/richData/rdrichvalue.xml'));
+      if (!sheetDoc || !metadataDoc || !richValueRelDoc || !richValueRelRelsDoc || !richValueDataDoc) {
+        return new Map();
+      }
+
+      const richValueIndexByMetadataIndex = getCellRichValueIndexes(metadataDoc);
+      const richValueRelationIndexes = getRichValueRelationIndexes(richValueDataDoc);
+      const relationshipTargetById = new Map();
+      getXmlNodesByLocalName(richValueRelRelsDoc, 'Relationship').forEach(node => {
+        relationshipTargetById.set(node.getAttribute('Id'), node.getAttribute('Target') || '');
+      });
+
+      const relationIds = getXmlNodesByLocalName(richValueRelDoc, 'rel').map(node => node.getAttribute('r:id') || node.getAttribute('id') || '');
+      const cellImageMap = new Map();
+
+      getXmlNodesByLocalName(sheetDoc, 'c').forEach(cellNode => {
+        const cellAddress = cellNode.getAttribute('r') || '';
+        const metadataReference = Number(cellNode.getAttribute('vm'));
+        if (!cellAddress || !Number.isFinite(metadataReference) || metadataReference < 1) return;
+
+        const metadataIndex = metadataReference - 1;
+        const richValueIndex = richValueIndexByMetadataIndex[metadataIndex];
+        if (!Number.isFinite(richValueIndex)) return;
+
+        const relationIndex = richValueRelationIndexes[richValueIndex];
+        if (!Number.isFinite(relationIndex)) return;
+
+        const relationId = relationIds[relationIndex] || '';
+        const mediaTarget = relationshipTargetById.get(relationId) || '';
+        if (!mediaTarget) return;
+
+        const mediaPath = resolvePackagePath('xl/richData/richValueRel.xml', mediaTarget);
+        const mediaBytes = getPackageFileBytes(packageBook, mediaPath);
+        if (!mediaBytes?.length) return;
+
+        const extension = mediaPath.split('.').pop() || 'png';
+        cellImageMap.set(cellAddress.toUpperCase(), {
+          dataUrl: `data:${getPackageMimeType(extension)};base64,${arrayBufferToBase64(mediaBytes)}`,
+          name: mediaPath.split('/').pop() || `image.${extension}`
+        });
+      });
+
+      return cellImageMap;
+    }
+
+    function normalizeImportedColumnName(value) {
+      return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
+    function readExcelCellText(cell) {
+      const value = cell?.value;
+      if (value == null) return '';
+      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        return String(value).trim();
+      }
+      if (value instanceof Date) {
+        return value.toISOString();
+      }
+      if (Array.isArray(value?.richText)) {
+        return value.richText.map(part => String(part?.text || '')).join('').trim();
+      }
+      if (typeof value === 'object') {
+        if (typeof value.text === 'string') return value.text.trim();
+        if (value.result != null) return String(value.result).trim();
+        if (typeof value.hyperlink === 'string') return value.hyperlink.trim();
+      }
+      return String(cell?.text || '').trim();
+    }
+
+    function getWorkbookImportSheet(workbook) {
+      let bestMatch = null;
+
+      workbook.worksheets.forEach(worksheet => {
+        const maxHeaderRow = Math.min(10, worksheet.rowCount || 10);
+
+        for (let rowNumber = 1; rowNumber <= maxHeaderRow; rowNumber += 1) {
+          const row = worksheet.getRow(rowNumber);
+          const columns = {};
+
+          row.eachCell({ includeEmpty: true }, (cell, columnNumber) => {
+            const key = normalizeImportedColumnName(readExcelCellText(cell));
+            if (!key) return;
+            if (key === 'tid') columns.tid = columnNumber;
+            if (key === 'bid') columns.bid = columnNumber;
+            if (key === 'image') columns.image = columnNumber;
+            if (key === 'status') columns.status = columnNumber;
+            if (key === 'supplier') columns.supplier = columnNumber;
+          });
+
+          const score = Object.keys(columns).length;
+          if (score < 3) continue;
+          if (!bestMatch || score > bestMatch.score) {
+            bestMatch = {
+              worksheet,
+              headerRowNumber: rowNumber,
+              columns,
+              score
+            };
+          }
+        }
+      });
+
+      return bestMatch;
+    }
+
+    function getWorkbookMediaMap(workbook) {
+      const mediaMap = new Map();
+      const mediaEntries = Array.isArray(workbook?.model?.media)
+        ? workbook.model.media
+        : Array.isArray(workbook?.media)
+          ? workbook.media
+          : [];
+
+      mediaEntries.forEach(media => {
+        if (media?.index != null) mediaMap.set(String(media.index), media);
+        if (media?.id != null) mediaMap.set(String(media.id), media);
+      });
+
+      return mediaMap;
+    }
+
+    function getWorkbookImageMedia(workbook, imageId, mediaMap = getWorkbookMediaMap(workbook)) {
+      if (imageId == null) return null;
+
+      if (mediaMap.has(String(imageId))) {
+        return mediaMap.get(String(imageId));
+      }
+
+      if (typeof workbook?.getImage === 'function') {
+        try {
+          return workbook.getImage(imageId) || null;
+        } catch (error) {
+          return null;
+        }
+      }
+
+      return null;
+    }
+
+    function getWorkbookImageData(media) {
+      if (!media) return null;
+
+      const extension = String(media.extension || media.type || 'png').toLowerCase() === 'jpg'
+        ? 'jpeg'
+        : String(media.extension || media.type || 'png').toLowerCase();
+
+      if (typeof media.base64 === 'string' && media.base64) {
+        return {
+          dataUrl: media.base64.startsWith('data:')
+            ? media.base64
+            : `data:image/${extension};base64,${media.base64}`,
+          name: media.name || `image.${extension}`
+        };
+      }
+
+      if (media.buffer instanceof ArrayBuffer || media.buffer instanceof Uint8Array) {
+        return {
+          dataUrl: `data:image/${extension};base64,${arrayBufferToBase64(media.buffer)}`,
+          name: media.name || `image.${extension}`
+        };
+      }
+
+      return null;
+    }
+
+    function getAnchorStartIndex(value) {
+      return Number.isFinite(value) ? Math.floor(value) : null;
+    }
+
+    function getAnchorEndIndex(value, fallbackStart) {
+      if (Number.isFinite(value)) {
+        return Math.max(fallbackStart ?? 0, Math.ceil(value) - 1);
+      }
+
+      return fallbackStart ?? null;
+    }
+
+    function getWorksheetImageDescriptors(worksheet, workbook) {
+      if (typeof worksheet?.getImages !== 'function') return [];
+
+      const mediaMap = getWorkbookMediaMap(workbook);
+      return worksheet.getImages().map(image => {
+        const media = getWorkbookImageMedia(workbook, image?.imageId, mediaMap);
+        const imageData = getWorkbookImageData(media);
+        if (!imageData) return null;
+
+        const topRowIndex = getAnchorStartIndex(image?.range?.tl?.row);
+        const topColumnIndex = getAnchorStartIndex(image?.range?.tl?.col);
+        const bottomRowIndex = getAnchorEndIndex(image?.range?.br?.row, topRowIndex);
+        const bottomColumnIndex = getAnchorEndIndex(image?.range?.br?.col, topColumnIndex);
+
+        return {
+          imageId: image?.imageId,
+          rowStart: topRowIndex == null ? null : topRowIndex + 1,
+          rowEnd: bottomRowIndex == null ? (topRowIndex == null ? null : topRowIndex + 1) : bottomRowIndex + 1,
+          colStart: topColumnIndex == null ? null : topColumnIndex + 1,
+          colEnd: bottomColumnIndex == null ? (topColumnIndex == null ? null : topColumnIndex + 1) : bottomColumnIndex + 1,
+          dataUrl: imageData.dataUrl,
+          name: imageData.name,
+          used: false
+        };
+      }).filter(Boolean);
+    }
+
+    function getImageCellDataFromText(value, rowNumber) {
+      const text = String(value || '').trim();
+      if (!text) return null;
+      if (!/^data:image\//i.test(text)) return null;
+
+      const extensionMatch = text.match(/^data:image\/([^;]+)/i);
+      const extension = String(extensionMatch?.[1] || 'png').toLowerCase().replace('jpg', 'jpeg');
+      return {
+        dataUrl: text,
+        name: `row-${rowNumber}-image.${extension}`
+      };
+    }
+
+    function resolveWorksheetImageForRow(descriptors, rowNumber, imageColumnNumber) {
+      if (!descriptors.length) return null;
+
+      let bestDescriptor = null;
+      let bestScore = Number.POSITIVE_INFINITY;
+
+      descriptors.forEach(descriptor => {
+        if (descriptor.used) return;
+        if (descriptor.rowStart == null) return;
+
+        const rowStart = descriptor.rowStart;
+        const rowEnd = descriptor.rowEnd ?? descriptor.rowStart;
+        const colStart = descriptor.colStart ?? imageColumnNumber ?? 1;
+        const colEnd = descriptor.colEnd ?? descriptor.colStart ?? imageColumnNumber ?? 1;
+
+        const rowDistance = rowNumber < rowStart
+          ? rowStart - rowNumber
+          : rowNumber > rowEnd
+            ? rowNumber - rowEnd
+            : 0;
+
+        if (rowDistance > 1) return;
+
+        const hasImageColumn = Number.isFinite(imageColumnNumber);
+        const columnDistance = !hasImageColumn
+          ? 0
+          : imageColumnNumber < colStart
+            ? colStart - imageColumnNumber
+            : imageColumnNumber > colEnd
+              ? imageColumnNumber - colEnd
+              : 0;
+
+        if (hasImageColumn && columnDistance > 1) return;
+
+        const score = (rowDistance * 100)
+          + (columnDistance * 10)
+          + Math.max(0, (rowEnd - rowStart))
+          + Math.max(0, (colEnd - colStart));
+
+        if (score < bestScore) {
+          bestScore = score;
+          bestDescriptor = descriptor;
+        }
+      });
+
+      if (bestDescriptor) {
+        bestDescriptor.used = true;
+        return {
+          dataUrl: bestDescriptor.dataUrl,
+          name: bestDescriptor.name
+        };
+      }
+
+      return null;
+    }
+
+    async function importItemsFromWorkbook(file, taskId) {
+      if (!file) return null;
+
+      const task = getTaskById(taskId);
+      if (!task) {
+        throw new Error('Select a task before importing items.');
+      }
+
+      if (!window.ExcelJS?.Workbook) {
+        throw new Error('Excel import is unavailable because ExcelJS did not load.');
+      }
+
+      const workbook = new ExcelJS.Workbook();
+      const buffer = await readFileAsArrayBuffer(file);
+      await workbook.xlsx.load(buffer);
+
+      const importSheet = getWorkbookImportSheet(workbook);
+      if (!importSheet) {
+        throw new Error('No worksheet with TID, BID, Image, Status, and Supplier headers was found.');
+      }
+
+      const { worksheet, headerRowNumber, columns } = importSheet;
+      const imageDescriptors = getWorksheetImageDescriptors(worksheet, workbook);
+      const richDataImageCellMap = getRichDataImageCellMap(buffer, worksheet.name);
+      const importedItems = [];
+      let unresolvedImageCount = 0;
+
+      for (let rowNumber = headerRowNumber + 1; rowNumber <= worksheet.rowCount; rowNumber += 1) {
+        const row = worksheet.getRow(rowNumber);
+        const bid = normalizeUniqueReference(columns.bid ? readExcelCellText(row.getCell(columns.bid)) : '');
+        const tid = normalizeUniqueReference(columns.tid ? readExcelCellText(row.getCell(columns.tid)) : '');
+        if (!bid && !tid) continue;
+
+        const status = columns.status ? readExcelCellText(row.getCell(columns.status)) : DEFAULT_ITEM_STATUS;
+        const supplier = columns.supplier ? readExcelCellText(row.getCell(columns.supplier)) : '';
+        const imageCellValue = columns.image ? readExcelCellText(row.getCell(columns.image)) : '';
+        const richDataImage = columns.image
+          ? richDataImageCellMap.get(getCellAddressFromIndexes(columns.image, rowNumber))
+          : null;
+        const inlineImage = getImageCellDataFromText(imageCellValue, rowNumber);
+        const anchoredImage = inlineImage || richDataImage || resolveWorksheetImageForRow(imageDescriptors, rowNumber, columns.image);
+
+        const nextItem = createTaskItem({
+          bid,
+          tid,
+          status,
+          supplier,
+          imageDataUrl: anchoredImage?.dataUrl || '',
+          imageName: anchoredImage?.name || ''
+        }, task);
+
+        if (!nextItem) continue;
+        if (imageCellValue && !anchoredImage) {
+          unresolvedImageCount += 1;
+        }
+
+        importedItems.push(nextItem);
+      }
+
+      if (!importedItems.length) {
+        throw new Error('No importable item rows were found in the selected workbook.');
+      }
+
+      items = [...importedItems, ...items];
+
+      let message = `Imported ${importedItems.length} item${importedItems.length === 1 ? '' : 's'} into ${task.title}.`;
+      if (unresolvedImageCount) {
+        message += ` ${unresolvedImageCount} row${unresolvedImageCount === 1 ? '' : 's'} had image values that could not be resolved, so those items were imported without images.`;
+      }
+
+      return {
+        count: importedItems.length,
+        unresolvedImageCount,
+        message
+      };
     }
 
     function renderAllItemsList(options = {}) {
       const list = document.getElementById('allItemsList');
       const summary = document.getElementById('itemsModalSummary');
-      const bulkSummary = document.getElementById('itemsBulkSummary');
       const shell = list?.closest('.workflow-item-list-shell');
       const preserveScrollTop = options.preserveScrollTop;
-      if (!list || !summary || !bulkSummary) return;
+      if (!list || !summary) return;
 
       const filteredItems = items
         .filter(item => !itemSearchQuery || getItemSearchText(item).includes(itemSearchQuery))
-        .sort((a, b) => a.bidReference.localeCompare(b.bidReference) || (a.tidReference || '').localeCompare(b.tidReference || ''));
+        .sort((a, b) => (a.bid || '').localeCompare(b.bid || '') || (a.tid || '').localeCompare(b.tid || ''));
 
       summary.textContent = `${filteredItems.length} of ${items.length} item${items.length === 1 ? '' : 's'}`;
-      bulkSummary.textContent = `${selectedItemIds.size} selected`;
       list.innerHTML = filteredItems.length
-        ? filteredItems.map(item => getItemEditorMarkup(item, {
-            showTaskLink: true,
-            selectable: true,
-            isSelected: selectedItemIds.has(item.id)
-          })).join('')
+        ? filteredItems.map(item => getItemEditorMarkup(item, { showTaskLink: true })).join('')
         : '<div class="workflow-item-empty">No items match the current search.</div>';
 
       restoreScrollTop(shell, preserveScrollTop);
@@ -8602,7 +9051,6 @@
       const searchInput = document.getElementById('itemSearchInput');
       if (!modal || !searchInput) return;
       itemSearchQuery = '';
-      selectedItemIds.clear();
       searchInput.value = '';
       modal.classList.add('open');
       renderAllItemsList();
@@ -8619,13 +9067,10 @@
     }
 
     document.getElementById('allItemsList').addEventListener('click', e => {
-      const modalListShell = document.querySelector('#itemsModal .workflow-item-list-shell');
-      const modalScrollTop = getScrollTop(modalListShell);
       const deleteItemId = e.target.closest('[data-delete-item]')?.dataset.deleteItem;
       if (deleteItemId) {
         if (!confirm('Delete this item?')) return;
         items = items.filter(item => item.id !== deleteItemId);
-        selectedItemIds.delete(deleteItemId);
         saveItems();
         renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
@@ -8639,23 +9084,9 @@
     });
 
     document.getElementById('allItemsList').addEventListener('change', e => {
-      const modalListShell = document.querySelector('#itemsModal .workflow-item-list-shell');
-      const modalScrollTop = getScrollTop(modalListShell);
       const field = e.target.closest('[data-item-field]');
-      const checklistField = e.target.closest('[data-item-checklist]');
       const imageField = e.target.closest('[data-item-image-upload]');
-      const selectionField = e.target.closest('[data-select-item]');
-      if (!field && !checklistField && !imageField && !selectionField) return;
-
-      if (selectionField) {
-        if (selectionField.checked) {
-          selectedItemIds.add(selectionField.dataset.selectItem);
-        } else {
-          selectedItemIds.delete(selectionField.dataset.selectItem);
-        }
-        renderAllItemsList({ preserveScrollTop: modalScrollTop });
-        return;
-      }
+      if (!field && !imageField) return;
 
       if (imageField) {
         applyItemImageChange(imageField.dataset.itemImageUpload, imageField.files?.[0])
@@ -8682,43 +9113,6 @@
           alert(result.message);
         }
       }
-
-      if (checklistField) {
-        applyItemChecklistChange(checklistField.dataset.itemId, checklistField.dataset.itemChecklist, checklistField.checked);
-      }
-
-      saveItems();
-      renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
-    });
-
-    document.getElementById('itemsModalBulkTools').addEventListener('click', e => {
-      const modalListShell = document.querySelector('#itemsModal .workflow-item-list-shell');
-      const modalScrollTop = getScrollTop(modalListShell);
-      const selectVisible = e.target.closest('[data-select-visible-items]');
-      if (selectVisible) {
-        items
-          .filter(item => !itemSearchQuery || getItemSearchText(item).includes(itemSearchQuery))
-          .forEach(item => selectedItemIds.add(item.id));
-        renderAllItemsList({ preserveScrollTop: modalScrollTop });
-        return;
-      }
-
-      const clearSelection = e.target.closest('[data-clear-selected-items]');
-      if (clearSelection) {
-        selectedItemIds.clear();
-        renderAllItemsList({ preserveScrollTop: modalScrollTop });
-        return;
-      }
-
-      const bulkAction = e.target.closest('[data-bulk-update-field]');
-      if (!bulkAction || !selectedItemIds.size) return;
-
-      const fieldName = bulkAction.dataset.bulkUpdateField;
-      const rawValue = bulkAction.dataset.bulkUpdateValue === 'true';
-
-      items
-        .filter(item => selectedItemIds.has(item.id))
-        .forEach(item => applyItemFieldChange(item.id, fieldName, rawValue));
 
       saveItems();
       renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
@@ -8823,14 +9217,13 @@
 
       const senderOptions = normalizeOptionList(document.getElementById('taskSenderOptionsInput').value);
       const supplierOptions = normalizeOptionList(document.getElementById('itemSupplierOptionsInput').value);
-      const projectOptions = normalizeOptionList(document.getElementById('itemProjectOptionsInput').value);
 
       if (!supplierOptions.length) {
         document.getElementById('itemSupplierOptionsInput').focus();
         return;
       }
 
-      itemSettings = normalizeItemSettings({ senderOptions, supplierOptions, projectOptions });
+      itemSettings = normalizeItemSettings({ senderOptions, supplierOptions });
       saveItemSettings();
       closeItemSettingsModal();
       renderTasks();
@@ -9018,7 +9411,6 @@
     function fillItemSettingsForm() {
       document.getElementById('taskSenderOptionsInput').value = (itemSettings?.senderOptions || []).join('\n');
       document.getElementById('itemSupplierOptionsInput').value = (itemSettings?.supplierOptions || DEFAULT_ITEM_SUPPLIER_OPTIONS).join('\n');
-      document.getElementById('itemProjectOptionsInput').value = (itemSettings?.projectOptions || []).join('\n');
     }
 
     function openItemSettingsModal() {
