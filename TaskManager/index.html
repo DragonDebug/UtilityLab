@@ -6523,7 +6523,7 @@
       return `${day}-${month}-${year} ${hours}:${minutes}`;
     }
 
-    const DETAILED_EXPORT_ROW_HEIGHT = 42;
+    const DETAILED_EXPORT_ROW_HEIGHT = 50;
     const DETAILED_EXPORT_COUNTER_HEADER_HEIGHT = 26;
     const DETAILED_EXPORT_COUNTER_ROW_HEIGHT = 30;
 
@@ -6557,6 +6557,7 @@
       return tasks.map((task, index) => {
         return {
           No: index + 1,
+          TaskImage: '',
           Title: task.title,
           Quantity: getTaskCategoryCountWeight(task),
           Category: task.category || '',
@@ -6570,9 +6571,29 @@
           Started: toExcelDateValue(task.startedAt),
           Completed: toExcelDateValue(task.completedAt),
           Received: toExcelDateValue(task.receivedAt),
-          Due: toExcelDateValue(task.dueDate)
+          Due: toExcelDateValue(task.dueDate),
+          TaskImageDataUrl: String(task.imageDataUrl || '').trim()
         };
       });
+    }
+
+    function getExcelImageDescriptorFromDataUrl(dataUrl) {
+      const normalized = String(dataUrl || '').trim();
+      if (!/^data:image\//i.test(normalized)) return null;
+
+      const matched = normalized.match(/^data:image\/([^;]+);base64,(.+)$/i);
+      if (!matched) return null;
+
+      const extension = String(matched[1] || '').toLowerCase() === 'svg+xml'
+        ? 'png'
+        : String(matched[1] || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const base64 = String(matched[2] || '').trim();
+      if (!base64) return null;
+
+      return {
+        extension: extension || 'jpeg',
+        base64
+      };
     }
 
     function getDetailedItemExportRows() {
@@ -6980,18 +7001,21 @@
         const taskRows = getDetailedTaskExportRows();
         const taskColumns = [
           { key: 'No', header: 'No.', width: 8 },
+          { key: 'TaskImage', header: 'Task Image', width: 14 },
           { key: 'Title', header: 'Title', width: 34 },
           { key: 'Description', header: 'Description', width: 46 },
           { key: 'Category', header: 'Category', width: 24 },
           { key: 'Priority', header: 'Priority', width: 14 },
           { key: 'EmailSubject', header: 'Email Subject', width: 38 },
           { key: 'Sender', header: 'Sender', width: 22 },
-          { key: 'Notes', header: 'Notes', width: 40 },
           { key: 'Created', header: 'Created', width: 14 },
           { key: 'Received', header: 'Received', width: 14 },
           { key: 'Due', header: 'Due', width: 14 },
+          { key: 'Started', header: 'Started', width: 14 },
+          { key: 'Completed', header: 'Completed', width: 14 },
           { key: 'Quantity', header: 'Quantity', width: 14 },
-          { key: 'Status', header: 'Status', width: 20 }
+          { key: 'Status', header: 'Status', width: 20 },
+          { key: 'Notes', header: 'Notes', width: 40 },
         ];
         const taskHeaderLayout = getTaskSheetHeaderLayout();
         const getTaskColumnLetter = key => getExcelColumnLetter(taskColumns.findIndex(column => column.key === key) + 1);
@@ -7002,18 +7026,33 @@
           accentColor: '1D4ED8',
           emptyMessage: 'No tasks available.',
           tableStartRow: taskHeaderLayout.tableStartRow,
-          centerColumns: [1, 4, 5, 9, 10, 11, 12, 13],
-          dateColumns: ['Created', 'Received', 'Due'],
+          centerColumns: [1, 2, 5, 6, 10, 11, 12, 13, 14, 15],
+          dateColumns: ['Created', 'Started', 'Completed', 'Received', 'Due'],
           beforeTable: (worksheet, columns, context) => {
             buildTaskSheetDashboardHeader(worksheet, context.lastColumn, taskHeaderLayout);
           },
           afterBuild: (worksheet, rows, columns, context) => {
             const startRow = context.tableStartRow + 1;
             const endRow = Math.max(rows.length + context.tableStartRow, startRow);
+            const imageColumnLetter = getTaskColumnLetter('TaskImage');
             applyListValidation(worksheet, getTaskColumnLetter('Category'), startRow, endRow, validationLists.categories);
             applyListValidation(worksheet, getTaskColumnLetter('Priority'), startRow, endRow, validationLists.priorities);
             applyListValidation(worksheet, getTaskColumnLetter('Sender'), startRow, endRow, validationLists.senders);
             applyListValidation(worksheet, getTaskColumnLetter('Status'), startRow, endRow, validationLists.statuses);
+
+            rows.forEach((row, index) => {
+              const imageDescriptor = getExcelImageDescriptorFromDataUrl(row.TaskImageDataUrl);
+              if (!imageDescriptor) return;
+
+              const rowNumber = startRow + index;
+              const imageId = worksheet.workbook.addImage(imageDescriptor);
+              worksheet.addImage(imageId, {
+                tl: { col: 1 + 0.12, row: rowNumber - 1 + 0.1 },
+                ext: { width: 42, height: 42 },
+                editAs: 'oneCell'
+              });
+              worksheet.getCell(`${imageColumnLetter}${rowNumber}`).value = '';
+            });
 
             safeAddConditionalFormatting(worksheet, `${getTaskColumnLetter('Priority')}${startRow}:${getTaskColumnLetter('Priority')}${endRow}`, [
               { type: 'cellIs', operator: 'equal', formulae: ['"Critical"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFF1F2' }, fgColor: { argb: 'FFFFF1F2' } }, font: { color: { argb: 'FF991B1B' }, bold: true } } },
