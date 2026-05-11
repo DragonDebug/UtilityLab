@@ -1129,8 +1129,6 @@
 
     .view-switch-btn[data-view-mode="standard"] { --view-accent: #5b7dff; }
     .view-switch-btn[data-view-mode="compact"] { --view-accent: #14b8a6; }
-    .view-switch-btn[data-view-mode="board"] { --view-accent: #f59e0b; }
-    .view-switch-btn[data-view-mode="agenda"] { --view-accent: #ec4899; }
 
     .toggle-done-btn {
       margin-left: auto;
@@ -2207,25 +2205,6 @@
       gap: 8px;
     }
 
-    .task-list.view-board,
-    .task-list.view-agenda {
-      display: grid;
-      align-content: start;
-    }
-
-    .task-list.view-board {
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(250px, 290px);
-      gap: 10px;
-      overflow: auto;
-      padding-bottom: 10px;
-    }
-
-    .task-list.view-agenda {
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
     .task-card-compact .task-card-body {
       grid-template-columns: minmax(0, 1fr) auto;
       padding: 11px 12px;
@@ -2305,29 +2284,6 @@
       height: 22px;
     }
 
-    .task-compact-support {
-      display: grid;
-      gap: 4px;
-    }
-
-    .task-compact-metrics {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-      min-width: 0;
-    }
-
-    .task-compact-summary {
-      font-size: 10px;
-      line-height: 1.35;
-      color: var(--text-muted);
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
     .task-card-compact .task-actions {
       grid-template-columns: 1fr;
       align-self: stretch;
@@ -2343,210 +2299,6 @@
     .task-card-compact .task-action-icon-btn {
       width: 28px;
       height: 28px;
-    }
-
-    .task-card-compact.is-board .task-card-body,
-    .task-card-compact.is-agenda .task-card-body {
-      grid-template-columns: 1fr;
-      align-items: start;
-    }
-
-    .task-card-compact.is-board .task-main,
-    .task-card-compact.is-agenda .task-main {
-      gap: 7px;
-      width: 100%;
-    }
-
-    .task-card-compact.is-board .task-heading,
-    .task-card-compact.is-agenda .task-heading {
-      align-items: flex-start;
-    }
-
-    .task-card-compact.is-board .task-heading-top,
-    .task-card-compact.is-agenda .task-heading-top {
-      gap: 8px;
-    }
-
-    .task-card-compact.is-board .task-heading-main,
-    .task-card-compact.is-agenda .task-heading-main {
-      gap: 6px;
-    }
-
-    .task-card-compact.is-board .task-title,
-    .task-card-compact.is-agenda .task-title {
-      white-space: normal;
-      overflow: visible;
-      display: block;
-      line-clamp: unset;
-      -webkit-line-clamp: unset;
-    }
-
-    .task-card-compact.is-board .task-meta,
-    .task-card-compact.is-agenda .task-meta {
-      align-items: flex-start;
-    }
-
-    .task-card-compact.is-board .task-date,
-    .task-card-compact.is-agenda .task-date {
-      white-space: normal;
-    }
-
-    .task-card-compact.is-board .task-compact-support,
-    .task-card-compact.is-agenda .task-compact-support {
-      min-width: 0;
-      width: 100%;
-    }
-
-    .task-card-compact.is-board .task-compact-summary,
-    .task-card-compact.is-agenda .task-compact-summary {
-      white-space: normal;
-      overflow: visible;
-      text-overflow: clip;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-
-    .task-card-compact.is-board .task-actions,
-    .task-card-compact.is-agenda .task-actions {
-      margin-top: 2px;
-      justify-self: end;
-    }
-
-    .task-view-group {
-      display: grid;
-      gap: 10px;
-      min-width: 0;
-      min-height: 0;
-      padding: 10px;
-      border: 1px solid color-mix(in srgb, var(--group-accent, var(--accent)) 18%, var(--border));
-      border-radius: 16px;
-      background: linear-gradient(180deg, color-mix(in srgb, var(--group-accent, var(--accent)) 9%, var(--panel-alt)), var(--panel-bg));
-    }
-
-    .task-view-group-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-      min-width: 0;
-      padding-bottom: 8px;
-      border-bottom: 1px solid color-mix(in srgb, var(--group-accent, var(--accent)) 16%, var(--border));
-    }
-
-    .task-view-group-header.is-empty {
-      gap: 8px;
-      padding-bottom: 4px;
-    }
-
-    .task-view-group-header.is-empty .task-view-group-title {
-      gap: 0;
-    }
-
-    .task-view-group-header.is-empty .task-view-group-title span {
-      display: none;
-    }
-
-    .task-view-group-title {
-      display: grid;
-      gap: 2px;
-      min-width: 0;
-      flex: 1 1 auto;
-    }
-
-    .task-view-group-title strong {
-      font-size: 11px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: color-mix(in srgb, var(--text) 76%, var(--group-accent, var(--accent)) 24%);
-    }
-
-    .task-view-group-title span {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .task-view-group-count {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 30px;
-      min-height: 30px;
-      padding: 0 10px;
-      border-radius: 999px;
-      border: 1px solid color-mix(in srgb, var(--group-accent, var(--accent)) 24%, transparent);
-      background: color-mix(in srgb, var(--group-accent, var(--accent)) 12%, transparent);
-      color: color-mix(in srgb, var(--text) 80%, var(--group-accent, var(--accent)) 20%);
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .task-board-column.is-sparse {
-      grid-template-rows: 34px minmax(0, 1fr);
-      gap: 6px;
-      align-content: start;
-    }
-
-    .task-board-column.is-sparse > .task-view-group-header {
-      grid-row: 1;
-      min-height: 34px;
-      height: 34px;
-      max-height: 34px;
-      align-items: center;
-      gap: 8px;
-      padding-bottom: 0;
-      border-bottom: none;
-      overflow: hidden;
-    }
-
-    .task-board-column.is-sparse > .task-board-list {
-      grid-row: 2;
-      min-height: 0;
-      align-content: start;
-    }
-
-    .task-board-column.is-sparse .task-view-group-title {
-      gap: 0;
-      align-content: center;
-    }
-
-    .task-board-column.is-sparse .task-view-group-title strong {
-      font-size: 10px;
-    }
-
-    .task-board-column.is-sparse .task-view-group-title span {
-      display: none;
-    }
-
-    .task-board-column.is-sparse .task-view-group-count {
-      min-width: 24px;
-      min-height: 24px;
-      padding: 0 8px;
-      font-size: 10px;
-      align-self: center;
-    }
-
-    .task-board-column.is-empty .task-view-group-title span {
-      display: none;
-    }
-
-    .task-board-list,
-    .task-agenda-list {
-      display: grid;
-      gap: 8px;
-      align-content: start;
-      min-width: 0;
-    }
-
-    .task-board-empty,
-    .task-agenda-empty {
-      padding: 12px;
-      border: 1px dashed color-mix(in srgb, var(--group-accent, var(--accent)) 20%, var(--border));
-      border-radius: 12px;
-      font-size: 11px;
-      line-height: 1.4;
-      color: var(--text-muted);
-      background: color-mix(in srgb, var(--group-accent, var(--accent)) 6%, transparent);
-      text-align: center;
     }
 
     .task-preview-date.is-due {
@@ -2967,6 +2719,44 @@
       margin-top: 0;
       white-space: pre-wrap;
       line-height: 1.45;
+    }
+
+    .detail-inline-editor-wrap {
+      display: grid;
+      gap: 8px;
+    }
+
+    .detail-inline-editor {
+      width: 100%;
+      min-height: 180px;
+      border: 1px solid color-mix(in srgb, var(--section-accent, var(--accent)) 18%, var(--border));
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--section-accent, var(--accent)) 4%, var(--field-bg-strong)), var(--field-bg));
+      color: var(--text);
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+    }
+
+    .detail-inline-editor:focus {
+      border-color: color-mix(in srgb, var(--section-accent, var(--accent)) 58%, white 42%);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--section-accent, var(--accent)) 16%, transparent);
+    }
+
+    .detail-inline-editor-hint {
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
+    .detail-inline-view {
+      display: grid;
+      gap: 10px;
+    }
+
+    .detail-inline-view.is-empty {
+      color: var(--text-muted);
     }
 
     .context-menu {
@@ -4416,12 +4206,6 @@
         overflow: visible;
         padding-right: 0;
       }
-      .task-list.view-board {
-        grid-auto-flow: row;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        grid-auto-columns: auto;
-        overflow: visible;
-      }
     }
 
     @media (max-width: 760px) {
@@ -4496,9 +4280,6 @@
         justify-content: center;
       }
       .task-list { min-height: 300px; }
-      .task-list.view-board {
-        grid-template-columns: 1fr;
-      }
       .empty-state { min-height: 280px; }
       .detail-empty { min-height: 260px; }
       .detail-header {
@@ -4720,8 +4501,6 @@
       <div class="view-switch" id="taskViewSwitch" role="tablist" aria-label="Task card views">
         <button type="button" class="view-switch-btn is-active" data-view-mode="standard" role="tab" aria-selected="true">Standard</button>
         <button type="button" class="view-switch-btn" data-view-mode="compact" role="tab" aria-selected="false">Compact</button>
-        <button type="button" class="view-switch-btn" data-view-mode="board" role="tab" aria-selected="false">Board</button>
-        <button type="button" class="view-switch-btn" data-view-mode="agenda" role="tab" aria-selected="false">Agenda</button>
       </div>
       <button class="btn btn-ghost toggle-done-btn" id="toggleDoneBtn">Hide Completed</button>
     </div>
@@ -4864,7 +4643,7 @@
                 <div class="form-row form-row-2">
                   <div class="form-group task-form-field task-field-started">
                     <label for="taskStartedAt">Start Date</label>
-                    <input type="date" id="taskStartedAt" readonly />
+                    <input type="date" id="taskStartedAt" />
                   </div>
                   <div class="form-group task-form-field task-field-completed">
                     <label for="taskCompletedAt">Completion Date</label>
@@ -4984,13 +4763,18 @@
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="itemSettingsModalTitle">
         <h2 id="itemSettingsModalTitle">Settings</h2>
       <form id="itemSettingsForm" class="item-settings-form" novalidate>
-          <p class="item-settings-intro">Manage shared task and item options here. Email senders feed the task form, while suppliers feed the item editors and import flow.</p>
+          <p class="item-settings-intro">Manage shared task and item options here. Email senders and projects feed the task form, while suppliers feed the item editors and import flow.</p>
         <div class="item-settings-grid">
             <div class="item-settings-group">
               <label for="taskSenderOptionsInput">Email Senders</label>
               <textarea id="taskSenderOptionsInput" placeholder="One sender per line"></textarea>
               <p class="item-settings-help">These names appear in the task form sender list. Existing tasks keep their sender even if you later remove an option here.</p>
             </div>
+          <div class="item-settings-group">
+            <label for="taskProjectOptionsInput">Projects</label>
+            <textarea id="taskProjectOptionsInput" placeholder="One project per line"></textarea>
+            <p class="item-settings-help">These project suggestions appear in the task form. Existing task project values stay intact even if you later remove an option here.</p>
+          </div>
           <div class="item-settings-group">
             <label for="itemSupplierOptionsInput">Suppliers</label>
             <textarea id="itemSupplierOptionsInput" placeholder="One supplier per line"></textarea>
@@ -5043,27 +4827,6 @@
         <span id="detailContextToggleLabel">Mark complete</span>
       </span>
       <strong>State</strong>
-    </button>
-    <button type="button" class="context-menu-btn is-description" data-context-action="show-description" role="menuitem">
-      <span class="context-menu-main">
-        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4.5h10l3 3V19.5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1Z"/><path d="M17 4.5V8h3"/><path d="M9 12h6"/><path d="M9 15.5h6"/></svg></span>
-        <span>Open description</span>
-      </span>
-      <strong>Tab</strong>
-    </button>
-    <button type="button" class="context-menu-btn is-subtasks" data-context-action="show-subtasks" role="menuitem">
-      <span class="context-menu-main">
-        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 7h10"/><path d="M9 12h10"/><path d="M9 17h10"/><path d="M4 7h.01"/><path d="M4 12h.01"/><path d="M4 17h.01"/></svg></span>
-        <span>Open subtasks</span>
-      </span>
-      <strong>Tab</strong>
-    </button>
-    <button type="button" class="context-menu-btn is-logs" data-context-action="show-logs" role="menuitem">
-      <span class="context-menu-main">
-        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/><path d="M8.5 9h7"/><path d="M8.5 12h7"/><path d="M8.5 15h5"/></svg></span>
-        <span>Open logs</span>
-      </span>
-      <strong>Tab</strong>
     </button>
     <button type="button" class="context-menu-btn is-duplicate" data-context-action="duplicate" role="menuitem">
       <span class="context-menu-main">
@@ -5149,10 +4912,12 @@
           : DEFAULT_ITEM_SUPPLIER_OPTIONS
       );
       const senderOptions = normalizeOptionList(settings?.senderOptions || []);
+      const projectOptions = normalizeOptionList(settings?.projectOptions || []);
 
       return {
         supplierOptions: supplierOptions.length ? supplierOptions : [...DEFAULT_ITEM_SUPPLIER_OPTIONS],
-        senderOptions
+        senderOptions,
+        projectOptions
       };
     }
 
@@ -5161,7 +4926,11 @@
     }
 
     function getProjectOptions(extraValue = '') {
-      return normalizeOptionList([...(tasks || []).map(task => task?.project || ''), extraValue]);
+      return normalizeOptionList([
+        ...(itemSettings?.projectOptions || []),
+        ...(tasks || []).map(task => task?.project || ''),
+        extraValue
+      ]);
     }
 
     function getSenderOptions(extraValue = '') {
@@ -5193,6 +4962,8 @@
     let selectedTaskId = null;
     let activeSecondaryStatsTab = 'status';
     let activeDetailTab = 'description';
+    let activeDetailEditField = null;
+    let activeDetailEditTaskId = null;
     let itemSearchQuery = '';
     let selectedItemIds = new Set();
     let taskDraftImageDataUrl = '';
@@ -5216,7 +4987,7 @@
     const STATUS_OPTIONS = ['Not Started','Pending','Ongoing', 'Waiting for Someone Else', 'Completed'];
     const YES_NO_OPTIONS = ['Yes', 'No'];
     const HIDDEN_FILTER_GROUPS = ['status', 'priority', 'category'];
-    const TASK_VIEW_OPTIONS = ['standard', 'compact', 'board', 'agenda'];
+    const TASK_VIEW_OPTIONS = ['standard', 'compact'];
     const TASK_SORT_OPTIONS = ['workflow', 'due-date', 'created-date', 'priority', 'title'];
     const DEFAULT_PRIORITY = 'Medium';
     const DEFAULT_STATUS = 'Not Started';
@@ -5323,8 +5094,13 @@
       hideDone = loadPreference(KEYS.hideDone, 'false') === 'true';
       showSecondaryStats = loadPreference(KEYS.showSecondaryStats, 'true') !== 'false';
       currentTheme = loadPreference(KEYS.theme, document.documentElement.dataset.theme || 'dark');
-      currentViewMode = normalizeTaskViewMode(loadPreference(KEYS.viewMode, 'standard'));
+      const storedViewMode = loadPreference(KEYS.viewMode, 'standard');
+      currentViewMode = normalizeTaskViewMode(storedViewMode);
       currentSortMode = normalizeTaskSortMode(loadPreference(KEYS.sortMode, 'workflow'));
+
+      if (storedViewMode !== currentViewMode) {
+        saveViewModePreference();
+      }
 
       if (!categories.length) {
         categories = getDefaultCategories();
@@ -5836,19 +5612,20 @@
       return normalizeStatus(task?.status) === 'Completed';
     }
 
-    function applyTaskStatusChange(task, nextStatus) {
+    function applyTaskStatusChange(task, nextStatus, options = {}) {
       if (!task) return false;
 
       const normalizedStatus = normalizeStatus(nextStatus);
+      const previousStatus = normalizeStatus(options.previousStatus ?? task.status);
       task.status = normalizedStatus;
 
-      if (normalizedStatus === 'Ongoing') {
+      if (normalizedStatus === 'Ongoing' && previousStatus !== 'Ongoing') {
         task.startedAt = today();
       }
 
-      if (normalizedStatus === 'Completed') {
+      if (normalizedStatus === 'Completed' && previousStatus !== 'Completed') {
         task.completedAt = today();
-      } else {
+      } else if (normalizedStatus !== 'Completed') {
         task.completedAt = null;
       }
 
@@ -5863,14 +5640,15 @@
 
       const currentTask = editingId ? getTaskById(editingId) : null;
       const normalizedStatus = normalizeStatus(statusField.value || currentTask?.status || DEFAULT_STATUS);
-      let startedAt = currentTask?.startedAt || '';
-      let completedAt = currentTask?.completedAt || '';
+      const previousStatus = normalizeStatus(statusField.dataset.lifecycleStatus || currentTask?.status || DEFAULT_STATUS);
+      let startedAt = startedField.value || currentTask?.startedAt || '';
+      let completedAt = completedField.value || currentTask?.completedAt || '';
 
-      if (normalizedStatus === 'Ongoing') {
+      if (normalizedStatus === 'Ongoing' && previousStatus !== 'Ongoing') {
         startedAt = today();
       }
 
-      if (normalizedStatus === 'Completed') {
+      if (normalizedStatus === 'Completed' && previousStatus !== 'Completed') {
         completedAt = today();
       } else {
         completedAt = '';
@@ -5878,6 +5656,7 @@
 
       startedField.value = startedAt;
       completedField.value = completedAt;
+      statusField.dataset.lifecycleStatus = normalizedStatus;
     }
 
     function getCategoryByName(categoryName) {
@@ -6429,13 +6208,6 @@
       };
     }
 
-    function getTaskCompactSummary(task, taskData) {
-      if (task.description) return task.description;
-      if (task.emailSubject) return `Email: ${task.emailSubject}`;
-      if (taskData.subtaskCount) return `${taskData.completedCount}/${taskData.subtaskCount} subtasks · ${getSubtaskPreview(task)}`;
-      return taskData.logData.preview;
-    }
-
     function getStandardTaskCardMarkup(task, searchQuery = '') {
       const taskData = getTaskCardData(task);
 
@@ -6497,16 +6269,14 @@
         </div>`;
     }
 
-    function getCompactTaskCardMarkup(task, options = {}) {
+    function getCompactTaskCardMarkup(task, searchQuery = '') {
       const taskData = getTaskCardData(task);
-      const contextClass = options.context ? ` is-${options.context}` : '';
       const dueSummary = task.dueDate
         ? `${taskData.overdue ? 'Overdue' : 'Due'} ${formatDate(task.dueDate)}`
         : (task.receivedAt ? `Received ${formatDate(task.receivedAt)}` : 'No due date');
-      const searchQuery = options.searchQuery || '';
 
       return `
-        <div class="task-card task-card-compact ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isActive ? 'is-active' : ''}${contextClass}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
+        <div class="task-card task-card-compact ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isActive ? 'is-active' : ''}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
           <div class="task-card-body">
             <div class="task-main">
               <div class="task-heading">
@@ -6525,7 +6295,7 @@
                     ${getTaskPriorityMarkup(taskData.priority)}
                   </div>
                   <div class="task-meta">
-                    ${options.hideStatusBadge ? '' : getFilterBadgeMarkup('status', taskData.status)}
+                    ${getFilterBadgeMarkup('status', taskData.status)}
                     <span class="task-date ${taskData.overdue ? 'overdue' : ''}">${escHtml(dueSummary)}</span>
                   </div>
                 </div>
@@ -6536,89 +6306,9 @@
         </div>`;
     }
 
-    function renderBoardTaskList(tasksToRender, searchQuery = '') {
-      const orderedStatuses = [...STATUS_OPTIONS].sort((a, b) => (STATUS_ORDER[a] ?? STATUS_OPTIONS.length) - (STATUS_ORDER[b] ?? STATUS_OPTIONS.length));
-
-      return orderedStatuses.map(status => {
-        const groupedTasks = tasksToRender.filter(task => normalizeStatus(task.status) === status);
-        const accent = STATUS_ACCENTS[status] || 'var(--accent)';
-        const isEmpty = groupedTasks.length === 0;
-        const isSparse = groupedTasks.length <= 1;
-
-        return `
-          <section class="task-view-group task-board-column ${isEmpty ? 'is-empty' : ''} ${isSparse ? 'is-sparse' : ''}" style="--group-accent:${accent}">
-            <div class="task-view-group-header ${isEmpty ? 'is-empty' : ''} ${isSparse ? 'is-sparse' : ''}">
-              <div class="task-view-group-title">
-                <strong>${escHtml(status)}</strong>
-                <span>${groupedTasks.length ? 'Active queue' : 'No matching tasks'}</span>
-              </div>
-              <span class="task-view-group-count">${groupedTasks.length}</span>
-            </div>
-            <div class="task-board-list">
-              ${groupedTasks.length
-                ? groupedTasks.map(task => getCompactTaskCardMarkup(task, { context: 'board', hideStatusBadge: true, searchQuery })).join('')
-                : '<div class="task-board-empty">Nothing in this status for the current filters.</div>'}
-            </div>
-          </section>`;
-      }).join('');
-    }
-
-    function getAgendaGroupId(task) {
-      if (!task.dueDate) return 'no-due-date';
-      if (task.dueDate < today()) return 'overdue';
-      if (task.dueDate === today()) return 'today';
-      return 'upcoming';
-    }
-
-    function compareAgendaTasks(a, b, sortMode) {
-      const dueCompare = (a.dueDate || '9999-12-31').localeCompare(b.dueDate || '9999-12-31');
-      if (dueCompare !== 0) return dueCompare;
-      return compareTasks(a, b, sortMode);
-    }
-
-    function renderAgendaTaskList(tasksToRender, sortMode, searchQuery = '') {
-      const agendaGroups = [
-        { id: 'overdue', title: 'Overdue', subtitle: 'Past-due work first', accent: 'var(--high)' },
-        { id: 'today', title: 'Due Today', subtitle: 'Tasks landing today', accent: 'var(--medium)' },
-        { id: 'upcoming', title: 'Upcoming', subtitle: 'Future due dates', accent: 'var(--accent)' },
-        { id: 'no-due-date', title: 'No Due Date', subtitle: 'Unscheduled tasks', accent: 'var(--text-muted)' }
-      ];
-
-      return agendaGroups.map(group => {
-        const groupedTasks = tasksToRender
-          .filter(task => getAgendaGroupId(task) === group.id)
-          .sort((a, b) => compareAgendaTasks(a, b, sortMode));
-        const isEmpty = groupedTasks.length === 0;
-
-        return `
-          <section class="task-view-group task-agenda-group ${isEmpty ? 'is-empty' : ''}" style="--group-accent:${group.accent}">
-            <div class="task-view-group-header ${isEmpty ? 'is-empty' : ''}">
-              <div class="task-view-group-title">
-                <strong>${escHtml(group.title)}</strong>
-                <span>${escHtml(group.subtitle)}</span>
-              </div>
-              <span class="task-view-group-count">${groupedTasks.length}</span>
-            </div>
-            <div class="task-agenda-list">
-              ${groupedTasks.length
-                ? groupedTasks.map(task => getCompactTaskCardMarkup(task, { context: 'agenda', searchQuery })).join('')
-                : '<div class="task-agenda-empty">No tasks in this date bucket for the current filters.</div>'}
-            </div>
-          </section>`;
-      }).join('');
-    }
-
-    function renderTaskListMarkup(tasksToRender, sortMode, searchQuery = '') {
+    function renderTaskListMarkup(tasksToRender, searchQuery = '') {
       if (currentViewMode === 'compact') {
-        return tasksToRender.map(task => getCompactTaskCardMarkup(task, { context: 'compact', searchQuery })).join('');
-      }
-
-      if (currentViewMode === 'board') {
-        return renderBoardTaskList(tasksToRender, searchQuery);
-      }
-
-      if (currentViewMode === 'agenda') {
-        return renderAgendaTaskList(tasksToRender, sortMode, searchQuery);
+        return tasksToRender.map(task => getCompactTaskCardMarkup(task, searchQuery)).join('');
       }
 
       return tasksToRender.map(task => getStandardTaskCardMarkup(task, searchQuery)).join('');
@@ -7657,7 +7347,7 @@
         selectedTaskId = visible[0]?.id || null;
       }
 
-      list.innerHTML = renderTaskListMarkup(visible, filters.sort, filters.search);
+      list.innerHTML = renderTaskListMarkup(visible, filters.search);
 
       renderTaskDetails({ preserveScrollTop: detailScrollTop });
 
@@ -7701,6 +7391,8 @@
       const subtaskCount = task.subtasks?.length || 0;
       const completedSubtasks = (task.subtasks || []).filter(subtask => subtask.done).length;
       const workflowItemCount = getItemsForTask(task.id).length;
+      const isEditingDescription = activeDetailEditTaskId === task.id && activeDetailEditField === 'description';
+      const isEditingNotes = activeDetailEditTaskId === task.id && activeDetailEditField === 'notes';
       const detailTabs = [
         {
           id: 'description',
@@ -7711,10 +7403,20 @@
           content: `
             <div class="detail-section-header">
               <div class="section-title">Description</div>
-              <span class="detail-section-meta">${task.description ? 'Summary' : 'No description'}</span>
+              <div class="detail-section-actions">
+                <span class="detail-section-meta">${isEditingDescription ? 'Editing' : (task.description ? 'Summary' : 'No description')}</span>
+                ${isEditingDescription ? '' : '<button type="button" class="btn btn-ghost" data-edit-detail-field="description">Edit</button>'}
+              </div>
             </div>
             <div class="detail-section-body">
-              <p>${task.description ? escHtml(task.description) : 'No description added for this task yet.'}</p>
+              ${isEditingDescription ? `
+                <div class="detail-inline-editor-wrap">
+                  <textarea class="detail-inline-editor" data-task-detail-field="description" placeholder="Add a clear task description or context...">${escHtml(task.description || '')}</textarea>
+                  <div class="detail-inline-editor-hint">Changes save inline. Leave it empty if this task does not need a description.</div>
+                </div>` : `
+                <div class="detail-inline-view ${task.description ? '' : 'is-empty'}">
+                  <p>${task.description ? escHtml(task.description) : 'No description added for this task yet.'}</p>
+                </div>`}
             </div>`
         },
         {
@@ -7792,7 +7494,7 @@
               </div>
             </div>`
         },
-        ...(task.notes ? [{
+        {
           id: 'notes',
           label: 'Notes',
           accent: 'var(--low)',
@@ -7801,12 +7503,22 @@
           content: `
             <div class="detail-section-header">
               <div class="section-title">Task Notes</div>
-              <span class="detail-section-meta">Reference</span>
+              <div class="detail-section-actions">
+                <span class="detail-section-meta">${isEditingNotes ? 'Editing' : (task.notes ? 'Reference' : 'No notes')}</span>
+                ${isEditingNotes ? '' : '<button type="button" class="btn btn-ghost" data-edit-detail-field="notes">Edit</button>'}
+              </div>
             </div>
             <div class="detail-section-body">
-              <p>${escHtml(task.notes)}</p>
+              ${isEditingNotes ? `
+                <div class="detail-inline-editor-wrap">
+                  <textarea class="detail-inline-editor" data-task-detail-field="notes" placeholder="Add notes, handoff context, or reminders...">${escHtml(task.notes || '')}</textarea>
+                  <div class="detail-inline-editor-hint">Changes save inline. Notes stay attached to this task in local storage.</div>
+                </div>` : `
+                <div class="detail-inline-view ${task.notes ? '' : 'is-empty'}">
+                  <p>${task.notes ? escHtml(task.notes) : 'No notes added for this task yet.'}</p>
+                </div>`}
             </div>`
-        }] : [])
+        }
       ];
       const availableTabIds = new Set(detailTabs.map(tab => tab.id));
 
@@ -7873,6 +7585,16 @@
         </div>`;
 
       applyInputLimits();
+      if (activeDetailEditTaskId === task.id && activeDetailEditField) {
+        const activeEditor = panel.querySelector(`[data-task-detail-field="${activeDetailEditField}"]`);
+        if (activeEditor) {
+          requestAnimationFrame(() => {
+            activeEditor.focus();
+            const nextLength = activeEditor.value.length;
+            activeEditor.setSelectionRange(nextLength, nextLength);
+          });
+        }
+      }
       restoreScrollTop(panel, preserveScrollTop);
       restoreChildScrollPositions(panel, preservedChildScrolls);
     }
@@ -7953,6 +7675,7 @@
         document.getElementById('taskCompletedAt').value = '';
       }
 
+      document.getElementById('taskStatus').dataset.lifecycleStatus = normalizeStatus(document.getElementById('taskStatus').value || DEFAULT_STATUS);
       syncTaskLifecycleDraftDates();
       renderTaskProjectOptions();
       updateTaskImagePreview();
@@ -8044,6 +7767,8 @@
         priority:   normalizePriority(document.getElementById('taskPriority').value),
         status:     normalizeStatus(document.getElementById('taskStatus').value),
         receivedAt: document.getElementById('taskReceivedAt').value || null,
+        startedAt: document.getElementById('taskStartedAt').value || null,
+        completedAt: document.getElementById('taskCompletedAt').value || null,
         dueDate:    document.getElementById('taskDueDate').value    || null,
         notes:      document.getElementById('taskNotes').value.trim() || null,
       };
@@ -8061,20 +7786,20 @@
           Object.assign(tasks[idx], data, {
             subtasks: nextSubtasks
           });
-          applyTaskStatusChange(tasks[idx], data.status);
+          applyTaskStatusChange(tasks[idx], data.status, { previousStatus: data.status });
         }
       } else {
         const newTasks = enteredTitles.map(taskTitle => {
           const newTask = {
             id: genId(),
             createdAt: today(),
-            startedAt: null,
-            completedAt: null,
+            startedAt: data.startedAt || null,
+            completedAt: data.completedAt || null,
             subtasks: buildTaskSubtasks(data.templateId),
             ...data,
             title: taskTitle
           };
-          applyTaskStatusChange(newTask, data.status);
+          applyTaskStatusChange(newTask, data.status, { previousStatus: data.status });
           return newTask;
         });
         tasks = [...newTasks, ...tasks];
@@ -8142,6 +7867,8 @@
 
       const card = e.target.closest('.task-card');
       if (card && !e.target.closest('.task-actions, .task-action-tools')) {
+        activeDetailEditField = null;
+        activeDetailEditTaskId = null;
         selectedTaskId = card.dataset.id;
         renderTasks();
         return;
@@ -8175,6 +7902,8 @@
       if (e.target.closest('input, textarea, select, button')) return;
 
       e.preventDefault();
+      activeDetailEditField = null;
+      activeDetailEditTaskId = null;
       selectedTaskId = card.dataset.id;
       renderTasks();
       openDetailContextMenu(e.clientX, e.clientY);
@@ -8182,6 +7911,7 @@
 
     document.getElementById('taskDetailPanel').addEventListener('click', e => {
       const editId = e.target.closest('[data-edit]')?.dataset.edit;
+      const editDetailField = e.target.closest('[data-edit-detail-field]')?.dataset.editDetailField;
       const detailTabId = e.target.closest('[data-detail-tab]')?.dataset.detailTab;
       const deleteLogId = e.target.closest('[data-delete-log]')?.dataset.deleteLog;
       const toggleSubtaskId = e.target.closest('[data-toggle-subtask]')?.dataset.toggleSubtask;
@@ -8191,8 +7921,17 @@
       const deleteItemId = e.target.closest('[data-delete-item]')?.dataset.deleteItem;
 
       if (detailTabId) {
+        activeDetailEditField = null;
+        activeDetailEditTaskId = null;
         activeDetailTab = detailTabId;
         renderTaskDetails();
+        return;
+      }
+
+      if (editDetailField) {
+        activeDetailEditField = editDetailField;
+        activeDetailEditTaskId = selectedTaskId;
+        renderTaskDetails(true);
         return;
       }
 
@@ -8265,11 +8004,25 @@
     });
 
     document.getElementById('taskDetailPanel').addEventListener('change', e => {
+      const detailField = e.target.closest('[data-task-detail-field]');
       const field = e.target.closest('[data-item-field]');
       const imageField = e.target.closest('[data-item-image-upload]');
       const importField = e.target.id === 'workflowItemImportInput' ? e.target : null;
 
-      if (!field && !imageField && !importField) return;
+      if (!detailField && !field && !imageField && !importField) return;
+
+      if (detailField) {
+        const task = getTaskById(selectedTaskId);
+        const fieldName = detailField.dataset.taskDetailField;
+        if (!task || !fieldName) return;
+
+        task[fieldName] = String(detailField.value || '').trim() || null;
+        activeDetailEditField = fieldName;
+        activeDetailEditTaskId = task.id;
+        saveTasks();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
 
       if (importField) {
         importItemsFromWorkbook(importField.files?.[0], selectedTaskId)
@@ -8320,6 +8073,18 @@
       renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
     });
 
+    document.getElementById('taskDetailPanel').addEventListener('input', e => {
+      const detailField = e.target.closest('[data-task-detail-field]');
+      if (!detailField) return;
+
+      const task = getTaskById(selectedTaskId);
+      const fieldName = detailField.dataset.taskDetailField;
+      if (!task || !fieldName) return;
+
+      task[fieldName] = detailField.value;
+      saveTasks();
+    });
+
     document.getElementById('taskDetailPanel').addEventListener('contextmenu', e => {
       if (!selectedTaskId) return;
       if (e.target.closest('input, textarea, select, button')) return;
@@ -8346,24 +8111,6 @@
         applyTaskStatusChange(task, isTaskCompleted(task) ? DEFAULT_STATUS : 'Completed');
         saveTasks();
         renderTasks();
-        return;
-      }
-
-      if (action === 'show-description') {
-        activeDetailTab = 'description';
-        renderTaskDetails();
-        return;
-      }
-
-      if (action === 'show-subtasks') {
-        activeDetailTab = 'subtasks';
-        renderTaskDetails();
-        return;
-      }
-
-      if (action === 'show-logs') {
-        activeDetailTab = 'logs';
-        renderTaskDetails();
         return;
       }
 
@@ -9335,6 +9082,7 @@
       e.preventDefault();
 
       const senderOptions = normalizeOptionList(document.getElementById('taskSenderOptionsInput').value);
+      const projectOptions = normalizeOptionList(document.getElementById('taskProjectOptionsInput').value);
       const supplierOptions = normalizeOptionList(document.getElementById('itemSupplierOptionsInput').value);
 
       if (!supplierOptions.length) {
@@ -9342,8 +9090,9 @@
         return;
       }
 
-      itemSettings = normalizeItemSettings({ senderOptions, supplierOptions });
+      itemSettings = normalizeItemSettings({ senderOptions, projectOptions, supplierOptions });
       saveItemSettings();
+      renderTaskProjectOptions();
       closeItemSettingsModal();
       renderTasks();
       renderAllItemsList();
@@ -9533,6 +9282,7 @@
 
     function fillItemSettingsForm() {
       document.getElementById('taskSenderOptionsInput').value = (itemSettings?.senderOptions || []).join('\n');
+      document.getElementById('taskProjectOptionsInput').value = (itemSettings?.projectOptions || []).join('\n');
       document.getElementById('itemSupplierOptionsInput').value = (itemSettings?.supplierOptions || DEFAULT_ITEM_SUPPLIER_OPTIONS).join('\n');
     }
 
