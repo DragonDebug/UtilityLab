@@ -377,6 +377,7 @@
     .modal {
       width: min(100%, 1040px);
       max-height: min(92vh, 960px);
+      min-height: min(78vh, 760px);
       padding: clamp(16px, 2vw, 22px);
       border-radius: 28px;
       background:
@@ -404,6 +405,14 @@
     #itemsModal .modal {
       width: min(96vw, 1380px);
       max-height: min(94dvh, 1120px);
+    }
+
+    #categoryModal .modal {
+      width: min(100%, 1100px);
+      max-height: min(92vh, 1040px);
+      min-height: min(86vh, 920px);
+      display: flex;
+      flex-direction: column;
     }
 
     .task-modal-header {
@@ -3116,6 +3125,27 @@
       display: grid;
       gap: 8px;
       margin-top: 18px;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(129,140,248,.24) transparent;
+    }
+
+    .category-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .category-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .category-list::-webkit-scrollbar-thumb {
+      background: rgba(129,140,248,.22);
+      border: 2px solid transparent;
+      border-radius: 999px;
+      background-clip: padding-box;
     }
 
     .category-item {
@@ -4147,12 +4177,14 @@
 
     .item-settings-group textarea {
       width: 100%;
-      min-height: 180px;
+      min-height: 400px;
       border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
-      border-radius: 12px;
-      padding: 10px 12px;
+      border-radius: 14px;
+      padding: 14px 15px;
       background: linear-gradient(180deg, var(--field-bg-strong), var(--field-bg));
       color: var(--text);
+      font-size: 13px;
+      line-height: 1.5;
       resize: vertical;
       outline: none;
     }
