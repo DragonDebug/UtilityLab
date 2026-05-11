@@ -71,10 +71,10 @@
       --status-ongoing: #3b82f6;
       --status-done:    #475569;
 
-      --sticky-panel-top: 92px;
+      --sticky-panel-top: 82px;
       --sticky-panel-gap: 16px;
       --task-list-offset: 270px;
-      --workspace-height-offset: 180px;
+      --workspace-height-offset: 168px;
     }
 
     :root.theme-light {
@@ -143,11 +143,12 @@
     .app-header {
       background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, var(--panel-bg)), var(--panel-bg));
       border-bottom: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
-      padding: 10px 12px;
-      display: grid;
-      grid-template-columns: minmax(300px, 1.05fr) minmax(560px, 1.35fr);
-      align-items: start;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 10px 14px;
+      flex-wrap: nowrap;
       position: sticky;
       top: 0;
       z-index: 10;
@@ -159,7 +160,8 @@
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
       align-items: center;
-      gap: 10px 12px;
+      gap: 8px 12px;
+      flex: 1 1 auto;
       min-width: 0;
     }
 
@@ -175,27 +177,49 @@
     .app-header h1 span { color: var(--accent); }
 
     .header-actions {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      grid-auto-flow: row dense;
-      align-self: start;
-      gap: 6px;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      align-self: center;
+      gap: 5px;
       min-width: 0;
+      flex: 0 1 auto;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+    }
+
+    .header-actions::-webkit-scrollbar {
+      display: none;
     }
 
     .header-actions .btn-header {
-      width: 100%;
+      width: auto;
       min-width: 0;
       max-width: none;
       justify-content: center;
-      min-height: 32px;
-      padding: 5px 9px;
+      min-height: 34px;
+      padding: 5px 10px;
       border-radius: 10px;
-      font-size: 11px;
+      font-size: 10.5px;
+      gap: 5px;
+      flex: 0 0 auto;
     }
 
     .header-actions .btn-header-new {
-      grid-column: span 2;
+      min-width: 84px;
+      gap: 6px;
+      padding-inline: 11px;
+    }
+
+    .header-actions .btn-header:not(.btn-header-new) {
+      padding-inline: 10px;
+    }
+
+    .header-actions .btn-header:not(.btn-header-new) svg {
+      width: 13px;
+      height: 13px;
     }
 
     .main-content {
@@ -1160,34 +1184,34 @@
       min-width: 0;
       max-width: none;
       margin-bottom: 0;
-      gap: 6px;
+      gap: 4px;
       align-items: stretch;
     }
 
     .task-stats-secondary {
       display: grid;
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 0;
       transition: opacity .18s ease, transform .18s ease;
     }
 
     .task-stats-secondary-tabs {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 6px;
       min-width: 0;
       align-items: stretch;
-      padding: 0 0 8px;
-      border-bottom: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+      padding: 0;
+      border-bottom: none;
     }
 
     .task-stats-secondary-tab {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-height: 36px;
-      padding: 7px 12px;
-      border-radius: 12px;
+      justify-content: space-between;
+      min-height: 40px;
+      padding: 8px 12px;
+      border-radius: 14px;
       border: 1px solid color-mix(in srgb, var(--accent) 8%, var(--border));
       background: linear-gradient(180deg, color-mix(in srgb, var(--surface2) 88%, transparent), color-mix(in srgb, var(--surface) 94%, transparent));
       color: color-mix(in srgb, var(--text-muted) 80%, var(--text) 20%);
@@ -1210,39 +1234,89 @@
       background: linear-gradient(180deg, color-mix(in srgb, var(--tab-accent, var(--accent)) 11%, var(--panel-bg)), color-mix(in srgb, var(--tab-accent, var(--accent)) 4%, var(--panel-bg)));
       border-color: color-mix(in srgb, var(--tab-accent, var(--accent)) 28%, var(--border));
       color: color-mix(in srgb, var(--text) 84%, var(--tab-accent, var(--accent)) 16%);
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tab-accent, var(--accent)) 10%, transparent), 0 10px 22px rgba(2, 6, 23, .10);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tab-accent, var(--accent)) 10%, transparent);
     }
 
-    .task-stats-secondary-tab.is-active span:first-child {
-      position: relative;
+    .task-stats-secondary-tab-label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .task-stats-secondary-tab.is-active span:first-child::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -8px;
-      height: 3px;
+    .task-stats-secondary-tab-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      padding: 2px 6px;
       border-radius: 999px;
-      background: color-mix(in srgb, var(--tab-accent, var(--accent)) 78%, white 22%);
+      background: color-mix(in srgb, var(--tab-accent, var(--accent)) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--tab-accent, var(--accent)) 24%, transparent);
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1;
+      color: inherit;
     }
 
     .task-stats-secondary-shell {
       margin-bottom: 10px;
-      padding: 8px;
+      padding: 10px;
+      display: grid;
+      gap: 10px;
       border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
-      border-radius: 14px;
-      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, transparent), rgba(255,255,255,.02));
+      border-radius: 16px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, var(--panel-alt)), rgba(255,255,255,.02));
       box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
     }
 
     .task-stats-secondary-bar {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 8px;
+      gap: 12px;
+      margin-bottom: 0;
+    }
+
+    .task-stats-secondary-heading {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .task-stats-secondary-kicker {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text-muted) 76%, var(--accent) 24%);
+    }
+
+    .task-stats-secondary-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    .task-stats-secondary-caption {
+      font-size: 11px;
+      line-height: 1.35;
+      color: var(--text-muted);
+    }
+
+    .task-stats-secondary-controls {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .task-stats-secondary-controls .task-stats-secondary-tabs {
+      flex: 1 1 auto;
+      max-width: 420px;
     }
 
     .task-stats-secondary-shell.is-collapsed .task-stats-secondary {
@@ -1253,65 +1327,70 @@
       min-height: 30px;
       padding: 5px 10px;
       font-size: 11px;
+      flex: 0 0 auto;
     }
 
     .stats-group {
       display: none;
-      gap: 8px;
       min-width: 0;
-      padding: 10px;
-      border: 1px solid color-mix(in srgb, var(--group-accent, var(--accent)) 14%, var(--border));
-      border-radius: 14px;
-      background: linear-gradient(180deg, color-mix(in srgb, var(--group-accent, var(--accent)) 8%, var(--panel-alt)), var(--panel-bg));
-      box-shadow: var(--shadow-soft);
     }
 
     .stats-group.is-active {
-      display: grid;
-    }
-
-    .stats-group-header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .stats-group-title {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: color-mix(in srgb, var(--text-muted) 62%, var(--group-accent, var(--accent)) 38%);
-    }
-
-    .stats-group-total {
-      font-size: 11px;
-      color: var(--text-muted);
-      white-space: nowrap;
+      display: block;
     }
 
     .stats-group-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
-      gap: 6px;
+      grid-template-columns: repeat(auto-fit, minmax(124px, 1fr));
+      gap: 8px;
       min-width: 0;
     }
 
     .stats-group--category {
-      gap: 6px;
-      padding: 8px;
+      gap: 0;
+      padding: 0;
     }
 
     .stats-group--category .stats-group-list {
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      grid-auto-rows: minmax(0, auto);
-      max-height: calc((32px * 2) + 6px);
-      overflow-y: auto;
-      padding-right: 2px;
+      grid-auto-rows: minmax(74px, auto);
+      overflow: visible;
+      padding: 0;
       align-content: start;
-      scrollbar-width: thin;
+      min-height: calc((74px * 3) + (8px * 2));
+    }
+
+    .stats-group-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .stats-group-page-meta {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .stats-group-page-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stats-group-page-btn {
+      min-height: 28px;
+      padding: 4px 10px;
+      font-size: 11px;
+    }
+
+    .stats-group-page-btn[disabled] {
+      opacity: .45;
+      cursor: default;
     }
 
     .stat-chip {
@@ -1373,7 +1452,7 @@
 
     .task-stats-header .stat-chip {
       min-height: 0;
-      padding: 7px 8px 8px;
+      padding: 6px 7px 7px;
       border-radius: 12px;
       gap: 2px;
     }
@@ -1406,14 +1485,15 @@
       appearance: none;
       width: 100%;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 8px;
+      gap: 10px;
       border: 1px solid color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 26%, transparent);
-      border-radius: 999px;
-      padding: 5px 8px 5px 10px;
-      background: color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 16%, transparent);
-      min-height: 0;
+      border-radius: 14px;
+      padding: 10px 11px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 12%, var(--panel-alt)), color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 4%, var(--panel-bg)));
+      min-height: 74px;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
       cursor: default;
       text-align: left;
@@ -1440,9 +1520,9 @@
       color: color-mix(in srgb, var(--text-muted) 42%, var(--micro-accent, var(--group-accent, var(--accent))) 58%);
       text-transform: uppercase;
       letter-spacing: .06em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
     }
 
     .micro-stat.is-category .micro-stat-label::before {
@@ -1458,38 +1538,51 @@
     .micro-stat-value {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-width: 24px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      background: color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 22%, transparent);
-      border: 1px solid color-mix(in srgb, var(--micro-accent, var(--group-accent, var(--accent))) 28%, transparent);
-      font-size: 11px;
+      justify-content: flex-start;
+      min-width: 0;
+      padding: 0;
+      border-radius: 0;
+      background: none;
+      border: none;
+      font-size: 22px;
       font-weight: 800;
       color: color-mix(in srgb, var(--text) 12%, var(--micro-accent, var(--group-accent, var(--accent))) 88%);
+      line-height: 1;
     }
 
     .stats-group--category .micro-stat {
-      gap: 6px;
-      padding: 4px 7px 4px 8px;
-      min-height: 32px;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 11px;
+      min-height: 74px;
+      border-radius: 14px;
+      scroll-snap-align: start;
     }
 
     .stats-group--category .micro-stat-label {
-      gap: 4px;
-      font-size: 9px;
-      letter-spacing: .05em;
+      gap: 5px;
+      font-size: 10px;
+      letter-spacing: .06em;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
     }
 
     .stats-group--category .micro-stat.is-category .micro-stat-label::before {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
     }
 
     .stats-group--category .micro-stat-value {
-      min-width: 20px;
-      padding: 1px 6px;
-      font-size: 10px;
+      min-width: 0;
+      padding: 0;
+      border-radius: 0;
+      background: none;
+      border: none;
+      font-size: 22px;
+      line-height: 1;
     }
 
     /* ── Task List ──
@@ -4217,18 +4310,35 @@
         overflow: visible;
       }
       .app-header {
-        grid-template-columns: 1fr;
+        align-items: stretch;
+        flex-wrap: wrap;
       }
       .app-header-main {
         width: 100%;
-        grid-template-columns: 1fr;
+        grid-template-columns: auto minmax(0, 1fr);
         align-items: stretch;
       }
       .header-actions {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        overflow: visible;
+        scrollbar-width: auto;
       }
       .header-actions .btn-header-new {
-        grid-column: span 2;
+        min-width: 110px;
+      }
+      .header-actions .btn-header:not(.btn-header-new) {
+        width: auto;
+        min-width: 0;
+        padding-inline: 10px;
+      }
+      .header-actions .btn-header:not(.btn-header-new) .btn-header-label {
+        display: inline-flex;
+      }
+      .header-actions .btn-header:not(.btn-header-new) svg {
+        width: 13px;
+        height: 13px;
       }
       .list-panel {
         position: static;
@@ -4259,6 +4369,7 @@
         gap: 12px;
       }
       .app-header-main {
+        grid-template-columns: 1fr;
         gap: 12px;
       }
       .task-stats-header {
@@ -4268,27 +4379,50 @@
       }
       .task-stats-secondary-shell {
         padding: 8px;
+        gap: 8px;
       }
       .task-stats-secondary-tabs {
         gap: 5px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
       .task-stats-secondary-tab {
-        flex: 1 1 calc(33.333% - 5px);
-        justify-content: center;
+        min-height: 38px;
+        padding-inline: 10px;
+      }
+      .task-stats-secondary-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .task-stats-secondary-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .task-stats-secondary-controls .task-stats-secondary-tabs {
+        max-width: none;
+      }
+      .task-stats-secondary-caption {
+        white-space: normal;
       }
       .stats-group--category .stats-group-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        max-height: none;
-        overflow-y: visible;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        min-height: 0;
         padding-right: 0;
       }
       .header-actions {
+        display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
       }
       .header-actions .btn-header,
       .header-actions .btn-header-new {
-        grid-column: auto;
+        width: 100%;
+        min-width: 0;
         min-height: 34px;
+        padding-inline: 10px;
+        gap: 6px;
+      }
+      .header-actions .btn-header:not(.btn-header-new) .btn-header-label {
+        display: inline-flex;
       }
       .main-content { padding: 12px 10px 20px; }
       .filters-strip {
@@ -4368,6 +4502,7 @@
       }
       .header-actions .btn-header,
       .header-actions .btn-header-new {
+        width: 100%;
         grid-column: auto;
       }
       .form-row { grid-template-columns: 1fr; }
@@ -4381,8 +4516,9 @@
       .task-stats { grid-template-columns: 1fr; }
       .task-stats-header { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .task-stats-secondary { grid-template-columns: 1fr; }
-      .task-stats-secondary-tab { flex-basis: 100%; }
+      .task-stats-secondary-tab { width: 100%; }
       .stats-group-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stats-group--category .stats-group-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .filters-strip { padding: 8px 10px 0; }
       .filters-bar {
         flex-wrap: wrap;
@@ -4475,39 +4611,39 @@
       <div class="task-stats task-stats-header" id="taskStats"></div>
     </div>
     <div class="header-actions">
-      <button class="btn btn-header btn-header-new" id="newTaskBtn">
+      <button class="btn btn-header btn-header-new" id="newTaskBtn" type="button" title="Create a new task" aria-label="Create a new task">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         <span class="btn-header-label">New Task</span>
       </button>
-      <button class="btn btn-header btn-header-categories" id="manageCategoriesBtn">
+      <button class="btn btn-header btn-header-categories" id="manageCategoriesBtn" type="button" title="Manage categories" aria-label="Manage categories">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h7"/><circle cx="18" cy="12" r="2.5"/><circle cx="14" cy="17" r="2.5"/></svg>
         <span class="btn-header-label">Categories</span>
       </button>
-      <button class="btn btn-header btn-header-templates" id="manageTemplatesBtn">
+      <button class="btn btn-header btn-header-templates" id="manageTemplatesBtn" type="button" title="Manage templates" aria-label="Manage templates">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M6 4.5h9l3 3V19.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1Z"/><path d="M15 4.5V8h3"/><path d="M8 12h8"/><path d="M8 15.5h8"/></svg>
         <span class="btn-header-label">Templates</span>
       </button>
-      <button class="btn btn-header btn-header-items" id="manageItemsBtn">
+      <button class="btn btn-header btn-header-items" id="manageItemsBtn" type="button" title="Manage items" aria-label="Manage items">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 6.5h16"/><path d="M4 12h16"/><path d="M4 17.5h16"/><circle cx="8" cy="6.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="17.5" r="1.2" fill="currentColor" stroke="none"/></svg>
         <span class="btn-header-label">Items</span>
       </button>
-      <button class="btn btn-header btn-header-settings" id="manageItemSettingsBtn">
+      <button class="btn btn-header btn-header-settings" id="manageItemSettingsBtn" type="button" title="Open settings" aria-label="Open settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.2 15a1 1 0 0 0 .2 1.1l.1.1a1.7 1.7 0 0 1 0 2.4 1.7 1.7 0 0 1-2.4 0l-.1-.1a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9v.3a1.7 1.7 0 0 1-1.7 1.7 1.7 1.7 0 0 1-1.7-1.7V19a1 1 0 0 0-.6-.9 1 1 0 0 0-1.1.2l-.1.1a1.7 1.7 0 0 1-2.4 0 1.7 1.7 0 0 1 0-2.4l.1-.1a1 1 0 0 0 .2-1.1 1 1 0 0 0-.9-.6H4.5A1.7 1.7 0 0 1 2.8 12a1.7 1.7 0 0 1 1.7-1.7H4.8a1 1 0 0 0 .9-.6 1 1 0 0 0-.2-1.1l-.1-.1a1.7 1.7 0 0 1 0-2.4 1.7 1.7 0 0 1 2.4 0l.1.1a1 1 0 0 0 1.1.2 1 1 0 0 0 .6-.9V4.5A1.7 1.7 0 0 1 12 2.8a1.7 1.7 0 0 1 1.7 1.7v.3a1 1 0 0 0 .6.9 1 1 0 0 0 1.1-.2l.1-.1a1.7 1.7 0 0 1 2.4 0 1.7 1.7 0 0 1 0 2.4l-.1.1a1 1 0 0 0-.2 1.1 1 1 0 0 0 .9.6h.3A1.7 1.7 0 0 1 21.2 12a1.7 1.7 0 0 1-1.7 1.7h-.3a1 1 0 0 0-.9.6Z"/></svg>
           <span class="btn-header-label">Settings</span>
       </button>
-      <button class="btn btn-header btn-header-theme" id="themeToggleBtn">
+      <button class="btn btn-header btn-header-theme" id="themeToggleBtn" type="button" title="Switch to light theme" aria-label="Switch to light theme">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
         <span class="btn-header-label">Light</span>
       </button>
-      <button class="btn btn-header btn-header-export" id="exportExcelBtn">
+      <button class="btn btn-header btn-header-export" id="exportExcelBtn" type="button" title="Export to Excel" aria-label="Export to Excel">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18.5h14"/></svg>
         <span class="btn-header-label">Export</span>
       </button>
-      <button class="btn btn-header btn-header-export-detailed" id="exportDetailedExcelBtn">
+      <button class="btn btn-header btn-header-export-detailed" id="exportDetailedExcelBtn" type="button" title="Export detailed workbook" aria-label="Export detailed workbook">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18.5h14"/><path d="M7 7.5h10"/></svg>
         <span class="btn-header-label">Detailed</span>
       </button>
-      <button class="btn btn-header btn-header-clear" id="clearCompletedBtn">
+      <button class="btn btn-header btn-header-clear" id="clearCompletedBtn" type="button" title="Clear completed tasks" aria-label="Clear completed tasks">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M9 3.5h6"/><path d="M4 7.5h16"/><path d="M6.5 7.5 7.3 19a1 1 0 0 0 1 .9h7.4a1 1 0 0 0 1-.9l.8-11.5"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
         <span class="btn-header-label">Clear Done</span>
       </button>
@@ -4559,8 +4695,15 @@
         <!-- Stats -->
         <div class="task-stats-secondary-shell" id="taskStatsSecondaryShell">
           <div class="task-stats-secondary-bar">
-            <span class="filter-label">More Stats</span>
-            <button type="button" class="btn btn-ghost task-stats-secondary-toggle" id="toggleTaskStatsSecondaryBtn" aria-expanded="true">Hide Details</button>
+            <div class="task-stats-secondary-heading">
+              <span class="task-stats-secondary-kicker">Breakdown</span>
+              <strong class="task-stats-secondary-title" id="taskStatsSecondaryTitle">Status breakdown</strong>
+              <span class="task-stats-secondary-caption" id="taskStatsSecondaryCaption">Quick totals by status, priority, or category.</span>
+            </div>
+            <div class="task-stats-secondary-controls">
+              <div class="task-stats-secondary-tabs" id="taskStatsSecondaryTabs" role="tablist" aria-label="Secondary task stats"></div>
+              <button type="button" class="btn btn-ghost task-stats-secondary-toggle" id="toggleTaskStatsSecondaryBtn" aria-expanded="true">Collapse</button>
+            </div>
           </div>
           <div class="task-stats-secondary" id="taskStatsSecondary"></div>
         </div>
@@ -4909,7 +5052,8 @@
       viewMode: 'tm_view_mode',
       sortMode: 'tm_sort_mode',
       theme: 'tm_theme',
-      showSecondaryStats: 'tm_show_secondary_stats'
+      showSecondaryStats: 'tm_show_secondary_stats',
+      activeSecondaryStatsTab: 'tm_active_secondary_stats_tab'
     };
 
     function loadJson(key, fallback) {
@@ -5007,6 +5151,7 @@
     let editingTemplateId = null;
     let selectedTaskId = null;
     let activeSecondaryStatsTab = 'status';
+    let activeCategoryStatsPage = 0;
     let activeDetailTab = 'description';
     let activeDetailEditField = null;
     let activeDetailEditTaskId = null;
@@ -5139,6 +5284,7 @@
       templates = loadJson(KEYS.templates, []);
       hideDone = loadPreference(KEYS.hideDone, 'false') === 'true';
       showSecondaryStats = loadPreference(KEYS.showSecondaryStats, 'true') !== 'false';
+      activeSecondaryStatsTab = loadPreference(KEYS.activeSecondaryStatsTab, 'status') || 'status';
       currentTheme = loadPreference(KEYS.theme, document.documentElement.dataset.theme || 'dark');
       const storedViewMode = loadPreference(KEYS.viewMode, 'standard');
       currentViewMode = normalizeTaskViewMode(storedViewMode);
@@ -5228,6 +5374,10 @@
       savePreference(KEYS.showSecondaryStats, showSecondaryStats);
     }
 
+    function saveActiveSecondaryStatsTabPreference() {
+      savePreference(KEYS.activeSecondaryStatsTab, activeSecondaryStatsTab);
+    }
+
     function saveViewModePreference() {
       savePreference(KEYS.viewMode, currentViewMode);
     }
@@ -5253,10 +5403,13 @@
     function updateThemeToggleLabel() {
       const toggleButton = document.getElementById('themeToggleBtn');
       if (!toggleButton) return;
+      const nextThemeLabel = currentTheme === 'dark' ? 'Light' : 'Dark';
       const iconMarkup = currentTheme === 'dark'
         ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>'
         : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2"/><path d="M12 19.3v2.2"/><path d="m4.9 4.9 1.6 1.6"/><path d="m17.5 17.5 1.6 1.6"/><path d="M2.5 12h2.2"/><path d="M19.3 12h2.2"/><path d="m4.9 19.1 1.6-1.6"/><path d="m17.5 6.5 1.6-1.6"/></svg>';
-      toggleButton.innerHTML = `${iconMarkup}<span class="btn-header-label">${currentTheme === 'dark' ? 'Light' : 'Dark'}</span>`;
+      toggleButton.innerHTML = `${iconMarkup}<span class="btn-header-label">${nextThemeLabel}</span>`;
+      toggleButton.title = `Switch to ${nextThemeLabel.toLowerCase()} theme`;
+      toggleButton.setAttribute('aria-label', `Switch to ${nextThemeLabel.toLowerCase()} theme`);
     }
 
     function syncCategoryColorPresets(colorValue = '') {
@@ -5299,7 +5452,7 @@
       if (!shell || !toggleButton) return;
 
       shell.classList.toggle('is-collapsed', !showSecondaryStats);
-      toggleButton.textContent = showSecondaryStats ? 'Hide Details' : 'Show Details';
+      toggleButton.textContent = showSecondaryStats ? 'Collapse' : 'Expand';
       toggleButton.setAttribute('aria-expanded', String(showSecondaryStats));
     }
 
@@ -7217,6 +7370,10 @@
         accent: category.color,
         itemClass: 'is-category'
       }));
+      const categoryUnits = categoryStats.reduce((sum, item) => sum + item.value, 0);
+      const CATEGORY_STATS_PAGE_SIZE = 15;
+      const totalCategoryPages = Math.max(1, Math.ceil(categoryStats.length / CATEGORY_STATS_PAGE_SIZE));
+      activeCategoryStatsPage = Math.min(activeCategoryStatsPage, totalCategoryPages - 1);
 
       document.getElementById('taskStats').innerHTML = `
         <div class="stat-chip" style="--chip-accent:var(--accent-h)">
@@ -7246,32 +7403,42 @@
           id: 'status',
           title: 'Status',
           accent: 'var(--status-ongoing)',
-          total: total,
+          summary: `${total} task${total === 1 ? '' : 's'} across ${statusStats.length} statuses`,
           items: statusStats
         },
         {
           id: 'priority',
           title: 'Priority',
           accent: 'var(--medium)',
-          total: total,
+          summary: `${total} task${total === 1 ? '' : 's'} across ${priorityStats.length} priorities`,
           items: priorityStats
         },
         {
           id: 'category',
           title: 'Category',
           accent: 'var(--accent)',
-          total: categoryStats.reduce((sum, item) => sum + item.value, 0),
+          summary: `${categoryUnits} unit${categoryUnits === 1 ? '' : 's'} across ${categoryStats.length} categor${categoryStats.length === 1 ? 'y' : 'ies'}`,
           items: categoryStats
         }
       ];
 
       if (!secondaryGroups.some(group => group.id === activeSecondaryStatsTab)) {
         activeSecondaryStatsTab = secondaryGroups[0]?.id || 'status';
+        saveActiveSecondaryStatsTabPreference();
       }
 
-      document.getElementById('taskStatsSecondary').innerHTML = `
-        <div class="task-stats-secondary-tabs" role="tablist" aria-label="Secondary task stats">
-          ${secondaryGroups.map(group => `
+      const activeSecondaryGroup = secondaryGroups.find(group => group.id === activeSecondaryStatsTab) || secondaryGroups[0];
+      const secondaryTitle = document.getElementById('taskStatsSecondaryTitle');
+      const secondaryCaption = document.getElementById('taskStatsSecondaryCaption');
+
+      if (secondaryTitle && activeSecondaryGroup) {
+        secondaryTitle.textContent = `${activeSecondaryGroup.title} breakdown`;
+      }
+      if (secondaryCaption && activeSecondaryGroup) {
+        secondaryCaption.textContent = activeSecondaryGroup.summary;
+      }
+
+      document.getElementById('taskStatsSecondaryTabs').innerHTML = secondaryGroups.map(group => `
             <button
               type="button"
               class="btn task-stats-secondary-tab ${group.id === activeSecondaryStatsTab ? 'is-active' : ''}"
@@ -7281,17 +7448,31 @@
               aria-selected="${group.id === activeSecondaryStatsTab ? 'true' : 'false'}"
               aria-controls="stats-group-${group.id}"
             >
-              <span>${group.title}</span>
-            </button>`).join('')}
-        </div>
-        ${secondaryGroups.map(group => `
+              <span class="task-stats-secondary-tab-label">${group.title}</span>
+              <span class="task-stats-secondary-tab-count">${group.items.length}</span>
+            </button>`).join('');
+
+      document.getElementById('taskStatsSecondary').innerHTML = `${secondaryGroups.map(group => {
+        const isCategoryGroup = group.id === 'category';
+        const pageStart = activeCategoryStatsPage * CATEGORY_STATS_PAGE_SIZE;
+        const pageItems = isCategoryGroup
+          ? group.items.slice(pageStart, pageStart + CATEGORY_STATS_PAGE_SIZE)
+          : group.items;
+        const pageEnd = isCategoryGroup ? Math.min(group.items.length, pageStart + CATEGORY_STATS_PAGE_SIZE) : group.items.length;
+        const hasCategoryPager = isCategoryGroup && group.items.length > CATEGORY_STATS_PAGE_SIZE;
+
+        return `
         <section class="stats-group stats-group--${group.id} ${group.id === activeSecondaryStatsTab ? 'is-active' : ''}" id="stats-group-${group.id}" style="--group-accent:${group.accent}" role="tabpanel" ${group.id === activeSecondaryStatsTab ? '' : 'hidden'}>
-          <div class="stats-group-header">
-            <span class="stats-group-title">${group.title}</span>
-            <span class="stats-group-total">${group.total}</span>
-          </div>
+          ${hasCategoryPager ? `
+          <div class="stats-group-toolbar">
+            <span class="stats-group-page-meta">Showing ${pageStart + 1}-${pageEnd} of ${group.items.length}</span>
+            <div class="stats-group-page-controls">
+              <button type="button" class="btn btn-ghost stats-group-page-btn" data-category-page-dir="prev" ${activeCategoryStatsPage === 0 ? 'disabled' : ''}>Previous</button>
+              <button type="button" class="btn btn-ghost stats-group-page-btn" data-category-page-dir="next" ${activeCategoryStatsPage >= totalCategoryPages - 1 ? 'disabled' : ''}>Next</button>
+            </div>
+          </div>` : ''}
           <div class="stats-group-list">
-            ${group.items.map(stat => `
+            ${pageItems.map(stat => `
               <div
                 class="micro-stat ${stat.itemClass || ''}"
                 style="--micro-accent:${stat.accent || group.accent}"
@@ -7300,7 +7481,8 @@
                 <strong class="micro-stat-value">${stat.value}</strong>
               </div>`).join('')}
           </div>
-        </section>`).join('')}`;
+        </section>`;
+      }).join('')}`;
 
       updateSecondaryStatsToggle();
     }
@@ -9238,10 +9420,22 @@
       updateSecondaryStatsToggle();
     });
 
-    document.getElementById('taskStatsSecondary').addEventListener('click', e => {
+    document.getElementById('taskStatsSecondaryShell').addEventListener('click', e => {
+      const categoryPageDirection = e.target.closest('[data-category-page-dir]')?.dataset.categoryPageDir;
+      if (categoryPageDirection) {
+        const pageDelta = categoryPageDirection === 'next' ? 1 : -1;
+        activeCategoryStatsPage = Math.max(0, activeCategoryStatsPage + pageDelta);
+        renderStats();
+        return;
+      }
+
       const statsTabId = e.target.closest('[data-stats-tab]')?.dataset.statsTab;
       if (!statsTabId || statsTabId === activeSecondaryStatsTab) return;
       activeSecondaryStatsTab = statsTabId;
+      saveActiveSecondaryStatsTabPreference();
+      if (statsTabId === 'category') {
+        activeCategoryStatsPage = 0;
+      }
       renderStats();
     });
 
