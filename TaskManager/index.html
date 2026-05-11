@@ -3426,6 +3426,67 @@
       --section-accent: var(--medium);
     }
 
+    .subtask-summary {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border: 1px solid color-mix(in srgb, var(--medium) 18%, var(--border));
+      border-radius: 12px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--medium) 9%, transparent), rgba(255,255,255,.02));
+    }
+
+    .subtask-summary-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .subtask-summary-copy {
+      display: flex;
+      align-items: baseline;
+      gap: 8px 10px;
+      flex-wrap: wrap;
+    }
+
+    .subtask-summary-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .subtask-summary-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .subtask-progress-bar {
+      position: relative;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--medium) 14%, var(--field-bg));
+    }
+
+    .subtask-progress-bar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: min(100%, var(--subtask-progress, 0%));
+      border-radius: inherit;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--medium) 88%, white 4%), color-mix(in srgb, var(--accent) 72%, var(--medium)));
+    }
+
+    .subtask-batch-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
     .subtask-list {
       display: grid;
       gap: 6px;
@@ -3488,6 +3549,10 @@
       background: linear-gradient(180deg, color-mix(in srgb, var(--medium) 7%, transparent), rgba(255,255,255,.02));
     }
 
+    .subtask-item.is-editing {
+      align-items: start;
+    }
+
     .subtask-item-main {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
@@ -3509,6 +3574,11 @@
       overflow-wrap: anywhere;
     }
 
+    .subtask-item-title {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
     .subtask-item-actions {
       display: inline-flex;
       align-items: center;
@@ -3517,8 +3587,40 @@
       justify-content: flex-end;
     }
 
+    .subtask-inline-form {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .subtask-inline-input {
+      width: 100%;
+      min-height: 36px;
+      padding: 7px 10px;
+      border: 1px solid color-mix(in srgb, var(--medium) 18%, var(--border));
+      border-radius: 10px;
+      background: linear-gradient(180deg, var(--field-bg-strong), var(--field-bg));
+      color: var(--text);
+      outline: none;
+    }
+
+    .subtask-inline-input:focus {
+      border-color: var(--medium);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--medium) 20%, transparent);
+    }
+
+    .subtask-inline-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
     .subtask-move-btn,
-    .subtask-delete-btn {
+    .subtask-delete-btn,
+    .subtask-edit-btn,
+    .subtask-inline-btn,
+    .subtask-batch-btn {
       flex: 0 0 auto;
       min-height: 24px;
       padding: 2px 8px;
@@ -3530,7 +3632,7 @@
       padding-inline: 6px;
     }
 
-    .subtask-item.is-done span {
+    .subtask-item.is-done .subtask-item-title {
       text-decoration: line-through;
       color: var(--text-muted);
     }
@@ -4653,7 +4755,7 @@
   <div class="filters-strip">
     <div class="filters-bar">
       <span class="filter-label">Filter:</span>
-      <input type="search" id="searchTasks" class="search-input" placeholder="Search title, description, email subject, or notes" />
+      <input type="search" id="searchTasks" class="search-input" placeholder="Search title, sender, description, subtasks, notes, or item refs" />
       <select id="filterCategory">
         <option value="">All Categories</option>
       </select>
@@ -5155,6 +5257,8 @@
     let activeDetailTab = 'description';
     let activeDetailEditField = null;
     let activeDetailEditTaskId = null;
+    let activeSubtaskEditTaskId = null;
+    let activeSubtaskEditId = null;
     let itemSearchQuery = '';
     let selectedItemIds = new Set();
     let taskDraftImageDataUrl = '';
@@ -5354,7 +5458,7 @@
           category: getCategoryByName(task.category)?.name || fallbackCategory,
           priority: normalizePriority(task.priority),
           status: normalizeStatus(task.status),
-          subtasks: Array.isArray(task.subtasks) ? task.subtasks : [],
+          subtasks: normalizeTaskSubtasks(task.subtasks),
           project: String(task.project || '').trim() || null,
           startedAt: String(task.startedAt || '').trim() || null,
           completedAt: String(task.completedAt || '').trim() || null,
@@ -5920,6 +6024,11 @@
       return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
+    function clearActiveSubtaskEdit() {
+      activeSubtaskEditTaskId = null;
+      activeSubtaskEditId = null;
+    }
+
     function getHighlightedMarkup(text, query) {
       const source = String(text || '');
       const searchQuery = String(query || '').trim();
@@ -6049,10 +6158,39 @@
         .filter(Boolean);
     }
 
+    function normalizeTaskSubtasks(subtasks) {
+      return (Array.isArray(subtasks) ? subtasks : [])
+        .map(subtask => {
+          if (typeof subtask === 'string') {
+            const title = normalizeSingleLineText(subtask);
+            return title ? { id: genId(), title, done: false } : null;
+          }
+
+          const title = normalizeSingleLineText(subtask?.title);
+          if (!title) return null;
+
+          return {
+            id: String(subtask.id || genId()),
+            title,
+            done: Boolean(subtask.done)
+          };
+        })
+        .filter(Boolean);
+    }
+
     function normalizeSingleLineText(text) {
       return String(text || '')
         .replace(/\s+/g, ' ')
         .trim();
+    }
+
+    function normalizeSearchText(text) {
+      return String(text || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
     }
 
     function getTaskCategoryCountWeight(task) {
@@ -6287,7 +6425,7 @@
 
     function getCurrentFilters() {
       return {
-        search: document.getElementById('searchTasks')?.value.trim().toLowerCase() || '',
+        search: normalizeSearchText(document.getElementById('searchTasks')?.value || ''),
         category: document.getElementById('filterCategory')?.value || '',
         priority: document.getElementById('filterPriority')?.value || '',
         status: document.getElementById('filterStatus')?.value || '',
@@ -6296,6 +6434,7 @@
     }
 
     function getTaskSearchText(task) {
+      const subtaskText = (task.subtasks || []).map(subtask => subtask?.title).filter(Boolean).join(' ');
       const taskItems = getItemsForTask(task.id);
       const workflowText = taskItems.map(item => [
         item.bid,
@@ -6304,10 +6443,20 @@
         item.supplier,
       ].filter(Boolean).join(' ')).join(' ');
 
-      return [task.title, task.description, task.emailSubject, task.notes, task.project, workflowText]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
+      return normalizeSearchText([
+        task.title,
+        task.sender,
+        task.description,
+        task.emailSubject,
+        task.notes,
+        task.project,
+        task.category,
+        task.priority,
+        task.status,
+        getTemplateById(task.templateId)?.name || '',
+        subtaskText,
+        workflowText
+      ].filter(Boolean).join(' '));
     }
 
     function renderTaskProjectOptions() {
@@ -6354,6 +6503,51 @@
       const subtaskCount = task.subtasks?.length || 0;
       const completedCount = (task.subtasks || []).filter(subtask => subtask.done).length;
       return { completedCount, subtaskCount };
+    }
+
+    function getSubtaskCompletionPercent(task) {
+      const { completedCount, subtaskCount } = getSubtaskProgress(task);
+      if (!subtaskCount) return 0;
+      return Math.round((completedCount / subtaskCount) * 100);
+    }
+
+    function updateSubtaskTitle(task, subtaskId, title) {
+      if (!task) return false;
+
+      const nextTitle = normalizeSingleLineText(title);
+      if (!nextTitle) return false;
+
+      let didUpdate = false;
+      task.subtasks = (task.subtasks || []).map(subtask => {
+        if (subtask.id !== subtaskId) return subtask;
+        didUpdate = true;
+        return { ...subtask, title: nextTitle };
+      });
+
+      return didUpdate;
+    }
+
+    function setAllSubtasksDone(task, done) {
+      if (!task?.subtasks?.length) return false;
+
+      let didUpdate = false;
+      task.subtasks = (task.subtasks || []).map(subtask => {
+        if (subtask.done === done) return subtask;
+        didUpdate = true;
+        return { ...subtask, done };
+      });
+
+      return didUpdate;
+    }
+
+    function clearCompletedSubtasks(task) {
+      if (!task?.subtasks?.length) return false;
+
+      const nextSubtasks = (task.subtasks || []).filter(subtask => !subtask.done);
+      if (nextSubtasks.length === (task.subtasks || []).length) return false;
+
+      task.subtasks = nextSubtasks;
+      return true;
     }
 
     function moveSubtask(task, subtaskId, direction) {
@@ -7703,9 +7897,16 @@
       const template = getTemplateById(task.templateId);
       const subtaskCount = task.subtasks?.length || 0;
       const completedSubtasks = (task.subtasks || []).filter(subtask => subtask.done).length;
+      const openSubtasks = Math.max(subtaskCount - completedSubtasks, 0);
+      const subtaskCompletionPercent = getSubtaskCompletionPercent(task);
       const workflowItemCount = getItemsForTask(task.id).length;
       const isEditingDescription = activeDetailEditTaskId === task.id && activeDetailEditField === 'description';
       const isEditingNotes = activeDetailEditTaskId === task.id && activeDetailEditField === 'notes';
+
+      if (activeSubtaskEditTaskId === task.id && activeSubtaskEditId && !(task.subtasks || []).some(subtask => subtask.id === activeSubtaskEditId)) {
+        clearActiveSubtaskEdit();
+      }
+
       const detailTabs = [
         {
           id: 'description',
@@ -7743,6 +7944,21 @@
               <div class="section-title">Subtasks</div>
               <span class="detail-section-meta">${completedSubtasks}/${subtaskCount} complete</span>
             </div>
+            ${subtaskCount ? `
+              <div class="subtask-summary" style="--subtask-progress:${subtaskCompletionPercent}%">
+                <div class="subtask-summary-top">
+                  <div class="subtask-summary-copy">
+                    <span class="subtask-summary-title">${openSubtasks} open</span>
+                    <span class="subtask-summary-meta">${completedSubtasks} complete · ${subtaskCompletionPercent}% done</span>
+                  </div>
+                  <div class="subtask-batch-actions">
+                    <button type="button" class="btn btn-ghost subtask-batch-btn" data-subtask-batch="complete-all" ${openSubtasks ? '' : 'disabled'}>Mark All Done</button>
+                    <button type="button" class="btn btn-ghost subtask-batch-btn" data-subtask-batch="reopen-all" ${completedSubtasks ? '' : 'disabled'}>Mark All Open</button>
+                    <button type="button" class="btn btn-ghost subtask-batch-btn" data-subtask-batch="clear-completed" ${completedSubtasks ? '' : 'disabled'}>Clear Completed</button>
+                  </div>
+                </div>
+                <div class="subtask-progress-bar" aria-hidden="true"></div>
+              </div>` : ''}
             <form class="subtask-form" id="subtaskForm">
               <textarea id="subtaskTitle" class="subtask-input" placeholder="Add one subtask per line..." required></textarea>
               <button type="submit" class="btn btn-primary">Add Subtasks</button>
@@ -7751,16 +7967,26 @@
               <div class="subtask-list-shell">
                 <div class="subtask-list">
                   ${task.subtasks.map((subtask, index) => `
-                    <div class="subtask-item ${subtask.done ? 'is-done' : ''}">
+                    <div class="subtask-item ${subtask.done ? 'is-done' : ''} ${activeSubtaskEditTaskId === task.id && activeSubtaskEditId === subtask.id ? 'is-editing' : ''}">
                       <label class="subtask-item-main">
-                        <input type="checkbox" data-toggle-subtask="${subtask.id}" ${subtask.done ? 'checked' : ''} />
-                        <span>${escHtml(subtask.title)}</span>
+                        <input type="checkbox" data-toggle-subtask="${subtask.id}" ${subtask.done ? 'checked' : ''} ${activeSubtaskEditTaskId === task.id && activeSubtaskEditId === subtask.id ? 'disabled' : ''} />
+                        ${activeSubtaskEditTaskId === task.id && activeSubtaskEditId === subtask.id ? `
+                          <form class="subtask-inline-form" data-subtask-edit-form="${subtask.id}">
+                            <input type="text" class="subtask-inline-input" data-subtask-edit-input="${subtask.id}" value="${escHtml(subtask.title)}" maxlength="${INPUT_LIMITS.subtaskTitle}" />
+                            <div class="subtask-inline-actions">
+                              <button type="submit" class="btn btn-primary subtask-inline-btn">Save</button>
+                              <button type="button" class="btn btn-ghost subtask-inline-btn" data-cancel-subtask-edit="${subtask.id}">Cancel</button>
+                            </div>
+                          </form>` : `
+                          <span class="subtask-item-title">${escHtml(subtask.title)}</span>`}
                       </label>
-                      <div class="subtask-item-actions">
-                        <button type="button" class="btn btn-ghost subtask-move-btn" data-move-subtask="${subtask.id}" data-move-direction="up" ${index === 0 ? 'disabled' : ''} aria-label="Move subtask up" title="Move up">↑</button>
-                        <button type="button" class="btn btn-ghost subtask-move-btn" data-move-subtask="${subtask.id}" data-move-direction="down" ${index === task.subtasks.length - 1 ? 'disabled' : ''} aria-label="Move subtask down" title="Move down">↓</button>
-                        <button type="button" class="btn btn-danger subtask-delete-btn" data-delete-subtask="${subtask.id}">Remove</button>
-                      </div>
+                      ${activeSubtaskEditTaskId === task.id && activeSubtaskEditId === subtask.id ? '' : `
+                        <div class="subtask-item-actions">
+                          <button type="button" class="btn btn-ghost subtask-edit-btn" data-edit-subtask="${subtask.id}">Edit</button>
+                          <button type="button" class="btn btn-ghost subtask-move-btn" data-move-subtask="${subtask.id}" data-move-direction="up" ${index === 0 ? 'disabled' : ''} aria-label="Move subtask up" title="Move up">↑</button>
+                          <button type="button" class="btn btn-ghost subtask-move-btn" data-move-subtask="${subtask.id}" data-move-direction="down" ${index === task.subtasks.length - 1 ? 'disabled' : ''} aria-label="Move subtask down" title="Move down">↓</button>
+                          <button type="button" class="btn btn-danger subtask-delete-btn" data-delete-subtask="${subtask.id}">Remove</button>
+                        </div>`}
                     </div>`).join('')}
                 </div>
               </div>` : '<div class="subtask-empty">No subtasks yet. Add one above.</div>'}`
@@ -7906,6 +8132,16 @@
             activeEditor.focus();
             const nextLength = activeEditor.value.length;
             activeEditor.setSelectionRange(nextLength, nextLength);
+          });
+        }
+      }
+      if (activeSubtaskEditTaskId === task.id && activeSubtaskEditId) {
+        const subtaskEditor = panel.querySelector(`[data-subtask-edit-input="${activeSubtaskEditId}"]`);
+        if (subtaskEditor) {
+          requestAnimationFrame(() => {
+            subtaskEditor.focus();
+            const nextLength = subtaskEditor.value.length;
+            subtaskEditor.setSelectionRange(nextLength, nextLength);
           });
         }
       }
@@ -8183,6 +8419,7 @@
       if (card && !e.target.closest('.task-actions, .task-action-tools')) {
         activeDetailEditField = null;
         activeDetailEditTaskId = null;
+        clearActiveSubtaskEdit();
         selectedTaskId = card.dataset.id;
         renderTasks();
         return;
@@ -8218,6 +8455,7 @@
       e.preventDefault();
       activeDetailEditField = null;
       activeDetailEditTaskId = null;
+      clearActiveSubtaskEdit();
       selectedTaskId = card.dataset.id;
       renderTasks();
       openDetailContextMenu(e.clientX, e.clientY);
@@ -8229,6 +8467,9 @@
       const detailTabId = e.target.closest('[data-detail-tab]')?.dataset.detailTab;
       const deleteLogId = e.target.closest('[data-delete-log]')?.dataset.deleteLog;
       const toggleSubtaskId = e.target.closest('[data-toggle-subtask]')?.dataset.toggleSubtask;
+      const editSubtaskId = e.target.closest('[data-edit-subtask]')?.dataset.editSubtask;
+      const cancelSubtaskEditId = e.target.closest('[data-cancel-subtask-edit]')?.dataset.cancelSubtaskEdit;
+      const subtaskBatchAction = e.target.closest('[data-subtask-batch]')?.dataset.subtaskBatch;
       const deleteSubtaskId = e.target.closest('[data-delete-subtask]')?.dataset.deleteSubtask;
       const moveSubtaskId = e.target.closest('[data-move-subtask]')?.dataset.moveSubtask;
       const moveDirection = e.target.closest('[data-move-direction]')?.dataset.moveDirection;
@@ -8237,12 +8478,14 @@
       if (detailTabId) {
         activeDetailEditField = null;
         activeDetailEditTaskId = null;
+        clearActiveSubtaskEdit();
         activeDetailTab = detailTabId;
         renderTaskDetails();
         return;
       }
 
       if (editDetailField) {
+        clearActiveSubtaskEdit();
         activeDetailEditField = editDetailField;
         activeDetailEditTaskId = selectedTaskId;
         renderTaskDetails(true);
@@ -8250,7 +8493,40 @@
       }
 
       if (editId) {
+        clearActiveSubtaskEdit();
         openModal(editId);
+        return;
+      }
+
+      if (editSubtaskId) {
+        activeDetailEditField = null;
+        activeDetailEditTaskId = null;
+        activeSubtaskEditTaskId = selectedTaskId;
+        activeSubtaskEditId = editSubtaskId;
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
+      if (cancelSubtaskEditId) {
+        clearActiveSubtaskEdit();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
+      if (subtaskBatchAction) {
+        const task = getTaskById(selectedTaskId);
+        if (!task) return;
+
+        const didUpdate = {
+          'complete-all': () => setAllSubtasksDone(task, true),
+          'reopen-all': () => setAllSubtasksDone(task, false),
+          'clear-completed': () => clearCompletedSubtasks(task)
+        }[subtaskBatchAction]?.();
+
+        if (!didUpdate) return;
+        clearActiveSubtaskEdit();
+        saveTasks();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
       }
 
@@ -8259,6 +8535,9 @@
         if (!task) return;
         if (!confirm('Delete this subtask?')) return;
         task.subtasks = (task.subtasks || []).filter(subtask => subtask.id !== deleteSubtaskId);
+        if (activeSubtaskEditId === deleteSubtaskId) {
+          clearActiveSubtaskEdit();
+        }
         saveTasks();
         renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
@@ -8492,6 +8771,24 @@
         saveTasks();
         renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         document.getElementById('subtaskTitle')?.focus();
+        return;
+      }
+
+      const subtaskEditId = e.target.dataset.subtaskEditForm;
+      if (subtaskEditId) {
+        e.preventDefault();
+        const task = getTaskById(selectedTaskId);
+        const subtaskField = e.target.querySelector(`[data-subtask-edit-input="${subtaskEditId}"]`);
+        if (!task || !subtaskField) return;
+
+        if (!updateSubtaskTitle(task, subtaskEditId, subtaskField.value)) {
+          subtaskField.focus();
+          return;
+        }
+
+        clearActiveSubtaskEdit();
+        saveTasks();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
       }
 
