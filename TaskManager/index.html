@@ -7556,6 +7556,80 @@
       return `${day}-${month}-${year} ${hours}:${minutes}`;
     }
 
+    function toDateOnly(value) {
+      const parts = toDateParts(value);
+      if (!parts) return null;
+
+      return new Date(parts.year, parts.month - 1, parts.day);
+    }
+
+    function getStartOfIsoWeek(value) {
+      const date = toDateOnly(value instanceof Date ? value : value);
+      if (!date) return null;
+
+      const normalized = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      const dayOffset = (normalized.getDay() + 6) % 7;
+      normalized.setDate(normalized.getDate() - dayOffset);
+      normalized.setHours(0, 0, 0, 0);
+      return normalized;
+    }
+
+    function getIsoWeekInfo(value = new Date()) {
+      const weekStart = getStartOfIsoWeek(value);
+      if (!weekStart) return null;
+
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6);
+
+      const weekAnchor = new Date(weekStart);
+      weekAnchor.setDate(weekStart.getDate() + 3);
+
+      const firstWeekAnchor = new Date(weekAnchor.getFullYear(), 0, 4);
+      const firstWeekStart = getStartOfIsoWeek(firstWeekAnchor);
+      const weekNumber = 1 + Math.round((weekStart - firstWeekStart) / (7 * 24 * 60 * 60 * 1000));
+
+      return {
+        year: weekAnchor.getFullYear(),
+        weekNumber,
+        weekStart,
+        weekEnd,
+        label: `Week ${weekNumber}`
+      };
+    }
+
+    function isDateInWeek(value, weekInfo) {
+      if (!weekInfo) return false;
+
+      const date = toDateOnly(value);
+      return Boolean(date) && date >= weekInfo.weekStart && date <= weekInfo.weekEnd;
+    }
+
+    function formatWeekRangeLabel(weekInfo) {
+      if (!weekInfo) return '';
+      return `${formatExcelDateDisplay(weekInfo.weekStart)} to ${formatExcelDateDisplay(weekInfo.weekEnd)}`;
+    }
+
+    function getWeeklyCompletedTaskRows(weekInfo) {
+      return tasks
+        .filter(task => isTaskCompleted(task) && isDateInWeek(task.completedAt, weekInfo))
+        .sort((a, b) => (b.completedAt || '').localeCompare(a.completedAt || ''))
+        .map((task, index) => ({
+          No: index + 1,
+          Title: task.title,
+          Category: task.category || '',
+          Priority: normalizePriority(task.priority),
+          Sender: task.sender || '',
+          EmailSubject: task.emailSubject || '',
+          Created: toExcelDateValue(task.createdAt),
+          Started: toExcelDateValue(task.startedAt),
+          Due: toExcelDateValue(task.dueDate),
+          Completed: toExcelDateValue(task.completedAt),
+          Quantity: getTaskCategoryCountWeight(task),
+          Status: normalizeStatus(task.status),
+          Notes: task.notes || ''
+        }));
+    }
+
     const DETAILED_EXPORT_ROW_HEIGHT = 50;
     const DETAILED_EXPORT_COUNTER_HEADER_HEIGHT = 26;
     const DETAILED_EXPORT_COUNTER_ROW_HEIGHT = 30;
@@ -7773,6 +7847,8 @@
       const accentColor = options.accentColor || '2563EB';
       const title = options.title || worksheet.name;
       const subtitle = options.subtitle || '';
+      const titleFontSize = options.titleFontSize || 16;
+      const subtitleFontSize = options.subtitleFontSize || 10;
       const lastColumn = getExcelColumnLetter(columns.length);
       const tableStartRow = options.tableStartRow || 4;
       const dateColumnKeys = new Set(options.dateColumns || []);
@@ -7790,8 +7866,8 @@
       worksheet.mergeCells(`A2:${lastColumn}2`);
       worksheet.getCell('A1').value = title;
       worksheet.getCell('A2').value = subtitle;
-      worksheet.getCell('A1').font = { size: 16, bold: true, color: { argb: 'FF0F172A' } };
-      worksheet.getCell('A2').font = { size: 10, color: { argb: 'FF475569' } };
+      worksheet.getCell('A1').font = { size: titleFontSize, bold: true, color: { argb: 'FF0F172A' } };
+      worksheet.getCell('A2').font = { size: subtitleFontSize, color: { argb: 'FF475569' } };
       worksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'left' };
       worksheet.getCell('A2').alignment = { vertical: 'middle', horizontal: 'left' };
       worksheet.getRow(1).height = DETAILED_EXPORT_ROW_HEIGHT;
@@ -7802,6 +7878,10 @@
       }
 
       const headerRow = worksheet.getRow(tableStartRow);
+      worksheet.autoFilter = {
+        from: { row: tableStartRow, column: 1 },
+        to: { row: tableStartRow, column: columns.length }
+      };
       columns.forEach((column, index) => {
         headerRow.getCell(index + 1).value = column.header;
       });
@@ -7886,7 +7966,9 @@
         workbook.title = `Task Manager Detailed Export ${stamp}`;
 
         const validationLists = buildValidationListSheet(workbook);
+        const currentWeekInfo = getIsoWeekInfo(new Date());
         const taskRows = getDetailedTaskExportRows();
+        const weeklyCompletedRows = getWeeklyCompletedTaskRows(currentWeekInfo);
         const taskColumns = [
           { key: 'No', header: 'No.', width: 8 },
           { key: 'TaskImage', header: 'Task Image', width: 14 },
@@ -7980,6 +8062,33 @@
               }));
             }
           }
+        });
+
+        const weeklyCompletedColumns = [
+          { key: 'No', header: 'No.', width: 8 },
+          { key: 'Title', header: 'Title', width: 34 },
+          { key: 'Category', header: 'Category', width: 22 },
+          { key: 'Priority', header: 'Priority', width: 14 },
+          { key: 'Sender', header: 'Sender', width: 20 },
+          { key: 'EmailSubject', header: 'Email Subject', width: 36 },
+          { key: 'Created', header: 'Created', width: 14 },
+          { key: 'Started', header: 'Started', width: 14 },
+          { key: 'Due', header: 'Due', width: 14 },
+          { key: 'Completed', header: 'Completed', width: 14 },
+          { key: 'Quantity', header: 'Quantity', width: 12 },
+          { key: 'Status', header: 'Status', width: 18 },
+          { key: 'Notes', header: 'Notes', width: 40 }
+        ];
+
+        styleDetailedWorksheet(workbook.addWorksheet('Weekly Completed'), weeklyCompletedColumns, weeklyCompletedRows, {
+          title: `${currentWeekInfo.label} Completed Tasks`,
+          subtitle: `${currentWeekInfo.year} weekly closeout for ${formatWeekRangeLabel(currentWeekInfo)}.` ,
+          titleFontSize: 24,
+          subtitleFontSize: 11,
+          accentColor: '16A34A',
+          emptyMessage: 'No tasks were completed during the current week.',
+          centerColumns: [1, 3, 4, 7, 8, 9, 10, 11, 12],
+          dateColumns: ['Created', 'Started', 'Due', 'Completed']
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
