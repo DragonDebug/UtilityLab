@@ -2551,6 +2551,66 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
     }
 
+    .detail-media-card {
+      display: grid;
+      gap: 10px;
+      margin: 0 0 4px;
+      padding: 12px;
+      border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+      border-radius: 16px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, var(--panel-bg)), color-mix(in srgb, var(--surface) 94%, transparent));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    .detail-media-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .detail-media-header .section-title {
+      margin-bottom: 0;
+    }
+
+    .detail-media-name {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text-muted) 74%, var(--accent) 26%);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .detail-media-frame {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      min-height: 180px;
+      border-radius: 14px;
+      border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--surface2) 78%, transparent), color-mix(in srgb, var(--surface) 96%, transparent)),
+        radial-gradient(circle at top, color-mix(in srgb, var(--accent) 10%, transparent), transparent 58%);
+      overflow: auto;
+    }
+
+    .detail-media-frame img {
+      display: block;
+      max-width: 100%;
+      max-height: min(42vh, 360px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 18px 30px rgba(2, 6, 23, .16);
+    }
+
     .detail-row {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
@@ -4371,7 +4431,7 @@
 
     .item-settings-group textarea {
       width: 100%;
-      min-height: 400px;
+      min-height: 350px;
       border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
       border-radius: 14px;
       padding: 14px 15px;
@@ -6758,16 +6818,37 @@
       return `<div class="task-project-pill" title="${escHtml(normalizedProject)}"><span>${getHighlightedMarkup(normalizedProject, searchQuery)}</span></div>`;
     }
 
+    function getTaskImageAlt(task) {
+      if (!task) return 'Task image';
+
+      return task.imageName
+        ? `${task.title} image (${task.imageName})`
+        : `${task.title} image`;
+    }
+
     function getTaskMediaMarkup(task) {
       if (!task?.imageDataUrl) return '';
 
-      const imageAlt = task.imageName
-        ? `${task.title} image (${task.imageName})`
-        : `${task.title} image`;
-
       return `
         <div class="task-card-media">
-          <img src="${escHtml(task.imageDataUrl)}" alt="${escHtml(imageAlt)}" loading="lazy" />
+          <img src="${escHtml(task.imageDataUrl)}" alt="${escHtml(getTaskImageAlt(task))}" loading="lazy" />
+        </div>`;
+    }
+
+    function getTaskDetailMediaMarkup(task) {
+      if (!task?.imageDataUrl) return '';
+
+      const imageName = String(task.imageName || '').trim();
+
+      return `
+        <div class="detail-media-card" aria-label="Task reference image">
+          <div class="detail-media-header">
+            <div class="section-title">Reference Image</div>
+            <span class="detail-media-name" title="${escHtml(imageName || 'Attached image')}">${escHtml(imageName || 'Attached image')}</span>
+          </div>
+          <div class="detail-media-frame">
+            <img src="${escHtml(task.imageDataUrl)}" alt="${escHtml(getTaskImageAlt(task))}" loading="lazy" />
+          </div>
         </div>`;
     }
 
@@ -8362,6 +8443,14 @@
                 </div>`}
             </div>`
         },
+        ...(task.imageDataUrl ? [{
+          id: 'image',
+          label: 'Image',
+          accent: '#0ea5e9',
+          meta: null,
+          panelClass: 'detail-image-section',
+          content: getTaskDetailMediaMarkup(task)
+        }] : []),
         {
           id: 'subtasks',
           label: 'Subtasks',
