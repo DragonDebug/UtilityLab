@@ -370,8 +370,6 @@
 
     .btn-header-clear { --header-btn-color: #ef4444; }
 
-    .btn-header-export { --header-btn-color: #22c55e; }
-
     .btn-header-export-detailed { --header-btn-color: #0ea5e9; }
 
     .btn-header-new {
@@ -4397,6 +4395,86 @@
       color: var(--text-muted);
     }
 
+    .item-settings-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .item-settings-actions .btn {
+      min-height: 38px;
+      padding: 7px 14px;
+    }
+
+    .item-settings-storage-topline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 10px;
+    }
+
+    .item-settings-storage-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      color: color-mix(in srgb, var(--text) 78%, var(--accent) 22%);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .item-settings-storage-meta {
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
+    .item-settings-storage-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    .item-settings-storage-stat {
+      display: grid;
+      gap: 4px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 8%, transparent), rgba(255,255,255,.02));
+    }
+
+    .item-settings-storage-stat span {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text-muted) 72%, var(--accent) 28%);
+    }
+
+    .item-settings-storage-stat strong {
+      font-size: 18px;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    .item-settings-danger-group {
+      border-color: color-mix(in srgb, var(--high) 24%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--high) 9%, transparent), rgba(255,255,255,.02));
+    }
+
+    .item-settings-danger-btn {
+      min-height: 40px;
+      padding: 8px 16px;
+      justify-content: center;
+      align-self: start;
+    }
+
     /* ── Responsive ──
        980 px: collapse to single column, un-sticky panels.
        760 px: stack header buttons, grid the filters bar.
@@ -4738,10 +4816,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
         <span class="btn-header-label">Light</span>
       </button>
-      <button class="btn btn-header btn-header-export" id="exportExcelBtn" type="button" title="Export to Excel" aria-label="Export to Excel">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18.5h14"/></svg>
-        <span class="btn-header-label">Export</span>
-      </button>
       <button class="btn btn-header btn-header-export-detailed" id="exportDetailedExcelBtn" type="button" title="Export detailed workbook" aria-label="Export detailed workbook">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18.5h14"/><path d="M7 7.5h10"/></svg>
         <span class="btn-header-label">Detailed</span>
@@ -5073,6 +5147,44 @@
             <p class="item-settings-help">Keep one supplier per line. Existing item values stay intact even if you later remove an option here.</p>
           </div>
         </div>
+        <div class="item-settings-grid">
+          <div class="item-settings-group">
+            <label>Storage & Backup</label>
+            <div class="item-settings-storage-topline">
+              <span class="item-settings-storage-badge" id="storageBackendBadge">Checking...</span>
+              <span class="item-settings-storage-meta" id="storageUsageText">Estimating browser storage usage...</span>
+            </div>
+            <div class="item-settings-storage-stats">
+              <div class="item-settings-storage-stat">
+                <span>Tasks</span>
+                <strong id="storageTaskCount">0</strong>
+              </div>
+              <div class="item-settings-storage-stat">
+                <span>Items</span>
+                <strong id="storageItemCount">0</strong>
+              </div>
+              <div class="item-settings-storage-stat">
+                <span>Logs</span>
+                <strong id="storageLogCount">0</strong>
+              </div>
+              <div class="item-settings-storage-stat">
+                <span>Templates</span>
+                <strong id="storageTemplateCount">0</strong>
+              </div>
+            </div>
+            <p class="item-settings-help" id="storageStatusCaption">App data uses IndexedDB when available. Theme stays in localStorage so the selected theme can be applied before the page paints.</p>
+            <div class="item-settings-actions">
+              <button type="button" class="btn btn-ghost" id="exportBackupBtn">Export Backup</button>
+              <button type="button" class="btn btn-ghost" id="importBackupBtn">Import Backup</button>
+            </div>
+            <input type="file" id="settingsBackupInput" accept=".json,application/json" hidden />
+          </div>
+          <div class="item-settings-group item-settings-danger-group">
+            <label>Danger Zone</label>
+            <p class="item-settings-help">Remove all tasks, items, logs, categories, templates, shared options, and saved preferences from this browser. Export a backup first if you may need this data later.</p>
+            <button type="button" class="btn btn-danger item-settings-danger-btn" id="clearAllDataBtn">Remove All Data</button>
+          </div>
+        </div>
         <div class="form-actions">
           <button type="button" class="btn btn-ghost" id="cancelItemSettingsBtn">Close</button>
           <button type="submit" class="btn btn-primary">Save Settings</button>
@@ -5138,7 +5250,7 @@
 
   <!-- ExcelJS library (cdn) used for the detailed Excel export feature. -->
   <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
-  <!-- XLSX library (cdn) used for the Export Excel feature. -->
+  <!-- XLSX library (cdn) used by workbook import helpers for rich-data image parsing. -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
     // ── Storage Keys ──
@@ -5159,7 +5271,37 @@
       activeSecondaryStatsTab: 'tm_active_secondary_stats_tab'
     };
 
-    function loadJson(key, fallback) {
+    const STORAGE_DB = {
+      name: 'task-manager-db',
+      version: 1,
+      storeName: 'task-manager-state',
+      migratedKey: '__tm_local_storage_migrated__'
+    };
+    const PERSISTED_JSON_KEYS = [
+      KEYS.tasks,
+      KEYS.items,
+      KEYS.itemSettings,
+      KEYS.hiddenFilters,
+      KEYS.logs,
+      KEYS.categories,
+      KEYS.templates
+    ];
+    const PERSISTED_PREFERENCE_KEYS = [
+      KEYS.hideDone,
+      KEYS.viewMode,
+      KEYS.sortMode,
+      KEYS.showSecondaryStats,
+      KEYS.activeSecondaryStatsTab
+    ];
+    const PERSISTED_IDB_KEYS = [...PERSISTED_JSON_KEYS, ...PERSISTED_PREFERENCE_KEYS];
+
+    let storageBackend = 'localStorage';
+    let storageDbPromise = null;
+    let storageInitPromise = null;
+    let storageWriteQueue = Promise.resolve();
+    let hasShownStorageAlert = false;
+
+    function readLegacyJson(key, fallback) {
       try {
         const rawValue = localStorage.getItem(key);
         return rawValue ? JSON.parse(rawValue) : fallback;
@@ -5168,17 +5310,536 @@
       }
     }
 
-    function saveJson(key, value) {
+    function writeLegacyJson(key, value) {
       localStorage.setItem(key, JSON.stringify(value));
     }
 
-    function loadPreference(key, fallback = null) {
+    function readLegacyPreference(key, fallback = null) {
       const value = localStorage.getItem(key);
       return value === null ? fallback : value;
     }
 
-    function savePreference(key, value) {
+    function writeLegacyPreference(key, value) {
       localStorage.setItem(key, String(value));
+    }
+
+    function notifyStorageError(message, error) {
+      console.error(message, error);
+      if (hasShownStorageAlert) return;
+      hasShownStorageAlert = true;
+      alert('Task Manager could not use IndexedDB. The app will keep using localStorage on this browser.');
+    }
+
+    function openStorageDb() {
+      if (storageDbPromise) {
+        return storageDbPromise;
+      }
+
+      if (!('indexedDB' in window)) {
+        return Promise.reject(new Error('IndexedDB is not available in this browser.'));
+      }
+
+      storageDbPromise = new Promise((resolve, reject) => {
+        const request = window.indexedDB.open(STORAGE_DB.name, STORAGE_DB.version);
+
+        request.onupgradeneeded = () => {
+          const database = request.result;
+          if (!database.objectStoreNames.contains(STORAGE_DB.storeName)) {
+            database.createObjectStore(STORAGE_DB.storeName, { keyPath: 'key' });
+          }
+        };
+
+        request.onsuccess = () => {
+          const database = request.result;
+          database.onversionchange = () => database.close();
+          resolve(database);
+        };
+
+        request.onerror = () => {
+          storageDbPromise = null;
+          reject(request.error || new Error('IndexedDB failed to open.'));
+        };
+
+        request.onblocked = () => {
+          storageDbPromise = null;
+          reject(new Error('IndexedDB open request was blocked.'));
+        };
+      });
+
+      return storageDbPromise;
+    }
+
+    async function idbGet(key) {
+      const database = await openStorageDb();
+      return new Promise((resolve, reject) => {
+        const transaction = database.transaction(STORAGE_DB.storeName, 'readonly');
+        const store = transaction.objectStore(STORAGE_DB.storeName);
+        const request = store.get(key);
+
+        request.onsuccess = () => resolve(request.result ? request.result.value : undefined);
+        request.onerror = () => reject(request.error || new Error(`IndexedDB read failed for ${key}.`));
+      });
+    }
+
+    async function idbSet(key, value) {
+      const database = await openStorageDb();
+      return new Promise((resolve, reject) => {
+        const transaction = database.transaction(STORAGE_DB.storeName, 'readwrite');
+        const store = transaction.objectStore(STORAGE_DB.storeName);
+        store.put({ key, value });
+
+        transaction.oncomplete = () => resolve(value);
+        transaction.onerror = () => reject(transaction.error || new Error(`IndexedDB write failed for ${key}.`));
+        transaction.onabort = () => reject(transaction.error || new Error(`IndexedDB write was aborted for ${key}.`));
+      });
+    }
+
+    async function idbSetMany(entries = []) {
+      if (!entries.length) return;
+
+      const database = await openStorageDb();
+      return new Promise((resolve, reject) => {
+        const transaction = database.transaction(STORAGE_DB.storeName, 'readwrite');
+        const store = transaction.objectStore(STORAGE_DB.storeName);
+
+        entries.forEach(({ key, value }) => {
+          store.put({ key, value });
+        });
+
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => reject(transaction.error || new Error('IndexedDB batch write failed.'));
+        transaction.onabort = () => reject(transaction.error || new Error('IndexedDB batch write was aborted.'));
+      });
+    }
+
+    async function idbClearAll() {
+      const database = await openStorageDb();
+      return new Promise((resolve, reject) => {
+        const transaction = database.transaction(STORAGE_DB.storeName, 'readwrite');
+        const store = transaction.objectStore(STORAGE_DB.storeName);
+        store.clear();
+
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => reject(transaction.error || new Error('IndexedDB clear failed.'));
+        transaction.onabort = () => reject(transaction.error || new Error('IndexedDB clear was aborted.'));
+      });
+    }
+
+    async function hasIndexedDbData() {
+      const values = await Promise.all(PERSISTED_IDB_KEYS.map(key => idbGet(key)));
+      return values.some(value => value !== undefined);
+    }
+
+    async function migrateLocalStorageToIndexedDb() {
+      const alreadyMigrated = await idbGet(STORAGE_DB.migratedKey);
+      if (alreadyMigrated) return;
+
+      if (await hasIndexedDbData()) {
+        await idbSet(STORAGE_DB.migratedKey, true);
+        return;
+      }
+
+      const entries = [];
+
+      PERSISTED_JSON_KEYS.forEach(key => {
+        const rawValue = localStorage.getItem(key);
+        if (rawValue === null) return;
+
+        try {
+          entries.push({ key, value: JSON.parse(rawValue) });
+        } catch {
+          console.warn(`Skipping invalid localStorage JSON during migration for ${key}.`);
+        }
+      });
+
+      PERSISTED_PREFERENCE_KEYS.forEach(key => {
+        const rawValue = localStorage.getItem(key);
+        if (rawValue === null) return;
+        entries.push({ key, value: rawValue });
+      });
+
+      if (entries.length) {
+        await idbSetMany(entries);
+      }
+
+      await idbSet(STORAGE_DB.migratedKey, true);
+    }
+
+    async function initializePersistence() {
+      if (storageInitPromise) {
+        return storageInitPromise;
+      }
+
+      storageInitPromise = (async () => {
+        if (!('indexedDB' in window)) {
+          storageBackend = 'localStorage';
+          return;
+        }
+
+        try {
+          await openStorageDb();
+          await migrateLocalStorageToIndexedDb();
+          storageBackend = 'indexeddb';
+        } catch (error) {
+          storageBackend = 'localStorage';
+          notifyStorageError('IndexedDB initialization failed.', error);
+        }
+      })();
+
+      return storageInitPromise;
+    }
+
+    function enqueuePersistentWrite(operation, key) {
+      storageWriteQueue = storageWriteQueue
+        .catch(() => undefined)
+        .then(async () => {
+          try {
+            return await operation();
+          } catch (error) {
+            notifyStorageError(`Unable to save ${key}.`, error);
+            throw error;
+          }
+        });
+
+      return storageWriteQueue.catch(() => undefined);
+    }
+
+    async function flushStorageWrites() {
+      try {
+        await storageWriteQueue;
+      } catch {
+        // Ignore previous write failures here; callers will handle the next action.
+      }
+    }
+
+    async function loadJson(key, fallback) {
+      if (storageBackend !== 'indexeddb') {
+        return readLegacyJson(key, fallback);
+      }
+
+      try {
+        const storedValue = await idbGet(key);
+        return storedValue === undefined ? fallback : storedValue;
+      } catch (error) {
+        notifyStorageError(`Unable to load ${key}.`, error);
+        return readLegacyJson(key, fallback);
+      }
+    }
+
+    function saveJson(key, value) {
+      if (storageBackend !== 'indexeddb') {
+        writeLegacyJson(key, value);
+        return Promise.resolve(value);
+      }
+
+      return enqueuePersistentWrite(() => idbSet(key, value), key);
+    }
+
+    async function loadPreference(key, fallback = null) {
+      if (key === KEYS.theme || storageBackend !== 'indexeddb') {
+        return readLegacyPreference(key, fallback);
+      }
+
+      try {
+        const storedValue = await idbGet(key);
+        return storedValue === undefined || storedValue === null ? fallback : String(storedValue);
+      } catch (error) {
+        notifyStorageError(`Unable to load ${key}.`, error);
+        return readLegacyPreference(key, fallback);
+      }
+    }
+
+    function savePreference(key, value) {
+      if (key === KEYS.theme || storageBackend !== 'indexeddb') {
+        writeLegacyPreference(key, value);
+        return Promise.resolve(String(value));
+      }
+
+      return enqueuePersistentWrite(() => idbSet(key, String(value)), key);
+    }
+
+    function getSystemPreferredTheme() {
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+
+    function formatStorageBytes(bytes) {
+      if (!Number.isFinite(bytes) || bytes < 0) return 'Unknown size';
+
+      const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+      let value = bytes;
+      let unitIndex = 0;
+
+      while (value >= 1024 && unitIndex < units.length - 1) {
+        value /= 1024;
+        unitIndex += 1;
+      }
+
+      const digits = value >= 100 || unitIndex === 0 ? 0 : 1;
+      return `${value.toFixed(digits)} ${units[unitIndex]}`;
+    }
+
+    async function updateStorageStatusCard() {
+      const backendBadge = document.getElementById('storageBackendBadge');
+      const usageText = document.getElementById('storageUsageText');
+      const statusCaption = document.getElementById('storageStatusCaption');
+      const taskCount = document.getElementById('storageTaskCount');
+      const itemCount = document.getElementById('storageItemCount');
+      const logCount = document.getElementById('storageLogCount');
+      const templateCount = document.getElementById('storageTemplateCount');
+      if (!backendBadge || !usageText || !statusCaption || !taskCount || !itemCount || !logCount || !templateCount) return;
+
+      backendBadge.textContent = storageBackend === 'indexeddb' ? 'IndexedDB Active' : 'LocalStorage Fallback';
+      taskCount.textContent = String(tasks.length);
+      itemCount.textContent = String(items.length);
+      logCount.textContent = String(logs.length);
+      templateCount.textContent = String(templates.length);
+
+      let usageSummary = 'Browser storage estimate unavailable.';
+      if (navigator.storage?.estimate) {
+        try {
+          const estimate = await navigator.storage.estimate();
+          const usage = Number(estimate?.usage);
+          const quota = Number(estimate?.quota);
+          usageSummary = Number.isFinite(usage) && Number.isFinite(quota)
+            ? `${formatStorageBytes(usage)} used of ${formatStorageBytes(quota)} available for this site.`
+            : Number.isFinite(usage)
+              ? `${formatStorageBytes(usage)} used by this site.`
+              : usageSummary;
+        } catch {
+          usageSummary = 'Browser storage estimate unavailable.';
+        }
+      }
+
+      usageText.textContent = usageSummary;
+      statusCaption.textContent = storageBackend === 'indexeddb'
+        ? 'App data is stored in IndexedDB. Theme remains in localStorage so it can be applied before the page paints.'
+        : 'IndexedDB is unavailable here, so Task Manager is using localStorage for persistence on this browser.';
+    }
+
+    function createBackupPayload() {
+      return {
+        app: 'Task Manager',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        storageBackend,
+        data: {
+          tasks,
+          items,
+          itemSettings,
+          hiddenFilters,
+          logs,
+          categories,
+          templates,
+          preferences: {
+            hideDone,
+            showSecondaryStats,
+            activeSecondaryStatsTab,
+            viewMode: currentViewMode,
+            sortMode: currentSortMode,
+            theme: currentTheme
+          }
+        }
+      };
+    }
+
+    function normalizeBackupPayload(payload) {
+      if (!payload || typeof payload !== 'object') {
+        throw new Error('The selected file is not a valid Task Manager backup.');
+      }
+
+      const data = payload.data && typeof payload.data === 'object'
+        ? payload.data
+        : payload;
+      const preferences = data.preferences && typeof data.preferences === 'object'
+        ? data.preferences
+        : {};
+      const theme = String(preferences.theme || '').trim() === 'light' ? 'light' : 'dark';
+
+      return {
+        tasks: Array.isArray(data.tasks) ? data.tasks : [],
+        items: Array.isArray(data.items) ? data.items : [],
+        itemSettings: data.itemSettings && typeof data.itemSettings === 'object' ? data.itemSettings : null,
+        hiddenFilters: data.hiddenFilters && typeof data.hiddenFilters === 'object'
+          ? data.hiddenFilters
+          : { status: [], priority: [], category: [] },
+        logs: Array.isArray(data.logs) ? data.logs : [],
+        categories: Array.isArray(data.categories) ? data.categories : [],
+        templates: Array.isArray(data.templates) ? data.templates : [],
+        preferences: {
+          hideDone: preferences.hideDone === true || preferences.hideDone === 'true' ? 'true' : 'false',
+          showSecondaryStats: preferences.showSecondaryStats === false || preferences.showSecondaryStats === 'false' ? 'false' : 'true',
+          activeSecondaryStatsTab: String(preferences.activeSecondaryStatsTab || 'status'),
+          viewMode: String(preferences.viewMode || 'standard'),
+          sortMode: String(preferences.sortMode || 'workflow'),
+          theme: theme || getSystemPreferredTheme()
+        }
+      };
+    }
+
+    async function persistBackupPayload(snapshot) {
+      const entries = [
+        { key: KEYS.tasks, value: snapshot.tasks },
+        { key: KEYS.items, value: snapshot.items },
+        { key: KEYS.itemSettings, value: snapshot.itemSettings },
+        { key: KEYS.hiddenFilters, value: snapshot.hiddenFilters },
+        { key: KEYS.logs, value: snapshot.logs },
+        { key: KEYS.categories, value: snapshot.categories },
+        { key: KEYS.templates, value: snapshot.templates },
+        { key: KEYS.hideDone, value: snapshot.preferences.hideDone },
+        { key: KEYS.showSecondaryStats, value: snapshot.preferences.showSecondaryStats },
+        { key: KEYS.activeSecondaryStatsTab, value: snapshot.preferences.activeSecondaryStatsTab },
+        { key: KEYS.viewMode, value: snapshot.preferences.viewMode },
+        { key: KEYS.sortMode, value: snapshot.preferences.sortMode }
+      ];
+
+      await flushStorageWrites();
+
+      if (storageBackend === 'indexeddb') {
+        await idbSetMany(entries);
+      } else {
+        entries.forEach(entry => {
+          if (PERSISTED_JSON_KEYS.includes(entry.key)) {
+            writeLegacyJson(entry.key, entry.value);
+          } else {
+            writeLegacyPreference(entry.key, entry.value);
+          }
+        });
+      }
+
+      writeLegacyPreference(KEYS.theme, snapshot.preferences.theme);
+    }
+
+    async function clearPersistedTaskManagerData() {
+      await flushStorageWrites();
+
+      if ('indexedDB' in window) {
+        try {
+          await openStorageDb();
+          await idbClearAll();
+        } catch (error) {
+          if (storageBackend === 'indexeddb') {
+            throw error;
+          }
+        }
+      }
+
+      Object.values(KEYS).forEach(key => localStorage.removeItem(key));
+    }
+
+    function resetTransientUiState() {
+      editingId = null;
+      editingCategoryName = null;
+      editingTemplateId = null;
+      selectedTaskId = null;
+      activeCategoryStatsPage = 0;
+      activeDetailTab = 'description';
+      activeDetailEditField = null;
+      activeDetailEditTaskId = null;
+      activeSubtaskEditTaskId = null;
+      activeSubtaskEditId = null;
+      itemSearchQuery = '';
+      selectedItemIds = new Set();
+      taskDraftImageDataUrl = '';
+      taskDraftImageName = '';
+
+      const taskSearchInput = document.getElementById('searchTasks');
+      const categoryFilter = document.getElementById('filterCategory');
+      const priorityFilter = document.getElementById('filterPriority');
+      const statusFilter = document.getElementById('filterStatus');
+      const itemSearchInput = document.getElementById('itemSearchInput');
+      const backupInput = document.getElementById('settingsBackupInput');
+
+      if (taskSearchInput) taskSearchInput.value = '';
+      if (categoryFilter) categoryFilter.value = '';
+      if (priorityFilter) priorityFilter.value = '';
+      if (statusFilter) statusFilter.value = '';
+      if (itemSearchInput) itemSearchInput.value = '';
+      if (backupInput) backupInput.value = '';
+
+      closeDetailContextMenu();
+    }
+
+    function renderAppState() {
+      document.getElementById('sortTasks').value = currentSortMode;
+      document.getElementById('toggleDoneBtn').textContent = hideDone ? 'Show Completed' : 'Hide Completed';
+      renderTaskProjectOptions();
+      renderCategoryList();
+      renderTemplateList();
+      renderTasks();
+      renderAllItemsList();
+      updateSecondaryStatsToggle();
+      applyInputLimits();
+      fillItemSettingsForm();
+      updateStorageStatusCard();
+    }
+
+    async function reloadAppFromStorage(options = {}) {
+      await loadState();
+      if (options.resetUi !== false) {
+        resetTransientUiState();
+      }
+      applyTheme(currentTheme);
+      saveCategories();
+      saveTasks();
+      saveItems();
+      saveItemSettings();
+      saveHiddenFilters();
+      saveTemplates();
+      renderAppState();
+    }
+
+    function downloadBlobFile(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    }
+
+    async function readFileAsText(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ''));
+        reader.onerror = () => reject(reader.error || new Error('Unable to read the selected file.'));
+        reader.readAsText(file);
+      });
+    }
+
+    function exportBackupToJson() {
+      const stamp = getExportTimestampStamp();
+      const payload = createBackupPayload();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      downloadBlobFile(blob, `task-manager-backup-${stamp}.json`);
+    }
+
+    async function importBackupFromFile(file) {
+      if (!file) return;
+
+      const rawText = await readFileAsText(file);
+      const parsed = JSON.parse(rawText);
+      const snapshot = normalizeBackupPayload(parsed);
+      const confirmed = confirm(`Replace the current Task Manager data with the contents of "${file.name}"? This will overwrite the data currently saved in this browser.`);
+      if (!confirmed) return;
+
+      await persistBackupPayload(snapshot);
+      await reloadAppFromStorage();
+      alert(`Backup restored from ${file.name}.`);
+    }
+
+    async function removeAllTaskManagerData() {
+      const totalRecords = tasks.length + items.length + logs.length;
+      const confirmed = confirm(`Remove all Task Manager data from this browser? This will delete ${tasks.length} task${tasks.length === 1 ? '' : 's'}, ${items.length} item${items.length === 1 ? '' : 's'}, ${logs.length} log${logs.length === 1 ? '' : 's'}, templates, categories, and saved preferences.`);
+      if (!confirmed) return false;
+
+      await clearPersistedTaskManagerData();
+      currentTheme = getSystemPreferredTheme();
+      writeLegacyPreference(KEYS.theme, currentTheme);
+      await reloadAppFromStorage();
+      alert(totalRecords ? 'All Task Manager data has been removed and the app was reset to a fresh state.' : 'Task Manager data was already empty. Preferences were reset.');
+      return true;
     }
 
     function normalizeOptionList(optionList = []) {
@@ -5235,7 +5896,7 @@
     }
 
     // ── State ──
-    // In-memory arrays kept in sync with localStorage via the save* helpers.
+    // In-memory arrays kept in sync with persisted storage via the save* helpers.
     // selectedTaskId tracks which card is active / shown in the detail panel.
     let tasks       = [];
     let items       = [];
@@ -5409,22 +6070,24 @@
     }
 
     // ── Persistence ──
-    // loadState() reads everything from localStorage on startup,
+    // loadState() reads everything from the configured storage backend on startup,
     // normalises legacy values, and ensures required defaults exist.
-    function loadState() {
-      tasks = loadJson(KEYS.tasks, []);
-      const storedItems = loadJson(KEYS.items, null);
-      itemSettings = normalizeItemSettings(loadJson(KEYS.itemSettings, null));
-      logs = loadJson(KEYS.logs, []);
-      categories = loadJson(KEYS.categories, []);
-      templates = loadJson(KEYS.templates, []);
-      hideDone = loadPreference(KEYS.hideDone, 'false') === 'true';
-      showSecondaryStats = loadPreference(KEYS.showSecondaryStats, 'true') !== 'false';
-      activeSecondaryStatsTab = loadPreference(KEYS.activeSecondaryStatsTab, 'status') || 'status';
-      currentTheme = loadPreference(KEYS.theme, document.documentElement.dataset.theme || 'dark');
-      const storedViewMode = loadPreference(KEYS.viewMode, 'standard');
+    async function loadState() {
+      await initializePersistence();
+
+      tasks = await loadJson(KEYS.tasks, []);
+      const storedItems = await loadJson(KEYS.items, null);
+      itemSettings = normalizeItemSettings(await loadJson(KEYS.itemSettings, null));
+      logs = await loadJson(KEYS.logs, []);
+      categories = await loadJson(KEYS.categories, []);
+      templates = await loadJson(KEYS.templates, []);
+      hideDone = (await loadPreference(KEYS.hideDone, 'false')) === 'true';
+      showSecondaryStats = (await loadPreference(KEYS.showSecondaryStats, 'true')) !== 'false';
+      activeSecondaryStatsTab = await loadPreference(KEYS.activeSecondaryStatsTab, 'status') || 'status';
+      currentTheme = await loadPreference(KEYS.theme, document.documentElement.dataset.theme || 'dark');
+      const storedViewMode = await loadPreference(KEYS.viewMode, 'standard');
       currentViewMode = normalizeTaskViewMode(storedViewMode);
-      currentSortMode = normalizeTaskSortMode(loadPreference(KEYS.sortMode, 'workflow'));
+      currentSortMode = normalizeTaskSortMode(await loadPreference(KEYS.sortMode, 'workflow'));
 
       if (storedViewMode !== currentViewMode) {
         saveViewModePreference();
@@ -6754,89 +7417,6 @@
       return tasksToRender.map(task => getStandardTaskCardMarkup(task, searchQuery)).join('');
     }
 
-    function getTaskExportRows() {
-      return tasks.map(task => {
-        const taskLogs = getLogsByTaskId(task.id);
-        const { completedCount, subtaskCount } = getSubtaskProgress(task);
-        return {
-          ID: task.id,
-          Title: task.title,
-          EmailSubject: task.emailSubject || '',
-          Description: task.description || '',
-          Category: task.category || '',
-          Priority: task.priority || '',
-          Status: task.status || '',
-          IsCompleted: isTaskCompleted(task) ? 'Yes' : 'No',
-          TemplateID: task.templateId || '',
-          TemplateName: getTemplateById(task.templateId)?.name || '',
-          CreatedAt: task.createdAt || '',
-          StartedAt: task.startedAt || '',
-          CompletedAt: task.completedAt || '',
-          ReceivedAt: task.receivedAt || '',
-          DueDate: task.dueDate || '',
-          Notes: task.notes || '',
-          SubtaskCount: subtaskCount,
-          CompletedSubtaskCount: completedCount,
-          OpenSubtaskCount: Math.max(subtaskCount - completedCount, 0),
-          LogCount: taskLogs.length,
-          LatestLogAt: taskLogs[0]?.createdAt || '',
-          Subtasks: (task.subtasks || []).map(subtask => `${subtask.done ? '[x]' : '[ ]'} ${subtask.title}`).join(' | ')
-        };
-      });
-    }
-
-    function getLogExportRows() {
-      return logs.map(log => ({
-        ID: log.id,
-        TaskID: log.taskId,
-        TaskTitle: getTaskById(log.taskId)?.title || '',
-        Date: log.createdAt || '',
-        Content: log.content || ''
-      }));
-    }
-
-    function buildSheet(rows, headers) {
-      return rows.length
-        ? XLSX.utils.json_to_sheet(rows, { header: headers })
-        : XLSX.utils.aoa_to_sheet([headers]);
-    }
-
-    function exportToExcel() {
-      if (typeof XLSX === 'undefined') {
-        alert('Excel export is unavailable because the XLSX library did not load. Reload the page and try again.');
-        return;
-      }
-
-      if (!confirm(`Export ${tasks.length} task${tasks.length === 1 ? '' : 's'} and ${logs.length} log${logs.length === 1 ? '' : 's'} to Excel?`)) {
-        return;
-      }
-
-      const workbook = XLSX.utils.book_new();
-  const taskHeaders = ['ID', 'Title', 'EmailSubject', 'Description', 'Category', 'Priority', 'Status', 'IsCompleted', 'TemplateID', 'TemplateName', 'CreatedAt', 'StartedAt', 'CompletedAt', 'ReceivedAt', 'DueDate', 'Notes', 'SubtaskCount', 'CompletedSubtaskCount', 'OpenSubtaskCount', 'LogCount', 'LatestLogAt', 'Subtasks'];
-      const logHeaders = ['ID', 'TaskID', 'TaskTitle', 'Date', 'Content'];
-
-      XLSX.utils.book_append_sheet(workbook, buildSheet(getTaskExportRows(), taskHeaders), 'Tasks');
-      XLSX.utils.book_append_sheet(workbook, buildSheet(getLogExportRows(), logHeaders), 'Logs');
-
-      const stamp = new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-');
-      XLSX.writeFile(workbook, `task-manager-export-${stamp}.xlsx`);
-    }
-
-    function getItemExportRows() {
-      return items.map(item => ({
-        ID: item.id,
-        TaskID: item.taskId || '',
-        TaskTitle: getTaskById(item.taskId)?.title || item.taskTitleSnapshot || '',
-        BID: item.bid || '',
-        TID: item.tid || '',
-        Status: item.status || '',
-        Supplier: item.supplier || '',
-        CreatedAt: item.createdAt || '',
-        ImageName: item.imageName || '',
-        HasImage: item.imageDataUrl ? 'Yes' : 'No'
-      }));
-    }
-
     function getExportTimestampStamp() {
       return new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-');
     }
@@ -6847,14 +7427,7 @@
       ], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 0);
+      downloadBlobFile(blob, fileName);
     }
 
     function getExcelColumnLetter(columnNumber) {
@@ -6905,22 +7478,6 @@
     const DETAILED_EXPORT_ROW_HEIGHT = 50;
     const DETAILED_EXPORT_COUNTER_HEADER_HEIGHT = 26;
     const DETAILED_EXPORT_COUNTER_ROW_HEIGHT = 30;
-
-    function getStatusStatsRows() {
-      return STATUS_OPTIONS.map(status => ({
-        label: status,
-        value: status === 'Completed'
-          ? tasks.filter(task => isTaskCompleted(task)).length
-          : tasks.filter(task => normalizeStatus(task.status) === status).length
-      }));
-    }
-
-    function getPriorityStatsRows() {
-      return PRIORITY_OPTIONS.map(priority => ({
-        label: priority,
-        value: tasks.filter(task => normalizePriority(task.priority) === priority).length
-      }));
-    }
 
     function getCategoryStatsRows() {
       return categories.map(category => ({
@@ -6973,27 +7530,6 @@
         extension: extension || 'jpeg',
         base64
       };
-    }
-
-    function getDetailedItemExportRows() {
-      return items.map(item => ({
-        TaskTitle: getTaskById(item.taskId)?.title || item.taskTitleSnapshot || '',
-        BID: item.bid || '',
-        TID: item.tid || '',
-        Status: item.status || '',
-        Supplier: item.supplier || '',
-        Created: formatExcelDateDisplay(item.createdAt),
-        ImageName: item.imageName || '',
-        HasImage: item.imageDataUrl ? 'Yes' : 'No'
-      }));
-    }
-
-    function getDetailedLogExportRows() {
-      return logs.map(log => ({
-        TaskTitle: getTaskById(log.taskId)?.title || '',
-        Date: formatExcelDateTimeDisplay(log.createdAt),
-        Content: log.content || ''
-      }));
     }
 
     function safeAddConditionalFormatting(worksheet, ref, rules) {
@@ -7245,114 +7781,6 @@
       if (typeof options.afterBuild === 'function') {
         options.afterBuild(worksheet, rows, columns, { tableStartRow });
       }
-    }
-
-    function buildDetailedDashboardSheet(workbook) {
-      const worksheet = workbook.addWorksheet('Dashboard');
-      worksheet.views = [{ showGridLines: false }];
-      worksheet.columns = [
-        { width: 18 },
-        { width: 18 },
-        { width: 4 },
-        { width: 18 },
-        { width: 18 },
-        { width: 4 },
-        { width: 20 },
-        { width: 18 }
-      ];
-
-      worksheet.mergeCells('A1:H1');
-      worksheet.mergeCells('A2:H2');
-      worksheet.getCell('A1').value = 'Task Manager Dashboard';
-      worksheet.getCell('A2').value = `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())} with live task totals and breakdowns.`;
-      worksheet.getCell('A1').font = { size: 20, bold: true, color: { argb: 'FF0F172A' } };
-      worksheet.getCell('A2').font = { size: 10, color: { argb: 'FF475569' } };
-
-      const cards = [
-        { label: 'Total Tasks', value: tasks.length, range: ['A4', 'B6'], accent: 'FF1D4ED8' },
-        { label: 'Category Units', value: tasks.reduce((sum, task) => sum + getTaskCategoryCountWeight(task), 0), range: ['D4', 'E6'], accent: 'FF0F766E' },
-        { label: 'Ongoing Tasks', value: tasks.filter(task => normalizeStatus(task.status) === 'Ongoing').length, range: ['G4', 'H6'], accent: 'FFF59E0B' },
-        { label: 'Completed Tasks', value: tasks.filter(task => isTaskCompleted(task)).length, range: ['A8', 'B10'], accent: 'FF16A34A' }
-      ];
-
-      cards.forEach(card => {
-        const [startCell, endCell] = card.range;
-        worksheet.mergeCells(`${startCell}:${endCell}`);
-        const cell = worksheet.getCell(startCell);
-        cell.value = `${card.label}\n${card.value}`;
-        cell.font = { size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
-        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: card.accent }
-        };
-        cell.border = {
-          top: { style: 'thin', color: { argb: 'FFFFFFFF' } },
-          left: { style: 'thin', color: { argb: 'FFFFFFFF' } },
-          bottom: { style: 'thin', color: { argb: 'FFFFFFFF' } },
-          right: { style: 'thin', color: { argb: 'FFFFFFFF' } }
-        };
-      });
-
-      const sectionDefinitions = [
-        { title: 'Status Breakdown', startCell: 'D8', accent: 'FF334155', rows: getStatusStatsRows() },
-        { title: 'Priority Breakdown', startCell: 'G8', accent: 'FF7C2D12', rows: getPriorityStatsRows() },
-        { title: 'Category Breakdown', startCell: 'A12', accent: 'FF115E59', rows: getCategoryStatsRows() }
-      ];
-
-      sectionDefinitions.forEach(section => {
-        const startColumn = section.startCell.match(/[A-Z]+/)[0];
-        const startRow = Number(section.startCell.match(/\d+/)[0]);
-        const nextColumn = getExcelColumnLetter(startColumn.charCodeAt(0) - 64 + 1);
-        worksheet.mergeCells(`${startColumn}${startRow}:${nextColumn}${startRow}`);
-        const titleCell = worksheet.getCell(`${startColumn}${startRow}`);
-        titleCell.value = section.title;
-        titleCell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-        titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
-        titleCell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: section.accent }
-        };
-
-        const headerRow = worksheet.getRow(startRow + 1);
-        headerRow.getCell(startColumn).value = 'Label';
-        headerRow.getCell(nextColumn).value = 'Count';
-        [headerRow.getCell(startColumn), headerRow.getCell(nextColumn)].forEach(cell => {
-          cell.font = { bold: true, color: { argb: 'FF0F172A' } };
-          cell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFE2E8F0' }
-          };
-          cell.border = {
-            top: { style: 'thin', color: { argb: 'FFCBD5E1' } },
-            left: { style: 'thin', color: { argb: 'FFCBD5E1' } },
-            bottom: { style: 'thin', color: { argb: 'FFCBD5E1' } },
-            right: { style: 'thin', color: { argb: 'FFCBD5E1' } }
-          };
-        });
-
-        section.rows.forEach((row, index) => {
-          const targetRow = worksheet.getRow(startRow + 2 + index);
-          targetRow.getCell(startColumn).value = row.label;
-          targetRow.getCell(nextColumn).value = row.value;
-          [targetRow.getCell(startColumn), targetRow.getCell(nextColumn)].forEach(cell => {
-            cell.alignment = { vertical: 'middle', horizontal: cell.col === targetRow.getCell(nextColumn).col ? 'center' : 'left' };
-            cell.border = {
-              left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
-              bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
-              right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
-            };
-            cell.fill = {
-              type: 'pattern',
-              pattern: 'solid',
-              fgColor: { argb: index % 2 === 0 ? 'FFF8FAFC' : 'FFFFFFFF' }
-            };
-          });
-        });
-      });
     }
 
     async function exportDetailedToExcel() {
@@ -8014,7 +8442,7 @@
             <form class="logs-form" id="logForm">
               <textarea id="logContent" class="log-input" placeholder="Write a clear progress update, handoff note, or follow-up..." required></textarea>
               <div class="logs-meta">
-                <span>Entries stay linked to this task in local storage.</span>
+                <span>Entries stay linked to this task in this browser.</span>
                 <button type="submit" class="btn btn-primary log-submit-btn">Add Log</button>
               </div>
             </form>
@@ -8052,7 +8480,7 @@
               ${isEditingNotes ? `
                 <div class="detail-inline-editor-wrap">
                   <textarea class="detail-inline-editor" data-task-detail-field="notes" placeholder="Add notes, handoff context, or reminders...">${escHtml(task.notes || '')}</textarea>
-                  <div class="detail-inline-editor-hint">Changes save inline. Notes stay attached to this task in local storage.</div>
+                  <div class="detail-inline-editor-hint">Changes save inline. Notes stay attached to this task in this browser.</div>
                 </div>` : `
                 <div class="detail-inline-view ${task.notes ? '' : 'is-empty'}">
                   <p>${task.notes ? escHtml(task.notes) : 'No notes added for this task yet.'}</p>
@@ -8291,7 +8719,7 @@
 
     // ── Form Submit ──
     // Handles both create and edit: updates the in-memory tasks array,
-    // persists to localStorage, and re-renders.
+    // persists via the active storage backend, and re-renders.
     document.getElementById('taskForm').addEventListener('submit', e => {
       e.preventDefault();
       const titleField = document.getElementById('taskTitle');
@@ -9720,6 +10148,32 @@
       closeItemSettingsModal();
       renderTasks();
       renderAllItemsList();
+      updateStorageStatusCard();
+    });
+
+    document.getElementById('exportBackupBtn').addEventListener('click', exportBackupToJson);
+    document.getElementById('importBackupBtn').addEventListener('click', () => {
+      document.getElementById('settingsBackupInput')?.click();
+    });
+    document.getElementById('settingsBackupInput').addEventListener('change', async e => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      try {
+        await importBackupFromFile(file);
+      } catch (error) {
+        alert(error?.message || 'Unable to import that backup file.');
+      } finally {
+        e.target.value = '';
+      }
+    });
+    document.getElementById('clearAllDataBtn').addEventListener('click', async () => {
+      try {
+        await removeAllTaskManagerData();
+      } catch (error) {
+        notifyStorageError('Unable to remove all Task Manager data.', error);
+        alert(error?.message || 'Unable to remove all Task Manager data from this browser.');
+      }
     });
 
     // ── Filters ──
@@ -9748,7 +10202,7 @@
     });
 
     // ── Toggle Done ──
-    // hideDone is persisted to localStorage so the preference survives reloads.
+    // hideDone is persisted so the preference survives reloads.
     document.getElementById('toggleDoneBtn').addEventListener('click', () => {
       hideDone = !hideDone;
       saveHideDonePreference();
@@ -9796,7 +10250,6 @@
         clearCompletedTasks();
       }
     });
-    document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
     document.getElementById('exportDetailedExcelBtn').addEventListener('click', () => {
       exportDetailedToExcel();
     });
@@ -9924,6 +10377,7 @@
 
     function openItemSettingsModal() {
       fillItemSettingsForm();
+      updateStorageStatusCard();
       document.getElementById('itemSettingsModal').classList.add('open');
       document.getElementById('taskSenderOptionsInput').focus();
     }
@@ -9964,22 +10418,22 @@
     }
 
     // ── Init ──
-    loadState();
-    applyTheme(currentTheme);
-    saveCategories();
-    saveTasks();
-    saveItems();
-    saveItemSettings();
-    saveHiddenFilters();
-    saveTemplates();
-    document.getElementById('sortTasks').value = currentSortMode;
-    document.getElementById('toggleDoneBtn').textContent = hideDone ? 'Show Completed' : 'Hide Completed';
-    renderCategoryList();
-    renderTemplateList();
-    renderTasks();
-    renderAllItemsList();
-    updateSecondaryStatsToggle();
-    applyInputLimits();
+    async function initializeApp() {
+      await loadState();
+      applyTheme(currentTheme);
+      saveCategories();
+      saveTasks();
+      saveItems();
+      saveItemSettings();
+      saveHiddenFilters();
+      saveTemplates();
+      renderAppState();
+    }
+
+    initializeApp().catch(error => {
+      console.error('Task Manager failed to initialize.', error);
+      alert('Task Manager failed to initialize. Reload the page and try again.');
+    });
   </script>
 </body>
 </html>
