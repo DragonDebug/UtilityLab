@@ -5260,6 +5260,9 @@
             </div>
             <p class="item-settings-help">Weekly Completed uses a Sunday to Thursday working week. Choose which week and year the detailed workbook should summarize.</p>
             <p class="item-settings-value" id="detailedExportWeekPreview">Working week preview updates here.</p>
+            <div class="item-settings-actions">
+              <button type="button" class="btn btn-ghost" id="exportDetailedExcelFromSettingsBtn">Export Detailed Excel</button>
+            </div>
           </div>
           <div class="item-settings-group">
             <label>Storage & Backup</label>
@@ -7932,15 +7935,111 @@
       return `"${String(value ?? '').replace(/"/g, '""')}"`;
     }
 
+    function getWorksheetColumnLetter(columns, key) {
+      const columnIndex = columns.findIndex(column => column.key === key);
+      return columnIndex === -1 ? '' : getExcelColumnLetter(columnIndex + 1);
+    }
+
+    function applySharedTaskSheetValidationAndFormatting(worksheet, rows, columns, context, validationLists) {
+      const startRow = context.tableStartRow + 1;
+      const endRow = Math.max(rows.length + context.tableStartRow, startRow);
+      const categoryColumnLetter = getWorksheetColumnLetter(columns, 'Category');
+      const priorityColumnLetter = getWorksheetColumnLetter(columns, 'Priority');
+      const senderColumnLetter = getWorksheetColumnLetter(columns, 'Sender');
+      const statusColumnLetter = getWorksheetColumnLetter(columns, 'Status');
+      const quantityColumnLetter = getWorksheetColumnLetter(columns, 'Quantity');
+
+      if (categoryColumnLetter) {
+        applyListValidation(worksheet, categoryColumnLetter, startRow, endRow, validationLists.categories);
+      }
+      if (priorityColumnLetter) {
+        applyListValidation(worksheet, priorityColumnLetter, startRow, endRow, validationLists.priorities);
+      }
+      if (senderColumnLetter) {
+        applyListValidation(worksheet, senderColumnLetter, startRow, endRow, validationLists.senders);
+      }
+      if (statusColumnLetter) {
+        applyListValidation(worksheet, statusColumnLetter, startRow, endRow, validationLists.statuses);
+      }
+
+      if (priorityColumnLetter) {
+        safeAddConditionalFormatting(worksheet, `${priorityColumnLetter}${startRow}:${priorityColumnLetter}${endRow}`, [
+          { type: 'cellIs', operator: 'equal', formulae: ['"Critical"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFF1F2' }, fgColor: { argb: 'FFFFF1F2' } }, font: { color: { argb: 'FF991B1B' }, bold: true } } },
+          { type: 'cellIs', operator: 'equal', formulae: ['"High"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFF7ED' }, fgColor: { argb: 'FFFFF7ED' } }, font: { color: { argb: 'FF9A3412' }, bold: true } } },
+          { type: 'cellIs', operator: 'equal', formulae: ['"Medium"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFFBEB' }, fgColor: { argb: 'FFFFFBEB' } }, font: { color: { argb: 'FFB45309' }, bold: true } } },
+          { type: 'cellIs', operator: 'equal', formulae: ['"Low"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF2FBF5' }, fgColor: { argb: 'FFF2FBF5' } }, font: { color: { argb: 'FF15803D' }, bold: true } } },
+          { type: 'cellIs', operator: 'equal', formulae: ['"Very Low"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF1F9FE' }, fgColor: { argb: 'FFF1F9FE' } }, font: { color: { argb: 'FF0369A1' }, bold: true } } }
+        ]);
+      }
+
+      if (statusColumnLetter) {
+        safeAddConditionalFormatting(worksheet, `${statusColumnLetter}${startRow}:${statusColumnLetter}${endRow}`, [
+          { type: 'cellIs', operator: 'equal', formulae: ['"Pending"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFFBEB' }, fgColor: { argb: 'FFFFFBEB' } }, font: { color: { argb: 'FFB45309' }, bold: true } } },
+          { type: 'cellIs', operator: 'equal', formulae: ['"Not Started"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF8FAFC' }, fgColor: { argb: 'FFF8FAFC' } }, font: { color: { argb: 'FF475569' }, bold: true } } },
+          { type: 'cellIs', operator: 'equal', formulae: ['"Ongoing"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF2F7FF' }, fgColor: { argb: 'FFF2F7FF' } }, font: { color: { argb: 'FF1D4ED8' }, bold: true } } },
+          { type: 'cellIs', operator: 'equal', formulae: ['"Waiting for Someone Else"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFF5F0' }, fgColor: { argb: 'FFFFF5F0' } }, font: { color: { argb: 'FF9A3412' }, bold: true } } },
+          { type: 'cellIs', operator: 'equal', formulae: ['"Completed"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF1FBF4' }, fgColor: { argb: 'FFF1FBF4' } }, font: { color: { argb: 'FF166534' }, bold: true } } }
+        ]);
+      }
+
+      if (quantityColumnLetter) {
+        safeAddConditionalFormatting(worksheet, `${quantityColumnLetter}${startRow}:${quantityColumnLetter}${endRow}`, [
+          { type: 'cellIs', operator: 'greaterThan', formulae: ['1'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF2FBF7' }, fgColor: { argb: 'FFF2FBF7' } }, font: { color: { argb: 'FF115E59' }, bold: true } } }
+        ]);
+      }
+
+      if (categoryColumnLetter && categories.length) {
+        safeAddConditionalFormatting(worksheet, `${categoryColumnLetter}${startRow}:${categoryColumnLetter}${endRow}`, categories.map(category => {
+          const accent = normalizeExcelHexColor(category.color);
+          return {
+            type: 'cellIs',
+            operator: 'equal',
+            formulae: [getExcelTextRuleFormula(category.name)],
+            style: {
+              fill: {
+                type: 'pattern',
+                pattern: 'solid',
+                bgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.9)}` },
+                fgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.9)}` }
+              },
+              font: { color: { argb: `FF${accent}` }, bold: true }
+            }
+          };
+        }));
+      }
+
+      return { startRow, endRow };
+    }
+
+    function applyTaskSheetImages(worksheet, rows, imageColumnLetter, startRow) {
+      if (!imageColumnLetter) return;
+
+      rows.forEach((row, index) => {
+        const imageDescriptor = getExcelImageDescriptorFromDataUrl(row.TaskImageDataUrl);
+        if (!imageDescriptor) return;
+
+        const rowNumber = startRow + index;
+        const imageId = worksheet.workbook.addImage(imageDescriptor);
+        worksheet.addImage(imageId, {
+          tl: { col: 1 + 0.12, row: rowNumber - 1 + 0.1 },
+          ext: { width: 42, height: 42 },
+          editAs: 'oneCell'
+        });
+        worksheet.getCell(`${imageColumnLetter}${rowNumber}`).value = '';
+      });
+    }
+
     function getTaskSheetHeaderLayout() {
+      const openTasks = tasks.filter(task => !isTaskCompleted(task));
       const headerRows = [
-        { label: 'Total Tasks', value: tasks.length, accent: '1D4ED8' },
-        { label: 'Ongoing', value: tasks.filter(task => normalizeStatus(task.status) === 'Ongoing').length, accent: '1D4ED8' },
-        { label: 'Completed', value: tasks.filter(task => isTaskCompleted(task)).length, accent: '16A34A' },
-        { label: 'Overdue', value: tasks.filter(task => isOverdue(task.dueDate) && !isTaskCompleted(task)).length, accent: 'DC2626' },
-        ...getCategoryStatsRows().map(category => ({
-          label: category.label,
-          value: category.value,
+        { label: 'Open Tasks', value: openTasks.length, accent: '1D4ED8' },
+        { label: 'Ongoing', value: openTasks.filter(task => normalizeStatus(task.status) === 'Ongoing').length, accent: '1D4ED8' },
+        { label: 'Overdue', value: openTasks.filter(task => isOverdue(task.dueDate)).length, accent: 'DC2626' },
+        ...categories.map(category => ({
+          label: category.name,
+          value: openTasks
+            .filter(task => task.category === category.name)
+            .reduce((sum, task) => sum + getTaskCategoryCountWeight(task), 0),
           accent: normalizeExcelHexColor(category.color)
         }))
       ];
@@ -8023,12 +8122,18 @@
       const tableStartRow = options.tableStartRow || 4;
       const dateColumnKeys = new Set(options.dateColumns || []);
       const tableGridColor = options.tableGridColor || 'FFCBD5E1';
+      const rowHeights = options.rowHeights || {};
+      const defaultRowHeight = rowHeights.default ?? rowHeights.body ?? DETAILED_EXPORT_ROW_HEIGHT;
+      const preTableRowHeight = rowHeights.preTable ?? defaultRowHeight;
+      const headerRowHeight = rowHeights.header ?? defaultRowHeight;
+      const bodyRowHeight = rowHeights.body ?? defaultRowHeight;
+      const emptyRowHeight = rowHeights.empty ?? bodyRowHeight;
 
       worksheet.columns = columns.map(column => ({
         key: column.key,
         width: column.width || 18
       }));
-      worksheet.properties.defaultRowHeight = DETAILED_EXPORT_ROW_HEIGHT;
+      worksheet.properties.defaultRowHeight = defaultRowHeight;
       worksheet.views = [{ state: 'frozen', ySplit: tableStartRow, showGridLines: true }];
       worksheet.pageSetup = { ...(worksheet.pageSetup || {}), showGridLines: true };
 
@@ -8040,8 +8145,9 @@
       worksheet.getCell('A2').font = { size: subtitleFontSize, color: { argb: 'FF475569' } };
       worksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'left' };
       worksheet.getCell('A2').alignment = { vertical: 'middle', horizontal: 'left' };
-      worksheet.getRow(1).height = DETAILED_EXPORT_ROW_HEIGHT;
-      worksheet.getRow(2).height = DETAILED_EXPORT_ROW_HEIGHT;
+      for (let rowNumber = 1; rowNumber < tableStartRow; rowNumber += 1) {
+        worksheet.getRow(rowNumber).height = preTableRowHeight;
+      }
 
       if (typeof options.beforeTable === 'function') {
         options.beforeTable(worksheet, columns, { lastColumn, tableStartRow });
@@ -8055,7 +8161,7 @@
       columns.forEach((column, index) => {
         headerRow.getCell(index + 1).value = column.header;
       });
-      headerRow.height = DETAILED_EXPORT_ROW_HEIGHT;
+      headerRow.height = headerRowHeight;
       headerRow.eachCell(cell => {
         cell.font = { bold: true, color: { argb: `FF${accentColor}` } };
         cell.fill = {
@@ -8081,7 +8187,7 @@
             cell.numFmt = 'd-mmm-yy';
           }
         });
-        worksheetRow.height = DETAILED_EXPORT_ROW_HEIGHT;
+        worksheetRow.height = bodyRowHeight;
         worksheetRow.eachCell(cell => {
           cell.alignment = {
             vertical: 'middle',
@@ -8105,7 +8211,7 @@
       if (!rows.length) {
         const emptyRow = worksheet.getRow(tableStartRow + 1);
         emptyRow.getCell(1).value = options.emptyMessage || 'No records available.';
-        emptyRow.height = DETAILED_EXPORT_ROW_HEIGHT;
+        emptyRow.height = emptyRowHeight;
         emptyRow.getCell(1).font = { italic: true, color: { argb: 'FF64748B' } };
       }
 
@@ -8174,6 +8280,13 @@
           accentColor: '1D4ED8',
           emptyMessage: 'No counters available.',
           centerColumns: [1, 3],
+          rowHeights: {
+            default: 30,
+            preTable: 30,
+            header: 30,
+            body: 30,
+            empty: 30
+          },
           afterBuild: (worksheet, rows, columns, context) => {
             rows.forEach((row, index) => {
               const accent = normalizeExcelHexColor(row.Accent);
@@ -8205,66 +8318,17 @@
           emptyMessage: 'No tasks available.',
           centerColumns: [1, 2, 5, 6, 10, 11, 12, 13, 14, 15],
           dateColumns: ['Created', 'Started', 'Completed', 'Received', 'Due'],
+          rowHeights: {
+            default: 80,
+            preTable: 30,
+            header: 50,
+            body: 80,
+            empty: 80
+          },
           afterBuild: (worksheet, rows, columns, context) => {
-            const startRow = context.tableStartRow + 1;
-            const endRow = Math.max(rows.length + context.tableStartRow, startRow);
             const imageColumnLetter = getTaskColumnLetter('TaskImage');
-            applyListValidation(worksheet, getTaskColumnLetter('Category'), startRow, endRow, validationLists.categories);
-            applyListValidation(worksheet, getTaskColumnLetter('Priority'), startRow, endRow, validationLists.priorities);
-            applyListValidation(worksheet, getTaskColumnLetter('Sender'), startRow, endRow, validationLists.senders);
-            applyListValidation(worksheet, getTaskColumnLetter('Status'), startRow, endRow, validationLists.statuses);
-
-            rows.forEach((row, index) => {
-              const imageDescriptor = getExcelImageDescriptorFromDataUrl(row.TaskImageDataUrl);
-              if (!imageDescriptor) return;
-
-              const rowNumber = startRow + index;
-              const imageId = worksheet.workbook.addImage(imageDescriptor);
-              worksheet.addImage(imageId, {
-                tl: { col: 1 + 0.12, row: rowNumber - 1 + 0.1 },
-                ext: { width: 42, height: 42 },
-                editAs: 'oneCell'
-              });
-              worksheet.getCell(`${imageColumnLetter}${rowNumber}`).value = '';
-            });
-
-            safeAddConditionalFormatting(worksheet, `${getTaskColumnLetter('Priority')}${startRow}:${getTaskColumnLetter('Priority')}${endRow}`, [
-              { type: 'cellIs', operator: 'equal', formulae: ['"Critical"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFF1F2' }, fgColor: { argb: 'FFFFF1F2' } }, font: { color: { argb: 'FF991B1B' }, bold: true } } },
-              { type: 'cellIs', operator: 'equal', formulae: ['"High"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFF7ED' }, fgColor: { argb: 'FFFFF7ED' } }, font: { color: { argb: 'FF9A3412' }, bold: true } } },
-              { type: 'cellIs', operator: 'equal', formulae: ['"Medium"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFFBEB' }, fgColor: { argb: 'FFFFFBEB' } }, font: { color: { argb: 'FFB45309' }, bold: true } } },
-              { type: 'cellIs', operator: 'equal', formulae: ['"Low"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF2FBF5' }, fgColor: { argb: 'FFF2FBF5' } }, font: { color: { argb: 'FF15803D' }, bold: true } } },
-              { type: 'cellIs', operator: 'equal', formulae: ['"Very Low"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF1F9FE' }, fgColor: { argb: 'FFF1F9FE' } }, font: { color: { argb: 'FF0369A1' }, bold: true } } }
-            ]);
-            safeAddConditionalFormatting(worksheet, `${getTaskColumnLetter('Status')}${startRow}:${getTaskColumnLetter('Status')}${endRow}`, [
-              { type: 'cellIs', operator: 'equal', formulae: ['"Pending"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFFBEB' }, fgColor: { argb: 'FFFFFBEB' } }, font: { color: { argb: 'FFB45309' }, bold: true } } },
-              { type: 'cellIs', operator: 'equal', formulae: ['"Not Started"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF8FAFC' }, fgColor: { argb: 'FFF8FAFC' } }, font: { color: { argb: 'FF475569' }, bold: true } } },
-              { type: 'cellIs', operator: 'equal', formulae: ['"Ongoing"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF2F7FF' }, fgColor: { argb: 'FFF2F7FF' } }, font: { color: { argb: 'FF1D4ED8' }, bold: true } } },
-              { type: 'cellIs', operator: 'equal', formulae: ['"Waiting for Someone Else"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFF5F0' }, fgColor: { argb: 'FFFFF5F0' } }, font: { color: { argb: 'FF9A3412' }, bold: true } } },
-              { type: 'cellIs', operator: 'equal', formulae: ['"Completed"'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF1FBF4' }, fgColor: { argb: 'FFF1FBF4' } }, font: { color: { argb: 'FF166534' }, bold: true } } }
-            ]);
-            safeAddConditionalFormatting(worksheet, `${getTaskColumnLetter('Quantity')}${startRow}:${getTaskColumnLetter('Quantity')}${endRow}`, [
-              { type: 'cellIs', operator: 'greaterThan', formulae: ['1'], style: { fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFF2FBF7' }, fgColor: { argb: 'FFF2FBF7' } }, font: { color: { argb: 'FF115E59' }, bold: true } } }
-            ]);
-
-            if (categories.length) {
-              safeAddConditionalFormatting(worksheet, `${getTaskColumnLetter('Category')}${startRow}:${getTaskColumnLetter('Category')}${endRow}`, categories.map(category => {
-                const accent = normalizeExcelHexColor(category.color);
-                return {
-                  type: 'cellIs',
-                  operator: 'equal',
-                  formulae: [getExcelTextRuleFormula(category.name)],
-                  style: {
-                    fill: {
-                      type: 'pattern',
-                      pattern: 'solid',
-                      bgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.9)}` },
-                      fgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.9)}` }
-                    },
-                    font: { color: { argb: `FF${accent}` }, bold: true }
-                  }
-                };
-              }));
-            }
+            const { startRow } = applySharedTaskSheetValidationAndFormatting(worksheet, rows, columns, context, validationLists);
+            applyTaskSheetImages(worksheet, rows, imageColumnLetter, startRow);
           }
         });
 
@@ -8292,7 +8356,17 @@
           accentColor: '16A34A',
           emptyMessage: `No tasks were completed during ${currentWeekInfo.label} (${formatWeekRangeLabel(currentWeekInfo)}).`,
           centerColumns: [1, 3, 4, 7, 8, 9, 10, 11, 12],
-          dateColumns: ['Created', 'Started', 'Due', 'Completed']
+          dateColumns: ['Created', 'Started', 'Due', 'Completed'],
+          rowHeights: {
+            default: 80,
+            preTable: 40,
+            header: 50,
+            body: 80,
+            empty: 80
+          },
+          afterBuild: (worksheet, rows, columns, context) => {
+            applySharedTaskSheetValidationAndFormatting(worksheet, rows, columns, context, validationLists);
+          }
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
@@ -10533,9 +10607,8 @@
       renderTasks();
     });
 
-    document.getElementById('itemSettingsForm').addEventListener('submit', e => {
-      e.preventDefault();
-
+    function applyItemSettingsForm(options = {}) {
+      const closeModalAfterSave = options.closeModalAfterSave !== false;
       const senderOptions = normalizeOptionList(document.getElementById('taskSenderOptionsInput').value);
       const projectOptions = normalizeOptionList(document.getElementById('taskProjectOptionsInput').value);
       const supplierOptions = normalizeOptionList(document.getElementById('itemSupplierOptionsInput').value);
@@ -10544,19 +10617,33 @@
 
       if (!supplierOptions.length) {
         document.getElementById('itemSupplierOptionsInput').focus();
-        return;
+        return false;
       }
 
       itemSettings = normalizeItemSettings({ senderOptions, projectOptions, supplierOptions, detailedExportWeekNumber, detailedExportWeekYear });
       saveItemSettings();
       renderTaskProjectOptions();
-      closeItemSettingsModal();
+      if (closeModalAfterSave) {
+        closeItemSettingsModal();
+      } else {
+        fillItemSettingsForm();
+      }
       renderTasks();
       renderAllItemsList();
       updateStorageStatusCard();
+      return true;
+    }
+
+    document.getElementById('itemSettingsForm').addEventListener('submit', e => {
+      e.preventDefault();
+      applyItemSettingsForm();
     });
 
     document.getElementById('exportBackupBtn').addEventListener('click', exportBackupToJson);
+    document.getElementById('exportDetailedExcelFromSettingsBtn').addEventListener('click', () => {
+      if (!applyItemSettingsForm({ closeModalAfterSave: false })) return;
+      exportDetailedToExcel();
+    });
     document.getElementById('importBackupBtn').addEventListener('click', () => {
       document.getElementById('settingsBackupInput')?.click();
     });
