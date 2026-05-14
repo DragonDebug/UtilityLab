@@ -4443,9 +4443,47 @@
       outline: none;
     }
 
-    .item-settings-group textarea:focus {
+    .item-settings-group input,
+    .item-settings-group select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: linear-gradient(180deg, var(--field-bg-strong), var(--field-bg));
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.4;
+      outline: none;
+    }
+
+    .item-settings-group textarea:focus,
+    .item-settings-group input:focus,
+    .item-settings-group select:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+
+    .item-settings-inline-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+    .item-settings-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .item-settings-field label {
+      font-size: 10px;
+    }
+
+    .item-settings-value {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: color-mix(in srgb, var(--text) 78%, var(--accent) 22%);
     }
 
     .item-settings-help {
@@ -5209,6 +5247,21 @@
         </div>
         <div class="item-settings-grid">
           <div class="item-settings-group">
+            <label>Detailed Export Summary</label>
+            <div class="item-settings-inline-fields">
+              <div class="item-settings-field">
+                <label for="detailedExportWeekNumberInput">Week Number</label>
+                <input type="number" id="detailedExportWeekNumberInput" min="1" max="53" inputmode="numeric" />
+              </div>
+              <div class="item-settings-field">
+                <label for="detailedExportWeekYearInput">Year</label>
+                <input type="number" id="detailedExportWeekYearInput" min="2000" max="9999" inputmode="numeric" />
+              </div>
+            </div>
+            <p class="item-settings-help">Weekly Completed uses a Sunday to Thursday working week. Choose which week and year the detailed workbook should summarize.</p>
+            <p class="item-settings-value" id="detailedExportWeekPreview">Working week preview updates here.</p>
+          </div>
+          <div class="item-settings-group">
             <label>Storage & Backup</label>
             <div class="item-settings-storage-topline">
               <span class="item-settings-storage-badge" id="storageBackendBadge">Checking...</span>
@@ -5919,7 +5972,32 @@
         });
     }
 
+    function parsePositiveInteger(value, fallback) {
+      const parsed = Number.parseInt(String(value ?? '').trim(), 10);
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+    }
+
+    function clampWorkingWeekYear(value) {
+      return Math.max(2000, Math.min(9999, parsePositiveInteger(value, new Date().getFullYear())));
+    }
+
+    function getWorkingWeeksInYear(year) {
+      const normalizedYear = clampWorkingWeekYear(year);
+      const firstWeekStart = getStartOfWeek(new Date(normalizedYear, 0, 1), WORKING_WEEK_START_DAY);
+      const lastWeekStart = getStartOfWeek(new Date(normalizedYear, 11, 31), WORKING_WEEK_START_DAY);
+      const firstWeekStartDayNumber = toDayNumber(firstWeekStart);
+      const lastWeekStartDayNumber = toDayNumber(lastWeekStart);
+      return 1 + Math.floor((lastWeekStartDayNumber - firstWeekStartDayNumber) / 7);
+    }
+
+    function clampWorkingWeekNumber(value, year) {
+      const normalizedYear = clampWorkingWeekYear(year);
+      const maxWeeks = getWorkingWeeksInYear(normalizedYear);
+      return Math.max(1, Math.min(maxWeeks, parsePositiveInteger(value, 1)));
+    }
+
     function normalizeItemSettings(settings = {}) {
+      const currentWorkingWeekInfo = getWorkingWeekInfo(new Date()) || { year: new Date().getFullYear(), weekNumber: 1 };
       const supplierOptions = normalizeOptionList(
         Array.isArray(settings?.supplierOptions) && settings.supplierOptions.length
           ? settings.supplierOptions
@@ -5927,11 +6005,15 @@
       );
       const senderOptions = normalizeOptionList(settings?.senderOptions || []);
       const projectOptions = normalizeOptionList(settings?.projectOptions || []);
+      const detailedExportWeekYear = clampWorkingWeekYear(settings?.detailedExportWeekYear ?? currentWorkingWeekInfo.year);
+      const detailedExportWeekNumber = clampWorkingWeekNumber(settings?.detailedExportWeekNumber ?? currentWorkingWeekInfo.weekNumber, detailedExportWeekYear);
 
       return {
         supplierOptions: supplierOptions.length ? supplierOptions : [...DEFAULT_ITEM_SUPPLIER_OPTIONS],
         senderOptions,
-        projectOptions
+        projectOptions,
+        detailedExportWeekNumber,
+        detailedExportWeekYear
       };
     }
 
@@ -6039,6 +6121,10 @@
     const ITEM_STATUS_OPTIONS = ['110', '235'];
     const DEFAULT_ITEM_STATUS = ITEM_STATUS_OPTIONS[0] || '';
     const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const MS_PER_DAY = 24 * 60 * 60 * 1000;
+    const EXCEL_DATE_EPOCH_DAY_NUMBER = Math.floor(Date.UTC(1899, 11, 30) / MS_PER_DAY);
+    const WORKING_WEEK_START_DAY = 0;
+    const WORKING_WEEK_LENGTH_DAYS = 5;
     const INPUT_FIELDS_WITHOUT_COUNTER = new Set(['searchTasks', 'categoryName']);
 
     function updateInputCounter(field, counter, limit) {
@@ -7534,10 +7620,10 @@
     }
 
     function toExcelDateValue(value) {
-      const parts = toDateParts(value);
-      if (!parts) return null;
+      const dayNumber = toDayNumber(value);
+      if (dayNumber === null) return null;
 
-      return new Date(parts.year, parts.month - 1, parts.day);
+      return dayNumber - EXCEL_DATE_EPOCH_DAY_NUMBER;
     }
 
     function formatExcelDateTimeDisplay(value) {
@@ -7561,6 +7647,81 @@
       if (!parts) return null;
 
       return new Date(parts.year, parts.month - 1, parts.day);
+    }
+
+    function toDayNumber(value) {
+      const parts = toDateParts(value);
+      if (!parts) return null;
+
+      return Math.floor(Date.UTC(parts.year, parts.month - 1, parts.day) / MS_PER_DAY);
+    }
+
+    function getStartOfWeek(value, startDay = WORKING_WEEK_START_DAY) {
+      const date = toDateOnly(value instanceof Date ? value : value);
+      if (!date) return null;
+
+      const normalized = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      const dayOffset = (normalized.getDay() - startDay + 7) % 7;
+      normalized.setDate(normalized.getDate() - dayOffset);
+      normalized.setHours(0, 0, 0, 0);
+      return normalized;
+    }
+
+    function getWorkingWeekInfo(value = new Date()) {
+      const date = value instanceof Date
+        ? new Date(value.getFullYear(), value.getMonth(), value.getDate())
+        : toDateOnly(value);
+      if (!date) return null;
+
+      const year = date.getFullYear();
+      const weekStart = getStartOfWeek(date, WORKING_WEEK_START_DAY);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + WORKING_WEEK_LENGTH_DAYS - 1);
+
+      const firstWeekStart = getStartOfWeek(new Date(year, 0, 1), WORKING_WEEK_START_DAY);
+      const weekStartDayNumber = toDayNumber(weekStart);
+      const firstWeekStartDayNumber = toDayNumber(firstWeekStart);
+      const weekNumber = 1 + Math.floor((weekStartDayNumber - firstWeekStartDayNumber) / 7);
+
+      return {
+        year,
+        weekNumber,
+        weekStart,
+        weekEnd,
+        label: `Week ${weekNumber}`
+      };
+    }
+
+    function getWorkingWeekInfoByNumber(year, weekNumber) {
+      const normalizedYear = clampWorkingWeekYear(year);
+      const normalizedWeekNumber = clampWorkingWeekNumber(weekNumber, normalizedYear);
+      const firstWeekStart = getStartOfWeek(new Date(normalizedYear, 0, 1), WORKING_WEEK_START_DAY);
+      const weekStart = new Date(firstWeekStart);
+      weekStart.setDate(firstWeekStart.getDate() + ((normalizedWeekNumber - 1) * 7));
+      weekStart.setHours(0, 0, 0, 0);
+
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + WORKING_WEEK_LENGTH_DAYS - 1);
+
+      return {
+        year: normalizedYear,
+        weekNumber: normalizedWeekNumber,
+        weekStart,
+        weekEnd,
+        label: `Week ${normalizedWeekNumber}`
+      };
+    }
+
+    function getDetailedExportWeekSelection(settings = itemSettings) {
+      const fallbackWeekInfo = getWorkingWeekInfo(new Date()) || { year: new Date().getFullYear(), weekNumber: 1 };
+      const year = clampWorkingWeekYear(settings?.detailedExportWeekYear ?? fallbackWeekInfo.year);
+      const weekNumber = clampWorkingWeekNumber(settings?.detailedExportWeekNumber ?? fallbackWeekInfo.weekNumber, year);
+
+      return {
+        year,
+        weekNumber,
+        weekInfo: getWorkingWeekInfoByNumber(year, weekNumber)
+      };
     }
 
     function getStartOfIsoWeek(value) {
@@ -7641,6 +7802,15 @@
           .filter(task => task.category === category.name)
           .reduce((sum, task) => sum + getTaskCategoryCountWeight(task), 0),
         color: category.color
+      }));
+    }
+
+    function getDetailedCounterExportRows(layout = getTaskSheetHeaderLayout()) {
+      return layout.headerRows.map((row, index) => ({
+        No: index + 1,
+        Name: row.label,
+        Quantity: row.value,
+        Accent: row.accent
       }));
     }
 
@@ -7907,7 +8077,7 @@
         columns.forEach((column, columnIndex) => {
           const cell = worksheetRow.getCell(columnIndex + 1);
           cell.value = row[column.key] ?? '';
-          if (dateColumnKeys.has(column.key) && cell.value instanceof Date) {
+          if (dateColumnKeys.has(column.key) && (cell.value instanceof Date || typeof cell.value === 'number')) {
             cell.numFmt = 'd-mmm-yy';
           }
         });
@@ -7966,9 +8136,18 @@
         workbook.title = `Task Manager Detailed Export ${stamp}`;
 
         const validationLists = buildValidationListSheet(workbook);
-        const currentWeekInfo = getIsoWeekInfo(new Date());
+        const selectedWeek = getDetailedExportWeekSelection();
+        const currentWeekInfo = selectedWeek.weekInfo;
+        const weekSubtitle = `${currentWeekInfo.label} of ${currentWeekInfo.year} (${formatWeekRangeLabel(currentWeekInfo)}; Sunday to Thursday working week)`;
         const taskRows = getDetailedTaskExportRows();
+        const taskHeaderLayout = getTaskSheetHeaderLayout();
+        const counterRows = getDetailedCounterExportRows(taskHeaderLayout);
         const weeklyCompletedRows = getWeeklyCompletedTaskRows(currentWeekInfo);
+        const counterColumns = [
+          { key: 'No', header: 'No.', width: 8 },
+          { key: 'Name', header: 'Counter', width: 34 },
+          { key: 'Quantity', header: 'Quantity', width: 14 }
+        ];
         const taskColumns = [
           { key: 'No', header: 'No.', width: 8 },
           { key: 'TaskImage', header: 'Task Image', width: 14 },
@@ -7987,20 +8166,45 @@
           { key: 'Status', header: 'Status', width: 20 },
           { key: 'Notes', header: 'Notes', width: 40 },
         ];
-        const taskHeaderLayout = getTaskSheetHeaderLayout();
         const getTaskColumnLetter = key => getExcelColumnLetter(taskColumns.findIndex(column => column.key === key) + 1);
 
+        styleDetailedWorksheet(workbook.addWorksheet('Counters'), counterColumns, counterRows, {
+          title: 'Task Counters',
+          subtitle: `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())}. Totals on this sheet include all saved tasks regardless of status.`,
+          accentColor: '1D4ED8',
+          emptyMessage: 'No counters available.',
+          centerColumns: [1, 3],
+          afterBuild: (worksheet, rows, columns, context) => {
+            rows.forEach((row, index) => {
+              const accent = normalizeExcelHexColor(row.Accent);
+              const rowNumber = context.tableStartRow + 1 + index;
+              const worksheetRow = worksheet.getRow(rowNumber);
+
+              worksheetRow.eachCell(cell => {
+                cell.font = { size: 13, bold: true, color: { argb: `FF${accent}` } };
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.92)}` }
+                };
+                cell.border = {
+                  top: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
+                  left: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
+                  bottom: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
+                  right: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } }
+                };
+              });
+            });
+          }
+        });
+
         styleDetailedWorksheet(workbook.addWorksheet('Tasks'), taskColumns, taskRows, {
-          title: 'Tasks Dashboard',
-          subtitle: `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())} with the current task register and summary totals in the sheet header.`,
+          title: 'Detailed Tasks',
+          subtitle: `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())}. Summary counters were moved to the Counters sheet; this sheet keeps the detailed task table only.`,
           accentColor: '1D4ED8',
           emptyMessage: 'No tasks available.',
-          tableStartRow: taskHeaderLayout.tableStartRow,
           centerColumns: [1, 2, 5, 6, 10, 11, 12, 13, 14, 15],
           dateColumns: ['Created', 'Started', 'Completed', 'Received', 'Due'],
-          beforeTable: (worksheet, columns, context) => {
-            buildTaskSheetDashboardHeader(worksheet, context.lastColumn, taskHeaderLayout);
-          },
           afterBuild: (worksheet, rows, columns, context) => {
             const startRow = context.tableStartRow + 1;
             const endRow = Math.max(rows.length + context.tableStartRow, startRow);
@@ -8082,11 +8286,11 @@
 
         styleDetailedWorksheet(workbook.addWorksheet('Weekly Completed'), weeklyCompletedColumns, weeklyCompletedRows, {
           title: `${currentWeekInfo.label} Completed Tasks`,
-          subtitle: `${currentWeekInfo.year} weekly closeout for ${formatWeekRangeLabel(currentWeekInfo)}.` ,
+          subtitle: `${weekSubtitle}.`,
           titleFontSize: 24,
           subtitleFontSize: 11,
           accentColor: '16A34A',
-          emptyMessage: 'No tasks were completed during the current week.',
+          emptyMessage: `No tasks were completed during ${currentWeekInfo.label} (${formatWeekRangeLabel(currentWeekInfo)}).`,
           centerColumns: [1, 3, 4, 7, 8, 9, 10, 11, 12],
           dateColumns: ['Created', 'Started', 'Due', 'Completed']
         });
@@ -8182,17 +8386,18 @@
     // Rebuilds both the primary stat chips and the secondary micro-stat grid.
     // Called as part of renderTasks() so counts always stay in sync.
     function renderStats() {
-      const total   = tasks.length;
-      const ongoing = tasks.filter(t => normalizeStatus(t.status) === 'Ongoing').length;
+      const openTasks = tasks.filter(task => !isTaskCompleted(task));
+      const total   = openTasks.length;
+      const ongoing = openTasks.filter(task => normalizeStatus(task.status) === 'Ongoing').length;
       const done    = tasks.filter(task => isTaskCompleted(task)).length;
-      const attention = tasks.filter(task => ATTENTION_PRIORITIES.has(normalizePriority(task.priority)) && !isTaskCompleted(task)).length;
-      const statusStats = STATUS_OPTIONS.map(status => ({
+      const attention = openTasks.filter(task => ATTENTION_PRIORITIES.has(normalizePriority(task.priority))).length;
+      const statusStats = STATUS_OPTIONS
+        .filter(status => status !== 'Completed')
+        .map(status => ({
         label: status,
         filterType: 'status',
         filterValue: status,
-        value: status === 'Completed'
-          ? tasks.filter(task => isTaskCompleted(task)).length
-          : tasks.filter(task => normalizeStatus(task.status) === status).length,
+        value: openTasks.filter(task => normalizeStatus(task.status) === status).length,
         accent: STATUS_ACCENTS[status] || 'var(--accent)',
         itemClass: `is-${toClassToken(status)}`
       }));
@@ -8200,7 +8405,7 @@
         label: priority,
         filterType: 'priority',
         filterValue: priority,
-        value: tasks.filter(task => normalizePriority(task.priority) === priority).length,
+        value: openTasks.filter(task => normalizePriority(task.priority) === priority).length,
         accent: PRIORITY_ACCENTS[priority] || 'var(--accent)',
         itemClass: `is-${toClassToken(priority)}`
       }));
@@ -8208,7 +8413,7 @@
         label: category.name,
         filterType: 'category',
         filterValue: category.name,
-        value: tasks
+        value: openTasks
           .filter(task => task.category === category.name)
           .reduce((sum, task) => sum + getTaskCategoryCountWeight(task), 0),
         accent: category.color,
@@ -8221,9 +8426,9 @@
 
       document.getElementById('taskStats').innerHTML = `
         <div class="stat-chip" style="--chip-accent:var(--accent-h)">
-          <span class="stat-label">All Tasks</span>
+          <span class="stat-label">Open Tasks</span>
           <strong class="stat-value">${total}</strong>
-          <span class="stat-hint">Saved locally</span>
+          <span class="stat-hint">Open work only</span>
         </div>
         <div class="stat-chip" style="--chip-accent:var(--accent)">
           <span class="stat-label">Ongoing Tasks</span>
@@ -8247,21 +8452,21 @@
           id: 'status',
           title: 'Status',
           accent: 'var(--status-ongoing)',
-          summary: `${total} task${total === 1 ? '' : 's'} across ${statusStats.length} statuses`,
+          summary: `${total} open task${total === 1 ? '' : 's'} across ${statusStats.length} statuses`,
           items: statusStats
         },
         {
           id: 'priority',
           title: 'Priority',
           accent: 'var(--medium)',
-          summary: `${total} task${total === 1 ? '' : 's'} across ${priorityStats.length} priorities`,
+          summary: `${total} open task${total === 1 ? '' : 's'} across ${priorityStats.length} priorities`,
           items: priorityStats
         },
         {
           id: 'category',
           title: 'Category',
           accent: 'var(--accent)',
-          summary: `${categoryUnits} unit${categoryUnits === 1 ? '' : 's'} across ${categoryStats.length} categor${categoryStats.length === 1 ? 'y' : 'ies'}`,
+          summary: `${categoryUnits} open unit${categoryUnits === 1 ? '' : 's'} across ${categoryStats.length} categor${categoryStats.length === 1 ? 'y' : 'ies'}`,
           items: categoryStats
         }
       ];
@@ -8709,7 +8914,7 @@
         </div>
 
         <div class="detail-submeta">
-          <div class="detail-row"><span>Sender</span><strong>${task.sender ? escHtml(task.sender) : 'N/A'}</strong></div>
+          <div class="detail-row is-full-width"><span>Sender</span><strong>${task.sender ? escHtml(task.sender) : 'N/A'}</strong></div>
           <div class="detail-row is-full-width"><span>Email Subject</span><strong>${task.emailSubject ? escHtml(task.emailSubject) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-created"><span>Created</span><strong>${task.createdAt ? escHtml(formatDate(task.createdAt)) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-started"><span>Started</span><strong>${task.startedAt ? escHtml(formatDate(task.startedAt)) : 'N/A'}</strong></div>
@@ -10334,13 +10539,15 @@
       const senderOptions = normalizeOptionList(document.getElementById('taskSenderOptionsInput').value);
       const projectOptions = normalizeOptionList(document.getElementById('taskProjectOptionsInput').value);
       const supplierOptions = normalizeOptionList(document.getElementById('itemSupplierOptionsInput').value);
+      const detailedExportWeekYear = clampWorkingWeekYear(document.getElementById('detailedExportWeekYearInput').value);
+      const detailedExportWeekNumber = clampWorkingWeekNumber(document.getElementById('detailedExportWeekNumberInput').value, detailedExportWeekYear);
 
       if (!supplierOptions.length) {
         document.getElementById('itemSupplierOptionsInput').focus();
         return;
       }
 
-      itemSettings = normalizeItemSettings({ senderOptions, projectOptions, supplierOptions });
+      itemSettings = normalizeItemSettings({ senderOptions, projectOptions, supplierOptions, detailedExportWeekNumber, detailedExportWeekYear });
       saveItemSettings();
       renderTaskProjectOptions();
       closeItemSettingsModal();
@@ -10353,6 +10560,8 @@
     document.getElementById('importBackupBtn').addEventListener('click', () => {
       document.getElementById('settingsBackupInput')?.click();
     });
+    document.getElementById('detailedExportWeekNumberInput').addEventListener('input', updateDetailedExportWeekPreview);
+    document.getElementById('detailedExportWeekYearInput').addEventListener('input', updateDetailedExportWeekPreview);
     document.getElementById('settingsBackupInput').addEventListener('change', async e => {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -10571,6 +10780,26 @@
       document.getElementById('taskSenderOptionsInput').value = (itemSettings?.senderOptions || []).join('\n');
       document.getElementById('taskProjectOptionsInput').value = (itemSettings?.projectOptions || []).join('\n');
       document.getElementById('itemSupplierOptionsInput').value = (itemSettings?.supplierOptions || DEFAULT_ITEM_SUPPLIER_OPTIONS).join('\n');
+      const detailedExportWeekSelection = getDetailedExportWeekSelection();
+      document.getElementById('detailedExportWeekNumberInput').value = detailedExportWeekSelection.weekNumber;
+      document.getElementById('detailedExportWeekYearInput').value = detailedExportWeekSelection.year;
+      updateDetailedExportWeekPreview();
+    }
+
+    function updateDetailedExportWeekPreview() {
+      const preview = document.getElementById('detailedExportWeekPreview');
+      const weekNumberInput = document.getElementById('detailedExportWeekNumberInput');
+      const weekYearInput = document.getElementById('detailedExportWeekYearInput');
+      if (!preview || !weekNumberInput || !weekYearInput) return;
+
+      const fallbackSelection = getDetailedExportWeekSelection();
+      const year = clampWorkingWeekYear(weekYearInput.value || fallbackSelection.year);
+      const maxWeeks = getWorkingWeeksInYear(year);
+      const weekNumber = clampWorkingWeekNumber(weekNumberInput.value || fallbackSelection.weekNumber, year);
+      const weekInfo = getWorkingWeekInfoByNumber(year, weekNumber);
+
+      weekNumberInput.max = String(maxWeeks);
+      preview.textContent = `${weekInfo.label} (${year}) runs ${formatWeekRangeLabel(weekInfo)}. Weekly Completed includes Sunday to Thursday only.`;
     }
 
     function openItemSettingsModal() {
