@@ -2019,9 +2019,51 @@
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 7px;
       min-width: 0;
       flex: 1 1 220px;
+      color: color-mix(in srgb, var(--text-muted) 58%, var(--text) 42%);
+    }
+
+    .task-meta .badge {
+      padding: 4px 9px;
+      font-size: 10px;
+      font-weight: 800;
+      border-width: 1px;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05),
+        0 1px 0 rgba(15, 23, 42, .08);
+    }
+
+    .task-meta .task-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--border));
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--accent) 16%, rgba(255,255,255,.05)), rgba(255,255,255,.03)),
+        linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 78%);
+      color: color-mix(in srgb, var(--text-muted) 30%, var(--text) 70%);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.1;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05),
+        0 1px 0 rgba(15, 23, 42, .08);
+    }
+
+    .task-meta .task-date:not(.overdue) {
+      backdrop-filter: blur(6px);
+    }
+
+    .task-meta .task-date.overdue {
+      border-color: color-mix(in srgb, var(--high) 54%, var(--border));
+      background:
+        linear-gradient(180deg, rgba(239,68,68,.2), rgba(255,255,255,.025)),
+        linear-gradient(90deg, rgba(239,68,68,.15), transparent 80%);
+      color: var(--high);
     }
 
     .task-info-strip {
@@ -2117,6 +2159,31 @@
 
     .task-action-item.is-wide {
       grid-column: 1 / -1;
+    }
+
+    .task-action-status {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: stretch;
+      align-items: stretch;
+      width: 100%;
+      padding-top: 4px;
+    }
+
+    .task-action-status .badge {
+      width: 100%;
+      justify-content: center;
+      min-height: 36px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      border-width: 1px;
+      border-radius: 12px;
+      letter-spacing: .05em;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05),
+        0 1px 0 rgba(15, 23, 42, .08);
+        cursor: default;
     }
 
     .task-action-label {
@@ -2243,43 +2310,67 @@
       justify-self: end;
       align-content: start;
       min-width: 0;
-      max-width: 500px;
+      max-width: 700px;
       width: 100%;
     }
 
     .task-preview-date {
       width: 100%;
+      position: relative;
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      align-items: center;
-      gap: 3px;
-      padding: 4px 7px;
-      border-radius: 8px;
-      border: 1px solid color-mix(in srgb, var(--accent) 8%, var(--border));
-      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      gap: 4px;
+      padding: 8px 40px 8px 10px;
+      border-radius: 12px;
+      border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border));
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
       text-align: left;
       min-width: 0;
+      overflow: hidden;
+    }
+
+    .task-preview-date::after {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      min-width: 24px;
+      height: 20px;
+      padding: 0 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      font-size: 8px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      box-sizing: border-box;
     }
 
     .task-preview-date-label {
       font-size: 9px;
       line-height: 1.1;
-      color: color-mix(in srgb, var(--text-muted) 76%, var(--accent) 24%);
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: .06em;
+      letter-spacing: .1em;
       white-space: nowrap;
+      font-weight: 800;
+      justify-self: start;
     }
 
     .task-preview-date-value {
-      font-size: 10px;
+      font-size: 11px;
       line-height: 1.2;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text);
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      text-align: right;
+      text-align: left;
     }
 
     .task-description-block {
@@ -2405,31 +2496,125 @@
       height: 28px;
     }
 
-    .task-preview-date.is-due {
-      border-color: color-mix(in srgb, var(--medium) 45%, var(--border));
-      background: linear-gradient(180deg, rgba(245,158,11,.11), rgba(255,255,255,.025));
-    }
-
-    .task-preview-date.is-due .task-preview-date-value {
-      color: var(--medium);
-    }
-
-    .task-preview-date.is-due.overdue {
-      border-color: color-mix(in srgb, var(--high) 60%, var(--border));
-      background: linear-gradient(180deg, rgba(239,68,68,.14), rgba(255,255,255,.025));
-    }
-
-    .task-preview-date.is-due.overdue .task-preview-date-value {
-      color: var(--high);
-    }
-
     .task-preview-date.is-received {
-      border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
-      background: linear-gradient(180deg, rgba(79,124,255,.11), rgba(255,255,255,.025));
+      border-left: 4px solid #5b6cff;
+      border-radius: 14px 14px 14px 4px;
+      background:
+        linear-gradient(180deg, rgba(91,108,255,.18), rgba(255,255,255,.025)),
+        linear-gradient(90deg, rgba(91,108,255,.13), transparent 76%);
+    }
+
+    .task-preview-date.is-received::after {
+      content: 'IN';
+      color: #4a56d9;
+      background: rgba(91,108,255,.18);
+      border: 1px solid rgba(91,108,255,.28);
+    }
+
+    .task-preview-date.is-received .task-preview-date-label {
+      color: #4a56d9;
     }
 
     .task-preview-date.is-received .task-preview-date-value {
-      color: var(--accent-h);
+      color: #5b6cff;
+    }
+
+    .task-preview-date.is-started {
+      border: 1px dashed rgba(13,148,136,.42);
+      border-left: 4px solid #14b8a6;
+      border-radius: 18px 10px 18px 10px;
+      background:
+        linear-gradient(180deg, rgba(20,184,166,.16), rgba(255,255,255,.02)),
+        linear-gradient(90deg, rgba(20,184,166,.12), transparent 78%);
+    }
+
+    .task-preview-date.is-started::after {
+      content: 'Go';
+      color: #0f766e;
+      background: rgba(20,184,166,.16);
+      border: 1px dashed rgba(13,148,136,.34);
+    }
+
+    .task-preview-date.is-started .task-preview-date-label {
+      color: #0f766e;
+    }
+
+    .task-preview-date.is-started .task-preview-date-value {
+      color: #14b8a6;
+    }
+
+    .task-preview-date.is-due {
+      border: 1px solid color-mix(in srgb, var(--medium) 42%, var(--border));
+      border-top: 2px solid color-mix(in srgb, var(--medium) 86%, white 14%);
+      border-radius: 7px;
+      background:
+        linear-gradient(180deg, rgba(245,158,11,.12), rgba(255,255,255,.02)),
+        repeating-linear-gradient(135deg, rgba(245,158,11,.12) 0 7px, rgba(245,158,11,.04) 7px 14px);
+      background-size: 100% 100%, 28px 100%;
+      background-repeat: no-repeat;
+      background-position: 0 0, 0 0;
+    }
+
+    .task-preview-date.is-due::after {
+      content: 'Due';
+      color: color-mix(in srgb, var(--medium) 84%, var(--text) 16%);
+      background: rgba(245,158,11,.18);
+      border: 1px solid rgba(245,158,11,.26);
+      border-radius: 7px;
+    }
+
+    .task-preview-date.is-due .task-preview-date-label {
+      color: color-mix(in srgb, var(--medium) 82%, var(--text-muted) 18%);
+    }
+
+    .task-preview-date.is-due .task-preview-date-value {
+      color: color-mix(in srgb, var(--medium) 88%, white 12%);
+    }
+
+    .task-preview-date.is-due.overdue {
+      border-color: color-mix(in srgb, var(--high) 56%, var(--border));
+      border-top-color: color-mix(in srgb, var(--high) 90%, white 10%);
+      background:
+        linear-gradient(180deg, rgba(239,68,68,.16), rgba(255,255,255,.018)),
+        repeating-linear-gradient(135deg, rgba(239,68,68,.16) 0 7px, rgba(239,68,68,.05) 7px 14px);
+    }
+
+    .task-preview-date.is-due.overdue::after {
+      content: 'Late';
+      color: color-mix(in srgb, var(--high) 92%, white 8%);
+      background: rgba(239,68,68,.2);
+      border-color: rgba(239,68,68,.28);
+    }
+
+    .task-preview-date.is-due.overdue .task-preview-date-label,
+    .task-preview-date.is-due.overdue .task-preview-date-value {
+      color: color-mix(in srgb, var(--high) 88%, white 12%);
+    }
+
+    .task-preview-date.is-completed {
+      border: 1px solid rgba(74,222,128,.36);
+      border-radius: 999px;
+      background:
+        linear-gradient(180deg, rgba(74,222,128,.14), rgba(255,255,255,.018)),
+        linear-gradient(90deg, rgba(134,239,172,.12), transparent 80%);
+      box-shadow:
+        inset 0 0 0 1px rgba(134,239,172,.12),
+        inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .task-preview-date.is-completed::after {
+      content: 'OK';
+      color: #15803d;
+      background: rgba(134,239,172,.16);
+      border: 1px solid rgba(74,222,128,.28);
+    }
+
+    .task-preview-date.is-completed .task-preview-date-label {
+      color: #15803d;
+    }
+
+    .task-preview-date.is-completed .task-preview-date-value {
+      color: #22c55e;
     }
 
     .task-preview-date.is-created {
@@ -2650,7 +2835,7 @@
       gap: 3px;
       padding: 4px 7px;
       border-radius: 8px;
-      border-left: 1px solid color-mix(in srgb, var(--accent) 8%, var(--border));
+      border-left: 3px solid var(--date-accent, color-mix(in srgb, var(--accent) 68%, white 32%));
       background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
     }
 
@@ -2666,7 +2851,7 @@
       font-size: 9px;
       line-height: 1.2;
       font-weight: 600;
-      color: var(--text);
+      color: var(--date-value-color, var(--text));
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -2685,33 +2870,38 @@
     }
 
     .detail-row.is-received {
-      --date-accent: var(--accent);
-      border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
-      background: linear-gradient(180deg, rgba(79,124,255,.11), rgba(255,255,255,.025));
+      --date-accent: #5b6cff;
+      --date-value-color: #5b6cff;
+      border-color: rgba(91,108,255,.34);
+      background: linear-gradient(180deg, rgba(91,108,255,.14), rgba(255,255,255,.025));
     }
 
-    .detail-row.is-received strong {
-      color: var(--accent-h);
+    .detail-row.is-started {
+      --date-accent: #14b8a6;
+      --date-value-color: #14b8a6;
+      border-color: rgba(20,184,166,.34);
+      background: linear-gradient(180deg, rgba(20,184,166,.14), rgba(255,255,255,.02));
     }
 
     .detail-row.is-due {
       --date-accent: var(--medium);
+      --date-value-color: var(--medium);
       border-color: color-mix(in srgb, var(--medium) 45%, var(--border));
       background: linear-gradient(180deg, rgba(245,158,11,.11), rgba(255,255,255,.025));
     }
 
-    .detail-row.is-due strong {
-      color: var(--medium);
-    }
-
     .detail-row.is-due.overdue {
       --date-accent: var(--high);
+      --date-value-color: var(--high);
       border-color: color-mix(in srgb, var(--high) 60%, var(--border));
       background: linear-gradient(180deg, rgba(239,68,68,.14), rgba(255,255,255,.025));
     }
 
-    .detail-row.is-due.overdue strong {
-      color: var(--high);
+    .detail-row.is-completed {
+      --date-accent: #86efac;
+      --date-value-color: #22c55e;
+      border-color: rgba(74,222,128,.32);
+      background: linear-gradient(180deg, rgba(134,239,172,.14), rgba(255,255,255,.02));
     }
 
     .detail-stack {
@@ -5115,7 +5305,7 @@
                   </div>
                   <div class="form-group task-form-field task-field-completed">
                     <label for="taskCompletedAt">Completion Date</label>
-                    <input type="date" id="taskCompletedAt" readonly />
+                    <input type="date" id="taskCompletedAt" />
                   </div>
                 </div>
               </div>
@@ -6816,7 +7006,7 @@
 
       if (normalizedStatus === 'Completed' && previousStatus !== 'Completed') {
         completedAt = today();
-      } else {
+      } else if (normalizedStatus !== 'Completed') {
         completedAt = '';
       }
 
@@ -7511,16 +7701,16 @@
                   ${task.emailSubject ? `<div class="task-email-subject">Email: ${getHighlightedMarkup(task.emailSubject, searchQuery)}</div>` : ''}
                   <div class="task-info-strip">
                     <div class="task-meta">
-                      ${getFilterBadgeMarkup('status', taskData.status)}
                       <span class="task-date">${taskData.workflowItemCount} item${taskData.workflowItemCount === 1 ? '' : 's'}</span>
                       <span class="task-date">${taskData.logData.count} log${taskData.logData.count === 1 ? '' : 's'}</span>
                       ${taskData.subtaskCount ? `<span class="task-date">${taskData.completedCount}/${taskData.subtaskCount} subtasks</span>` : ''}
                     </div>
                     <div class="task-preview-list">
                       <div class="task-preview-dates">
-                        ${task.createdAt ? `<div class="task-preview-date is-created"><span class="task-preview-date-label">Created</span><span class="task-preview-date-value">${escHtml(formatDate(task.createdAt))}</span></div>` : ''}
                         ${task.receivedAt ? `<div class="task-preview-date is-received"><span class="task-preview-date-label">Received</span><span class="task-preview-date-value">${escHtml(formatDate(task.receivedAt))}</span></div>` : ''}
+                        ${task.startedAt ? `<div class="task-preview-date is-started"><span class="task-preview-date-label">Started</span><span class="task-preview-date-value">${escHtml(formatDate(task.startedAt))}</span></div>` : ''}
                         ${task.dueDate ? `<div class="task-preview-date is-due ${taskData.overdue ? 'overdue' : ''}"><span class="task-preview-date-label">Due</span><span class="task-preview-date-value">${taskData.overdue ? 'Overdue ' : ''}${escHtml(formatDate(task.dueDate))}</span></div>` : ''}
+                        ${task.completedAt ? `<div class="task-preview-date is-completed"><span class="task-preview-date-label">Completed</span><span class="task-preview-date-value">${escHtml(formatDate(task.completedAt))}</span></div>` : ''}
                       </div>
                     </div>
                   </div>
@@ -7540,6 +7730,9 @@
                 <select class="status-select" data-id="${task.id}" title="Change status">
                   ${buildOptionMarkup(STATUS_OPTIONS, taskData.status)}
                 </select>
+              </div>
+              <div class="task-action-status">
+                ${getFilterBadgeMarkup('status', taskData.status)}
               </div>
             </div>
           </div>
@@ -7572,13 +7765,16 @@
                     ${getTaskPriorityMarkup(taskData.priority)}
                   </div>
                   <div class="task-meta">
-                    ${getFilterBadgeMarkup('status', taskData.status)}
                     <span class="task-date ${taskData.overdue ? 'overdue' : ''}">${escHtml(dueSummary)}</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="task-actions task-actions-compact"></div>
+            <div class="task-actions task-actions-compact">
+              <div class="task-action-status">
+                ${getFilterBadgeMarkup('status', taskData.status)}
+              </div>
+            </div>
           </div>
         </div>`;
     }
@@ -8995,10 +9191,10 @@
           <div class="detail-row is-full-width"><span>Sender</span><strong>${task.sender ? escHtml(task.sender) : 'N/A'}</strong></div>
           <div class="detail-row is-full-width"><span>Email Subject</span><strong>${task.emailSubject ? escHtml(task.emailSubject) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-created"><span>Created</span><strong>${task.createdAt ? escHtml(formatDate(task.createdAt)) : 'N/A'}</strong></div>
-          <div class="detail-row is-date is-started"><span>Started</span><strong>${task.startedAt ? escHtml(formatDate(task.startedAt)) : 'N/A'}</strong></div>
-          <div class="detail-row is-date is-completed"><span>Completed</span><strong>${task.completedAt ? escHtml(formatDate(task.completedAt)) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-received"><span>Received</span><strong>${task.receivedAt ? escHtml(formatDate(task.receivedAt)) : 'N/A'}</strong></div>
+          <div class="detail-row is-date is-started"><span>Started</span><strong>${task.startedAt ? escHtml(formatDate(task.startedAt)) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-due ${dueClass}"><span>Due</span><strong>${task.dueDate ? escHtml(formatDate(task.dueDate)) : 'N/A'}</strong></div>
+          <div class="detail-row is-date is-completed"><span>Completed</span><strong>${task.completedAt ? escHtml(formatDate(task.completedAt)) : 'N/A'}</strong></div>
         </div>
 
         <div class="detail-stack">
