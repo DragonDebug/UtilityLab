@@ -1830,31 +1830,33 @@
 
     .task-heading-copy {
       display: grid;
-      gap: 6px;
+      gap: 7px;
       min-width: 0;
       flex: 1 1 auto;
     }
 
     .task-type-line {
-      display: inline-grid;
-      gap: 5px;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       max-width: 100%;
       align-self: flex-start;
       justify-self: start;
-      padding: 0;
-      border: 0;
-      background: none;
-      box-shadow: none;
+      padding: 0 0 0 12px;
     }
 
     .task-type-line::before {
       content: '';
-      width: 48px;
-      max-width: 100%;
-      height: 2px;
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 4px;
+      height: 1.2em;
+      transform: translateY(-50%);
       border-radius: 999px;
-      background: linear-gradient(90deg, var(--task-type-color, var(--accent)), color-mix(in srgb, var(--task-type-color, var(--accent)) 18%, transparent));
-      box-shadow: 0 0 0 1px color-mix(in srgb, var(--task-type-color, var(--accent)) 18%, transparent);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--task-type-color, var(--accent)) 88%, white 12%), color-mix(in srgb, var(--task-type-color, var(--accent)) 56%, transparent));
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--task-type-color, var(--accent)) 16%, transparent);
     }
 
     .task-type-dot {
@@ -1866,11 +1868,11 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: .12em;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .16em;
       text-transform: uppercase;
-      color: color-mix(in srgb, var(--task-type-color, var(--accent)) 62%, var(--text-muted) 38%);
+      color: color-mix(in srgb, var(--task-type-color, var(--accent)) 84%, var(--text) 16%);
     }
 
     .task-priority {
@@ -1933,6 +1935,7 @@
       font-size: 16px;
       font-weight: 700;
       line-height: 1.34;
+      margin-top: -8px;
       margin-bottom: 0;
       color: color-mix(in srgb, var(--text) 88%, var(--accent-h) 12%);
       max-width: 100%;
@@ -2324,11 +2327,12 @@
     }
 
     .task-card-compact .task-type-line {
-      gap: 4px;
+      gap: 7px;
+      padding-left: 10px;
     }
 
     .task-card-compact .task-type-name {
-      font-size: 8px;
+      font-size: 12px;
     }
 
     .task-card-compact .task-priority-bar {
