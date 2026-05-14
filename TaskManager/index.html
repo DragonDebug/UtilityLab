@@ -2401,8 +2401,8 @@
 
     .task-card-compact .task-card-body {
       grid-template-columns: minmax(0, 1fr) auto;
-      padding: 11px 12px;
-      align-items: center;
+      padding: 10px 11px;
+      align-items: start;
     }
 
     .task-card-compact .task-main {
@@ -2410,8 +2410,23 @@
       padding-right: 0;
     }
 
+    .task-card-compact.has-compact-dates .task-main {
+      grid-template-columns: minmax(0, 1fr) minmax(132px, 148px);
+      gap: 8px;
+      align-items: start;
+    }
+
+    .task-card-compact.has-compact-dates .task-heading {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .task-card-compact .task-heading-main {
+      gap: 4px;
+    }
+
     .task-card-compact .task-title {
-      font-size: 12px;
+      font-size: 13px;
       -webkit-line-clamp: 1;
       line-clamp: 1;
       margin-bottom: 0;
@@ -2443,12 +2458,8 @@
 
     .task-card-compact .task-project-pill {
       font-size: 9px;
-      padding: 4px 8px;
-      min-height: 26px;
-    }
-
-    .task-card-compact .task-title {
-      font-size: 15px;
+      padding: 3px 7px;
+      min-height: 24px;
     }
 
     @media (max-width: 760px) {
@@ -2471,7 +2482,7 @@
     }
 
     .task-card-compact .task-heading {
-      gap: 7px;
+      gap: 6px;
     }
 
     .task-card-compact .quick-toggle {
@@ -2481,10 +2492,12 @@
 
     .task-card-compact .task-actions {
       grid-template-columns: 1fr;
-      align-self: stretch;
-      justify-self: stretch;
-      min-width: 0;
-      width: auto;
+      align-self: start;
+      justify-self: end;
+      align-content: start;
+      min-width: 112px;
+      width: 112px;
+      gap: 4px;
     }
 
     .task-card-compact .task-action-tools {
@@ -2494,6 +2507,52 @@
     .task-card-compact .task-action-icon-btn {
       width: 28px;
       height: 28px;
+    }
+
+    .task-card-compact .task-signal-row {
+      gap: 5px 8px;
+    }
+
+    .task-card-compact .task-sender-label,
+    .task-card-compact .task-email-subject {
+      font-size: 9px;
+      line-height: 1.25;
+    }
+
+    .task-card-compact .task-compact-context {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      align-content: start;
+    }
+
+    .task-card-compact .task-compact-dates-column {
+      grid-column: 2;
+      grid-row: 1;
+      min-width: 0;
+      align-self: start;
+      justify-self: start;
+    }
+
+    .task-card-compact .task-compact-dates-column .task-preview-dates {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+      width: 100%;
+      max-width: none;
+      justify-self: stretch;
+      min-width: 150px;
+    }
+
+    .task-card-compact .task-action-status {
+      padding-top: 0;
+      align-self: start;
+    }
+
+    .task-card-compact .task-action-status .badge {
+      min-height: 45px;
+      padding: 7px 10px;
+      font-size: 10px;
+      border-radius: 9px;
     }
 
     .task-preview-date.is-received {
@@ -7741,12 +7800,18 @@
 
     function getCompactTaskCardMarkup(task, searchQuery = '') {
       const taskData = getTaskCardData(task);
-      const dueSummary = task.dueDate
-        ? `${taskData.overdue ? 'Overdue' : 'Due'} ${formatDate(task.dueDate)}`
-        : (task.receivedAt ? `Received ${formatDate(task.receivedAt)}` : 'No due date');
+      const compactContextMarkup = [
+        task.sender ? `<div class="task-sender-label">From: ${getHighlightedMarkup(task.sender, searchQuery)}</div>` : '',
+        task.emailSubject ? `<div class="task-email-subject">Email: ${getHighlightedMarkup(task.emailSubject, searchQuery)}</div>` : ''
+      ].filter(Boolean).join('');
+      const compactDateMarkup = [
+        task.receivedAt ? `<div class="task-preview-date is-received"><span class="task-preview-date-label">Received</span><span class="task-preview-date-value">${escHtml(formatDate(task.receivedAt))}</span></div>` : '',
+        task.dueDate ? `<div class="task-preview-date is-due ${taskData.overdue ? 'overdue' : ''}"><span class="task-preview-date-label">Due</span><span class="task-preview-date-value">${taskData.overdue ? 'Overdue ' : ''}${escHtml(formatDate(task.dueDate))}</span></div>` : '',
+        task.completedAt ? `<div class="task-preview-date is-completed"><span class="task-preview-date-label">Completed</span><span class="task-preview-date-value">${escHtml(formatDate(task.completedAt))}</span></div>` : ''
+      ].filter(Boolean).join('');
 
       return `
-        <div class="task-card task-card-compact ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isActive ? 'is-active' : ''}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
+        <div class="task-card task-card-compact ${compactDateMarkup ? 'has-compact-dates' : ''} ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isActive ? 'is-active' : ''}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
           <div class="task-card-body">
             <div class="task-main">
               <div class="task-heading">
@@ -7764,11 +7829,10 @@
                     ${getTaskProjectMarkup(task.project, searchQuery)}
                     ${getTaskPriorityMarkup(taskData.priority)}
                   </div>
-                  <div class="task-meta">
-                    <span class="task-date ${taskData.overdue ? 'overdue' : ''}">${escHtml(dueSummary)}</span>
-                  </div>
+                  ${compactContextMarkup ? `<div class="task-compact-context">${compactContextMarkup}</div>` : ''}
                 </div>
               </div>
+              ${compactDateMarkup ? `<div class="task-compact-dates-column"><div class="task-preview-dates">${compactDateMarkup}</div></div>` : ''}
             </div>
             <div class="task-actions task-actions-compact">
               <div class="task-action-status">
