@@ -5656,6 +5656,730 @@
       .logs-meta { display: grid; }
     }
 
+    .report-modal {
+      width: min(1220px, calc(100vw - 24px));
+      max-width: min(1220px, calc(100vw - 24px));
+      max-height: calc(100dvh - 28px);
+      min-height: min(82vh, 840px);
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 14%, transparent), transparent 33%),
+        linear-gradient(180deg, color-mix(in srgb, var(--accent) 6%, var(--panel-bg)), var(--panel-alt));
+      border-color: color-mix(in srgb, var(--accent) 16%, var(--border));
+    }
+
+    .report-modal-header {
+      padding: 20px 22px 18px;
+      border-bottom: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent);
+    }
+
+    .report-modal-heading {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .report-modal-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--accent-h) 68%, var(--text-muted));
+    }
+
+    .report-modal-kicker::before {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .report-modal-heading h2 {
+      font-size: clamp(26px, 3vw, 34px);
+      line-height: 1.05;
+      letter-spacing: -.03em;
+    }
+
+    .report-modal-heading p {
+      color: var(--text-muted);
+      font-size: 13px;
+      max-width: 720px;
+      line-height: 1.6;
+    }
+
+    .report-modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .report-modal-body {
+      flex: 1 1 auto;
+      overflow: auto;
+      padding: 18px 22px 24px;
+      display: grid;
+      gap: 18px;
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in srgb, var(--accent) 34%, rgba(20,184,166,.46)) transparent;
+      scrollbar-gutter: stable;
+      overscroll-behavior: contain;
+      scroll-padding: 18px;
+    }
+
+    .report-modal-body::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+
+    .report-modal-body::-webkit-scrollbar-track {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--field-bg) 72%, transparent), transparent 22%, color-mix(in srgb, var(--field-bg) 62%, transparent));
+      border-radius: 999px;
+      margin-block: 6px;
+    }
+
+    .report-modal-body::-webkit-scrollbar-thumb {
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--accent-h) 76%, white 24%), color-mix(in srgb, #14b8a6 72%, var(--accent) 28%));
+      border: 2px solid transparent;
+      border-radius: 999px;
+      background-clip: padding-box;
+      min-height: 44px;
+    }
+
+    .report-modal-body::-webkit-scrollbar-thumb:hover {
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--accent-h) 88%, white 12%), color-mix(in srgb, #2dd4bf 76%, var(--accent) 24%));
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+
+    .report-modal-body::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    .report-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
+      background: color-mix(in srgb, var(--panel-bg) 94%, transparent);
+    }
+
+    .report-period-switch {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .report-period-btn {
+      min-height: 38px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+      background: color-mix(in srgb, var(--field-bg) 92%, transparent);
+      color: var(--text-muted);
+    }
+
+    .report-period-btn.is-active {
+      color: var(--text);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 26%, transparent), color-mix(in srgb, var(--accent) 12%, var(--field-bg-strong)));
+      border-color: color-mix(in srgb, var(--accent) 24%, var(--border-strong));
+    }
+
+    .report-toolbar-meta {
+      display: grid;
+      gap: 4px;
+      justify-items: end;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .report-toolbar-meta strong {
+      color: var(--text);
+      font-size: 14px;
+      letter-spacing: -.01em;
+    }
+
+    .report-grid,
+    .report-insight-list,
+    .report-stack-chart,
+    .report-summary-copy {
+      display: grid;
+      gap: 16px;
+    }
+
+    .report-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .report-kpi-card,
+    .report-card,
+    .report-summary-stamp {
+      position: relative;
+      overflow: hidden;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--panel-bg) 96%, transparent), color-mix(in srgb, var(--surface2) 92%, transparent));
+      min-width: 0;
+    }
+
+    .report-kpi-card {
+      display: grid;
+      gap: 10px;
+      min-height: 136px;
+    }
+
+    .report-kpi-card::after {
+      content: '';
+      position: absolute;
+      inset: auto -12% -36% auto;
+      width: 124px;
+      height: 124px;
+      border-radius: 999px;
+      background: radial-gradient(circle, color-mix(in srgb, var(--kpi-accent, var(--accent)) 24%, transparent), transparent 70%);
+      pointer-events: none;
+    }
+
+    .report-kpi-label,
+    .report-summary-stamp-label {
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: color-mix(in srgb, var(--kpi-accent, var(--accent)) 74%, var(--text-muted));
+    }
+
+    .report-kpi-value-row,
+    .report-card-header,
+    .report-stack-row-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .report-kpi-value {
+      font-size: clamp(26px, 3vw, 38px);
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      color: var(--kpi-accent, var(--text));
+    }
+
+    .report-kpi-delta {
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid color-mix(in srgb, var(--kpi-accent, var(--accent)) 22%, transparent);
+      background: color-mix(in srgb, var(--kpi-accent, var(--accent)) 12%, transparent);
+      color: color-mix(in srgb, var(--kpi-accent, var(--accent)) 88%, var(--text));
+      white-space: nowrap;
+    }
+
+    .report-kpi-hint,
+    .report-card-header p,
+    .report-card-meta,
+    .report-empty-state,
+    .report-insight-item p,
+    .report-summary-copy p,
+    .report-summary-stamp span,
+    .report-print-note {
+      color: var(--text-muted);
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    .report-panel-grid,
+    .report-summary-band,
+    .report-distribution-grid {
+      display: grid;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .report-panel-grid {
+      grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.95fr);
+    }
+
+    .report-distribution-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .report-summary-band {
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr);
+    }
+
+    .report-card-header h3 {
+      font-size: 17px;
+      letter-spacing: -.02em;
+    }
+
+    .report-card-meta {
+      text-align: right;
+      max-width: 220px;
+    }
+
+    .report-chart-shell {
+      position: relative;
+      border-radius: 16px;
+      border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--field-bg-strong) 88%, transparent), color-mix(in srgb, var(--field-bg) 90%, transparent)),
+        repeating-linear-gradient(180deg, transparent, transparent 49px, color-mix(in srgb, var(--border) 70%, transparent) 49px, color-mix(in srgb, var(--border) 70%, transparent) 50px);
+      padding: 14px;
+      min-height: 290px;
+    }
+
+    .report-line-chart {
+      width: 100%;
+      height: 220px;
+      display: block;
+      overflow: visible;
+    }
+
+    .report-line-grid {
+      stroke: color-mix(in srgb, var(--border) 84%, transparent);
+      stroke-width: 1;
+      stroke-dasharray: 4 8;
+    }
+
+    .report-line-path {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .report-line-area {
+      opacity: .16;
+    }
+
+    .report-line-point {
+      stroke-width: 2;
+      fill: var(--surface);
+    }
+
+    .report-line-labels {
+      display: grid;
+      grid-template-columns: repeat(var(--report-label-count, 1), minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .report-line-labels span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .report-legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .report-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .report-legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--legend-color, var(--accent));
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--legend-color, var(--accent)) 18%, transparent);
+    }
+
+    .report-insight-item {
+      display: grid;
+      gap: 6px;
+      padding: 14px 15px;
+      border-radius: 16px;
+      border: 1px solid color-mix(in srgb, var(--insight-accent, var(--accent)) 16%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--insight-accent, var(--accent)) 10%, transparent), color-mix(in srgb, var(--field-bg) 94%, transparent));
+    }
+
+    .report-insight-item strong,
+    .report-stack-row-head strong,
+    .report-summary-stamp strong {
+      font-size: 13px;
+      letter-spacing: -.01em;
+    }
+
+    .report-stack-row {
+      display: grid;
+      gap: 7px;
+    }
+
+    .report-stack-bar {
+      position: relative;
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--field-bg-strong) 90%, transparent);
+      border: 1px solid color-mix(in srgb, var(--bar-accent, var(--accent)) 14%, transparent);
+    }
+
+    .report-stack-bar > span {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: var(--bar-width, 0%);
+      border-radius: inherit;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--bar-accent, var(--accent)) 94%, white 6%), color-mix(in srgb, var(--bar-accent, var(--accent)) 62%, white 38%));
+    }
+
+    .report-summary-stamp {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, transparent), color-mix(in srgb, var(--field-bg-strong) 94%, transparent));
+    }
+
+    .report-summary-stamp strong {
+      font-size: 18px;
+      line-height: 1.25;
+      letter-spacing: -.02em;
+    }
+
+    .btn-header-reports {
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 18%, transparent), color-mix(in srgb, #14b8a6 20%, transparent));
+      border: 1px solid color-mix(in srgb, #14b8a6 22%, var(--border));
+      color: color-mix(in srgb, #d1faf4 65%, var(--text));
+    }
+
+    @media (max-width: 1160px) {
+      .report-kpi-grid,
+      .report-distribution-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .report-panel-grid,
+      .report-summary-band {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .report-modal-header,
+      .report-modal-body {
+        padding-inline: 14px;
+      }
+
+      .report-toolbar,
+      .report-kpi-grid,
+      .report-distribution-grid,
+      .report-period-switch {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .report-kpi-grid,
+      .report-distribution-grid {
+        display: grid;
+      }
+
+      .report-toolbar-meta {
+        justify-items: start;
+      }
+
+      .report-modal-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+
+    @page {
+      size: landscape;
+      margin: 8mm;
+    }
+
+    @media print {
+      body.report-print-mode .app-header,
+      body.report-print-mode .filters-strip,
+      body.report-print-mode .main-content,
+      body.report-print-mode #taskModal,
+      body.report-print-mode #categoryModal,
+      body.report-print-mode #templateModal,
+      body.report-print-mode #itemSettingsModal,
+      body.report-print-mode #itemsModal,
+      body.report-print-mode #detailContextMenu,
+      body.report-print-mode #fabNewTask,
+      body.report-print-mode #toastHost {
+        display: none !important;
+      }
+
+      body.report-print-mode {
+        overflow: visible;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      body.report-print-mode,
+      body.report-print-mode * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      body.report-print-mode #reportModal {
+        position: static !important;
+        inset: auto !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+      }
+
+      body.report-print-mode #reportModal .report-modal {
+        width: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        border-radius: 14px !important;
+        zoom: var(--report-print-scale, 1);
+        transform-origin: top left;
+      }
+
+      body.report-print-mode #reportModal .report-modal-body {
+        overflow: visible !important;
+      }
+
+      body.report-print-mode .report-modal-header {
+        padding: 10px 12px 8px !important;
+        gap: 10px !important;
+      }
+
+      body.report-print-mode .report-modal-heading {
+        gap: 4px !important;
+      }
+
+      body.report-print-mode .report-modal-kicker {
+        font-size: 8px !important;
+        letter-spacing: .14em !important;
+      }
+
+      body.report-print-mode .report-modal-kicker::before {
+        width: 18px !important;
+      }
+
+      body.report-print-mode .report-modal-heading h2 {
+        font-size: 21px !important;
+      }
+
+      body.report-print-mode .report-modal-heading p {
+        font-size: 10px !important;
+        line-height: 1.35 !important;
+      }
+
+      body.report-print-mode .report-modal-body,
+      body.report-print-mode .report-grid,
+      body.report-print-mode .report-insight-list,
+      body.report-print-mode .report-stack-chart,
+      body.report-print-mode .report-summary-copy {
+        gap: 8px !important;
+      }
+
+      body.report-print-mode .report-modal-body {
+        padding: 8px 12px 10px !important;
+      }
+
+      body.report-print-mode .report-toolbar {
+        padding: 8px 10px !important;
+        gap: 8px !important;
+        border-radius: 12px !important;
+      }
+
+      body.report-print-mode .report-period-btn {
+        min-height: 24px !important;
+        padding: 4px 10px !important;
+        font-size: 10px !important;
+      }
+
+      body.report-print-mode .report-toolbar-meta {
+        gap: 2px !important;
+        font-size: 9px !important;
+      }
+
+      body.report-print-mode .report-toolbar-meta strong {
+        font-size: 11px !important;
+      }
+
+      body.report-print-mode .report-kpi-grid {
+        gap: 8px !important;
+      }
+
+      body.report-print-mode .report-kpi-card,
+      body.report-print-mode .report-card,
+      body.report-print-mode .report-summary-stamp {
+        padding: 10px !important;
+        border-radius: 12px !important;
+      }
+
+      body.report-print-mode .report-kpi-card {
+        min-height: 82px !important;
+        gap: 6px !important;
+      }
+
+      body.report-print-mode .report-kpi-card::after {
+        width: 74px !important;
+        height: 74px !important;
+        inset: auto -8% -24% auto !important;
+      }
+
+      body.report-print-mode .report-kpi-label,
+      body.report-print-mode .report-summary-stamp-label {
+        font-size: 8px !important;
+        letter-spacing: .12em !important;
+      }
+
+      body.report-print-mode .report-kpi-value {
+        font-size: 21px !important;
+      }
+
+      body.report-print-mode .report-kpi-delta {
+        padding: 2px 7px !important;
+        font-size: 8px !important;
+      }
+
+      body.report-print-mode .report-kpi-hint,
+      body.report-print-mode .report-card-header p,
+      body.report-print-mode .report-card-meta,
+      body.report-print-mode .report-empty-state,
+      body.report-print-mode .report-insight-item p,
+      body.report-print-mode .report-summary-copy p,
+      body.report-print-mode .report-summary-stamp span,
+      body.report-print-mode .report-print-note,
+      body.report-print-mode .report-stack-row-head,
+      body.report-print-mode .report-legend-item,
+      body.report-print-mode .report-line-labels {
+        font-size: 9px !important;
+        line-height: 1.35 !important;
+      }
+
+      body.report-print-mode .report-panel-grid,
+      body.report-print-mode .report-summary-band,
+      body.report-print-mode .report-distribution-grid {
+        gap: 8px !important;
+      }
+
+      body.report-print-mode .report-panel-grid {
+        grid-template-columns: minmax(0, 1.55fr) minmax(0, .95fr) !important;
+      }
+
+      body.report-print-mode .report-distribution-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      }
+
+      body.report-print-mode .report-summary-band {
+        grid-template-columns: minmax(0, 1.35fr) minmax(220px, .65fr) !important;
+      }
+
+      body.report-print-mode .report-card-header h3 {
+        font-size: 12px !important;
+      }
+
+      body.report-print-mode .report-card-meta {
+        max-width: 150px !important;
+      }
+
+      body.report-print-mode .report-chart-shell {
+        padding: 8px !important;
+        min-height: 174px !important;
+        border-radius: 12px !important;
+      }
+
+      body.report-print-mode .report-line-chart {
+        height: 126px !important;
+      }
+
+      body.report-print-mode .report-line-labels {
+        gap: 4px !important;
+        margin-top: 5px !important;
+      }
+
+      body.report-print-mode .report-legend {
+        gap: 8px !important;
+      }
+
+      body.report-print-mode .report-legend-swatch {
+        width: 7px !important;
+        height: 7px !important;
+      }
+
+      body.report-print-mode .report-insight-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+
+      body.report-print-mode .report-insight-item {
+        padding: 8px 10px !important;
+        border-radius: 10px !important;
+        gap: 4px !important;
+      }
+
+      body.report-print-mode .report-insight-item strong,
+      body.report-print-mode .report-stack-row-head strong,
+      body.report-print-mode .report-summary-stamp strong {
+        font-size: 10px !important;
+      }
+
+      body.report-print-mode .report-stack-row {
+        gap: 4px !important;
+      }
+
+      body.report-print-mode .report-stack-bar {
+        height: 8px !important;
+      }
+
+      body.report-print-mode .report-summary-stamp {
+        gap: 6px !important;
+      }
+
+      body.report-print-mode .report-toolbar,
+      body.report-print-mode .report-kpi-card,
+      body.report-print-mode .report-card,
+      body.report-print-mode .report-summary-stamp,
+      body.report-print-mode .report-chart-shell {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      body.report-print-mode #printReportBtn,
+      body.report-print-mode #closeReportModalBtn,
+      body.report-print-mode .report-print-note {
+        display: none !important;
+      }
+    }
+
     /* Flat UI mode requested by user: remove all shadows globally. */
     *, *::before, *::after {
       box-shadow: none !important;
@@ -5699,6 +6423,10 @@
       <button class="btn btn-header btn-header-export-detailed" id="exportDetailedExcelBtn" type="button" title="Export detailed workbook" aria-label="Export detailed workbook">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18.5h14"/><path d="M7 7.5h10"/></svg>
         <span class="btn-header-label">Detailed</span>
+      </button>
+      <button class="btn btn-header btn-header-reports" id="openReportsBtn" type="button" title="Open reporting dashboard" aria-label="Open reporting dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 18.5h16"/><path d="M7 16V9"/><path d="M12 16V5.5"/><path d="M17 16v-3.5"/></svg>
+        <span class="btn-header-label">Reports</span>
       </button>
       <button class="btn btn-header btn-header-clear" id="clearCompletedBtn" type="button" title="Clear completed tasks" aria-label="Clear completed tasks">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M9 3.5h6"/><path d="M4 7.5h16"/><path d="M6.5 7.5 7.3 19a1 1 0 0 0 1 .9h7.4a1 1 0 0 0 1-.9l.8-11.5"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
@@ -6111,6 +6839,102 @@
       </div>
       <div class="form-actions">
         <button type="button" class="btn btn-ghost" id="closeItemsBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="reportModal">
+    <div class="modal report-modal" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+      <div class="report-modal-header">
+        <div class="report-modal-heading">
+          <span class="report-modal-kicker">Reporting Studio</span>
+          <h2 id="reportModalTitle">Performance Snapshot</h2>
+          <p id="reportModalSubtitle">A polished weekly, monthly, quarterly, or annual reporting view built from your live task history.</p>
+        </div>
+        <div class="report-modal-actions">
+          <button type="button" class="btn btn-ghost" id="printReportBtn">Print / Save PDF</button>
+          <button type="button" class="task-modal-close" id="closeReportModalBtn" aria-label="Close reporting dashboard">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="report-modal-body">
+        <section class="report-toolbar" aria-label="Reporting controls">
+          <div class="report-period-switch" id="reportPeriodSwitch" role="tablist" aria-label="Report periods">
+            <button type="button" class="btn report-period-btn" data-report-period="weekly" role="tab" aria-selected="false">Weekly</button>
+            <button type="button" class="btn report-period-btn is-active" data-report-period="monthly" role="tab" aria-selected="true">Monthly</button>
+            <button type="button" class="btn report-period-btn" data-report-period="quarterly" role="tab" aria-selected="false">Quarterly</button>
+            <button type="button" class="btn report-period-btn" data-report-period="annual" role="tab" aria-selected="false">Annual</button>
+          </div>
+          <div class="report-toolbar-meta">
+            <span>Reporting window</span>
+            <strong id="reportRangeLabel">Current month</strong>
+            <span id="reportGeneratedLabel">Generated from live task data</span>
+          </div>
+        </section>
+
+        <div class="report-grid">
+          <section class="report-kpi-grid" id="reportKpiGrid" aria-label="Key report metrics"></section>
+
+          <div class="report-panel-grid">
+            <section class="report-card">
+              <div class="report-card-header">
+                <div>
+                  <h3 id="reportTrendTitle">Task Flow</h3>
+                  <p id="reportTrendSubtitle">Created versus completed trend across recent periods.</p>
+                </div>
+                <div class="report-card-meta" id="reportTrendMeta">Recent activity overview</div>
+              </div>
+              <div class="report-chart-shell" id="reportTrendChart"></div>
+            </section>
+
+            <section class="report-card">
+              <div class="report-card-header">
+                <div>
+                  <h3>Executive Insights</h3>
+                  <p>Auto-written highlights you can paste into a weekly or monthly email.</p>
+                </div>
+                <div class="report-card-meta">Live commentary from current data</div>
+              </div>
+              <div class="report-insight-list" id="reportInsights"></div>
+            </section>
+          </div>
+
+          <section class="report-card">
+            <div class="report-card-header">
+              <div>
+                <h3>Distribution Breakdown</h3>
+                <p>Current workload mix by category, priority, status, and aging.</p>
+              </div>
+              <div class="report-card-meta">Snapshot of open work right now</div>
+            </div>
+            <div class="report-distribution-grid">
+              <div class="report-stack-chart" id="reportCategoryBreakdown"></div>
+              <div class="report-stack-chart" id="reportPriorityBreakdown"></div>
+              <div class="report-stack-chart" id="reportStatusBreakdown"></div>
+              <div class="report-stack-chart" id="reportAgingBreakdown"></div>
+            </div>
+          </section>
+
+          <section class="report-summary-band">
+            <div class="report-card report-summary-copy">
+              <div class="report-card-header">
+                <div>
+                  <h3>Email-Ready Summary</h3>
+                  <p>Short narrative copy built from the same reporting metrics shown above.</p>
+                </div>
+                <div class="report-card-meta">Suitable for screenshot, PDF, or copy-paste</div>
+              </div>
+              <div id="reportSummaryCopy"></div>
+            </div>
+            <div class="report-summary-stamp">
+              <span class="report-summary-stamp-label">Prepared for</span>
+              <strong id="reportStampTitle">Monthly Task Review</strong>
+              <span id="reportStampMeta">Generated from the current browser dataset.</span>
+              <span class="report-print-note">Use Print / Save PDF for a shareable layout.</span>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   </div>
@@ -6670,6 +7494,9 @@
       applyInputLimits();
       fillItemSettingsForm();
       updateStorageStatusCard();
+      if (document.getElementById('reportModal')?.classList.contains('open')) {
+        renderReportDashboard();
+      }
     }
 
     async function reloadAppFromStorage(options = {}) {
@@ -6850,6 +7677,7 @@
     let activeDetailEditTaskId = null;
     let activeSubtaskEditTaskId = null;
     let activeSubtaskEditId = null;
+    let currentReportPeriod = 'monthly';
     let itemSearchQuery = '';
     let selectedItemIds = new Set();
     let taskDraftImageDataUrl = '';
@@ -7583,6 +8411,610 @@
 
     function isTaskCompleted(task) {
       return normalizeStatus(task?.status) === 'Completed';
+    }
+
+    function toIsoDate(value) {
+      if (!value) return '';
+      if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+
+      const date = value instanceof Date ? value : new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
+    function startOfMonth(value = new Date()) {
+      const date = value instanceof Date ? new Date(value.getFullYear(), value.getMonth(), 1) : toDateOnly(value);
+      if (!date) return null;
+      date.setDate(1);
+      date.setHours(0, 0, 0, 0);
+      return date;
+    }
+
+    function endOfMonth(value = new Date()) {
+      const start = startOfMonth(value);
+      if (!start) return null;
+      return new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    }
+
+    function startOfQuarter(value = new Date()) {
+      const date = value instanceof Date ? new Date(value.getFullYear(), value.getMonth(), 1) : toDateOnly(value);
+      if (!date) return null;
+      const quarterStartMonth = Math.floor(date.getMonth() / 3) * 3;
+      return new Date(date.getFullYear(), quarterStartMonth, 1);
+    }
+
+    function endOfQuarter(value = new Date()) {
+      const start = startOfQuarter(value);
+      if (!start) return null;
+      return new Date(start.getFullYear(), start.getMonth() + 3, 0);
+    }
+
+    function startOfYear(value = new Date()) {
+      const date = value instanceof Date ? value : toDateOnly(value);
+      if (!date) return null;
+      return new Date(date.getFullYear(), 0, 1);
+    }
+
+    function endOfYear(value = new Date()) {
+      const start = startOfYear(value);
+      if (!start) return null;
+      return new Date(start.getFullYear(), 11, 31);
+    }
+
+    function formatMonthYearLabel(value) {
+      const date = value instanceof Date ? value : toDateOnly(value);
+      if (!date) return '';
+      return `${MONTH_LABELS[date.getMonth()]} ${date.getFullYear()}`;
+    }
+
+    function formatQuarterLabel(value) {
+      const date = value instanceof Date ? value : toDateOnly(value);
+      if (!date) return '';
+      return `Q${Math.floor(date.getMonth() / 3) + 1} ${date.getFullYear()}`;
+    }
+
+    function formatShortDateLabel(value) {
+      const date = value instanceof Date ? value : toDateOnly(value);
+      if (!date) return '';
+      return `${String(date.getDate()).padStart(2, '0')} ${MONTH_LABELS[date.getMonth()]}`;
+    }
+
+    function formatReportRange(start, end) {
+      const safeStart = start instanceof Date ? start : toDateOnly(start);
+      const safeEnd = end instanceof Date ? end : toDateOnly(end);
+      if (!safeStart || !safeEnd) return 'Live task snapshot';
+      return `${formatShortDateLabel(safeStart)} - ${formatShortDateLabel(safeEnd)} ${safeEnd.getFullYear()}`;
+    }
+
+    function shiftDateByDays(value, days) {
+      const date = value instanceof Date ? new Date(value) : toDateOnly(value);
+      if (!date) return null;
+      date.setDate(date.getDate() + days);
+      return date;
+    }
+
+    function shiftDateByMonths(value, months) {
+      const date = value instanceof Date ? new Date(value.getFullYear(), value.getMonth(), 1) : startOfMonth(value);
+      if (!date) return null;
+      return new Date(date.getFullYear(), date.getMonth() + months, 1);
+    }
+
+    function shiftDateByYears(value, years) {
+      const date = value instanceof Date ? new Date(value.getFullYear(), 0, 1) : startOfYear(value);
+      if (!date) return null;
+      return new Date(date.getFullYear() + years, date.getMonth(), 1);
+    }
+
+    function isDateWithinRange(value, start, end) {
+      const date = toDateOnly(value);
+      const safeStart = start instanceof Date ? start : toDateOnly(start);
+      const safeEnd = end instanceof Date ? end : toDateOnly(end);
+      return Boolean(date && safeStart && safeEnd) && date >= safeStart && date <= safeEnd;
+    }
+
+    function getTaskAgeInDays(task, now = new Date()) {
+      const reference = task?.receivedAt || task?.createdAt;
+      const start = toDateOnly(reference);
+      if (!start) return null;
+      const endDate = isTaskCompleted(task) ? toDateOnly(task.completedAt) || now : now;
+      const normalizedEnd = endDate instanceof Date ? endDate : toDateOnly(endDate);
+      if (!normalizedEnd) return null;
+      return Math.max(0, Math.floor((normalizedEnd - start) / MS_PER_DAY));
+    }
+
+    function getReportPeriodDefinition(period = currentReportPeriod, referenceDate = new Date()) {
+      const safePeriod = ['weekly', 'monthly', 'quarterly', 'annual'].includes(period) ? period : 'monthly';
+      const now = referenceDate instanceof Date ? referenceDate : new Date(referenceDate);
+
+      if (safePeriod === 'weekly') {
+        const currentWeek = getWorkingWeekInfo(now);
+        const currentStart = currentWeek?.weekStart || getStartOfWeek(now, WORKING_WEEK_START_DAY);
+        const currentEnd = currentWeek?.weekEnd || shiftDateByDays(currentStart, WORKING_WEEK_LENGTH_DAYS - 1);
+        const previousStart = shiftDateByDays(currentStart, -7);
+        const previousEnd = shiftDateByDays(currentEnd, -7);
+        return {
+          period: safePeriod,
+          title: 'Weekly Task Review',
+          trendTitle: 'Eight-week flow',
+          trendSubtitle: 'Created versus completed work by working week.',
+          start: currentStart,
+          end: currentEnd,
+          previousStart,
+          previousEnd,
+          rangeLabel: currentWeek ? `${currentWeek.label}, ${currentWeek.year} (${formatReportRange(currentStart, currentEnd)})` : formatReportRange(currentStart, currentEnd),
+          bucketCount: 8,
+          buildBucket(indexFromEnd) {
+            const anchorStart = shiftDateByDays(currentStart, -(7 * indexFromEnd));
+            const anchorEnd = shiftDateByDays(anchorStart, WORKING_WEEK_LENGTH_DAYS - 1);
+            const info = getWorkingWeekInfo(anchorStart);
+            return {
+              key: `weekly-${toIsoDate(anchorStart)}`,
+              label: info ? `W${info.weekNumber}` : formatShortDateLabel(anchorStart),
+              fullLabel: info ? `${info.label} (${formatReportRange(anchorStart, anchorEnd)})` : formatReportRange(anchorStart, anchorEnd),
+              start: anchorStart,
+              end: anchorEnd
+            };
+          }
+        };
+      }
+
+      if (safePeriod === 'quarterly') {
+        const currentStart = startOfQuarter(now);
+        const currentEnd = endOfQuarter(now);
+        const previousStart = startOfQuarter(shiftDateByMonths(currentStart, -3));
+        const previousEnd = endOfQuarter(previousStart);
+        return {
+          period: safePeriod,
+          title: 'Quarterly Task Review',
+          trendTitle: 'Quarterly flow',
+          trendSubtitle: 'Created versus completed work by quarter.',
+          start: currentStart,
+          end: currentEnd,
+          previousStart,
+          previousEnd,
+          rangeLabel: `${formatQuarterLabel(currentStart)} (${formatReportRange(currentStart, currentEnd)})`,
+          bucketCount: 6,
+          buildBucket(indexFromEnd) {
+            const anchorStart = startOfQuarter(shiftDateByMonths(currentStart, -(indexFromEnd * 3)));
+            const anchorEnd = endOfQuarter(anchorStart);
+            return {
+              key: `quarterly-${anchorStart.getFullYear()}-${anchorStart.getMonth()}`,
+              label: formatQuarterLabel(anchorStart),
+              fullLabel: `${formatQuarterLabel(anchorStart)} (${formatReportRange(anchorStart, anchorEnd)})`,
+              start: anchorStart,
+              end: anchorEnd
+            };
+          }
+        };
+      }
+
+      if (safePeriod === 'annual') {
+        const currentStart = startOfYear(now);
+        const currentEnd = endOfYear(now);
+        const previousStart = startOfYear(shiftDateByYears(currentStart, -1));
+        const previousEnd = endOfYear(previousStart);
+        return {
+          period: safePeriod,
+          title: 'Annual Task Review',
+          trendTitle: 'Annual flow',
+          trendSubtitle: 'Created versus completed work by year.',
+          start: currentStart,
+          end: currentEnd,
+          previousStart,
+          previousEnd,
+          rangeLabel: `${currentStart.getFullYear()} (${formatReportRange(currentStart, currentEnd)})`,
+          bucketCount: 5,
+          buildBucket(indexFromEnd) {
+            const anchorStart = startOfYear(shiftDateByYears(currentStart, -indexFromEnd));
+            const anchorEnd = endOfYear(anchorStart);
+            return {
+              key: `annual-${anchorStart.getFullYear()}`,
+              label: String(anchorStart.getFullYear()),
+              fullLabel: `${anchorStart.getFullYear()} (${formatReportRange(anchorStart, anchorEnd)})`,
+              start: anchorStart,
+              end: anchorEnd
+            };
+          }
+        };
+      }
+
+      const currentStart = startOfMonth(now);
+      const currentEnd = endOfMonth(now);
+      const previousStart = startOfMonth(shiftDateByMonths(currentStart, -1));
+      const previousEnd = endOfMonth(previousStart);
+      return {
+        period: 'monthly',
+        title: 'Monthly Task Review',
+        trendTitle: 'Monthly flow',
+        trendSubtitle: 'Created versus completed work by month.',
+        start: currentStart,
+        end: currentEnd,
+        previousStart,
+        previousEnd,
+        rangeLabel: `${formatMonthYearLabel(currentStart)} (${formatReportRange(currentStart, currentEnd)})`,
+        bucketCount: 6,
+        buildBucket(indexFromEnd) {
+          const anchorStart = startOfMonth(shiftDateByMonths(currentStart, -indexFromEnd));
+          const anchorEnd = endOfMonth(anchorStart);
+          return {
+            key: `monthly-${anchorStart.getFullYear()}-${anchorStart.getMonth()}`,
+            label: `${MONTH_LABELS[anchorStart.getMonth()]} ${String(anchorStart.getFullYear()).slice(-2)}`,
+            fullLabel: `${formatMonthYearLabel(anchorStart)} (${formatReportRange(anchorStart, anchorEnd)})`,
+            start: anchorStart,
+            end: anchorEnd
+          };
+        }
+      };
+    }
+
+    function buildReportBuckets(periodDefinition) {
+      return Array.from({ length: periodDefinition.bucketCount }, (_, index) => periodDefinition.buildBucket(periodDefinition.bucketCount - 1 - index));
+    }
+
+    function sumReportSeries(series, key) {
+      return series.reduce((sum, item) => sum + (Number(item?.[key]) || 0), 0);
+    }
+
+    function getReportDelta(currentValue, previousValue) {
+      const delta = currentValue - previousValue;
+      if (!previousValue && !currentValue) return 'Flat vs previous';
+      if (!previousValue) return `+${currentValue} vs previous`;
+      const percent = Math.round((delta / previousValue) * 100);
+      if (delta === 0) return 'No change';
+      return `${delta > 0 ? '+' : ''}${delta} (${delta > 0 ? '+' : ''}${percent}%)`;
+    }
+
+    function getTopDistributionEntry(entries) {
+      return entries.find(entry => entry.value > 0) || entries[0] || null;
+    }
+
+    function buildAgingStats(openTasks) {
+      const buckets = [
+        { label: '0-7 days', min: 0, max: 7, accent: 'var(--low)' },
+        { label: '8-14 days', min: 8, max: 14, accent: 'var(--accent)' },
+        { label: '15-30 days', min: 15, max: 30, accent: 'var(--medium)' },
+        { label: '31+ days', min: 31, max: Infinity, accent: 'var(--critical)' }
+      ];
+
+      return buckets.map(bucket => ({
+        ...bucket,
+        value: openTasks.filter(task => {
+          const age = getTaskAgeInDays(task);
+          return age !== null && age >= bucket.min && age <= bucket.max;
+        }).length
+      }));
+    }
+
+    function buildOpenCategoryStats(openTasks) {
+      return categories.map(category => ({
+        label: category.name,
+        value: openTasks
+          .filter(task => task.category === category.name)
+          .reduce((sum, task) => sum + getTaskCategoryCountWeight(task), 0),
+        accent: category.color || 'var(--accent)'
+      })).sort((a, b) => b.value - a.value).slice(0, 6);
+    }
+
+    function buildOpenPriorityStats(openTasks) {
+      return PRIORITY_OPTIONS.map(priority => ({
+        label: priority,
+        value: openTasks.filter(task => normalizePriority(task.priority) === priority).length,
+        accent: PRIORITY_ACCENTS[priority] || 'var(--accent)'
+      })).sort((a, b) => b.value - a.value);
+    }
+
+    function buildOpenStatusStats(openTasks) {
+      return STATUS_OPTIONS
+        .filter(status => status !== 'Completed')
+        .map(status => ({
+          label: status,
+          value: openTasks.filter(task => normalizeStatus(task.status) === status).length,
+          accent: STATUS_ACCENTS[status] || 'var(--accent)'
+        }))
+        .sort((a, b) => b.value - a.value);
+    }
+
+    function getReportData(period = currentReportPeriod) {
+      const definition = getReportPeriodDefinition(period);
+      const periodTasksCreated = tasks.filter(task => isDateWithinRange(task.createdAt, definition.start, definition.end));
+      const periodTasksCompleted = tasks.filter(task => isTaskCompleted(task) && isDateWithinRange(task.completedAt, definition.start, definition.end));
+      const previousPeriodTasksCompleted = tasks.filter(task => isTaskCompleted(task) && isDateWithinRange(task.completedAt, definition.previousStart, definition.previousEnd));
+      const previousPeriodTasksCreated = tasks.filter(task => isDateWithinRange(task.createdAt, definition.previousStart, definition.previousEnd));
+      const openTasks = tasks.filter(task => !isTaskCompleted(task));
+      const overdueTasks = openTasks.filter(task => isOverdue(task.dueDate));
+      const urgentTasks = openTasks.filter(task => ATTENTION_PRIORITIES.has(normalizePriority(task.priority)));
+      const trendSeries = buildReportBuckets(definition).map(bucket => ({
+        ...bucket,
+        created: tasks.filter(task => isDateWithinRange(task.createdAt, bucket.start, bucket.end)).length,
+        completed: tasks.filter(task => isTaskCompleted(task) && isDateWithinRange(task.completedAt, bucket.start, bucket.end)).length
+      }));
+      const maxTrendValue = Math.max(1, ...trendSeries.flatMap(bucket => [bucket.created, bucket.completed]));
+      const categoryStats = buildOpenCategoryStats(openTasks);
+      const priorityStats = buildOpenPriorityStats(openTasks);
+      const statusStats = buildOpenStatusStats(openTasks);
+      const agingStats = buildAgingStats(openTasks);
+      const completionRate = periodTasksCreated.length
+        ? Math.round((periodTasksCompleted.length / periodTasksCreated.length) * 100)
+        : (periodTasksCompleted.length ? 100 : 0);
+      const topCategory = getTopDistributionEntry(categoryStats);
+      const topPriority = getTopDistributionEntry(priorityStats);
+      const topStatus = getTopDistributionEntry(statusStats);
+      const oldestOpenTask = openTasks
+        .map(task => ({ task, age: getTaskAgeInDays(task) }))
+        .filter(entry => entry.age !== null)
+        .sort((a, b) => b.age - a.age)[0] || null;
+
+      return {
+        definition,
+        trendSeries,
+        maxTrendValue,
+        categoryStats,
+        priorityStats,
+        statusStats,
+        agingStats,
+        completionRate,
+        topCategory,
+        topPriority,
+        topStatus,
+        oldestOpenTask,
+        totals: {
+          totalTasks: tasks.length,
+          openTasks: openTasks.length,
+          overdueTasks: overdueTasks.length,
+          urgentTasks: urgentTasks.length,
+          completedInPeriod: periodTasksCompleted.length,
+          createdInPeriod: periodTasksCreated.length,
+          previousCompletedInPeriod: previousPeriodTasksCompleted.length,
+          previousCreatedInPeriod: previousPeriodTasksCreated.length
+        }
+      };
+    }
+
+    function renderReportKpis(reportData) {
+      const { totals, completionRate } = reportData;
+      const cards = [
+        {
+          label: 'Open workload',
+          value: totals.openTasks,
+          delta: `${totals.totalTasks} total saved`,
+          hint: 'Current backlog snapshot across all active work.',
+          accent: 'var(--accent)'
+        },
+        {
+          label: 'Completed in period',
+          value: totals.completedInPeriod,
+          delta: getReportDelta(totals.completedInPeriod, totals.previousCompletedInPeriod),
+          hint: 'Finished during the selected reporting window.',
+          accent: 'var(--low)'
+        },
+        {
+          label: 'Created in period',
+          value: totals.createdInPeriod,
+          delta: getReportDelta(totals.createdInPeriod, totals.previousCreatedInPeriod),
+          hint: 'Incoming demand entering the queue this period.',
+          accent: 'var(--accent-h)'
+        },
+        {
+          label: 'Overdue now',
+          value: totals.overdueTasks,
+          delta: totals.overdueTasks ? 'Needs follow-up' : 'On track',
+          hint: 'Open tasks with due dates earlier than today.',
+          accent: 'var(--critical)'
+        },
+        {
+          label: 'Period completion rate',
+          value: `${completionRate}%`,
+          delta: totals.createdInPeriod ? `${totals.completedInPeriod}/${totals.createdInPeriod}` : 'No new intake',
+          hint: 'Completed divided by created during this reporting window.',
+          accent: 'var(--medium)'
+        }
+      ];
+
+      const kpiGrid = document.getElementById('reportKpiGrid');
+      if (!kpiGrid) return;
+
+      kpiGrid.innerHTML = cards.map(card => `
+        <article class="report-kpi-card" style="--kpi-accent:${card.accent}">
+          <span class="report-kpi-label">${escHtml(card.label)}</span>
+          <div class="report-kpi-value-row">
+            <strong class="report-kpi-value">${escHtml(String(card.value))}</strong>
+            <span class="report-kpi-delta">${escHtml(card.delta)}</span>
+          </div>
+          <p class="report-kpi-hint">${escHtml(card.hint)}</p>
+        </article>`).join('');
+    }
+
+    function buildLinePath(points) {
+      if (!points.length) return '';
+      return points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`).join(' ');
+    }
+
+    function renderReportTrendChart(reportData) {
+      const shell = document.getElementById('reportTrendChart');
+      if (!shell) return;
+
+      const { trendSeries, maxTrendValue, definition } = reportData;
+      if (!trendSeries.length) {
+        shell.innerHTML = '<div class="report-empty-state">No task history available yet for trend reporting.</div>';
+        return;
+      }
+
+      const width = 760;
+      const height = 220;
+      const paddingX = 24;
+      const paddingTop = 18;
+      const paddingBottom = 28;
+      const chartHeight = height - paddingTop - paddingBottom;
+      const stepX = trendSeries.length > 1 ? (width - (paddingX * 2)) / (trendSeries.length - 1) : 0;
+      const valueToY = value => paddingTop + (chartHeight - ((value / maxTrendValue) * chartHeight));
+      const createdPoints = trendSeries.map((bucket, index) => ({ x: paddingX + (stepX * index), y: valueToY(bucket.created) }));
+      const completedPoints = trendSeries.map((bucket, index) => ({ x: paddingX + (stepX * index), y: valueToY(bucket.completed) }));
+      const gridValues = [0, .25, .5, .75, 1].map(value => Math.round(maxTrendValue * value)).reverse();
+      const createdPath = buildLinePath(createdPoints);
+      const completedPath = buildLinePath(completedPoints);
+      const createdArea = `${createdPath} L ${createdPoints[createdPoints.length - 1].x.toFixed(2)} ${(height - paddingBottom).toFixed(2)} L ${createdPoints[0].x.toFixed(2)} ${(height - paddingBottom).toFixed(2)} Z`;
+
+      shell.innerHTML = `
+        <svg class="report-line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Created and completed task trend">
+          ${gridValues.map(value => {
+            const y = valueToY(value);
+            return `<line class="report-line-grid" x1="${paddingX}" y1="${y.toFixed(2)}" x2="${width - paddingX}" y2="${y.toFixed(2)}"></line>`;
+          }).join('')}
+          <path class="report-line-area" d="${createdArea}" fill="var(--accent)"></path>
+          <path class="report-line-path" d="${createdPath}" stroke="var(--accent)"></path>
+          <path class="report-line-path" d="${completedPath}" stroke="var(--low)"></path>
+          ${createdPoints.map(point => `<circle class="report-line-point" cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="4.5" stroke="var(--accent)"></circle>`).join('')}
+          ${completedPoints.map(point => `<circle class="report-line-point" cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="4.5" stroke="var(--low)"></circle>`).join('')}
+        </svg>
+        <div class="report-line-labels" style="--report-label-count:${trendSeries.length}">
+          ${trendSeries.map(bucket => `<span title="${escHtml(bucket.fullLabel)}">${escHtml(bucket.label)}</span>`).join('')}
+        </div>
+        <div class="report-legend">
+          <span class="report-legend-item"><span class="report-legend-swatch" style="--legend-color:var(--accent)"></span>Created</span>
+          <span class="report-legend-item"><span class="report-legend-swatch" style="--legend-color:var(--low)"></span>Completed</span>
+        </div>`;
+
+      const trendTitle = document.getElementById('reportTrendTitle');
+      const trendSubtitle = document.getElementById('reportTrendSubtitle');
+      const trendMeta = document.getElementById('reportTrendMeta');
+      if (trendTitle) trendTitle.textContent = definition.trendTitle;
+      if (trendSubtitle) trendSubtitle.textContent = definition.trendSubtitle;
+      if (trendMeta) {
+        trendMeta.textContent = `${sumReportSeries(trendSeries, 'created')} created, ${sumReportSeries(trendSeries, 'completed')} completed across the recent ${definition.period} view.`;
+      }
+    }
+
+    function renderReportDistribution(targetId, title, subtitle, entries) {
+      const container = document.getElementById(targetId);
+      if (!container) return;
+
+      if (!entries.length || entries.every(entry => !entry.value)) {
+        container.innerHTML = `
+          <div class="report-card-header">
+            <div>
+              <h3>${escHtml(title)}</h3>
+              <p>${escHtml(subtitle)}</p>
+            </div>
+          </div>
+          <div class="report-empty-state">No data available yet.</div>`;
+        return;
+      }
+
+      const maxValue = Math.max(1, ...entries.map(entry => entry.value));
+      container.innerHTML = `
+        <div class="report-card-header">
+          <div>
+            <h3>${escHtml(title)}</h3>
+            <p>${escHtml(subtitle)}</p>
+          </div>
+        </div>
+        ${entries.map(entry => `
+          <div class="report-stack-row">
+            <div class="report-stack-row-head">
+              <strong>${escHtml(entry.label)}</strong>
+              <span>${escHtml(String(entry.value))}</span>
+            </div>
+            <div class="report-stack-bar" style="--bar-accent:${entry.accent || 'var(--accent)'}; --bar-width:${Math.max(6, Math.round((entry.value / maxValue) * 100))}%">
+              <span></span>
+            </div>
+          </div>`).join('')}`;
+    }
+
+    function renderReportInsights(reportData) {
+      const insightsHost = document.getElementById('reportInsights');
+      if (!insightsHost) return;
+
+      const { definition, totals, topCategory, topPriority, topStatus, oldestOpenTask, agingStats } = reportData;
+      const backlogBucket = getTopDistributionEntry(agingStats);
+      const insights = [
+        {
+          accent: 'var(--low)',
+          title: `${totals.completedInPeriod} task${totals.completedInPeriod === 1 ? '' : 's'} completed this ${definition.period.replace('ly', '')}`,
+          body: totals.previousCompletedInPeriod
+            ? `That is ${getReportDelta(totals.completedInPeriod, totals.previousCompletedInPeriod).toLowerCase()} compared with the previous ${definition.period.replace('ly', '')} window.`
+            : 'This is the first comparable reporting window with completed work recorded.'
+        },
+        {
+          accent: topCategory?.accent || 'var(--accent)',
+          title: topCategory?.value ? `${topCategory.label} is carrying the heaviest open load` : 'Category mix is still light',
+          body: topCategory?.value
+            ? `${topCategory.value} open unit${topCategory.value === 1 ? '' : 's'} currently sit in ${topCategory.label}, making it the dominant category in the backlog.`
+            : 'Add a few categorized tasks and this section will start surfacing workload concentration.'
+        },
+        {
+          accent: topPriority?.accent || 'var(--critical)',
+          title: `${totals.urgentTasks} urgent task${totals.urgentTasks === 1 ? '' : 's'} need attention`,
+          body: topPriority?.value
+            ? `${topPriority.label} currently leads the priority mix, while ${topStatus?.label || 'the active workflow'} is the strongest open status signal.`
+            : 'Priority distribution will populate as tasks are added.'
+        },
+        {
+          accent: backlogBucket?.accent || 'var(--medium)',
+          title: totals.overdueTasks ? `${totals.overdueTasks} overdue task${totals.overdueTasks === 1 ? '' : 's'} are now at risk` : 'No overdue tasks in the live backlog',
+          body: oldestOpenTask?.task
+            ? `The oldest active task is ${oldestOpenTask.task.title} at ${oldestOpenTask.age} day${oldestOpenTask.age === 1 ? '' : 's'} old.`
+            : 'As the task history grows, aging insights will highlight stale work and bottlenecks.'
+        }
+      ];
+
+      insightsHost.innerHTML = insights.map(insight => `
+        <article class="report-insight-item" style="--insight-accent:${insight.accent}">
+          <strong>${escHtml(insight.title)}</strong>
+          <p>${escHtml(insight.body)}</p>
+        </article>`).join('');
+    }
+
+    function renderReportSummary(reportData) {
+      const summaryHost = document.getElementById('reportSummaryCopy');
+      if (!summaryHost) return;
+
+      const { definition, totals, topCategory, topStatus } = reportData;
+      const summaryParagraphs = [
+        `For the current ${definition.period.replace('ly', '')} reporting window, <strong>${totals.completedInPeriod}</strong> task${totals.completedInPeriod === 1 ? '' : 's'} were completed while <strong>${totals.createdInPeriod}</strong> new task${totals.createdInPeriod === 1 ? '' : 's'} entered the queue. The live backlog now stands at <strong>${totals.openTasks}</strong> open task${totals.openTasks === 1 ? '' : 's'} overall.`,
+        topCategory?.value
+          ? `<strong>${escHtml(topCategory.label)}</strong> currently carries the largest share of open work with ${topCategory.value} unit${topCategory.value === 1 ? '' : 's'}, while <strong>${escHtml(topStatus?.label || 'active work')}</strong> is the strongest current status signal across the board.`
+          : 'Category and status highlights will become more descriptive as more task history is saved in the app.',
+        totals.overdueTasks
+          ? `There ${totals.overdueTasks === 1 ? 'is' : 'are'} <strong>${totals.overdueTasks}</strong> overdue task${totals.overdueTasks === 1 ? '' : 's'} that should be reviewed first in the next planning pass, especially before the next report is sent.`
+          : 'There are <strong>no overdue tasks</strong> in the current open backlog, which keeps the report in a healthy state for external sharing.'
+      ];
+
+      summaryHost.innerHTML = summaryParagraphs.map(paragraph => `<p>${paragraph}</p>`).join('');
+
+      const stampTitle = document.getElementById('reportStampTitle');
+      const stampMeta = document.getElementById('reportStampMeta');
+      if (stampTitle) stampTitle.textContent = definition.title;
+      if (stampMeta) {
+        stampMeta.textContent = `${definition.rangeLabel}. Generated ${new Date().toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}.`;
+      }
+    }
+
+    function renderReportDashboard() {
+      const reportData = getReportData(currentReportPeriod);
+      const { definition } = reportData;
+      const rangeLabel = document.getElementById('reportRangeLabel');
+      const generatedLabel = document.getElementById('reportGeneratedLabel');
+      const subtitle = document.getElementById('reportModalSubtitle');
+
+      document.querySelectorAll('#reportPeriodSwitch [data-report-period]').forEach(button => {
+        const isActive = button.dataset.reportPeriod === currentReportPeriod;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      if (rangeLabel) rangeLabel.textContent = definition.rangeLabel;
+      if (generatedLabel) generatedLabel.textContent = `Generated ${new Date().toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })} from live task data.`;
+      if (subtitle) subtitle.textContent = `${definition.title} with trend, distribution, and email-ready summary blocks for quick sharing.`;
+
+      renderReportKpis(reportData);
+      renderReportTrendChart(reportData);
+      renderReportDistribution('reportCategoryBreakdown', 'Category load', 'Open units by category.', reportData.categoryStats);
+      renderReportDistribution('reportPriorityBreakdown', 'Priority mix', 'Open tasks by priority.', reportData.priorityStats);
+      renderReportDistribution('reportStatusBreakdown', 'Status mix', 'Open tasks by workflow state.', reportData.statusStats);
+      renderReportDistribution('reportAgingBreakdown', 'Aging watch', 'Open tasks grouped by age.', reportData.agingStats);
+      renderReportInsights(reportData);
+      renderReportSummary(reportData);
     }
 
     function applyTaskStatusChange(task, nextStatus, options = {}) {
@@ -10287,6 +11719,50 @@
       editingId = null;
     }
 
+    function openReportModal() {
+      renderReportDashboard();
+      document.getElementById('reportModal').classList.add('open');
+      document.getElementById('printReportBtn')?.focus();
+    }
+
+    function closeReportModal() {
+      document.body.classList.remove('report-print-mode');
+      document.getElementById('reportModal').classList.remove('open');
+    }
+
+    function printReportDashboard() {
+      const reportModal = document.getElementById('reportModal');
+      if (!reportModal?.classList.contains('open')) return;
+
+      const reportSheet = reportModal.querySelector('.report-modal');
+      if (!reportSheet) return;
+
+      const cleanupPrintMode = () => {
+        document.body.classList.remove('report-print-mode');
+        document.documentElement.style.removeProperty('--report-print-scale');
+      };
+
+      document.body.classList.add('report-print-mode');
+
+      window.requestAnimationFrame(() => {
+        const targetWidth = 980;
+        const targetHeight = 690;
+        const measuredWidth = Math.max(reportSheet.scrollWidth, reportSheet.offsetWidth, 1);
+        const measuredHeight = Math.max(reportSheet.scrollHeight, reportSheet.offsetHeight, 1);
+        const scale = Math.max(.62, Math.min(1, targetWidth / measuredWidth, targetHeight / measuredHeight));
+
+        document.documentElement.style.setProperty('--report-print-scale', scale.toFixed(3));
+        window.addEventListener('afterprint', cleanupPrintMode, { once: true });
+
+        window.requestAnimationFrame(() => {
+          window.print();
+          window.setTimeout(() => {
+            cleanupPrintMode();
+          }, 1200);
+        });
+      });
+    }
+
     function setTaskDatesExpanded(expanded) {
       const toggleButton = document.getElementById('taskDatesToggleBtn');
       const dateGroup = document.getElementById('taskDatesGroup');
@@ -11895,6 +13371,7 @@
     // ── Modal Open/Close ──
     // Wire up header buttons and backdrop clicks to open/close each modal.
     document.getElementById('newTaskBtn').addEventListener('click', () => openModal());
+    document.getElementById('openReportsBtn').addEventListener('click', openReportModal);
     document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
     document.getElementById('manageCategoriesBtn').addEventListener('click', () => openCategoryModal());
     document.getElementById('manageTemplatesBtn').addEventListener('click', () => openTemplateModal());
@@ -11909,6 +13386,15 @@
     });
     document.getElementById('exportDetailedExcelBtn').addEventListener('click', () => {
       exportDetailedToExcel();
+    });
+    document.getElementById('printReportBtn').addEventListener('click', printReportDashboard);
+    document.getElementById('closeReportModalBtn').addEventListener('click', closeReportModal);
+    document.getElementById('reportPeriodSwitch').addEventListener('click', e => {
+      const nextPeriod = e.target.closest('[data-report-period]')?.dataset.reportPeriod;
+      if (!nextPeriod || nextPeriod === currentReportPeriod) return;
+
+      currentReportPeriod = nextPeriod;
+      renderReportDashboard();
     });
     document.getElementById('cancelTaskBtn').addEventListener('click', closeModal);
     document.getElementById('closeTaskModalBtn').addEventListener('click', closeModal);
@@ -11926,6 +13412,7 @@
     bindBackdropDismiss('templateModal', closeTemplateModal);
     bindBackdropDismiss('itemSettingsModal', closeItemSettingsModal);
     bindBackdropDismiss('itemsModal', closeItemsModal);
+    bindBackdropDismiss('reportModal', closeReportModal);
 
     document.getElementById('itemSearchInput').addEventListener('input', e => {
       itemSearchQuery = e.target.value.trim().toLowerCase();
@@ -12015,6 +13502,7 @@
         closeCategoryModal();
         closeTemplateModal();
         closeItemsModal();
+        closeReportModal();
       }
     });
 
