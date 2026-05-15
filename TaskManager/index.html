@@ -869,6 +869,10 @@
       #taskForm .form-actions .btn {
         width: 100%;
       }
+
+      .detail-schedule-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .modal h2 {
@@ -1962,6 +1966,53 @@
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
       overflow: hidden;
+    }
+
+    .task-progress-row {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+      margin-top: 1px;
+    }
+
+    .task-progress-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    .task-progress-label {
+      color: color-mix(in srgb, var(--text-muted) 66%, #2dd4bf 34%);
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .task-progress-value {
+      color: color-mix(in srgb, var(--text) 84%, #7dd3fc 16%);
+      font-weight: 800;
+    }
+
+    .task-progress-bar {
+      position: relative;
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: color-mix(in srgb, #14b8a6 14%, var(--field-bg));
+      border: 1px solid color-mix(in srgb, #14b8a6 18%, var(--border));
+    }
+
+    .task-progress-bar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: min(100%, var(--task-progress, 0%));
+      border-radius: inherit;
+      background: linear-gradient(90deg, color-mix(in srgb, #14b8a6 88%, white 4%), color-mix(in srgb, var(--accent) 72%, #14b8a6));
     }
 
     .task-email-subject,
@@ -3379,6 +3430,148 @@
     .detail-tab-panels {
       min-height: 0;
       flex: 1 1 auto;
+    }
+
+    .detail-schedule-panel {
+      display: grid;
+      gap: 12px;
+    }
+
+    .detail-schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .detail-schedule-field {
+      display: grid;
+      gap: 6px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid color-mix(in srgb, var(--field-accent, var(--accent)) 18%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--field-accent, var(--accent)) 7%, transparent), rgba(255,255,255,.02));
+    }
+
+    .detail-schedule-field.is-full {
+      grid-column: 1 / -1;
+    }
+
+    .detail-schedule-field label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text-muted) 74%, var(--field-accent, var(--accent)) 26%);
+    }
+
+    .detail-schedule-field input {
+      width: 100%;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--field-accent, var(--accent)) 4%, var(--field-bg-strong)), var(--field-bg));
+      border: 1px solid color-mix(in srgb, var(--field-accent, var(--accent)) 18%, var(--border));
+      border-radius: 14px;
+      padding: 10px 12px;
+      color: var(--text);
+      min-height: 42px;
+      font-size: 13px;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .detail-schedule-field input:focus {
+      border-color: color-mix(in srgb, var(--field-accent, var(--accent)) 58%, white 42%);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--field-accent, var(--accent)) 16%, transparent), inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .detail-schedule-help {
+      font-size: 11px;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+
+    .detail-schedule-progress-preview {
+      display: grid;
+      gap: 6px;
+    }
+
+    .detail-schedule-progress-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .detail-section.detail-schedule {
+      gap: 6px;
+      padding: 10px;
+      align-content: start;
+    }
+
+    .detail-section.detail-schedule .detail-section-header {
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .detail-section.detail-schedule .detail-section-meta {
+      font-size: 9px;
+      letter-spacing: .04em;
+    }
+
+    .detail-section.detail-schedule .detail-section-body {
+      flex: 0 0 auto;
+      overflow: visible;
+      align-content: start;
+      padding-right: 0;
+    }
+
+    .detail-section.detail-schedule .detail-schedule-panel {
+      gap: 8px;
+      align-content: start;
+    }
+
+    .detail-section.detail-schedule .detail-schedule-grid {
+      gap: 8px;
+      align-content: start;
+      align-items: start;
+      grid-auto-rows: min-content;
+    }
+
+    .detail-section.detail-schedule .detail-schedule-field {
+      gap: 4px;
+      padding: 9px 10px;
+      min-height: 0;
+      align-content: start;
+      border-radius: 14px;
+    }
+
+    .detail-section.detail-schedule .detail-schedule-field label {
+      font-size: 10px;
+      line-height: 1.2;
+      letter-spacing: .05em;
+    }
+
+    .detail-section.detail-schedule .detail-schedule-field input {
+      min-height: 36px;
+      padding: 8px 10px;
+      font-size: 12px;
+      border-radius: 12px;
+    }
+
+    .detail-section.detail-schedule .detail-schedule-progress-preview {
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .detail-section.detail-schedule .detail-schedule-progress-meta {
+      gap: 6px;
+      font-size: 10px;
+      line-height: 1.25;
+    }
+
+    .detail-section.detail-schedule .detail-schedule-help {
+      font-size: 10px;
+      line-height: 1.35;
     }
 
     .detail-section {
@@ -6676,6 +6869,18 @@
       logContent: 800,
     };
 
+    function normalizeTaskProgressPercent(value) {
+      if (value === null || value === undefined || String(value).trim() === '') return 0;
+      const parsed = Number.parseInt(String(value).trim(), 10);
+      if (!Number.isFinite(parsed)) return 0;
+      return Math.max(0, Math.min(100, parsed));
+    }
+
+    function formatTaskProgressLabel(value) {
+      const normalizedValue = normalizeTaskProgressPercent(value);
+      return `${normalizedValue}%`;
+    }
+
     const PRIORITY_OPTIONS = ['Critical', 'High', 'Medium', 'Low', 'Very Low'];
     const STATUS_OPTIONS = ['Not Started','Pending','Ongoing', 'Waiting for Someone Else', 'Completed'];
     const YES_NO_OPTIONS = ['Yes', 'No'];
@@ -6878,6 +7083,7 @@
           status: normalizeStatus(task.status),
           subtasks: normalizeTaskSubtasks(task.subtasks),
           project: String(task.project || '').trim() || null,
+          progressPercent: normalizeTaskProgressPercent(task.progressPercent),
           startedAt: String(task.startedAt || '').trim() || null,
           completedAt: String(task.completedAt || '').trim() || null,
           imageDataUrl: String(task.imageDataUrl || '').trim(),
@@ -7392,6 +7598,7 @@
 
       if (normalizedStatus === 'Completed' && previousStatus !== 'Completed') {
         task.completedAt = today();
+        task.progressPercent = 100;
       } else if (normalizedStatus !== 'Completed') {
         task.completedAt = null;
       }
@@ -8180,6 +8387,7 @@
       const logData = getLogPreview(task.id);
       const workflowItemCount = getItemsForTask(task.id).length;
       const { completedCount, subtaskCount } = getSubtaskProgress(task);
+      const progressPercent = normalizeTaskProgressPercent(task.progressPercent);
 
       return {
         priority,
@@ -8192,7 +8400,9 @@
         logData,
         workflowItemCount,
         completedCount,
-        subtaskCount
+        subtaskCount,
+        progressPercent,
+        progressLabel: formatTaskProgressLabel(progressPercent)
       };
     }
 
@@ -8217,6 +8427,13 @@
                   <div class="task-signal-row">
                     ${getTaskProjectMarkup(task.project, searchQuery)}
                     ${getTaskPriorityMarkup(taskData.priority)}
+                  </div>
+                  <div class="task-progress-row" style="--task-progress:${taskData.progressPercent}%">
+                    <div class="task-progress-summary">
+                      <span class="task-progress-label">Progress</span>
+                      <span class="task-progress-value">${escHtml(taskData.progressLabel)}</span>
+                    </div>
+                    <div class="task-progress-bar" aria-hidden="true"></div>
                   </div>
                   ${task.sender ? `<div class="task-sender-label">From: ${getHighlightedMarkup(task.sender, searchQuery)}</div>` : ''}
                   ${task.emailSubject ? `<div class="task-email-subject">Email: ${getHighlightedMarkup(task.emailSubject, searchQuery)}</div>` : ''}
@@ -8290,6 +8507,13 @@
                   <div class="task-signal-row">
                     ${getTaskProjectMarkup(task.project, searchQuery)}
                     ${getTaskPriorityMarkup(taskData.priority)}
+                  </div>
+                  <div class="task-progress-row" style="--task-progress:${taskData.progressPercent}%">
+                    <div class="task-progress-summary">
+                      <span class="task-progress-label">Progress</span>
+                      <span class="task-progress-value">${escHtml(taskData.progressLabel)}</span>
+                    </div>
+                    <div class="task-progress-bar" aria-hidden="true"></div>
                   </div>
                   ${compactContextMarkup ? `<div class="task-compact-context">${compactContextMarkup}</div>` : ''}
                 </div>
@@ -9669,6 +9893,7 @@
       const completedSubtasks = (task.subtasks || []).filter(subtask => subtask.done).length;
       const openSubtasks = Math.max(subtaskCount - completedSubtasks, 0);
       const subtaskCompletionPercent = getSubtaskCompletionPercent(task);
+      const progressPercent = normalizeTaskProgressPercent(task.progressPercent);
       const workflowItemCount = getItemsForTask(task.id).length;
       const isEditingDescription = activeDetailEditTaskId === task.id && activeDetailEditField === 'description';
       const isEditingNotes = activeDetailEditTaskId === task.id && activeDetailEditField === 'notes';
@@ -9711,6 +9936,50 @@
           panelClass: 'detail-image-section',
           content: getTaskDetailMediaMarkup(task)
         }] : []),
+        {
+          id: 'schedule',
+          label: 'Schedule',
+          accent: '#14b8a6',
+          meta: formatTaskProgressLabel(progressPercent),
+          panelClass: 'detail-schedule',
+          content: `
+            <div class="detail-section-header">
+              <div class="section-title">Schedule & Progress</div>
+              <span class="detail-section-meta">Dates save as you edit them</span>
+            </div>
+            <div class="detail-section-body detail-schedule-panel">
+              <div class="detail-schedule-grid">
+                <div class="detail-schedule-field" style="--field-accent:#14b8a6">
+                  <label for="detailReceivedAt">Received</label>
+                  <input type="date" id="detailReceivedAt" data-task-detail-field="receivedAt" value="${escHtml(task.receivedAt || '')}" />
+                </div>
+                <div class="detail-schedule-field" style="--field-accent:#ef7d57">
+                  <label for="detailDueDate">Due</label>
+                  <input type="date" id="detailDueDate" data-task-detail-field="dueDate" value="${escHtml(task.dueDate || '')}" />
+                </div>
+                <div class="detail-schedule-field" style="--field-accent:#3b82f6">
+                  <label for="detailStartedAt">Started</label>
+                  <input type="date" id="detailStartedAt" data-task-detail-field="startedAt" value="${escHtml(task.startedAt || '')}" />
+                </div>
+                <div class="detail-schedule-field" style="--field-accent:#64748b">
+                  <label for="detailCompletedAt">Completed</label>
+                  <input type="date" id="detailCompletedAt" data-task-detail-field="completedAt" value="${escHtml(task.completedAt || '')}" />
+                </div>
+                <div class="detail-schedule-field is-full" style="--field-accent:#14b8a6">
+                  <label for="detailProgressPercent">Task progress</label>
+                  <input type="number" id="detailProgressPercent" min="0" max="100" step="1" inputmode="numeric" data-task-detail-field="progressPercent" value="${escHtml(String(progressPercent))}" />
+                  <div class="detail-schedule-progress-preview" style="--task-progress:${progressPercent}%">
+                    <div class="detail-schedule-progress-meta">
+                      <span>Manual progress shown on task cards</span>
+                      <strong>${escHtml(formatTaskProgressLabel(progressPercent))}</strong>
+                    </div>
+                    <div class="task-progress-bar" aria-hidden="true"></div>
+                  </div>
+                  <div class="detail-schedule-help">Completed tasks automatically snap progress to 100%.</div>
+                </div>
+              </div>
+            </div>`
+        },
         {
           id: 'subtasks',
           label: 'Subtasks',
@@ -10094,12 +10363,19 @@
         category:   document.getElementById('taskCategory').value,
         priority:   normalizePriority(document.getElementById('taskPriority').value),
         status:     normalizeStatus(document.getElementById('taskStatus').value),
+        progressPercent: editingId
+          ? normalizeTaskProgressPercent(getTaskById(editingId)?.progressPercent)
+          : 0,
         receivedAt: document.getElementById('taskReceivedAt').value || null,
         startedAt: document.getElementById('taskStartedAt').value || null,
         completedAt: document.getElementById('taskCompletedAt').value || null,
         dueDate:    document.getElementById('taskDueDate').value    || null,
         notes:      document.getElementById('taskNotes').value.trim() || null,
       };
+
+      if (data.status === 'Completed') {
+        data.progressPercent = 100;
+      }
 
       if (editingId) {
         const idx = tasks.findIndex(t => t.id === editingId);
@@ -10404,9 +10680,16 @@
           syncInputCounterForField(detailField, `detail-${fieldName}`, limit);
         }
 
-        task[fieldName] = String(detailField.value || '').trim() || null;
-        activeDetailEditField = fieldName;
-        activeDetailEditTaskId = task.id;
+        if (fieldName === 'progressPercent') {
+          task.progressPercent = isTaskCompleted(task)
+            ? 100
+            : normalizeTaskProgressPercent(detailField.value);
+          detailField.value = String(task.progressPercent);
+        } else {
+          task[fieldName] = String(detailField.value || '').trim() || null;
+        }
+        activeDetailEditField = null;
+        activeDetailEditTaskId = null;
         saveTasks();
         renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
@@ -10475,7 +10758,13 @@
         syncInputCounterForField(detailField, `detail-${fieldName}`, limit);
       }
 
-      task[fieldName] = detailField.value;
+      if (fieldName === 'progressPercent') {
+        task.progressPercent = isTaskCompleted(task)
+          ? 100
+          : normalizeTaskProgressPercent(detailField.value);
+      } else {
+        task[fieldName] = detailField.value;
+      }
       saveTasks();
     });
 
