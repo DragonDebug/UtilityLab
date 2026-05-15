@@ -10234,6 +10234,8 @@
     });
 
     document.getElementById('taskList').addEventListener('contextmenu', e => {
+      if (currentViewMode === 'table') return;
+
       const taskRow = e.target.closest('[data-task-row], .task-card');
       const taskId = taskRow?.dataset.taskRow || taskRow?.dataset.id;
       if (!taskRow || !taskId) return;
@@ -10475,15 +10477,6 @@
 
       task[fieldName] = detailField.value;
       saveTasks();
-    });
-
-    document.getElementById('taskDetailPanel').addEventListener('contextmenu', e => {
-      if (!selectedTaskId) return;
-      if (e.target.closest('input, textarea, select, button')) return;
-      if (!e.target.closest('.detail-header, .detail-submeta, .detail-stack, .detail-section')) return;
-
-      e.preventDefault();
-      openDetailContextMenu(e.clientX, e.clientY);
     });
 
     document.getElementById('detailContextMenu').addEventListener('click', e => {
