@@ -4661,6 +4661,243 @@
       background: linear-gradient(180deg, color-mix(in srgb, var(--section-accent, var(--accent)) 5%, transparent), transparent);
     }
 
+    .items-table-shell {
+      min-width: 1040px;
+      overflow: visible;
+      padding-bottom: 6px;
+      border-radius: 18px;
+    }
+
+    .items-data-table {
+      width: max-content;
+      min-width: 100%;
+      table-layout: fixed;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+
+    .items-table-head {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      padding: 0;
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--accent) 10%, var(--surface2)), color-mix(in srgb, var(--accent) 4%, var(--surface))),
+        var(--surface);
+      border-top: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+      border-bottom: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+      border-right: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+      box-shadow: 0 14px 26px rgba(15, 23, 42, .14);
+      backdrop-filter: blur(16px);
+      box-sizing: border-box;
+      vertical-align: middle;
+    }
+
+    .items-table-head:first-child {
+      border-left: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
+      border-top-left-radius: 16px;
+      border-bottom-left-radius: 16px;
+    }
+
+    .items-table-head:last-child {
+      border-top-right-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+
+    .items-table-head-label {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: color-mix(in srgb, var(--text-muted) 74%, var(--text) 26%);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .items-table-head.is-task .items-table-head-label {
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    .items-table-row {
+      --item-status-accent: color-mix(in srgb, var(--section-accent, var(--accent)) 42%, var(--border));
+      --workflow-item-image-size: 64px;
+    }
+
+    .items-table-row .items-table-cell {
+      min-width: 0;
+      padding: 10px 12px;
+      background:
+        linear-gradient(180deg, color-mix(in srgb, white 2%, var(--surface)), color-mix(in srgb, var(--surface2) 26%, var(--surface)));
+      border-top: 1px solid color-mix(in srgb, var(--item-status-accent) 28%, var(--border));
+      border-bottom: 1px solid color-mix(in srgb, var(--item-status-accent) 28%, var(--border));
+      border-right: 1px solid color-mix(in srgb, var(--item-status-accent) 24%, var(--border));
+      box-sizing: border-box;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    .items-table-row .items-table-cell:first-child {
+      border-left: 4px solid color-mix(in srgb, var(--item-status-accent) 70%, var(--border));
+      border-top-left-radius: 16px;
+      border-bottom-left-radius: 16px;
+    }
+
+    .items-table-row .items-table-cell:last-child {
+      border-top-right-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+
+    .items-table-row:hover .items-table-cell {
+      border-top-color: color-mix(in srgb, var(--item-status-accent) 46%, var(--border));
+      border-bottom-color: color-mix(in srgb, var(--item-status-accent) 46%, var(--border));
+      border-right-color: color-mix(in srgb, var(--item-status-accent) 36%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, white 3%, var(--surface)), color-mix(in srgb, var(--item-status-accent) 6%, var(--surface)));
+    }
+
+    .items-table-cell-inner {
+      min-width: 0;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .items-table-cell-inner.is-image,
+    .items-table-cell-inner.is-task,
+    .items-table-cell-inner.is-actions {
+      width: 100%;
+    }
+
+    .items-table-cell-inner.is-task {
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    .items-table-cell-inner.is-image {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .items-table-cell-inner.is-actions {
+      justify-content: flex-end;
+    }
+
+    .items-table-status-wrap {
+      width: 100%;
+      display: grid;
+      gap: 8px;
+    }
+
+    .workflow-item-status-pill,
+    .items-table-status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--item-status-accent) 54%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--item-status-accent) 28%, transparent), color-mix(in srgb, var(--item-status-accent) 14%, var(--surface)));
+      color: color-mix(in srgb, white 18%, var(--text));
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--item-status-accent) 12%, transparent);
+    }
+
+    .workflow-item-status-pill {
+      justify-self: flex-start;
+    }
+
+    .items-table-status-pill {
+      width: fit-content;
+      margin-inline: auto;
+    }
+
+    .items-table-image-frame {
+      margin-inline: auto;
+    }
+
+    .items-table-input {
+      width: 100%;
+      min-height: 36px;
+      padding: 7px 10px;
+      border-radius: 10px;
+      border: 1px solid color-mix(in srgb, var(--border-strong) 40%, var(--border));
+      background: color-mix(in srgb, var(--field-bg-strong) 88%, var(--surface));
+      color: var(--text);
+      font: inherit;
+    }
+
+    .items-table-input:focus {
+      outline: none;
+      border-color: color-mix(in srgb, var(--accent-h) 48%, var(--accent));
+      box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+
+    .items-table-select {
+      cursor: pointer;
+    }
+
+    .items-table-task-text {
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .items-table-task-text.is-muted,
+    .items-table-image-hint {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .items-table-image-action,
+    .items-table-delete-btn {
+      min-height: 30px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 10%, transparent), color-mix(in srgb, var(--surface2) 34%, var(--surface)));
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color .12s ease, border-color .12s ease, transform .12s ease;
+    }
+
+    .items-table-image-action:hover,
+    .items-table-delete-btn:hover {
+      border-color: color-mix(in srgb, var(--accent-h) 42%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 14%, transparent), color-mix(in srgb, var(--surface2) 46%, var(--surface)));
+      transform: translateY(-1px);
+    }
+
+    .items-table-delete-btn {
+      border-color: color-mix(in srgb, var(--danger) 24%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--danger) 12%, transparent), color-mix(in srgb, var(--surface2) 28%, var(--surface)));
+    }
+
+    .items-table-delete-btn:hover {
+      border-color: color-mix(in srgb, var(--danger) 42%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--danger) 16%, transparent), color-mix(in srgb, var(--surface2) 40%, var(--surface)));
+    }
+
+    .items-table-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 100%;
+    }
+
     .workflow-item {
       --item-status-accent: color-mix(in srgb, var(--section-accent, var(--accent)) 42%, var(--border));
       --workflow-item-image-size: 72px;
@@ -4987,8 +5224,24 @@
     }
 
     .workflow-item-status-select {
-      border-color: color-mix(in srgb, var(--item-status-accent) 34%, var(--border)) !important;
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--item-status-accent) 10%, transparent);
+      cursor: pointer;
+      color-scheme: dark;
+      border-color: color-mix(in srgb, var(--item-status-accent) 52%, var(--border)) !important;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--item-status-accent) 18%, var(--field-bg-strong)), color-mix(in srgb, var(--item-status-accent) 8%, var(--surface))) !important;
+      color: var(--text);
+      font-weight: 800;
+      box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--item-status-accent) 22%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--item-status-accent) 12%, transparent);
+    }
+
+    :root.theme-light .workflow-item-status-select {
+      color-scheme: light;
+    }
+
+    .workflow-item-status-select option {
+      background: var(--surface);
+      color: var(--text);
     }
 
     .workflow-item-check {
@@ -5074,8 +5327,7 @@
     }
 
     #itemsModal .workflow-item-list {
-      grid-template-columns: repeat(auto-fit, minmax(680px, 1fr));
-      gap: 10px;
+      display: block;
     }
 
     #itemsModal .workflow-item {
@@ -5100,6 +5352,12 @@
 
     #itemsModal .workflow-item-top {
       gap: 6px 10px;
+    }
+
+    @media (max-width: 900px) {
+      .items-table-shell {
+        min-width: 940px;
+      }
     }
 
     #itemsModal .workflow-item-number {
@@ -9685,6 +9943,7 @@
                 <div class="workflow-item-heading">
                   <strong class="workflow-item-number">${escHtml(item.bid || item.tid || 'Item')}</strong>
                 </div>
+                <span class="workflow-item-status-pill">${escHtml(statusMeta.label)}</span>
                 ${showTaskLink ? `<div class="workflow-item-task-link">Task: ${escHtml(getItemTaskLabel(item))}</div>` : ''}
               </div>
               <div class="workflow-item-actions">
@@ -9711,6 +9970,94 @@
             </div>
           </div>
         </article>`;
+    }
+
+    function getAllItemsTableRowMarkup(item) {
+      const statusMeta = getItemStatusMeta(item.status);
+      const supplierValue = String(item.supplier || '').trim();
+      const taskLabel = getItemTaskLabel(item);
+      const imageLabel = item.imageName || getItemReferenceSummary(item);
+
+      return `
+        <tr class="items-table-row status-${toClassToken(statusMeta.value)}" style="--item-status-accent:${statusMeta.accent}">
+          <td class="items-table-cell">
+            <div class="items-table-cell-inner is-image">
+              <label class="workflow-item-image-frame workflow-item-upload items-table-image-frame${item.imageDataUrl ? '' : ' is-empty'}" title="${escHtml(imageLabel)}">
+                ${item.imageDataUrl
+                  ? `<img class="workflow-item-image-preview" src="${escHtml(item.imageDataUrl)}" alt="${escHtml(getItemReferenceSummary(item))}" />`
+                  : '<span class="workflow-item-image-placeholder"><strong>+</strong><span>Add image</span></span>'}
+                <input type="file" accept="image/*" data-item-image-upload="${item.id}" />
+              </label>
+              ${item.imageDataUrl
+                ? `<button type="button" class="items-table-image-action" data-clear-item-image="${item.id}">Remove image</button>`
+                : '<span class="items-table-image-hint">Attach image</span>'}
+            </div>
+          </td>
+          <td class="items-table-cell">
+            <div class="items-table-cell-inner">
+              <input class="items-table-input" type="text" value="${escHtml(item.bid)}" data-item-id="${item.id}" data-item-field="bid" placeholder="BID" />
+            </div>
+          </td>
+          <td class="items-table-cell">
+            <div class="items-table-cell-inner">
+              <input class="items-table-input" type="text" value="${escHtml(item.tid)}" data-item-id="${item.id}" data-item-field="tid" placeholder="TID" />
+            </div>
+          </td>
+          <td class="items-table-cell">
+            <div class="items-table-cell-inner is-task">
+              <div class="items-table-task-text${taskLabel === 'Unassigned' ? ' is-muted' : ''}" title="${escHtml(taskLabel)}">${escHtml(taskLabel)}</div>
+            </div>
+          </td>
+          <td class="items-table-cell">
+            <div class="items-table-cell-inner">
+              <div class="items-table-status-wrap">
+                <span class="items-table-status-pill">${escHtml(statusMeta.label)}</span>
+                <select class="items-table-input items-table-select workflow-item-status-select" data-item-id="${item.id}" data-item-field="status">${buildSelectOptions(ITEM_STATUS_OPTIONS, item.status || DEFAULT_ITEM_STATUS, 'Select status')}</select>
+              </div>
+            </div>
+          </td>
+          <td class="items-table-cell">
+            <div class="items-table-cell-inner">
+              <select class="items-table-input items-table-select" data-item-id="${item.id}" data-item-field="supplier">${buildSelectOptions(getSupplierOptions(supplierValue), supplierValue, 'No supplier')}</select>
+            </div>
+          </td>
+          <td class="items-table-cell">
+            <div class="items-table-cell-inner is-actions">
+              <div class="items-table-actions">
+                <button type="button" class="items-table-delete-btn" data-delete-item="${item.id}">Delete item</button>
+              </div>
+            </div>
+          </td>
+        </tr>`;
+    }
+
+    function getAllItemsTableMarkup(itemsToRender) {
+      const columns = [
+        { label: 'Image', width: '132px' },
+        { label: 'BID', width: '170px' },
+        { label: 'TID', width: '170px' },
+        { label: 'Task', width: '260px', headerClass: 'is-task' },
+        { label: 'Status', width: '150px' },
+        { label: 'Supplier', width: '220px' },
+        { label: 'Actions', width: '150px' }
+      ];
+
+      return `
+        <div class="items-table-shell">
+          <table class="items-data-table" aria-label="All items table">
+            <colgroup>
+              ${columns.map(column => `<col style="width:${escHtml(column.width)}">`).join('')}
+            </colgroup>
+            <thead>
+              <tr>
+                ${columns.map(column => `<th scope="col" class="items-table-head${column.headerClass ? ` ${column.headerClass}` : ''}"><span class="items-table-head-label">${escHtml(column.label)}</span></th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsToRender.map(item => getAllItemsTableRowMarkup(item)).join('')}
+            </tbody>
+          </table>
+        </div>`;
     }
 
     function getWorkflowItemsSectionMarkup(task) {
@@ -13329,7 +13676,7 @@
 
       summary.textContent = `${filteredItems.length} of ${items.length} item${items.length === 1 ? '' : 's'}`;
       list.innerHTML = filteredItems.length
-        ? filteredItems.map(item => getItemEditorMarkup(item, { showTaskLink: true })).join('')
+        ? getAllItemsTableMarkup(filteredItems)
         : '<div class="workflow-item-empty">No items match the current search.</div>';
 
       restoreScrollTop(shell, preserveScrollTop);
