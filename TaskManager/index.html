@@ -6592,6 +6592,7 @@
       <select id="sortTasks" class="sort-select">
         <option value="workflow">Sort: Workflow</option>
         <option value="due-date">Sort: Due Date</option>
+        <option value="received-date">Sort: Received Date</option>
         <option value="created-date">Sort: Created Date</option>
         <option value="priority">Sort: Priority</option>
         <option value="title">Sort: Title</option>
@@ -7899,7 +7900,7 @@
     const YES_NO_OPTIONS = ['Yes', 'No'];
     const HIDDEN_FILTER_GROUPS = ['status', 'priority', 'category'];
     const TASK_VIEW_OPTIONS = ['standard', 'compact', 'table'];
-    const TASK_SORT_OPTIONS = ['workflow', 'due-date', 'created-date', 'priority', 'title'];
+    const TASK_SORT_OPTIONS = ['workflow', 'due-date', 'received-date', 'created-date', 'priority', 'title'];
     const TASK_TABLE_COLUMNS = [
       { key: 'title', label: 'Title', width: '560px', headerClass: 'is-title', cellClass: 'is-title', sortable: true },
       { key: 'category', label: 'Category', width: '108px', sortable: true },
@@ -9848,6 +9849,12 @@
         const dueA = a.dueDate || '9999-12-31';
         const dueB = b.dueDate || '9999-12-31';
         return dueA.localeCompare(dueB) || a.title.localeCompare(b.title);
+      }
+
+      if (sortMode === 'received-date') {
+        const receivedA = a.receivedAt || '9999-12-31';
+        const receivedB = b.receivedAt || '9999-12-31';
+        return receivedA.localeCompare(receivedB) || a.title.localeCompare(b.title);
       }
 
       if (sortMode === 'created-date') {
