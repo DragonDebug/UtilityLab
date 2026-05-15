@@ -71,6 +71,13 @@
       --status-ongoing: #3b82f6;
       --status-done:    #475569;
 
+      --task-card-media-min-width: 96px;
+      --task-card-media-max-width: 176px;
+      --task-card-media-max-height: 176px;
+      --task-card-media-compact-min-width: 82px;
+      --task-card-media-compact-max-width: 136px;
+      --task-card-media-compact-max-height: 136px;
+
       --sticky-panel-top: 82px;
       --sticky-panel-gap: 16px;
       --task-list-offset: 270px;
@@ -1765,14 +1772,16 @@
 
     .task-heading {
       display: flex;
-      align-items: flex-start;
+      align-items: stretch;
       gap: 10px;
       min-width: 0;
     }
 
     .task-card-media {
-      width: 96px;
-      min-width: 96px;
+      width: auto;
+      min-width: var(--task-card-media-min-width);
+      max-width: var(--task-card-media-max-width);
+      max-height: var(--task-card-media-max-height);
       aspect-ratio: 1;
       border-radius: 14px;
       overflow: hidden;
@@ -1780,6 +1789,7 @@
       background: color-mix(in srgb, var(--surface2) 74%, var(--surface));
       box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
       flex: 0 0 auto;
+      align-self: stretch;
     }
 
     .task-card-media img {
@@ -2068,6 +2078,7 @@
       cursor: pointer;
       transition: color .12s ease, border-color .12s ease, background-color .12s ease;
       flex: 0 0 auto;
+      align-self: flex-start;
     }
 
     .quick-toggle:hover {
@@ -2788,18 +2799,18 @@
 
     .task-card-compact .task-card-body {
       grid-template-columns: minmax(0, 1fr) auto;
-      padding: 10px 11px;
+      padding: 9px 10px;
       align-items: start;
     }
 
     .task-card-compact .task-main {
-      gap: 6px;
+      gap: 4px;
       padding-right: 0;
     }
 
     .task-card-compact.has-compact-dates .task-main {
       grid-template-columns: minmax(0, 1fr) minmax(132px, 148px);
-      gap: 8px;
+      gap: 6px;
       align-items: start;
     }
 
@@ -2813,19 +2824,22 @@
     }
 
     .task-card-compact .task-title {
-      font-size: 13px;
-      -webkit-line-clamp: 1;
-      line-clamp: 1;
+      margin-top: 0;
+      font-size: 14px;
+      line-height: 1.24;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
       margin-bottom: 0;
     }
 
     .task-card-compact .task-type-line {
-      gap: 7px;
+      gap: 6px;
       padding-left: 10px;
     }
 
     .task-card-compact .task-type-name {
       font-size: 12px;
+      letter-spacing: .12em;
     }
 
     .task-card-compact .task-priority-bar {
@@ -2834,25 +2848,29 @@
     }
 
     .task-card-compact .task-priority-label {
-      font-size: 7px;
+      font-size: 8px;
     }
 
     .task-card-compact .task-card-media {
-      width: 82px;
-      min-width: 82px;
+      width: auto;
+      min-width: var(--task-card-media-compact-min-width);
+      max-width: var(--task-card-media-compact-max-width);
+      max-height: var(--task-card-media-compact-max-height);
       border-radius: 12px;
     }
 
     .task-card-compact .task-project-pill {
-      font-size: 9px;
-      padding: 3px 7px;
+      font-size: 10px;
+      padding: 3px 8px;
       min-height: 24px;
     }
 
     @media (max-width: 760px) {
       .task-card-media {
-        width: 84px;
-        min-width: 84px;
+        width: auto;
+        min-width: min(84px, var(--task-card-media-min-width));
+        max-width: min(140px, var(--task-card-media-max-width));
+        max-height: min(140px, var(--task-card-media-max-height));
       }
     }
 
@@ -2884,7 +2902,7 @@
       align-content: start;
       min-width: 112px;
       width: 112px;
-      gap: 4px;
+      gap: 3px;
     }
 
     .task-card-compact .task-action-tools {
@@ -2892,12 +2910,27 @@
     }
 
     .task-card-compact .task-action-icon-btn {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
     }
 
     .task-card-compact .task-signal-row {
-      gap: 5px 8px;
+      gap: 4px 8px;
+      align-items: center;
+    }
+
+    .task-card-compact .task-progress-summary {
+      font-size: 11px;
+      line-height: 1.1;
+    }
+
+    .task-card-compact .task-progress-label,
+    .task-card-compact .task-progress-value {
+      letter-spacing: .06em;
+    }
+
+    .task-card-compact .task-progress-bar {
+      height: 7px;
     }
 
     .task-card-compact .task-sender-label,
@@ -2923,11 +2956,36 @@
 
     .task-card-compact .task-compact-dates-column .task-preview-dates {
       grid-template-columns: minmax(0, 1fr);
-      gap: 4px;
+      gap: 3px;
       width: 100%;
       max-width: none;
       justify-self: stretch;
-      min-width: 150px;
+      min-width: 144px;
+    }
+
+    .task-card-compact .task-preview-date {
+      gap: 2px;
+      padding: 6px 34px 6px 8px;
+      border-radius: 10px;
+    }
+
+    .task-card-compact .task-preview-date::after {
+      top: 6px;
+      right: 6px;
+      min-width: 22px;
+      height: 18px;
+      padding: 0 5px;
+      font-size: 7px;
+    }
+
+    .task-card-compact .task-preview-date-label {
+      font-size: 8px;
+      letter-spacing: .08em;
+    }
+
+    .task-card-compact .task-preview-date-value {
+      font-size: 10px;
+      line-height: 1.15;
     }
 
     .task-card-compact .task-action-status {
@@ -2936,9 +2994,9 @@
     }
 
     .task-card-compact .task-action-status .badge {
-      min-height: 45px;
-      padding: 7px 10px;
-      font-size: 12px;
+      min-height: 40px;
+      padding: 6px 9px;
+      font-size: 11px;
       border-radius: 9px;
     }
 
@@ -5197,10 +5255,19 @@
     .item-settings-group {
       display: grid;
       gap: 8px;
+      align-content: start;
       padding: 12px;
       border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border));
       border-radius: 14px;
       background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, transparent), rgba(255,255,255,.02));
+    }
+
+    .item-settings-choice-group {
+      grid-template-rows: auto auto 1fr;
+    }
+
+    .item-settings-choice-group .item-settings-help {
+      max-width: 34ch;
     }
 
     .item-settings-group label {
@@ -5223,6 +5290,8 @@
       line-height: 1.5;
       resize: vertical;
       outline: none;
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in srgb, var(--accent) 34%, var(--text-muted) 66%) transparent;
     }
 
     .item-settings-group input,
@@ -5237,6 +5306,27 @@
       font-size: 13px;
       line-height: 1.4;
       outline: none;
+    }
+
+    .item-settings-group select {
+      cursor: pointer;
+      color: color-mix(in srgb, var(--text) 94%, var(--accent) 6%);
+      color-scheme: dark;
+    }
+
+    :root.theme-light .item-settings-group select {
+      color-scheme: light;
+    }
+
+    .item-settings-group select option {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .item-settings-choice-group select {
+      max-width: 220px;
+      min-height: 42px;
+      font-weight: 700;
     }
 
     .item-settings-group textarea:focus,
@@ -5284,6 +5374,47 @@
     .item-settings-actions .btn {
       min-height: 38px;
       padding: 7px 14px;
+    }
+
+    #itemSettingsModal .modal {
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in srgb, var(--accent) 34%, var(--text-muted) 66%) transparent;
+      scrollbar-gutter: stable;
+      overscroll-behavior: contain;
+    }
+
+    #itemSettingsModal .modal::-webkit-scrollbar,
+    .item-settings-group textarea::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+
+    #itemSettingsModal .modal::-webkit-scrollbar-track,
+    .item-settings-group textarea::-webkit-scrollbar-track {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--field-bg) 72%, transparent), transparent 22%, color-mix(in srgb, var(--field-bg) 62%, transparent));
+      border-radius: 999px;
+      margin-block: 6px;
+    }
+
+    #itemSettingsModal .modal::-webkit-scrollbar-thumb,
+    .item-settings-group textarea::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent-h) 86%, white 14%), color-mix(in srgb, var(--accent) 72%, var(--surface2) 28%));
+      border: 2px solid transparent;
+      border-radius: 999px;
+      background-clip: padding-box;
+      min-height: 40px;
+    }
+
+    #itemSettingsModal .modal::-webkit-scrollbar-thumb:hover,
+    .item-settings-group textarea::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent-h) 92%, white 8%), color-mix(in srgb, var(--accent) 84%, var(--surface2) 16%));
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+
+    #itemSettingsModal .modal::-webkit-scrollbar-corner,
+    .item-settings-group textarea::-webkit-scrollbar-corner {
+      background: transparent;
     }
 
     .item-settings-storage-topline {
@@ -6775,6 +6906,15 @@
               <button type="button" class="btn btn-ghost" id="exportDetailedExcelFromSettingsBtn">Export Detailed Excel</button>
             </div>
           </div>
+          <div class="item-settings-group item-settings-choice-group">
+            <label for="taskCardImageSizeInput">Task Card Image Size</label>
+            <select id="taskCardImageSizeInput">
+              <option value="small">Small</option>
+              <option value="medium">Medium</option>
+              <option value="large">Large</option>
+            </select>
+            <p class="item-settings-help">Choose how large task-card images should appear in the task list. Small matches the older thumbnail size, Medium is a balanced option, and Large keeps the current bigger look.</p>
+          </div>
           <div class="item-settings-group">
             <label>Storage & Backup</label>
             <div class="item-settings-storage-topline">
@@ -7485,6 +7625,7 @@
     function renderAppState() {
       document.getElementById('sortTasks').value = currentSortMode;
       document.getElementById('toggleDoneBtn').textContent = hideDone ? 'Show Completed' : 'Hide Completed';
+      applyTaskCardImageSizePreference();
       renderTaskProjectOptions();
       renderCategoryList();
       renderTemplateList();
@@ -7620,14 +7761,56 @@
       const projectOptions = normalizeOptionList(settings?.projectOptions || []);
       const detailedExportWeekYear = clampWorkingWeekYear(settings?.detailedExportWeekYear ?? currentWorkingWeekInfo.year);
       const detailedExportWeekNumber = clampWorkingWeekNumber(settings?.detailedExportWeekNumber ?? currentWorkingWeekInfo.weekNumber, detailedExportWeekYear);
+      const taskCardImageSize = TASK_CARD_IMAGE_SIZE_OPTIONS.includes(String(settings?.taskCardImageSize || '').trim().toLowerCase())
+        ? String(settings.taskCardImageSize).trim().toLowerCase()
+        : 'large';
 
       return {
         supplierOptions: supplierOptions.length ? supplierOptions : [...DEFAULT_ITEM_SUPPLIER_OPTIONS],
         senderOptions,
         projectOptions,
         detailedExportWeekNumber,
-        detailedExportWeekYear
+        detailedExportWeekYear,
+        taskCardImageSize
       };
+    }
+
+    function getTaskCardImageSizeConfig(size = itemSettings?.taskCardImageSize) {
+      switch (String(size || '').trim().toLowerCase()) {
+        case 'small':
+          return {
+            standardMin: '96px',
+            standardMax: '96px',
+            compactMin: '82px',
+            compactMax: '82px'
+          };
+        case 'medium':
+          return {
+            standardMin: '96px',
+            standardMax: '136px',
+            compactMin: '82px',
+            compactMax: '112px'
+          };
+        default:
+          return {
+            standardMin: '96px',
+            standardMax: '176px',
+            compactMin: '82px',
+            compactMax: '136px'
+          };
+      }
+    }
+
+    function applyTaskCardImageSizePreference(size = itemSettings?.taskCardImageSize) {
+      const root = document.documentElement;
+      const config = getTaskCardImageSizeConfig(size);
+
+      root.style.setProperty('--task-card-media-min-width', config.standardMin);
+      root.style.setProperty('--task-card-media-max-width', config.standardMax);
+      root.style.setProperty('--task-card-media-max-height', config.standardMax);
+      root.style.setProperty('--task-card-media-compact-min-width', config.compactMin);
+      root.style.setProperty('--task-card-media-compact-max-width', config.compactMax);
+      root.style.setProperty('--task-card-media-compact-max-height', config.compactMax);
     }
 
     function getSupplierOptions(extraValue = '') {
@@ -7696,6 +7879,8 @@
       subtaskTitle: 800,
       logContent: 800,
     };
+
+    const TASK_CARD_IMAGE_SIZE_OPTIONS = ['small', 'medium', 'large'];
 
     function normalizeTaskProgressPercent(value) {
       if (value === null || value === undefined || String(value).trim() === '') return 0;
@@ -9860,6 +10045,8 @@
                     ${getTaskProjectMarkup(task.project, searchQuery)}
                     ${getTaskPriorityMarkup(taskData.priority)}
                   </div>
+                  ${task.sender ? `<div class="task-sender-label">From: ${getHighlightedMarkup(task.sender, searchQuery)}</div>` : ''}
+                  ${task.emailSubject ? `<div class="task-email-subject">Email: ${getHighlightedMarkup(task.emailSubject, searchQuery)}</div>` : ''}
                   <div class="task-progress-row" style="--task-progress:${taskData.progressPercent}%">
                     <div class="task-progress-summary">
                       <span class="task-progress-label">Progress</span>
@@ -9867,8 +10054,6 @@
                     </div>
                     <div class="task-progress-bar" aria-hidden="true"></div>
                   </div>
-                  ${task.sender ? `<div class="task-sender-label">From: ${getHighlightedMarkup(task.sender, searchQuery)}</div>` : ''}
-                  ${task.emailSubject ? `<div class="task-email-subject">Email: ${getHighlightedMarkup(task.emailSubject, searchQuery)}</div>` : ''}
                   <div class="task-info-strip">
                     <div class="task-meta">
                       <span class="task-date">${taskData.workflowItemCount} item${taskData.workflowItemCount === 1 ? '' : 's'}</span>
@@ -9911,10 +10096,6 @@
 
     function getCompactTaskCardMarkup(task, searchQuery = '') {
       const taskData = getTaskCardData(task);
-      const compactContextMarkup = [
-        task.sender ? `<div class="task-sender-label">From: ${getHighlightedMarkup(task.sender, searchQuery)}</div>` : '',
-        task.emailSubject ? `<div class="task-email-subject">Email: ${getHighlightedMarkup(task.emailSubject, searchQuery)}</div>` : ''
-      ].filter(Boolean).join('');
       const compactDateMarkup = [
         task.receivedAt ? `<div class="task-preview-date is-received"><span class="task-preview-date-label">Received</span><span class="task-preview-date-value">${escHtml(formatDate(task.receivedAt))}</span></div>` : '',
         task.dueDate ? `<div class="task-preview-date is-due ${taskData.overdue ? 'overdue' : ''}"><span class="task-preview-date-label">Due</span><span class="task-preview-date-value">${taskData.overdue ? 'Overdue ' : ''}${escHtml(formatDate(task.dueDate))}</span></div>` : '',
@@ -9947,7 +10128,6 @@
                     </div>
                     <div class="task-progress-bar" aria-hidden="true"></div>
                   </div>
-                  ${compactContextMarkup ? `<div class="task-compact-context">${compactContextMarkup}</div>` : ''}
                 </div>
               </div>
               ${compactDateMarkup ? `<div class="task-compact-dates-column"><div class="task-preview-dates">${compactDateMarkup}</div></div>` : ''}
@@ -13253,14 +13433,16 @@
       const supplierOptions = normalizeOptionList(document.getElementById('itemSupplierOptionsInput').value);
       const detailedExportWeekYear = clampWorkingWeekYear(document.getElementById('detailedExportWeekYearInput').value);
       const detailedExportWeekNumber = clampWorkingWeekNumber(document.getElementById('detailedExportWeekNumberInput').value, detailedExportWeekYear);
+      const taskCardImageSize = document.getElementById('taskCardImageSizeInput').value;
 
       if (!supplierOptions.length) {
         document.getElementById('itemSupplierOptionsInput').focus();
         return false;
       }
 
-      itemSettings = normalizeItemSettings({ senderOptions, projectOptions, supplierOptions, detailedExportWeekNumber, detailedExportWeekYear });
+      itemSettings = normalizeItemSettings({ senderOptions, projectOptions, supplierOptions, detailedExportWeekNumber, detailedExportWeekYear, taskCardImageSize });
       saveItemSettings();
+      applyTaskCardImageSizePreference();
       renderTaskProjectOptions();
       if (closeModalAfterSave) {
         closeItemSettingsModal();
@@ -13518,6 +13700,7 @@
       document.getElementById('taskSenderOptionsInput').value = (itemSettings?.senderOptions || []).join('\n');
       document.getElementById('taskProjectOptionsInput').value = (itemSettings?.projectOptions || []).join('\n');
       document.getElementById('itemSupplierOptionsInput').value = (itemSettings?.supplierOptions || DEFAULT_ITEM_SUPPLIER_OPTIONS).join('\n');
+      document.getElementById('taskCardImageSizeInput').value = itemSettings?.taskCardImageSize || 'large';
       const detailedExportWeekSelection = getDetailedExportWeekSelection();
       document.getElementById('detailedExportWeekNumberInput').value = detailedExportWeekSelection.weekNumber;
       document.getElementById('detailedExportWeekYearInput').value = detailedExportWeekSelection.year;
