@@ -414,7 +414,7 @@
     .modal {
       width: min(100%, 1040px);
       max-height: min(92vh, 960px);
-      min-height: min(78vh, 760px);
+      min-height: min(90vh, 1120px);
       padding: clamp(16px, 2vw, 22px);
       border-radius: 28px;
       background:
@@ -5239,6 +5239,28 @@
       gap: 12px;
     }
 
+    .modal-header-inline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .modal-header-inline h2 {
+      margin: 0;
+    }
+
+    .item-settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .item-settings-header h2 {
+      margin: 0;
+    }
+
     .item-settings-intro {
       margin: 0;
       font-size: 12px;
@@ -6798,7 +6820,14 @@
 
   <div class="modal-backdrop" id="categoryModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
-      <h2 id="categoryModalTitle">Manage Categories</h2>
+      <div class="modal-header-inline">
+        <h2 id="categoryModalTitle">Manage Categories</h2>
+        <button type="button" class="task-modal-close" id="closeCategoryModalBtn" aria-label="Close categories">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6 18 18M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
       <form id="categoryForm" novalidate>
         <div class="category-form-row">
           <div class="form-group">
@@ -6846,7 +6875,14 @@
 
   <div class="modal-backdrop" id="templateModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="templateModalTitle">
-      <h2 id="templateModalTitle">Manage Templates</h2>
+      <div class="modal-header-inline">
+        <h2 id="templateModalTitle">Manage Templates</h2>
+        <button type="button" class="task-modal-close" id="closeTemplateModalBtn" aria-label="Close templates">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6 18 18M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
       <form id="templateForm" novalidate>
         <div class="form-group">
           <label for="templateName">Name *</label>
@@ -6868,7 +6904,14 @@
 
   <div class="modal-backdrop" id="itemSettingsModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="itemSettingsModalTitle">
+      <div class="item-settings-header">
         <h2 id="itemSettingsModalTitle">Settings</h2>
+        <button type="button" class="task-modal-close" id="closeItemSettingsModalBtn" aria-label="Close settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6 18 18M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
       <form id="itemSettingsForm" class="item-settings-form" novalidate>
           <p class="item-settings-intro">Manage shared task and item options here. Email senders and projects feed the task form, while suppliers feed the item editors and import flow.</p>
         <div class="item-settings-grid">
@@ -6963,7 +7006,14 @@
 
   <div class="modal-backdrop" id="itemsModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="itemsModalTitle">
-      <h2 id="itemsModalTitle">All Items</h2>
+      <div class="modal-header-inline">
+        <h2 id="itemsModalTitle">All Items</h2>
+        <button type="button" class="task-modal-close" id="closeItemsModalBtn" aria-label="Close items">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6 18 18M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
       <div class="items-modal-toolbar">
         <div class="items-modal-search">
           <div class="items-modal-section-label">Find Items</div>
@@ -7869,16 +7919,16 @@
 
     const INPUT_LIMITS = {
       searchTasks: 120,
-      taskTitle: 800,
-      taskEmailSubject: 120,
+      taskTitle: 1200,
+      taskEmailSubject: 180,
       taskDescription: 2400,
       taskProject: 60,
-      taskNotes: 2400,
+      taskNotes: 3000,
       categoryName: 40,
       templateName: 60,
-      templateSubtasks: 800,
+      templateSubtasks: 2000,
       subtaskTitle: 800,
-      logContent: 800,
+      logContent: 1000,
     };
 
     const TASK_CARD_IMAGE_SIZE_OPTIONS = ['small', 'medium', 'large'];
@@ -13591,9 +13641,13 @@
       const isExpanded = document.getElementById('taskDatesToggleBtn').getAttribute('aria-expanded') === 'true';
       setTaskDatesExpanded(!isExpanded);
     });
+    document.getElementById('closeCategoryModalBtn').addEventListener('click', closeCategoryModal);
     document.getElementById('cancelCategoryBtn').addEventListener('click', closeCategoryModal);
+    document.getElementById('closeTemplateModalBtn').addEventListener('click', closeTemplateModal);
     document.getElementById('cancelTemplateBtn').addEventListener('click', closeTemplateModal);
+    document.getElementById('closeItemSettingsModalBtn').addEventListener('click', closeItemSettingsModal);
     document.getElementById('cancelItemSettingsBtn').addEventListener('click', closeItemSettingsModal);
+    document.getElementById('closeItemsModalBtn').addEventListener('click', closeItemsModal);
     document.getElementById('closeItemsBtn').addEventListener('click', closeItemsModal);
 
     bindBackdropDismiss('taskModal', closeModal);
