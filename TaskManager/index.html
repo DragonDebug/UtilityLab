@@ -4663,6 +4663,7 @@
 
     .workflow-item {
       --item-status-accent: color-mix(in srgb, var(--section-accent, var(--accent)) 42%, var(--border));
+      --workflow-item-image-size: 72px;
       display: flex;
       gap: 8px;
       align-items: stretch;
@@ -4868,13 +4869,21 @@
     .workflow-item-media {
       position: relative;
       min-width: 0;
-      flex: 0 0 auto;
-      align-self: stretch;
+      width: var(--workflow-item-image-size);
+      min-width: var(--workflow-item-image-size);
+      max-width: var(--workflow-item-image-size);
+      flex: 0 0 var(--workflow-item-image-size);
+      align-self: flex-start;
     }
 
     .workflow-item-media-inline {
       position: relative;
-      height: 100%;
+      width: var(--workflow-item-image-size);
+      height: var(--workflow-item-image-size);
+      min-width: var(--workflow-item-image-size);
+      min-height: var(--workflow-item-image-size);
+      max-width: var(--workflow-item-image-size);
+      max-height: var(--workflow-item-image-size);
     }
 
     .workflow-item-approval-toggle {
@@ -4888,10 +4897,12 @@
     .workflow-item-image-frame {
       display: grid;
       place-items: center;
-      width: auto;
-      min-height: 72px;
-      height: 100%;
-      aspect-ratio: 1 / 1;
+      width: var(--workflow-item-image-size);
+      height: var(--workflow-item-image-size);
+      min-width: var(--workflow-item-image-size);
+      min-height: var(--workflow-item-image-size);
+      max-width: var(--workflow-item-image-size);
+      max-height: var(--workflow-item-image-size);
       border: 1px dashed color-mix(in srgb, var(--section-accent, var(--accent)) 22%, var(--border));
       border-radius: 10px;
       background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
@@ -4911,6 +4922,10 @@
       display: block;
       width: 100%;
       height: 100%;
+      min-width: 100%;
+      min-height: 100%;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: cover;
       background: rgba(0,0,0,.08);
     }
@@ -5064,16 +5079,19 @@
     }
 
     #itemsModal .workflow-item {
+      --workflow-item-image-size: 88px;
       gap: 10px;
       padding: 8px 10px;
     }
 
     #itemsModal .workflow-item-media {
-      min-width: 88px;
+      width: var(--workflow-item-image-size);
+      min-width: var(--workflow-item-image-size);
+      max-width: var(--workflow-item-image-size);
     }
 
     #itemsModal .workflow-item-image-frame {
-      min-height: 88px;
+      min-height: 0;
     }
 
     #itemsModal .workflow-item-body {
