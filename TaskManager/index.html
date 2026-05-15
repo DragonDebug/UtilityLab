@@ -10943,6 +10943,31 @@
       }));
     }
 
+    function getLatestTaskUpdatesExportValue(taskId, limit = 5) {
+      const latestLogs = getLogsByTaskId(taskId).slice(0, Math.max(0, limit));
+      if (!latestLogs.length) return '';
+
+      const richText = [];
+      latestLogs.forEach((log, index) => {
+        const stamp = formatExcelDateDisplay(log.createdAt);
+        const content = String(log.content || '').trim();
+        const dateLabel = stamp ? `[${stamp}]` : '[]';
+
+        richText.push({
+          font: { bold: true },
+          text: `${index > 0 ? '\n' : ''}${dateLabel}`
+        });
+
+        if (content) {
+          richText.push({
+            text: ` - ${content}`
+          });
+        }
+      });
+
+      return { richText };
+    }
+
     function getDetailedTaskExportRows() {
       return tasks.map((task, index) => {
         return {
@@ -10962,7 +10987,8 @@
           Completed: toExcelDateValue(task.completedAt),
           Received: toExcelDateValue(task.receivedAt),
           Due: toExcelDateValue(task.dueDate),
-          TaskImageDataUrl: String(task.imageDataUrl || '').trim()
+          TaskImageDataUrl: String(task.imageDataUrl || '').trim(),
+          LatestUpdates: getLatestTaskUpdatesExportValue(task.id, 5)
         };
       });
     }
@@ -11147,8 +11173,8 @@
         const rowNumber = startRow + index;
         const imageId = worksheet.workbook.addImage(imageDescriptor);
         worksheet.addImage(imageId, {
-          tl: { col: 1 + 0.12, row: rowNumber - 1 + 0.1 },
-          ext: { width: 42, height: 42 },
+          tl: { col: 1 + 0.18, row: rowNumber - 1 + 0.05 },
+          ext: { width: 98, height: 98 },
           editAs: 'oneCell'
         });
         worksheet.getCell(`${imageColumnLetter}${rowNumber}`).value = '';
@@ -11381,22 +11407,23 @@
           { key: 'Quantity', header: 'Quantity', width: 14 }
         ];
         const taskColumns = [
-          { key: 'No', header: 'No.', width: 8 },
-          { key: 'TaskImage', header: 'Task Image', width: 14 },
-          { key: 'Title', header: 'Title', width: 34 },
-          { key: 'Description', header: 'Description', width: 46 },
-          { key: 'Category', header: 'Category', width: 24 },
-          { key: 'Priority', header: 'Priority', width: 14 },
-          { key: 'EmailSubject', header: 'Email Subject', width: 38 },
-          { key: 'Sender', header: 'Sender', width: 22 },
-          { key: 'Created', header: 'Created', width: 14 },
-          { key: 'Received', header: 'Received', width: 14 },
-          { key: 'Due', header: 'Due', width: 14 },
-          { key: 'Started', header: 'Started', width: 14 },
-          { key: 'Completed', header: 'Completed', width: 14 },
-          { key: 'Quantity', header: 'Quantity', width: 14 },
-          { key: 'Status', header: 'Status', width: 20 },
-          { key: 'Notes', header: 'Notes', width: 40 },
+          { key: 'No', header: 'No.', width: 5 },
+          { key: 'TaskImage', header: 'Task Image', width: 30 },
+          { key: 'Title', header: 'Title', width: 35 },
+          { key: 'Description', header: 'Description', width: 50 },
+          { key: 'Category', header: 'Category', width: 12 },
+          { key: 'Priority', header: 'Priority', width: 12 },
+          { key: 'EmailSubject', header: 'Email Subject', width: 30 },
+          { key: 'Sender', header: 'Sender', width: 15 },
+          { key: 'Created', header: 'Created', width: 12 },
+          { key: 'Received', header: 'Received', width: 12 },
+          { key: 'Due', header: 'Due', width: 12 },
+          { key: 'Started', header: 'Started', width: 12 },
+          { key: 'Completed', header: 'Completed', width: 12 },
+          { key: 'Quantity', header: 'Quantity', width: 12 },
+          { key: 'Status', header: 'Status', width: 15 },
+          { key: 'Notes', header: 'Notes', width: 30 },
+          { key: 'LatestUpdates', header: 'Latest Updates', width: 56 },
         ];
         const getTaskColumnLetter = key => getExcelColumnLetter(taskColumns.findIndex(column => column.key === key) + 1);
 
