@@ -2081,6 +2081,14 @@
       align-self: flex-start;
     }
 
+    .task-leading-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 0 0 auto;
+      align-self: flex-start;
+    }
+
     .quick-toggle:hover {
       border-color: var(--accent);
       color: var(--accent);
@@ -2091,6 +2099,58 @@
       border-color: var(--low);
       color: var(--low);
       background: rgba(34,197,94,.10);
+    }
+
+    .favorite-toggle {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, #f4b942 20%, var(--border-strong));
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      color: color-mix(in srgb, #f4b942 55%, var(--text-muted));
+      cursor: pointer;
+      transition: color .12s ease, border-color .12s ease, background-color .12s ease, transform .12s ease;
+      flex: 0 0 auto;
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .favorite-toggle svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+    }
+
+    .favorite-toggle:hover {
+      border-color: color-mix(in srgb, #f4b942 72%, var(--border-strong));
+      color: #f4b942;
+      background: color-mix(in srgb, #f4b942 12%, transparent);
+      transform: translateY(-1px);
+    }
+
+    .favorite-toggle.is-active {
+      border-color: color-mix(in srgb, #f4b942 72%, var(--border-strong));
+      color: #f4b942;
+      background: color-mix(in srgb, #f4b942 18%, transparent);
+    }
+
+    .favorite-toggle.is-active svg {
+      fill: currentColor;
+    }
+
+    .task-card.is-favorite,
+    .task-table-row.is-favorite {
+      border-color: color-mix(in srgb, #f4b942 22%, var(--border));
+    }
+
+    .apply-sorting-btn {
+      min-height: 40px;
+      padding-inline: 12px;
     }
 
     .task-meta {
@@ -7052,6 +7112,7 @@
         <option value="priority">Sort: Priority</option>
         <option value="title">Sort: Title</option>
       </select>
+      <button class="btn btn-ghost apply-sorting-btn" id="applyTaskSortingBtn" type="button" hidden disabled>Refresh View</button>
       <div class="view-switch" id="taskViewSwitch" role="tablist" aria-label="Task views">
         <button type="button" class="view-switch-btn is-active" data-view-mode="standard" role="tab" aria-selected="true">Standard</button>
         <button type="button" class="view-switch-btn" data-view-mode="compact" role="tab" aria-selected="false">Compact</button>
@@ -8442,6 +8503,8 @@
     let selectedItemIds = new Set();
     let taskDraftImageDataUrl = '';
     let taskDraftImageName = '';
+    let renderedTaskOrderIds = [];
+    let hasDeferredTaskSort = false;
 
     const INPUT_LIMITS = {
       searchTasks: 120,
@@ -8764,6 +8827,7 @@
           subtasks: normalizeTaskSubtasks(task.subtasks),
           project: String(task.project || '').trim() || null,
           progressPercent: normalizeTaskProgressPercent(task.progressPercent),
+          isFavorite: normalizeTaskFavorite(task.isFavorite),
           startedAt: String(task.startedAt || '').trim() || null,
           completedAt: String(task.completedAt || '').trim() || null,
           imageDataUrl: String(task.imageDataUrl || '').trim(),
@@ -8988,6 +9052,14 @@
     function normalizeTaskViewMode(viewMode) {
       const normalizedViewMode = String(viewMode || '').trim().toLowerCase();
       return TASK_VIEW_OPTIONS.includes(normalizedViewMode) ? normalizedViewMode : 'standard';
+    }
+
+    function normalizeTaskFavorite(value) {
+      return value === true || value === 'true' || value === 1 || value === '1';
+    }
+
+    function isTaskFavorite(task) {
+      return normalizeTaskFavorite(task?.isFavorite);
     }
 
     function normalizeHiddenFilterValue(filterType, value) {
@@ -10759,6 +10831,99 @@
       return comparison || compareTasks(a, b, fallbackSortMode);
     }
 
+    function getVisibleTasks(tasksToFilter, filters, options = {}) {
+      const preserveVisibleIds = options.preserveVisibleIds instanceof Set
+        ? options.preserveVisibleIds
+        : new Set(Array.isArray(options.preserveVisibleIds) ? options.preserveVisibleIds : []);
+
+      return tasksToFilter.filter(task => {
+        const isPreserved = preserveVisibleIds.has(task.id);
+
+        if (!isPreserved) {
+          if (hideDone && isTaskCompleted(task)) return false;
+          if (filters.category && task.category !== filters.category) return false;
+          if (filters.priority && task.priority !== filters.priority) return false;
+          if (filters.status && task.status !== filters.status) return false;
+        }
+
+        if (filters.search && !getTaskSearchText(task).includes(filters.search)) return false;
+        return true;
+      });
+    }
+
+    function getTaskComparatorForView(viewMode, sortMode) {
+      return viewMode === 'table'
+        ? (a, b) => compareTaskTableTasks(a, b, sortMode)
+        : (a, b) => compareTasks(a, b, sortMode);
+    }
+
+    function buildRenderedTaskOrderIndex(referenceOrderIds = renderedTaskOrderIds) {
+      const orderIndex = new Map();
+
+      (Array.isArray(referenceOrderIds) ? referenceOrderIds : []).forEach((taskId, index) => {
+        if (!orderIndex.has(taskId)) {
+          orderIndex.set(taskId, index);
+        }
+      });
+
+      return orderIndex;
+    }
+
+    function compareTasksByRenderedOrder(a, b, orderIndex, fallbackCompare) {
+      const fallbackIndex = Number.MAX_SAFE_INTEGER;
+      const aIndex = orderIndex.has(a.id) ? orderIndex.get(a.id) : fallbackIndex;
+      const bIndex = orderIndex.has(b.id) ? orderIndex.get(b.id) : fallbackIndex;
+
+      if (aIndex !== bIndex) {
+        return aIndex - bIndex;
+      }
+
+      return fallbackCompare(a, b);
+    }
+
+    function orderVisibleTasks(visibleTasks, options = {}) {
+      const activeViewMode = normalizeTaskViewMode(options.viewMode || currentViewMode);
+      const activeSortMode = normalizeTaskSortMode(options.sortMode || currentSortMode);
+      const compareWithinBucket = getTaskComparatorForView(activeViewMode, activeSortMode);
+      const referenceOrderIds = options.referenceOrderIds || renderedTaskOrderIds;
+      const favoriteTasks = [];
+      const standardTasks = [];
+
+      visibleTasks.forEach(task => {
+        if (isTaskFavorite(task)) {
+          favoriteTasks.push(task);
+          return;
+        }
+
+        standardTasks.push(task);
+      });
+
+      if (options.preserveOrder) {
+        const orderIndex = buildRenderedTaskOrderIndex(referenceOrderIds);
+        favoriteTasks.sort((a, b) => compareTasksByRenderedOrder(a, b, orderIndex, compareWithinBucket));
+        standardTasks.sort((a, b) => compareTasksByRenderedOrder(a, b, orderIndex, compareWithinBucket));
+      } else {
+        favoriteTasks.sort(compareWithinBucket);
+        standardTasks.sort(compareWithinBucket);
+      }
+
+      return [...favoriteTasks, ...standardTasks];
+    }
+
+    function shouldPreserveTaskOrder(options = {}) {
+      if (options.recomputeOrder) return false;
+      if (options.preserveOrder) return true;
+      return hasDeferredTaskSort;
+    }
+
+    function updateApplySortingButton() {
+      const button = document.getElementById('applyTaskSortingBtn');
+      if (!button) return;
+
+      button.hidden = !hasDeferredTaskSort;
+      button.disabled = !hasDeferredTaskSort;
+    }
+
     function setTaskListViewMode(list, viewMode) {
       if (!list) return;
 
@@ -10788,6 +10953,7 @@
       const overdue = isOverdue(task.dueDate) && !isTaskCompleted(task);
       const categoryColor = getCategoryColor(task.category);
       const isActive = task.id === selectedTaskId;
+      const isFavorite = isTaskFavorite(task);
       const logData = getLogPreview(task.id);
       const workflowItemCount = getItemsForTask(task.id).length;
       const { completedCount, subtaskCount } = getSubtaskProgress(task);
@@ -10801,6 +10967,7 @@
         overdue,
         categoryColor,
         isActive,
+        isFavorite,
         logData,
         workflowItemCount,
         completedCount,
@@ -10810,15 +10977,30 @@
       };
     }
 
+    function getTaskQuickActionsMarkup(task) {
+      const favorite = isTaskFavorite(task);
+      const favoriteLabel = favorite ? 'Remove favorite' : 'Mark as favorite';
+
+      return `
+        <div class="task-leading-actions">
+          <button class="quick-toggle ${isTaskCompleted(task) ? 'is-done' : ''}" type="button" data-toggle-complete="${task.id}" title="Toggle complete" aria-label="Toggle complete">${isTaskCompleted(task) ? '✓' : ''}</button>
+          <button class="favorite-toggle ${favorite ? 'is-active' : ''}" type="button" data-toggle-favorite="${task.id}" title="${favoriteLabel}" aria-label="${favoriteLabel}" aria-pressed="${favorite ? 'true' : 'false'}">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m12 3.8 2.5 5.1 5.6.8-4 3.9.9 5.5-5-2.6-5 2.6.9-5.5-4-3.9 5.6-.8Z" />
+            </svg>
+          </button>
+        </div>`;
+    }
+
     function getStandardTaskCardMarkup(task, searchQuery = '') {
       const taskData = getTaskCardData(task);
 
       return `
-        <div class="task-card ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isActive ? 'is-active' : ''}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
+        <div class="task-card ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isFavorite ? 'is-favorite' : ''} ${taskData.isActive ? 'is-active' : ''}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
           <div class="task-card-body">
             <div class="task-main">
               <div class="task-heading">
-                <button class="quick-toggle ${isTaskCompleted(task) ? 'is-done' : ''}" data-toggle-complete="${task.id}" title="Toggle complete">${isTaskCompleted(task) ? '✓' : ''}</button>
+                ${getTaskQuickActionsMarkup(task)}
                 ${getTaskMediaMarkup(task)}
                 <div class="task-heading-main">
                   <div class="task-heading-top">
@@ -10890,11 +11072,11 @@
       ].filter(Boolean).join('');
 
       return `
-        <div class="task-card task-card-compact ${compactDateMarkup ? 'has-compact-dates' : ''} ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isActive ? 'is-active' : ''}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
+        <div class="task-card task-card-compact ${compactDateMarkup ? 'has-compact-dates' : ''} ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isFavorite ? 'is-favorite' : ''} ${taskData.isActive ? 'is-active' : ''}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
           <div class="task-card-body">
             <div class="task-main">
               <div class="task-heading">
-                <button class="quick-toggle ${isTaskCompleted(task) ? 'is-done' : ''}" data-toggle-complete="${task.id}" title="Toggle complete">${isTaskCompleted(task) ? '✓' : ''}</button>
+                ${getTaskQuickActionsMarkup(task)}
                 ${getTaskMediaMarkup(task)}
                 <div class="task-heading-main">
                   <div class="task-heading-top">
@@ -10990,7 +11172,7 @@
           content = `
             <div class="task-table-title-wrap">
               <div class="task-table-title-top">
-                <button class="quick-toggle ${isTaskCompleted(task) ? 'is-done' : ''}" data-toggle-complete="${task.id}" title="Toggle complete">${isTaskCompleted(task) ? '✓' : ''}</button>
+                ${getTaskQuickActionsMarkup(task)}
                 ${getTaskMediaMarkup(task)}
                 <div class="task-table-title-main">
                   <h3 class="task-table-title">${getHighlightedMarkup(task.title, searchQuery)}</h3>
@@ -11043,7 +11225,7 @@
     function getTableTaskRowMarkup(task, searchQuery = '') {
       const taskData = getTaskCardData(task);
       return `
-        <tr class="task-table-row ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isActive ? 'is-active' : ''}" data-task-row="${task.id}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
+        <tr class="task-table-row ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isFavorite ? 'is-favorite' : ''} ${taskData.isActive ? 'is-active' : ''}" data-task-row="${task.id}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
           ${TASK_TABLE_COLUMNS.map(column => getTaskTableCellMarkup(task, column, taskData, searchQuery)).join('')}
         </tr>`;
     }
@@ -12283,23 +12465,28 @@
 
       const filters = getCurrentFilters();
       const activeViewMode = normalizeTaskViewMode(currentViewMode);
+      const preserveOrder = shouldPreserveTaskOrder(options);
+      const preserveVisibleIds = preserveOrder && options.recomputeOrder !== true
+        ? renderedTaskOrderIds
+        : undefined;
       currentViewMode = activeViewMode;
 
-      let visible = tasks.filter(t => {
-        if (hideDone && isTaskCompleted(t)) return false;
-        if (filters.category && t.category !== filters.category) return false;
-        if (filters.priority && t.priority !== filters.priority) return false;
-        if (filters.status && t.status !== filters.status) return false;
-        if (filters.search && !getTaskSearchText(t).includes(filters.search)) return false;
-        return true;
-      });
+      let visible = getVisibleTasks(tasks, filters, { preserveVisibleIds });
+
+      if (options.recomputeOrder) {
+        hasDeferredTaskSort = false;
+      } else if (options.preserveOrder) {
+        hasDeferredTaskSort = true;
+      }
 
       const list = document.getElementById('taskList');
       setTaskListViewMode(list, activeViewMode);
       setTaskWorkspaceViewMode(activeViewMode);
+      updateApplySortingButton();
 
       if (visible.length === 0) {
         selectedTaskId = null;
+        renderedTaskOrderIds = [];
         list.innerHTML = `
           <div class="empty-state">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
@@ -12314,9 +12501,13 @@
         return;
       }
 
-      visible.sort((a, b) => activeViewMode === 'table'
-        ? compareTaskTableTasks(a, b, filters.sort)
-        : compareTasks(a, b, filters.sort));
+      visible = orderVisibleTasks(visible, {
+        preserveOrder,
+        sortMode: filters.sort,
+        viewMode: activeViewMode
+      });
+
+      renderedTaskOrderIds = visible.map(task => task.id);
 
       if (!visible.some(task => task.id === selectedTaskId)) {
         selectedTaskId = visible[0]?.id || null;
@@ -12911,6 +13102,7 @@
           const newTask = {
             id: genId(),
             createdAt: today(),
+            isFavorite: false,
             startedAt: data.startedAt || null,
             completedAt: data.completedAt || null,
             subtasks: buildTaskSubtasks(data.templateId),
@@ -12961,10 +13153,20 @@
       const editId   = e.target.closest('[data-edit]')?.dataset.edit;
       const deleteId = e.target.closest('[data-delete]')?.dataset.delete;
       const completeId = e.target.closest('[data-toggle-complete]')?.dataset.toggleComplete;
+      const favoriteId = e.target.closest('[data-toggle-favorite]')?.dataset.toggleFavorite;
 
       if (tableSortColumn) {
         toggleTaskTableSort(tableSortColumn);
-        renderTasks();
+        renderTasks({ recomputeOrder: true });
+        return;
+      }
+
+      if (favoriteId) {
+        const task = tasks.find(item => item.id === favoriteId);
+        if (!task) return;
+        task.isFavorite = !isTaskFavorite(task);
+        saveTasks();
+        renderTasks({ recomputeOrder: true, preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
       }
 
@@ -12973,7 +13175,7 @@
         if (!task) return;
         applyTaskStatusChange(task, isTaskCompleted(task) ? DEFAULT_STATUS : 'Completed');
         saveTasks();
-        renderTasks();
+        renderTasks({ preserveOrder: true, preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
       }
 
@@ -13011,7 +13213,7 @@
         if (!task) return;
         task.priority = normalizePriority(prioritySelect.value);
         saveTasks();
-        renderTasks();
+        renderTasks({ preserveOrder: true, preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
       }
 
@@ -13020,7 +13222,7 @@
       if (task) {
         applyTaskStatusChange(task, select.value);
         saveTasks();
-        renderTasks();
+        renderTasks({ preserveOrder: true, preserveDetailScroll: true, preserveItemsModalScroll: true });
       }
     });
 
@@ -14492,14 +14694,18 @@
     // ── Filters ──
     // All filter/sort controls call renderTasks() directly; no state is
     // persisted for filters, except task sort which survives reloads.
-    document.getElementById('searchTasks').addEventListener('input', renderTasks);
-    document.getElementById('filterCategory').addEventListener('change', renderTasks);
-    document.getElementById('filterPriority').addEventListener('change', renderTasks);
-    document.getElementById('filterStatus').addEventListener('change', renderTasks);
+    document.getElementById('searchTasks').addEventListener('input', () => renderTasks({ recomputeOrder: true }));
+    document.getElementById('filterCategory').addEventListener('change', () => renderTasks({ recomputeOrder: true }));
+    document.getElementById('filterPriority').addEventListener('change', () => renderTasks({ recomputeOrder: true }));
+    document.getElementById('filterStatus').addEventListener('change', () => renderTasks({ recomputeOrder: true }));
     document.getElementById('sortTasks').addEventListener('change', e => {
       currentSortMode = normalizeTaskSortMode(e.target.value);
       saveSortModePreference();
-      renderTasks();
+      renderTasks({ recomputeOrder: true });
+    });
+
+    document.getElementById('applyTaskSortingBtn').addEventListener('click', () => {
+      renderTasks({ recomputeOrder: true, preserveDetailScroll: true, preserveItemsModalScroll: true });
     });
 
     document.getElementById('taskViewSwitch').addEventListener('click', e => {
@@ -14511,7 +14717,7 @@
 
       currentViewMode = normalizedViewMode;
       saveViewModePreference();
-      renderTasks();
+      renderTasks({ recomputeOrder: true });
     });
 
     // ── Toggle Done ──
@@ -14520,7 +14726,7 @@
       hideDone = !hideDone;
       saveHideDonePreference();
       document.getElementById('toggleDoneBtn').textContent = hideDone ? 'Show Completed' : 'Hide Completed';
-      renderTasks();
+      renderTasks({ recomputeOrder: true });
     });
 
     document.getElementById('toggleTaskStatsSecondaryBtn').addEventListener('click', () => {
