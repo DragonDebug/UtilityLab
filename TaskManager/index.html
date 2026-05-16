@@ -3728,7 +3728,7 @@
 
     .detail-inline-editor {
       width: 100%;
-      min-height: 180px;
+      min-height: 260px;
       border: 1px solid color-mix(in srgb, var(--section-accent, var(--accent)) 18%, var(--border));
       border-radius: 16px;
       padding: 12px 14px;
@@ -3748,6 +3748,13 @@
       font-size: 11px;
       line-height: 1.4;
       color: var(--text-muted);
+    }
+
+    .detail-inline-editor-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
     }
 
     .detail-inline-view {
@@ -4014,26 +4021,33 @@
 
     .log-entry {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: start;
-      gap: 10px 12px;
+      gap: 8px;
       border: 1px solid color-mix(in srgb, var(--status-ongoing) 18%, var(--border));
       border-radius: 14px;
-      padding: 11px 13px;
+      padding: 10px 12px;
       background: linear-gradient(180deg, color-mix(in srgb, var(--status-ongoing) 10%, var(--surface2)), var(--surface2));
       box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
     }
 
     .log-entry-main {
-      display: block;
+      display: grid;
+      gap: 8px;
       min-width: 0;
     }
 
-    .log-entry-header {
-      display: flex;
+    .log-entry-controls {
+      display: inline-flex;
       flex-wrap: wrap;
-      align-items: flex-start;
-      gap: 6px;
+      gap: 8px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .log-entry-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 8px;
       min-width: 0;
     }
 
@@ -4051,18 +4065,52 @@
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
       color: color-mix(in srgb, var(--text) 80%, var(--status-ongoing) 20%);
+      justify-self: start;
     }
 
-    .log-entry-separator {
-      padding-top: 3px;
-      font-size: 15px;
-      line-height: 1.2;
-      font-weight: 700;
-      color: color-mix(in srgb, var(--text-muted) 46%, var(--status-ongoing) 54%);
+    .log-entry-date-form {
+      display: grid;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .log-entry-edit-top {
+      display: grid;
+      grid-template-columns: minmax(180px, 240px) auto;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .log-entry-time-edit {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid color-mix(in srgb, var(--status-ongoing) 18%, var(--border));
+      border-radius: 12px;
+      padding: 9px 12px;
+      background: linear-gradient(180deg, var(--field-bg-strong), var(--field-bg));
+      color: var(--text);
+      outline: none;
+    }
+
+    .log-entry-time-edit:focus {
+      border-color: var(--accent-h);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--status-ongoing) 18%, transparent);
+    }
+
+    .log-entry-date-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .log-entry-action-btn {
+      min-height: 32px;
+      padding: 6px 10px;
+      font-size: 11px;
     }
 
     .log-entry-body {
-      flex: 1 1 240px;
       min-width: 0;
       font-size: 13px;
       line-height: 1.5;
@@ -4070,6 +4118,36 @@
       color: color-mix(in srgb, var(--text) 86%, var(--status-ongoing) 14%);
       white-space: pre-wrap;
       overflow-wrap: anywhere;
+    }
+
+    .log-entry-text-edit {
+      width: 100%;
+      min-height: 72px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid color-mix(in srgb, var(--status-ongoing) 18%, var(--border));
+      background: linear-gradient(180deg, var(--field-bg-strong), var(--field-bg));
+      color: var(--text);
+      line-height: 1.45;
+      resize: vertical;
+      outline: none;
+    }
+
+    .log-entry-text-edit:focus {
+      border-color: var(--accent-h);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--status-ongoing) 18%, transparent);
+    }
+
+    @media (max-width: 640px) {
+      .log-entry-header,
+      .log-entry-edit-top {
+        grid-template-columns: 1fr;
+      }
+
+      .log-entry-controls,
+      .log-entry-date-actions {
+        justify-content: flex-start;
+      }
     }
 
     .log-entry .btn-danger {
@@ -5562,6 +5640,85 @@
 
     .item-settings-choice-group {
       grid-template-rows: auto auto 1fr;
+    }
+
+    .item-settings-config-list {
+      display: grid;
+      gap: 10px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in srgb, var(--accent) 34%, var(--text-muted) 66%) transparent;
+    }
+
+    .item-settings-config-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 6%, transparent), rgba(255,255,255,.02));
+    }
+
+    .item-settings-config-check {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      margin: 0;
+      cursor: pointer;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .item-settings-config-check input[type="checkbox"] {
+      width: 18px;
+      min-width: 18px;
+      min-height: 18px;
+      height: 18px;
+      margin: 2px 0 0;
+      padding: 0;
+      border-radius: 6px;
+      accent-color: var(--accent-h);
+      box-shadow: none;
+    }
+
+    .item-settings-config-copy {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .item-settings-config-copy strong {
+      font-size: 13px;
+      line-height: 1.3;
+      color: var(--text);
+    }
+
+    .item-settings-config-copy span {
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
+    .item-settings-order-actions {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .item-settings-order-btn {
+      min-width: 36px;
+      min-height: 36px;
+      padding: 0;
+      justify-content: center;
+      font-size: 16px;
+      line-height: 1;
     }
 
     .item-settings-choice-group .item-settings-help {
@@ -7226,6 +7383,16 @@
               <button type="button" class="btn btn-ghost" id="exportDetailedExcelFromSettingsBtn">Export Detailed Excel</button>
             </div>
           </div>
+          <div class="item-settings-group">
+            <label>Detailed Export Columns</label>
+            <p class="item-settings-help">Choose the shared column order and visibility for All Tasks, Pending List, and Weekly Completed.</p>
+            <div class="item-settings-config-list" id="detailedExportColumnsList"></div>
+          </div>
+          <div class="item-settings-group">
+            <label>Export Counters</label>
+            <p class="item-settings-help">Choose which counters appear on the Excel Counters sheet. Dashboard counters stay unchanged.</p>
+            <div class="item-settings-config-list" id="detailedExportCountersList"></div>
+          </div>
           <div class="item-settings-group item-settings-choice-group">
             <label for="taskCardImageSizeInput">Task Card Image Size</label>
             <select id="taskCardImageSizeInput">
@@ -7925,6 +8092,7 @@
       activeDetailTab = 'description';
       activeDetailEditField = null;
       activeDetailEditTaskId = null;
+      activeLogDateEditId = null;
       activeSubtaskEditTaskId = null;
       activeSubtaskEditId = null;
       itemSearchQuery = '';
@@ -8077,6 +8245,83 @@
       return Math.max(1, Math.min(maxWeeks, parsePositiveInteger(value, 1)));
     }
 
+    function normalizeOrderedKeyList(keys, allowedKeys, fallbackKeys) {
+      const nextKeys = Array.isArray(keys) ? keys : [];
+      const allowedKeySet = new Set(allowedKeys);
+      const normalizedKeys = [];
+      const seen = new Set();
+
+      nextKeys.forEach(key => {
+        const normalizedKey = String(key || '').trim();
+        if (!normalizedKey || seen.has(normalizedKey) || !allowedKeySet.has(normalizedKey)) return;
+        normalizedKeys.push(normalizedKey);
+        seen.add(normalizedKey);
+      });
+
+      fallbackKeys.forEach(key => {
+        if (seen.has(key) || !allowedKeySet.has(key)) return;
+        normalizedKeys.push(key);
+        seen.add(key);
+      });
+
+      return normalizedKeys;
+    }
+
+    function normalizeVisibleKeyList(keys, allowedKeys, fallbackKeys) {
+      const nextKeys = Array.isArray(keys) ? keys : [];
+      const allowedKeySet = new Set(allowedKeys);
+      const normalizedKeys = [];
+      const seen = new Set();
+
+      nextKeys.forEach(key => {
+        const normalizedKey = String(key || '').trim();
+        if (!normalizedKey || seen.has(normalizedKey) || !allowedKeySet.has(normalizedKey)) return;
+        normalizedKeys.push(normalizedKey);
+        seen.add(normalizedKey);
+      });
+
+      return normalizedKeys.length ? normalizedKeys : [...fallbackKeys];
+    }
+
+    function getDetailedExportCategoryCounterKey(categoryName) {
+      const normalizedName = String(categoryName || '').trim().toLowerCase();
+      return normalizedName ? `category:${normalizedName}` : '';
+    }
+
+    function normalizeDetailedExportColumnSettings(settings = {}) {
+      const allowedKeys = DETAILED_EXPORT_COLUMN_DEFINITIONS.map(column => column.key);
+      const fallbackKeys = [...allowedKeys];
+
+      return {
+        order: normalizeOrderedKeyList(settings?.order, allowedKeys, fallbackKeys),
+        visible: normalizeVisibleKeyList(settings?.visible, allowedKeys, fallbackKeys)
+      };
+    }
+
+    function normalizeDetailedExportCounterSettings(settings = {}) {
+      const summaryVisibility = {};
+      DETAILED_EXPORT_COUNTER_SUMMARY_KEYS.forEach(counterKey => {
+        summaryVisibility[counterKey] = settings?.summaryVisibility?.[counterKey] !== false;
+      });
+
+      const categoryVisibility = {};
+      if (settings?.categoryVisibility && typeof settings.categoryVisibility === 'object') {
+        Object.entries(settings.categoryVisibility).forEach(([categoryName, isVisible]) => {
+          const normalizedCategoryName = String(categoryName || '').trim();
+          const counterKey = normalizedCategoryName.toLowerCase().startsWith('category:')
+            ? normalizedCategoryName.toLowerCase()
+            : getDetailedExportCategoryCounterKey(normalizedCategoryName);
+          if (!counterKey) return;
+          categoryVisibility[counterKey] = isVisible !== false;
+        });
+      }
+
+      return {
+        summaryVisibility,
+        categoryVisibility
+      };
+    }
+
     function normalizeItemSettings(settings = {}) {
       const currentWorkingWeekInfo = getWorkingWeekInfo(new Date()) || { year: new Date().getFullYear(), weekNumber: 1 };
       const supplierOptions = normalizeOptionList(
@@ -8088,6 +8333,8 @@
       const projectOptions = normalizeOptionList(settings?.projectOptions || []);
       const detailedExportWeekYear = clampWorkingWeekYear(settings?.detailedExportWeekYear ?? currentWorkingWeekInfo.year);
       const detailedExportWeekNumber = clampWorkingWeekNumber(settings?.detailedExportWeekNumber ?? currentWorkingWeekInfo.weekNumber, detailedExportWeekYear);
+      const detailedExportColumns = normalizeDetailedExportColumnSettings(settings?.detailedExportColumns);
+      const detailedExportCounters = normalizeDetailedExportCounterSettings(settings?.detailedExportCounters);
       const taskCardImageSize = TASK_CARD_IMAGE_SIZE_OPTIONS.includes(String(settings?.taskCardImageSize || '').trim().toLowerCase())
         ? String(settings.taskCardImageSize).trim().toLowerCase()
         : 'large';
@@ -8098,6 +8345,8 @@
         projectOptions,
         detailedExportWeekNumber,
         detailedExportWeekYear,
+        detailedExportColumns,
+        detailedExportCounters,
         taskCardImageSize
       };
     }
@@ -8185,6 +8434,7 @@
     let activeDetailTab = 'description';
     let activeDetailEditField = null;
     let activeDetailEditTaskId = null;
+    let activeLogDateEditId = null;
     let activeSubtaskEditTaskId = null;
     let activeSubtaskEditId = null;
     let currentReportPeriod = 'monthly';
@@ -8227,6 +8477,96 @@
     const HIDDEN_FILTER_GROUPS = ['status', 'priority', 'category'];
     const TASK_VIEW_OPTIONS = ['standard', 'compact', 'table'];
     const TASK_SORT_OPTIONS = ['workflow', 'due-date', 'received-date', 'created-date', 'priority', 'title'];
+    const DETAILED_EXPORT_COUNTER_SUMMARY_DEFINITIONS = [
+      { key: 'openTasks', label: 'Open Tasks', accent: '1D4ED8' },
+      { key: 'ongoing', label: 'Ongoing', accent: '1D4ED8' },
+      { key: 'overdue', label: 'Overdue', accent: 'DC2626' }
+    ];
+    const DETAILED_EXPORT_COUNTER_SUMMARY_KEYS = DETAILED_EXPORT_COUNTER_SUMMARY_DEFINITIONS.map(counter => counter.key);
+    const DETAILED_EXPORT_COLUMN_DEFINITIONS = [
+      { key: 'No', label: 'No.', header: 'No.', width: 8, center: true },
+      { key: 'TaskImage', label: 'Task Image', header: 'Task Image', width: 30, center: true, isImage: true },
+      { key: 'Title', label: 'Title', header: 'Title', width: 35 },
+      { key: 'Description', label: 'Description', header: 'Description', width: 50 },
+      { key: 'Category', label: 'Category', header: 'Category', width: 12, center: true, validationList: 'categories' },
+      { key: 'Priority', label: 'Priority', header: 'Priority', width: 12, center: true, validationList: 'priorities' },
+      { key: 'EmailSubject', label: 'Email Subject', header: 'Email Subject', width: 30 },
+      { key: 'Sender', label: 'Sender', header: 'Sender', width: 15, validationList: 'senders' },
+      { key: 'Created', label: 'Created', header: 'Created', width: 12, center: true, isDate: true },
+      { key: 'Received', label: 'Received', header: 'Received', width: 12, center: true, isDate: true },
+      { key: 'Due', label: 'Due', header: 'Due', width: 12, center: true, isDate: true },
+      { key: 'Started', label: 'Started', header: 'Started', width: 12, center: true, isDate: true },
+      { key: 'Completed', label: 'Completed', header: 'Completed', width: 12, center: true, isDate: true },
+      { key: 'Quantity', label: 'Quantity', header: 'Quantity', width: 12, center: true },
+      { key: 'Status', label: 'Status', header: 'Status', width: 15, center: true, validationList: 'statuses' },
+      { key: 'Notes', label: 'Notes', header: 'Notes', width: 30 },
+      { key: 'LatestUpdates', label: 'Latest Updates', header: 'Latest Updates', width: 56 }
+    ];
+
+    function getDetailedExportColumnDefinition(columnKey) {
+      return DETAILED_EXPORT_COLUMN_DEFINITIONS.find(column => column.key === columnKey) || null;
+    }
+
+    function getConfiguredDetailedExportColumns(settings = itemSettings) {
+      const normalizedSettings = normalizeDetailedExportColumnSettings(settings?.detailedExportColumns);
+      const visibleKeySet = new Set(normalizedSettings.visible);
+
+      return normalizedSettings.order
+        .filter(columnKey => visibleKeySet.has(columnKey))
+        .map(columnKey => getDetailedExportColumnDefinition(columnKey))
+        .filter(Boolean);
+    }
+
+    function getDetailedExportCounterOptions() {
+      return [
+        ...DETAILED_EXPORT_COUNTER_SUMMARY_DEFINITIONS,
+        ...categories.map(category => ({
+          key: getDetailedExportCategoryCounterKey(category.name),
+          label: category.name,
+          accent: normalizeExcelHexColor(category.color),
+          categoryName: category.name
+        }))
+      ];
+    }
+
+    function getConfiguredDetailedExportCounterKeys(settings = itemSettings) {
+      const normalizedSettings = normalizeDetailedExportCounterSettings(settings?.detailedExportCounters);
+      const visibleKeys = [];
+
+      DETAILED_EXPORT_COUNTER_SUMMARY_KEYS.forEach(counterKey => {
+        if (normalizedSettings.summaryVisibility[counterKey] !== false) {
+          visibleKeys.push(counterKey);
+        }
+      });
+
+      categories.forEach(category => {
+        const counterKey = getDetailedExportCategoryCounterKey(category.name);
+        if (!counterKey) return;
+        if (normalizedSettings.categoryVisibility[counterKey] !== false) {
+          visibleKeys.push(counterKey);
+        }
+      });
+
+      return visibleKeys;
+    }
+
+    function getDetailedExportCenterColumns(columns = []) {
+      return columns.reduce((centerColumns, column, index) => {
+        if (column.center) {
+          centerColumns.push(index + 1);
+        }
+        return centerColumns;
+      }, []);
+    }
+
+    function getDetailedExportDateColumnKeys(columns = []) {
+      return columns.filter(column => column.isDate).map(column => column.key);
+    }
+
+    function getDetailedExportImageColumnKey(columns = []) {
+      return columns.find(column => column.isImage)?.key || '';
+    }
+
     const TASK_TABLE_COLUMNS = [
       { key: 'title', label: 'Title', width: '560px', headerClass: 'is-title', cellClass: 'is-title', sortable: true },
       { key: 'category', label: 'Category', width: '108px', sortable: true },
@@ -8355,8 +8695,8 @@
     }
 
     function applyDetailInlineInputLimits(root = document) {
-      root.querySelectorAll('[data-task-detail-field]').forEach(field => {
-        const fieldName = field.dataset.taskDetailField;
+      root.querySelectorAll('[data-task-detail-field], [data-detail-edit-input]').forEach(field => {
+        const fieldName = field.dataset.taskDetailField || field.dataset.detailEditInput;
         const limit = getDetailInlineFieldLimit(fieldName);
         if (!limit) return;
 
@@ -8917,8 +9257,34 @@
       return `${weekday} ${formattedDate}, ${formattedTime}`;
     }
 
+    function formatDateTimeLocalValue(value) {
+      if (!value) return '';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    function parseDateTimeLocalValue(value) {
+      const normalizedValue = String(value || '').trim();
+      if (!normalizedValue) return '';
+
+      const parsed = new Date(normalizedValue);
+      if (Number.isNaN(parsed.getTime())) return '';
+      return parsed.toISOString();
+    }
+
     function getTaskById(taskId) {
       return tasks.find(task => task.id === taskId) || null;
+    }
+
+    function getLogById(logId) {
+      return logs.find(log => log.id === logId) || null;
     }
 
     function isTaskCompleted(task) {
@@ -10899,30 +11265,33 @@
       return `${formatExcelDateDisplay(weekInfo.weekStart)} to ${formatExcelDateDisplay(weekInfo.weekEnd)}`;
     }
 
-    function getWeeklyCompletedTaskRows(weekInfo) {
-      return tasks
-        .filter(task => isTaskCompleted(task) && isDateInWeek(task.completedAt, weekInfo))
-        .sort((a, b) => (b.completedAt || '').localeCompare(a.completedAt || ''))
-        .map((task, index) => ({
-          No: index + 1,
-          Title: task.title,
-          Category: task.category || '',
-          Priority: normalizePriority(task.priority),
-          Sender: task.sender || '',
-          EmailSubject: task.emailSubject || '',
-          Created: toExcelDateValue(task.createdAt),
-          Started: toExcelDateValue(task.startedAt),
-          Due: toExcelDateValue(task.dueDate),
-          Completed: toExcelDateValue(task.completedAt),
-          Quantity: getTaskCategoryCountWeight(task),
-          Status: normalizeStatus(task.status),
-          Notes: task.notes || ''
-        }));
+    function buildDetailedTaskExportRow(task, index) {
+      return {
+        No: index + 1,
+        TaskImage: '',
+        Title: task.title,
+        Quantity: getTaskCategoryCountWeight(task),
+        Category: task.category || '',
+        Priority: normalizePriority(task.priority),
+        Status: normalizeStatus(task.status),
+        Sender: task.sender || '',
+        EmailSubject: task.emailSubject || '',
+        Description: task.description || '',
+        Notes: task.notes || '',
+        Created: toExcelDateValue(task.createdAt),
+        Started: toExcelDateValue(task.startedAt),
+        Completed: toExcelDateValue(task.completedAt),
+        Received: toExcelDateValue(task.receivedAt),
+        Due: toExcelDateValue(task.dueDate),
+        TaskImageDataUrl: String(task.imageDataUrl || '').trim(),
+        LatestUpdates: getLatestTaskUpdatesExportValue(task.id, 5)
+      };
     }
 
     const DETAILED_EXPORT_ROW_HEIGHT = 50;
     const DETAILED_EXPORT_COUNTER_HEADER_HEIGHT = 26;
     const DETAILED_EXPORT_COUNTER_ROW_HEIGHT = 30;
+    const EXCEL_TABLE_BORDER_COLOR = 'FF000000';
 
     function getCategoryStatsRows() {
       return categories.map(category => ({
@@ -10934,8 +11303,10 @@
       }));
     }
 
-    function getDetailedCounterExportRows(layout = getTaskSheetHeaderLayout()) {
-      return layout.headerRows.map((row, index) => ({
+    function getDetailedCounterExportRows(layout = getTaskSheetHeaderLayout(), settings = itemSettings) {
+      const visibleCounterKeys = new Set(getConfiguredDetailedExportCounterKeys(settings));
+
+      return layout.headerRows.filter(row => visibleCounterKeys.has(row.key)).map((row, index) => ({
         No: index + 1,
         Name: row.label,
         Quantity: row.value,
@@ -10968,29 +11339,20 @@
       return { richText };
     }
 
-    function getDetailedTaskExportRows() {
-      return tasks.map((task, index) => {
-        return {
-          No: index + 1,
-          TaskImage: '',
-          Title: task.title,
-          Quantity: getTaskCategoryCountWeight(task),
-          Category: task.category || '',
-          Priority: normalizePriority(task.priority),
-          Status: normalizeStatus(task.status),
-          Sender: task.sender || '',
-          EmailSubject: task.emailSubject || '',
-          Description: task.description || '',
-          Notes: task.notes || '',
-          Created: toExcelDateValue(task.createdAt),
-          Started: toExcelDateValue(task.startedAt),
-          Completed: toExcelDateValue(task.completedAt),
-          Received: toExcelDateValue(task.receivedAt),
-          Due: toExcelDateValue(task.dueDate),
-          TaskImageDataUrl: String(task.imageDataUrl || '').trim(),
-          LatestUpdates: getLatestTaskUpdatesExportValue(task.id, 5)
-        };
-      });
+    function getDetailedTaskExportRows(taskList = tasks) {
+      return taskList.map((task, index) => buildDetailedTaskExportRow(task, index));
+    }
+
+    function getPendingTaskExportRows() {
+      return getDetailedTaskExportRows(tasks.filter(task => !isTaskCompleted(task)));
+    }
+
+    function getWeeklyCompletedTaskRows(weekInfo) {
+      const completedTasks = tasks
+        .filter(task => isTaskCompleted(task) && isDateInWeek(task.completedAt, weekInfo))
+        .sort((a, b) => (b.completedAt || '').localeCompare(a.completedAt || ''));
+
+      return getDetailedTaskExportRows(completedTasks);
     }
 
     function getExcelImageDescriptorFromDataUrl(dataUrl) {
@@ -11181,13 +11543,41 @@
       });
     }
 
+    function applyCompletedTaskRowFormatting(worksheet, rows, columns, context) {
+      const completedStatus = 'Completed';
+      const preservedColumnKeys = new Set(['Category', 'Priority', 'Status', 'Quantity']);
+      const completedFill = 'FFF3F4F6';
+      const completedFont = 'FF6B7280';
+
+      rows.forEach((row, index) => {
+        if (normalizeStatus(row?.Status) !== completedStatus) return;
+
+        const worksheetRow = worksheet.getRow(context.tableStartRow + 1 + index);
+        columns.forEach((column, columnIndex) => {
+          if (preservedColumnKeys.has(column.key)) return;
+
+          const cell = worksheetRow.getCell(columnIndex + 1);
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: completedFill }
+          };
+          cell.font = {
+            ...(cell.font || {}),
+            color: { argb: completedFont }
+          };
+        });
+      });
+    }
+
     function getTaskSheetHeaderLayout() {
       const openTasks = tasks.filter(task => !isTaskCompleted(task));
       const headerRows = [
-        { label: 'Open Tasks', value: openTasks.length, accent: '1D4ED8' },
-        { label: 'Ongoing', value: openTasks.filter(task => normalizeStatus(task.status) === 'Ongoing').length, accent: '1D4ED8' },
-        { label: 'Overdue', value: openTasks.filter(task => isOverdue(task.dueDate)).length, accent: 'DC2626' },
+        { key: 'openTasks', label: 'Open Tasks', value: openTasks.length, accent: '1D4ED8' },
+        { key: 'ongoing', label: 'Ongoing', value: openTasks.filter(task => normalizeStatus(task.status) === 'Ongoing').length, accent: '1D4ED8' },
+        { key: 'overdue', label: 'Overdue', value: openTasks.filter(task => isOverdue(task.dueDate)).length, accent: 'DC2626' },
         ...categories.map(category => ({
+          key: getDetailedExportCategoryCounterKey(category.name),
           label: category.name,
           value: openTasks
             .filter(task => task.category === category.name)
@@ -11206,7 +11596,7 @@
 
     function buildTaskSheetDashboardHeader(worksheet, lastColumn, layout = getTaskSheetHeaderLayout()) {
       const headerFill = 'FFF8FAFC';
-      const headerBorder = 'FFCBD5E1';
+      const headerBorder = EXCEL_TABLE_BORDER_COLOR;
       const numberHeaderCell = worksheet.getCell(`A${layout.tableHeaderRow}`);
       const nameHeaderCell = worksheet.getCell(`B${layout.tableHeaderRow}`);
       const quantityHeaderCell = worksheet.getCell(`C${layout.tableHeaderRow}`);
@@ -11250,10 +11640,10 @@
             fgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.92)}` }
           };
           cell.border = {
-            top: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
-            left: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
-            bottom: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
-            right: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } }
+            top: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+            left: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+            bottom: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+            right: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } }
           };
         });
       });
@@ -11273,7 +11663,7 @@
       const lastColumn = getExcelColumnLetter(columns.length);
       const tableStartRow = options.tableStartRow || 4;
       const dateColumnKeys = new Set(options.dateColumns || []);
-      const tableGridColor = options.tableGridColor || 'FFCBD5E1';
+      const tableGridColor = options.tableGridColor || EXCEL_TABLE_BORDER_COLOR;
       const rowHeights = options.rowHeights || {};
       const defaultRowHeight = rowHeights.default ?? rowHeights.body ?? DETAILED_EXPORT_ROW_HEIGHT;
       const preTableRowHeight = rowHeights.preTable ?? defaultRowHeight;
@@ -11322,10 +11712,10 @@
           fgColor: { argb: `FF${blendExcelHexColors(accentColor, 'FFFFFF', 0.9)}` }
         };
         cell.border = {
-          top: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accentColor, 'FFFFFF', 0.55)}` } },
-          left: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accentColor, 'FFFFFF', 0.55)}` } },
-          bottom: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accentColor, 'FFFFFF', 0.55)}` } },
-          right: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accentColor, 'FFFFFF', 0.55)}` } }
+          top: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+          left: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+          bottom: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+          right: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } }
         };
         cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
       });
@@ -11397,7 +11787,12 @@
         const selectedWeek = getDetailedExportWeekSelection();
         const currentWeekInfo = selectedWeek.weekInfo;
         const weekSubtitle = `${currentWeekInfo.label} of ${currentWeekInfo.year} (${formatWeekRangeLabel(currentWeekInfo)}; Sunday to Thursday working week)`;
+        const taskColumns = getConfiguredDetailedExportColumns();
+        const taskCenterColumns = getDetailedExportCenterColumns(taskColumns);
+        const taskDateColumns = getDetailedExportDateColumnKeys(taskColumns);
+        const taskImageColumnKey = getDetailedExportImageColumnKey(taskColumns);
         const taskRows = getDetailedTaskExportRows();
+        const pendingRows = getPendingTaskExportRows();
         const taskHeaderLayout = getTaskSheetHeaderLayout();
         const counterRows = getDetailedCounterExportRows(taskHeaderLayout);
         const weeklyCompletedRows = getWeeklyCompletedTaskRows(currentWeekInfo);
@@ -11406,30 +11801,10 @@
           { key: 'Name', header: 'Counter', width: 34 },
           { key: 'Quantity', header: 'Quantity', width: 14 }
         ];
-        const taskColumns = [
-          { key: 'No', header: 'No.', width: 5 },
-          { key: 'TaskImage', header: 'Task Image', width: 30 },
-          { key: 'Title', header: 'Title', width: 35 },
-          { key: 'Description', header: 'Description', width: 50 },
-          { key: 'Category', header: 'Category', width: 12 },
-          { key: 'Priority', header: 'Priority', width: 12 },
-          { key: 'EmailSubject', header: 'Email Subject', width: 30 },
-          { key: 'Sender', header: 'Sender', width: 15 },
-          { key: 'Created', header: 'Created', width: 12 },
-          { key: 'Received', header: 'Received', width: 12 },
-          { key: 'Due', header: 'Due', width: 12 },
-          { key: 'Started', header: 'Started', width: 12 },
-          { key: 'Completed', header: 'Completed', width: 12 },
-          { key: 'Quantity', header: 'Quantity', width: 12 },
-          { key: 'Status', header: 'Status', width: 15 },
-          { key: 'Notes', header: 'Notes', width: 30 },
-          { key: 'LatestUpdates', header: 'Latest Updates', width: 56 },
-        ];
-        const getTaskColumnLetter = key => getExcelColumnLetter(taskColumns.findIndex(column => column.key === key) + 1);
 
         styleDetailedWorksheet(workbook.addWorksheet('Counters'), counterColumns, counterRows, {
           title: 'Task Counters',
-          subtitle: `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())}. Totals on this sheet include all saved tasks regardless of status.`,
+          subtitle: `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())}. Counters on this sheet reflect open work only and follow the counter visibility chosen in Settings.`,
           accentColor: '1D4ED8',
           emptyMessage: 'No counters available.',
           centerColumns: [1, 3],
@@ -11454,23 +11829,23 @@
                   fgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.92)}` }
                 };
                 cell.border = {
-                  top: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
-                  left: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
-                  bottom: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } },
-                  right: { style: 'thin', color: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.55)}` } }
+                  top: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+                  left: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+                  bottom: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+                  right: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } }
                 };
               });
             });
           }
         });
 
-        styleDetailedWorksheet(workbook.addWorksheet('Tasks'), taskColumns, taskRows, {
-          title: 'Detailed Tasks',
+        styleDetailedWorksheet(workbook.addWorksheet('All Tasks'), taskColumns, taskRows, {
+          title: 'All Tasks',
           subtitle: `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())}. Summary counters were moved to the Counters sheet; this sheet keeps the detailed task table only.`,
           accentColor: '1D4ED8',
           emptyMessage: 'No tasks available.',
-          centerColumns: [1, 2, 5, 6, 10, 11, 12, 13, 14, 15],
-          dateColumns: ['Created', 'Started', 'Completed', 'Received', 'Due'],
+          centerColumns: taskCenterColumns,
+          dateColumns: taskDateColumns,
           rowHeights: {
             default: 80,
             preTable: 30,
@@ -11479,37 +11854,44 @@
             empty: 80
           },
           afterBuild: (worksheet, rows, columns, context) => {
-            const imageColumnLetter = getTaskColumnLetter('TaskImage');
+            const imageColumnLetter = getWorksheetColumnLetter(columns, taskImageColumnKey);
+            applyCompletedTaskRowFormatting(worksheet, rows, columns, context);
             const { startRow } = applySharedTaskSheetValidationAndFormatting(worksheet, rows, columns, context, validationLists);
             applyTaskSheetImages(worksheet, rows, imageColumnLetter, startRow);
           }
         });
 
-        const weeklyCompletedColumns = [
-          { key: 'No', header: 'No.', width: 8 },
-          { key: 'Title', header: 'Title', width: 34 },
-          { key: 'Category', header: 'Category', width: 22 },
-          { key: 'Priority', header: 'Priority', width: 14 },
-          { key: 'Sender', header: 'Sender', width: 20 },
-          { key: 'EmailSubject', header: 'Email Subject', width: 36 },
-          { key: 'Created', header: 'Created', width: 14 },
-          { key: 'Started', header: 'Started', width: 14 },
-          { key: 'Due', header: 'Due', width: 14 },
-          { key: 'Completed', header: 'Completed', width: 14 },
-          { key: 'Quantity', header: 'Quantity', width: 12 },
-          { key: 'Status', header: 'Status', width: 18 },
-          { key: 'Notes', header: 'Notes', width: 40 }
-        ];
+        styleDetailedWorksheet(workbook.addWorksheet('Pending List'), taskColumns, pendingRows, {
+          title: 'Pending List',
+          subtitle: `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())}. This sheet includes every task that is not completed.`,
+          accentColor: 'D97706',
+          emptyMessage: 'No pending tasks available.',
+          centerColumns: taskCenterColumns,
+          dateColumns: taskDateColumns,
+          rowHeights: {
+            default: 80,
+            preTable: 30,
+            header: 50,
+            body: 80,
+            empty: 80
+          },
+          afterBuild: (worksheet, rows, columns, context) => {
+            const imageColumnLetter = getWorksheetColumnLetter(columns, taskImageColumnKey);
+            applyCompletedTaskRowFormatting(worksheet, rows, columns, context);
+            const { startRow } = applySharedTaskSheetValidationAndFormatting(worksheet, rows, columns, context, validationLists);
+            applyTaskSheetImages(worksheet, rows, imageColumnLetter, startRow);
+          }
+        });
 
-        styleDetailedWorksheet(workbook.addWorksheet('Weekly Completed'), weeklyCompletedColumns, weeklyCompletedRows, {
+        styleDetailedWorksheet(workbook.addWorksheet('Weekly Completed'), taskColumns, weeklyCompletedRows, {
           title: `${currentWeekInfo.label} Completed Tasks`,
           subtitle: `${weekSubtitle}.`,
           titleFontSize: 24,
           subtitleFontSize: 11,
           accentColor: '16A34A',
           emptyMessage: `No tasks were completed during ${currentWeekInfo.label} (${formatWeekRangeLabel(currentWeekInfo)}).`,
-          centerColumns: [1, 3, 4, 7, 8, 9, 10, 11, 12],
-          dateColumns: ['Created', 'Started', 'Due', 'Completed'],
+          centerColumns: taskCenterColumns,
+          dateColumns: taskDateColumns,
           rowHeights: {
             default: 80,
             preTable: 40,
@@ -11518,7 +11900,10 @@
             empty: 80
           },
           afterBuild: (worksheet, rows, columns, context) => {
-            applySharedTaskSheetValidationAndFormatting(worksheet, rows, columns, context, validationLists);
+            const imageColumnLetter = getWorksheetColumnLetter(columns, taskImageColumnKey);
+            applyCompletedTaskRowFormatting(worksheet, rows, columns, context);
+            const { startRow } = applySharedTaskSheetValidationAndFormatting(worksheet, rows, columns, context, validationLists);
+            applyTaskSheetImages(worksheet, rows, imageColumnLetter, startRow);
           }
         });
 
@@ -11533,6 +11918,35 @@
       return logs
         .filter(log => log.taskId === taskId)
         .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+    }
+
+    function getLogEntryMarkup(log) {
+      const isEditing = activeLogDateEditId === log.id;
+
+      return `
+        <article class="log-entry ${isEditing ? 'is-editing' : ''}">
+          <div class="log-entry-main">
+            ${isEditing ? `
+              <form class="log-entry-date-form" data-log-date-form="${log.id}">
+                <div class="log-entry-edit-top">
+                  <input type="datetime-local" class="log-entry-time-edit" data-log-date-input="${log.id}" value="${escHtml(formatDateTimeLocalValue(log.createdAt))}" required />
+                  <div class="log-entry-date-actions">
+                    <button type="submit" class="btn btn-primary log-entry-action-btn">Save</button>
+                    <button type="button" class="btn btn-ghost log-entry-action-btn" data-cancel-log-date-edit="${log.id}">Cancel</button>
+                  </div>
+                </div>
+                <textarea class="log-entry-text-edit" data-log-content-input="${log.id}" maxlength="${INPUT_LIMITS.logContent}" required>${escHtml(log.content || '')}</textarea>
+              </form>` : `
+              <div class="log-entry-header">
+                <span class="log-entry-time">${escHtml(formatLogDateTime(log.createdAt) || '')}</span>
+                <div class="log-entry-controls">
+                  <button class="btn btn-ghost log-entry-action-btn" type="button" data-edit-log-date="${log.id}">Edit</button>
+                  <button class="btn btn-danger" type="button" data-delete-log="${log.id}" aria-label="Delete log" title="Delete log">&times;</button>
+                </div>
+              </div>
+              <div class="log-entry-body">${escHtml(log.content)}</div>`}
+          </div>
+        </article>`;
     }
 
     function deleteItemsByTaskIds(taskIds) {
@@ -11979,10 +12393,13 @@
             </div>
             <div class="detail-section-body">
               ${isEditingDescription ? `
-                <div class="detail-inline-editor-wrap">
-                  <textarea class="detail-inline-editor" data-task-detail-field="description" placeholder="Add a clear task description or context...">${escHtml(task.description || '')}</textarea>
-                  <div class="detail-inline-editor-hint">Changes save inline. Leave it empty if this task does not need a description.</div>
-                </div>` : `
+                <form class="detail-inline-editor-wrap" data-detail-edit-form="description">
+                  <textarea class="detail-inline-editor" data-detail-edit-input="description" placeholder="Add a clear task description or context...">${escHtml(task.description || '')}</textarea>
+                  <div class="detail-inline-editor-actions">
+                    <button type="button" class="btn btn-ghost" data-cancel-detail-edit="description">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                  </div>
+                </form>` : `
                 <div class="detail-inline-view ${task.description ? '' : 'is-empty'}">
                   <p>${task.description ? escHtml(task.description) : 'No description added for this task yet.'}</p>
                 </div>`}
@@ -12126,17 +12543,7 @@
             </form>
             <div class="log-list-shell">
               <div class="log-list">
-                ${taskLogs.length ? taskLogs.map(log => `
-                  <article class="log-entry">
-                    <div class="log-entry-main">
-                      <div class="log-entry-header">
-                        <span class="log-entry-time">${escHtml(formatLogDateTime(log.createdAt) || '')}</span>
-                        <span class="log-entry-separator" aria-hidden="true">:</span>
-                        <div class="log-entry-body">${escHtml(log.content)}</div>
-                      </div>
-                    </div>
-                    <button class="btn btn-danger" type="button" data-delete-log="${log.id}" aria-label="Delete log" title="Delete log">&times;</button>
-                  </article>`).join('') : '<div class="log-empty">No logs yet for this task.</div>'}
+                ${taskLogs.length ? taskLogs.map(log => getLogEntryMarkup(log)).join('') : '<div class="log-empty">No logs yet for this task.</div>'}
               </div>
             </div>`
         },
@@ -12156,10 +12563,13 @@
             </div>
             <div class="detail-section-body">
               ${isEditingNotes ? `
-                <div class="detail-inline-editor-wrap">
-                  <textarea class="detail-inline-editor" data-task-detail-field="notes" placeholder="Add notes, handoff context, or reminders...">${escHtml(task.notes || '')}</textarea>
-                  <div class="detail-inline-editor-hint">Changes save inline. Notes stay attached to this task in this browser.</div>
-                </div>` : `
+                <form class="detail-inline-editor-wrap" data-detail-edit-form="notes">
+                  <textarea class="detail-inline-editor" data-detail-edit-input="notes" placeholder="Add notes, handoff context, or reminders...">${escHtml(task.notes || '')}</textarea>
+                  <div class="detail-inline-editor-actions">
+                    <button type="button" class="btn btn-ghost" data-cancel-detail-edit="notes">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                  </div>
+                </form>` : `
                 <div class="detail-inline-view ${task.notes ? '' : 'is-empty'}">
                   <p>${task.notes ? escHtml(task.notes) : 'No notes added for this task yet.'}</p>
                 </div>`}
@@ -12233,7 +12643,7 @@
       applyInputLimits();
       applyDetailInlineInputLimits(panel);
       if (activeDetailEditTaskId === task.id && activeDetailEditField) {
-        const activeEditor = panel.querySelector(`[data-task-detail-field="${activeDetailEditField}"]`);
+        const activeEditor = panel.querySelector(`[data-task-detail-field="${activeDetailEditField}"], [data-detail-edit-input="${activeDetailEditField}"]`);
         if (activeEditor) {
           requestAnimationFrame(() => {
             activeEditor.focus();
@@ -12585,6 +12995,7 @@
       if (taskRow && taskId && !e.target.closest('.task-actions, .task-action-tools, button')) {
         activeDetailEditField = null;
         activeDetailEditTaskId = null;
+        activeLogDateEditId = null;
         clearActiveSubtaskEdit();
         selectedTaskId = taskId;
         renderTasks();
@@ -12633,7 +13044,10 @@
     document.getElementById('taskDetailPanel').addEventListener('click', e => {
       const editId = e.target.closest('[data-edit]')?.dataset.edit;
       const editDetailField = e.target.closest('[data-edit-detail-field]')?.dataset.editDetailField;
+      const cancelDetailEditField = e.target.closest('[data-cancel-detail-edit]')?.dataset.cancelDetailEdit;
       const detailTabId = e.target.closest('[data-detail-tab]')?.dataset.detailTab;
+      const editLogDateId = e.target.closest('[data-edit-log-date]')?.dataset.editLogDate;
+      const cancelLogDateEditId = e.target.closest('[data-cancel-log-date-edit]')?.dataset.cancelLogDateEdit;
       const deleteLogId = e.target.closest('[data-delete-log]')?.dataset.deleteLog;
       const toggleSubtaskId = e.target.closest('[data-toggle-subtask]')?.dataset.toggleSubtask;
       const editSubtaskId = e.target.closest('[data-edit-subtask]')?.dataset.editSubtask;
@@ -12647,9 +13061,31 @@
       if (detailTabId) {
         activeDetailEditField = null;
         activeDetailEditTaskId = null;
+        activeLogDateEditId = null;
         clearActiveSubtaskEdit();
         activeDetailTab = detailTabId;
         renderTaskDetails();
+        return;
+      }
+
+      if (editLogDateId) {
+        activeLogDateEditId = editLogDateId;
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
+      if (cancelLogDateEditId) {
+        activeLogDateEditId = null;
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
+      if (cancelDetailEditField) {
+        if (activeDetailEditField === cancelDetailEditField) {
+          activeDetailEditField = null;
+          activeDetailEditTaskId = null;
+        }
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
         return;
       }
 
@@ -12753,6 +13189,9 @@
 
       if (deleteLogId) {
         if (confirm('Delete this log entry?')) {
+          if (activeLogDateEditId === deleteLogId) {
+            activeLogDateEditId = null;
+          }
           logs = logs.filter(log => log.id !== deleteLogId);
           saveLogs();
           renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
@@ -12926,6 +13365,56 @@
     });
 
     document.getElementById('taskDetailPanel').addEventListener('submit', e => {
+      const detailEditFormField = e.target.dataset.detailEditForm;
+      if (detailEditFormField) {
+        e.preventDefault();
+        const task = getTaskById(selectedTaskId);
+        const input = e.target.querySelector(`[data-detail-edit-input="${detailEditFormField}"]`);
+        if (!task || !input) return;
+
+        const limit = getDetailInlineFieldLimit(detailEditFormField);
+        let nextValue = String(input.value || '');
+        if (limit && nextValue.length > limit) {
+          nextValue = nextValue.slice(0, limit);
+          input.value = nextValue;
+          syncInputCounterForField(input, `detail-${detailEditFormField}`, limit);
+        }
+
+        task[detailEditFormField] = nextValue.trim() || null;
+        activeDetailEditField = null;
+        activeDetailEditTaskId = null;
+        saveTasks();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
+      const logDateFormId = e.target.dataset.logDateForm;
+      if (logDateFormId) {
+        e.preventDefault();
+        const log = getLogById(logDateFormId);
+        const dateInput = e.target.querySelector(`[data-log-date-input="${logDateFormId}"]`);
+        const contentInput = e.target.querySelector(`[data-log-content-input="${logDateFormId}"]`);
+        const nextCreatedAt = parseDateTimeLocalValue(dateInput?.value);
+        const nextContent = String(contentInput?.value || '').trim();
+
+        if (!log || !dateInput || !nextCreatedAt) {
+          dateInput?.focus();
+          return;
+        }
+
+        if (!contentInput || !nextContent) {
+          contentInput?.focus();
+          return;
+        }
+
+        log.createdAt = nextCreatedAt;
+        log.content = nextContent;
+        activeLogDateEditId = null;
+        saveLogs();
+        renderTasks({ preserveDetailScroll: true, preserveItemsModalScroll: true });
+        return;
+      }
+
       if (e.target.id === 'subtaskForm') {
         e.preventDefault();
         const subtaskField = document.getElementById('subtaskTitle');
@@ -13881,6 +14370,27 @@
       const supplierOptions = normalizeOptionList(document.getElementById('itemSupplierOptionsInput').value);
       const detailedExportWeekYear = clampWorkingWeekYear(document.getElementById('detailedExportWeekYearInput').value);
       const detailedExportWeekNumber = clampWorkingWeekNumber(document.getElementById('detailedExportWeekNumberInput').value, detailedExportWeekYear);
+      const detailedExportColumnOrder = Array.from(document.querySelectorAll('#detailedExportColumnsList [data-export-column-key]'))
+        .map(row => row.dataset.exportColumnKey || '')
+        .filter(Boolean);
+      const detailedExportVisibleColumns = Array.from(document.querySelectorAll('#detailedExportColumnsList [data-export-column-visible]:checked'))
+        .map(input => input.dataset.exportColumnVisible || '')
+        .filter(Boolean);
+      const detailedExportCounters = {
+        summaryVisibility: {},
+        categoryVisibility: {}
+      };
+      Array.from(document.querySelectorAll('#detailedExportCountersList [data-export-counter-key]')).forEach(input => {
+        const counterKey = input.dataset.exportCounterKey || '';
+        if (!counterKey) return;
+
+        if (DETAILED_EXPORT_COUNTER_SUMMARY_KEYS.includes(counterKey)) {
+          detailedExportCounters.summaryVisibility[counterKey] = input.checked;
+          return;
+        }
+
+        detailedExportCounters.categoryVisibility[counterKey] = input.checked;
+      });
       const taskCardImageSize = document.getElementById('taskCardImageSizeInput').value;
 
       if (!supplierOptions.length) {
@@ -13888,7 +14398,19 @@
         return false;
       }
 
-      itemSettings = normalizeItemSettings({ senderOptions, projectOptions, supplierOptions, detailedExportWeekNumber, detailedExportWeekYear, taskCardImageSize });
+      itemSettings = normalizeItemSettings({
+        senderOptions,
+        projectOptions,
+        supplierOptions,
+        detailedExportWeekNumber,
+        detailedExportWeekYear,
+        detailedExportColumns: {
+          order: detailedExportColumnOrder,
+          visible: detailedExportVisibleColumns
+        },
+        detailedExportCounters,
+        taskCardImageSize
+      });
       saveItemSettings();
       applyTaskCardImageSizePreference();
       renderTaskProjectOptions();
@@ -13906,6 +14428,34 @@
     document.getElementById('itemSettingsForm').addEventListener('submit', e => {
       e.preventDefault();
       applyItemSettingsForm();
+    });
+
+    document.getElementById('itemSettingsForm').addEventListener('click', e => {
+      const moveButton = e.target.closest('[data-export-column-move]');
+      if (!moveButton) return;
+
+      const direction = moveButton.dataset.exportColumnMove;
+      const row = moveButton.closest('[data-export-column-key]');
+      const list = row?.parentElement;
+      if (!row || !list || !direction) return;
+
+      if (direction === 'up' && row.previousElementSibling) {
+        list.insertBefore(row, row.previousElementSibling);
+      }
+
+      if (direction === 'down' && row.nextElementSibling) {
+        list.insertBefore(row.nextElementSibling, row);
+      }
+
+      const reorderedSettings = {
+        ...itemSettings,
+        detailedExportColumns: {
+          order: Array.from(list.querySelectorAll('[data-export-column-key]')).map(item => item.dataset.exportColumnKey || '').filter(Boolean),
+          visible: Array.from(list.querySelectorAll('[data-export-column-visible]:checked')).map(input => input.dataset.exportColumnVisible || '').filter(Boolean)
+        }
+      };
+
+      renderDetailedExportColumnSettings(reorderedSettings);
     });
 
     document.getElementById('exportBackupBtn').addEventListener('click', exportBackupToJson);
@@ -14156,7 +14706,54 @@
       const detailedExportWeekSelection = getDetailedExportWeekSelection();
       document.getElementById('detailedExportWeekNumberInput').value = detailedExportWeekSelection.weekNumber;
       document.getElementById('detailedExportWeekYearInput').value = detailedExportWeekSelection.year;
+      renderDetailedExportColumnSettings();
+      renderDetailedExportCounterSettings();
       updateDetailedExportWeekPreview();
+    }
+
+    function renderDetailedExportColumnSettings(settings = itemSettings) {
+      const list = document.getElementById('detailedExportColumnsList');
+      if (!list) return;
+
+      const normalizedSettings = normalizeDetailedExportColumnSettings(settings?.detailedExportColumns);
+      const visibleKeySet = new Set(normalizedSettings.visible);
+
+      list.innerHTML = normalizedSettings.order.map((columnKey, index) => {
+        const column = getDetailedExportColumnDefinition(columnKey);
+        if (!column) return '';
+
+        return `
+          <div class="item-settings-config-row" data-export-column-key="${escHtml(column.key)}">
+            <label class="item-settings-config-check">
+              <input type="checkbox" data-export-column-visible="${escHtml(column.key)}" ${visibleKeySet.has(column.key) ? 'checked' : ''} />
+              <span class="item-settings-config-copy">
+                <strong>${escHtml(column.label)}</strong>
+                <span>${column.isDate ? 'Date field in the workbook.' : (column.isImage ? 'Task image column in the workbook.' : 'Shared workbook column.')}</span>
+              </span>
+            </label>
+            <div class="item-settings-order-actions">
+              <button type="button" class="btn btn-ghost item-settings-order-btn" data-export-column-move="up" ${index === 0 ? 'disabled' : ''} aria-label="Move column up" title="Move up">↑</button>
+              <button type="button" class="btn btn-ghost item-settings-order-btn" data-export-column-move="down" ${index === normalizedSettings.order.length - 1 ? 'disabled' : ''} aria-label="Move column down" title="Move down">↓</button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function renderDetailedExportCounterSettings(settings = itemSettings) {
+      const list = document.getElementById('detailedExportCountersList');
+      if (!list) return;
+
+      const visibleKeySet = new Set(getConfiguredDetailedExportCounterKeys(settings));
+      const counterOptions = getDetailedExportCounterOptions();
+
+      list.innerHTML = counterOptions.map(counter => `
+        <label class="item-settings-config-row item-settings-config-check">
+          <input type="checkbox" data-export-counter-key="${escHtml(counter.key)}" ${visibleKeySet.has(counter.key) ? 'checked' : ''} />
+          <span class="item-settings-config-copy">
+            <strong>${escHtml(counter.label)}</strong>
+            <span>${counter.categoryName ? 'Category total on the Counters sheet.' : 'Summary counter on the Counters sheet.'}</span>
+          </span>
+        </label>`).join('');
     }
 
     function updateDetailedExportWeekPreview() {
