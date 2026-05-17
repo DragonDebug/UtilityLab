@@ -1,0 +1,704 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Manager</title>
+  <!-- Pre-paint theme bootstrap: reads saved preference and sets the class on <html>
+       before the stylesheet loads, preventing a flash of the wrong theme. -->
+  <script>
+    (() => {
+      const themeKey = 'tm_theme';
+      const savedTheme = localStorage.getItem(themeKey);
+      const preferredTheme = savedTheme === 'light' || savedTheme === 'dark'
+        ? savedTheme
+        : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+
+      document.documentElement.classList.add(`theme-${preferredTheme}`);
+      document.documentElement.dataset.theme = preferredTheme;
+    })();
+    </script>
+  <link rel="stylesheet" href="styles/app.css" />
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="app-header">
+    <div class="app-header-main">
+      <h1>Task <span>Manager</span></h1>
+      <div class="task-stats task-stats-header" id="taskStats"></div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-header btn-header-new" id="newTaskBtn" type="button" title="Create a new task" aria-label="Create a new task">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span class="btn-header-label">New Task</span>
+      </button>
+      <button class="btn btn-header btn-header-categories" id="manageCategoriesBtn" type="button" title="Manage categories" aria-label="Manage categories">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h7"/><circle cx="18" cy="12" r="2.5"/><circle cx="14" cy="17" r="2.5"/></svg>
+        <span class="btn-header-label">Categories</span>
+      </button>
+      <button class="btn btn-header btn-header-templates" id="manageTemplatesBtn" type="button" title="Manage templates" aria-label="Manage templates">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M6 4.5h9l3 3V19.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1Z"/><path d="M15 4.5V8h3"/><path d="M8 12h8"/><path d="M8 15.5h8"/></svg>
+        <span class="btn-header-label">Templates</span>
+      </button>
+      <button class="btn btn-header btn-header-items" id="manageItemsBtn" type="button" title="Manage items" aria-label="Manage items">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 6.5h16"/><path d="M4 12h16"/><path d="M4 17.5h16"/><circle cx="8" cy="6.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="17.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        <span class="btn-header-label">Items</span>
+      </button>
+      <button class="btn btn-header btn-header-export-detailed" id="exportDetailedExcelBtn" type="button" title="Export detailed workbook" aria-label="Export detailed workbook">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18.5h14"/><path d="M7 7.5h10"/></svg>
+        <span class="btn-header-label">Detailed</span>
+      </button>
+      <button class="btn btn-header btn-header-reports" id="openReportsBtn" type="button" title="Open reporting dashboard" aria-label="Open reporting dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 18.5h16"/><path d="M7 16V9"/><path d="M12 16V5.5"/><path d="M17 16v-3.5"/></svg>
+        <span class="btn-header-label">Reports</span>
+      </button>
+      <button class="btn btn-header btn-header-clear" id="clearCompletedBtn" type="button" title="Clean up completed tasks" aria-label="Clean up completed tasks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M9 3.5h6"/><path d="M4 7.5h16"/><path d="M6.5 7.5 7.3 19a1 1 0 0 0 1 .9h7.4a1 1 0 0 0 1-.9l.8-11.5"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
+        <span class="btn-header-label">Clear Done</span>
+      </button>
+      <button class="btn btn-header btn-header-theme" id="themeToggleBtn" type="button" title="Switch to light theme" aria-label="Switch to light theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <span class="btn-header-label">Light</span>
+      </button>
+      <button class="btn btn-header btn-header-settings" id="manageItemSettingsBtn" type="button" title="Open settings" aria-label="Open settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.2 15a1 1 0 0 0 .2 1.1l.1.1a1.7 1.7 0 0 1 0 2.4 1.7 1.7 0 0 1-2.4 0l-.1-.1a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9v.3a1.7 1.7 0 0 1-1.7 1.7 1.7 1.7 0 0 1-1.7-1.7V19a1 1 0 0 0-.6-.9 1 1 0 0 0-1.1.2l-.1.1a1.7 1.7 0 0 1-2.4 0 1.7 1.7 0 0 1 0-2.4l.1-.1a1 1 0 0 0 .2-1.1 1 1 0 0 0-.9-.6H4.5A1.7 1.7 0 0 1 2.8 12a1.7 1.7 0 0 1 1.7-1.7H4.8a1 1 0 0 0 .9-.6 1 1 0 0 0-.2-1.1l-.1-.1a1.7 1.7 0 0 1 0-2.4 1.7 1.7 0 0 1 2.4 0l.1.1a1 1 0 0 0 1.1.2 1 1 0 0 0 .6-.9V4.5A1.7 1.7 0 0 1 12 2.8a1.7 1.7 0 0 1 1.7 1.7v.3a1 1 0 0 0 .6.9 1 1 0 0 0 1.1-.2l.1-.1a1.7 1.7 0 0 1 2.4 0 1.7 1.7 0 0 1 0 2.4l-.1.1a1 1 0 0 0-.2 1.1 1 1 0 0 0 .9.6h.3A1.7 1.7 0 0 1 21.2 12a1.7 1.7 0 0 1-1.7 1.7h-.3a1 1 0 0 0-.9.6Z"/></svg>
+          <span class="btn-header-label">Settings</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="filters-strip">
+    <div class="filters-bar">
+      <span class="filter-label">Filter:</span>
+      <input type="search" id="searchTasks" class="search-input" placeholder="Search title, sender, description, subtasks, notes, or item refs" />
+      <select id="filterCategory">
+        <option value="">All Categories</option>
+      </select>
+      <select id="filterPriority">
+        <option value="">All Priorities</option>
+        <option value="Critical">Critical</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+        <option value="Very Low">Very Low</option>
+      </select>
+      <select id="filterStatus">
+        <option value="">All Statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="Not Started">Not Started</option>
+        <option value="Ongoing">Ongoing</option>
+        <option value="Waiting for Someone Else">Waiting for Someone Else</option>
+        <option value="Completed">Completed</option>
+      </select>
+      <select id="sortTasks" class="sort-select">
+        <option value="workflow">Sort: Workflow</option>
+        <option value="due-date">Sort: Due Date</option>
+        <option value="received-date">Sort: Received Date</option>
+        <option value="created-date">Sort: Created Date</option>
+        <option value="priority">Sort: Priority</option>
+        <option value="title">Sort: Title</option>
+      </select>
+      <button class="btn btn-ghost apply-sorting-btn" id="applyTaskSortingBtn" type="button" hidden disabled>Refresh View</button>
+      <div class="view-switch" id="taskViewSwitch" role="tablist" aria-label="Task views">
+        <button type="button" class="view-switch-btn is-active" data-view-mode="standard" role="tab" aria-selected="true">Standard</button>
+        <button type="button" class="view-switch-btn" data-view-mode="compact" role="tab" aria-selected="false">Compact</button>
+        <button type="button" class="view-switch-btn" data-view-mode="table" role="tab" aria-selected="false">Table</button>
+      </div>
+      <button class="btn btn-ghost toggle-done-btn" id="toggleDoneBtn">Hide Completed</button>
+    </div>
+  </div>
+
+  <!-- ── Main ── -->
+  <main class="main-content">
+    <div class="workspace-grid" id="workspaceGrid">
+      <section class="list-panel">
+        <!-- Stats -->
+        <div class="task-stats-secondary-shell" id="taskStatsSecondaryShell">
+          <div class="task-stats-secondary-bar">
+            <div class="task-stats-secondary-heading">
+              <span class="task-stats-secondary-kicker">Breakdown</span>
+              <strong class="task-stats-secondary-title" id="taskStatsSecondaryTitle">Status breakdown</strong>
+              <span class="task-stats-secondary-caption" id="taskStatsSecondaryCaption">Quick totals by status, priority, or category.</span>
+            </div>
+            <div class="task-stats-secondary-controls">
+              <div class="task-stats-secondary-tabs" id="taskStatsSecondaryTabs" role="tablist" aria-label="Secondary task stats"></div>
+              <button type="button" class="btn btn-ghost task-stats-secondary-toggle" id="toggleTaskStatsSecondaryBtn" aria-expanded="true">Collapse</button>
+            </div>
+          </div>
+          <div class="task-stats-secondary" id="taskStatsSecondary"></div>
+        </div>
+
+        <!-- Task List -->
+        <div class="task-list" id="taskList"></div>
+      </section>
+
+      <aside class="detail-panel" id="taskDetailPanel"></aside>
+    </div>
+
+  </main>
+
+  <!-- ── New Task Modal ── -->
+  <div class="modal-backdrop" id="taskModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="task-modal-header">
+        <div class="task-modal-heading">
+          <div class="task-modal-eyebrow">
+            <span class="task-mode-badge" id="taskModeBadge">Create mode</span>
+          </div>
+          <h2 id="modalTitle">New Task</h2>
+          <p class="task-modal-subtitle" id="taskModalSubtitle">Add the essentials and keep moving.</p>
+        </div>
+        <button type="button" class="task-modal-close" id="closeTaskModalBtn" aria-label="Close task editor">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <form id="taskForm" novalidate>
+        <div class="task-modal-layout">
+          <div class="task-modal-main">
+            <section class="task-modal-panel">
+              <div class="task-modal-panel-header">
+                <h3>Core</h3>
+              </div>
+
+              <div class="task-core-layout">
+                <div class="form-group task-form-field task-field-image">
+                  <label for="taskImageInput">Task Image</label>
+                  <div class="task-image-picker">
+                    <label class="task-image-upload is-empty" id="taskImageUpload" for="taskImageInput">
+                      <span class="task-image-placeholder" id="taskImagePlaceholder"><strong>+</strong><span>Add a reference image</span></span>
+                      <img id="taskImagePreview" class="task-image-preview" alt="Task preview" hidden />
+                      <input type="file" id="taskImageInput" accept="image/*" />
+                    </label>
+                    <button type="button" class="btn btn-ghost task-image-clear-btn" id="clearTaskImageBtn" hidden>Remove image</button>
+                  </div>
+                </div>
+
+                <div class="task-core-main">
+                  <div class="form-group task-form-field task-field-title">
+                    <label for="taskTitle" id="taskTitleLabel">Titles *</label>
+                    <textarea id="taskTitle" placeholder="One task title per line to create several tasks at once..." required></textarea>
+                    <p class="task-field-help" id="taskTitleHelp">One line = one task.</p>
+                  </div>
+
+                  <div class="form-row form-row-2">
+                    <div class="form-group task-form-field task-field-template">
+                      <label for="taskTemplate">Template</label>
+                      <select id="taskTemplate">
+                        <option value="">No Template</option>
+                      </select>
+                    </div>
+                    <div class="form-group task-form-field task-field-project">
+                      <label for="taskProject">Project</label>
+                      <input type="text" id="taskProject" list="taskProjectOptions" placeholder="Type or pick a project" />
+                      <datalist id="taskProjectOptions"></datalist>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group task-form-field task-field-description">
+                <label for="taskDescription">Description</label>
+                <textarea id="taskDescription" placeholder="Short task summary or context..."></textarea>
+              </div>
+            </section>
+
+            <section class="task-modal-panel">
+              <div class="task-modal-panel-header">
+                <div class="task-modal-panel-headline">
+                  <h3>Workflow</h3>
+                  <button type="button" class="btn btn-ghost task-dates-toggle" id="taskDatesToggleBtn" aria-expanded="false" aria-controls="taskDatesGroup">Show Dates</button>
+                </div>
+              </div>
+
+              <div class="form-row form-row-3">
+                <div class="form-group task-form-field task-field-priority">
+                  <label for="taskPriority">Priority</label>
+                  <select id="taskPriority">
+                    <option value="Critical">Critical</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                    <option value="Very Low">Very Low</option>
+                  </select>
+                </div>
+                <div class="form-group task-form-field task-field-category">
+                  <label for="taskCategory">Category</label>
+                  <select id="taskCategory"></select>
+                </div>
+                <div class="form-group task-form-field task-field-status">
+                  <label for="taskStatus">Status</label>
+                  <select id="taskStatus">
+                    <option value="Pending">Pending</option>
+                    <option value="Not Started">Not Started</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Waiting for Someone Else">Waiting for Someone Else</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="task-dates-group" id="taskDatesGroup" hidden>
+                <div class="form-row form-row-2">
+                  <div class="form-group task-form-field task-field-received">
+                    <label for="taskReceivedAt">Received Date</label>
+                    <input type="date" id="taskReceivedAt" />
+                  </div>
+                  <div class="form-group task-form-field task-field-due">
+                    <label for="taskDueDate">Due Date</label>
+                    <input type="date" id="taskDueDate" />
+                  </div>
+                </div>
+
+                <div class="form-row form-row-2">
+                  <div class="form-group task-form-field task-field-started">
+                    <label for="taskStartedAt">Start Date</label>
+                    <input type="date" id="taskStartedAt" />
+                  </div>
+                  <div class="form-group task-form-field task-field-completed">
+                    <label for="taskCompletedAt">Completion Date</label>
+                    <input type="date" id="taskCompletedAt" />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="task-modal-panel">
+              <div class="task-modal-panel-header">
+                <h3>Context</h3>
+              </div>
+
+              <div class="form-row form-row-2">
+                <div class="form-group task-form-field task-field-email">
+                  <label for="taskEmailSubject">Email Subject</label>
+                  <input type="text" id="taskEmailSubject" placeholder="Optional subject line" />
+                </div>
+
+                <div class="form-group task-form-field task-field-sender">
+                  <label for="taskSender">Sender</label>
+                  <select id="taskSender">
+                    <option value="">No Sender</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group task-form-field task-field-notes">
+                <label for="taskNotes">Notes</label>
+                <textarea id="taskNotes" placeholder="Optional notes…"></textarea>
+              </div>
+            </section>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" id="cancelTaskBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submitTaskBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="btn-header-label" id="submitTaskBtnLabel">Create Task</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="categoryModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
+      <div class="modal-header-inline">
+        <h2 id="categoryModalTitle">Manage Categories</h2>
+        <button type="button" class="task-modal-close" id="closeCategoryModalBtn" aria-label="Close categories">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6 18 18M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+      <form id="categoryForm" novalidate>
+        <div class="category-form-row">
+          <div class="form-group">
+            <label for="categoryName">Name *</label>
+            <input type="text" id="categoryName" placeholder="Category name" required />
+          </div>
+          <div class="form-group">
+            <label for="categoryColor">Color</label>
+            <input type="color" id="categoryColor" class="color-input" value="#5b8def" />
+          </div>
+        </div>
+
+        <div class="form-actions category-form-actions">
+          <div class="category-color-presets" aria-label="Default category colors">
+            <span class="category-color-presets-label">Presets</span>
+            <button type="button" class="category-color-preset" data-category-color="#64748b" style="--preset-color:#64748b" aria-label="Use slate color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#ef7d57" style="--preset-color:#ef7d57" aria-label="Use orange color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#34c38f" style="--preset-color:#34c38f" aria-label="Use green color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#f4b740" style="--preset-color:#f4b740" aria-label="Use amber color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#5b8def" style="--preset-color:#5b8def" aria-label="Use blue color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#8b5cf6" style="--preset-color:#8b5cf6" aria-label="Use violet color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#ec4899" style="--preset-color:#ec4899" aria-label="Use pink color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#14b8a6" style="--preset-color:#14b8a6" aria-label="Use teal color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#dc2626" style="--preset-color:#dc2626" aria-label="Use red color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#ea580c" style="--preset-color:#ea580c" aria-label="Use burnt orange color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#65a30d" style="--preset-color:#65a30d" aria-label="Use lime color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#0891b2" style="--preset-color:#0891b2" aria-label="Use cyan color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#1d4ed8" style="--preset-color:#1d4ed8" aria-label="Use royal blue color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#7c3aed" style="--preset-color:#7c3aed" aria-label="Use indigo color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#a21caf" style="--preset-color:#a21caf" aria-label="Use magenta color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#be123c" style="--preset-color:#be123c" aria-label="Use rose color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#92400e" style="--preset-color:#92400e" aria-label="Use brown color"></button>
+            <button type="button" class="category-color-preset" data-category-color="#334155" style="--preset-color:#334155" aria-label="Use steel color"></button>
+          </div>
+          <div class="category-form-buttons">
+            <button type="button" class="btn btn-ghost" id="cancelCategoryBtn">Close</button>
+            <button type="submit" class="btn btn-primary" id="submitCategoryBtn">Save Category</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="category-list" id="categoryList"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="templateModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="templateModalTitle">
+      <div class="modal-header-inline">
+        <h2 id="templateModalTitle">Manage Templates</h2>
+        <button type="button" class="task-modal-close" id="closeTemplateModalBtn" aria-label="Close templates">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6 18 18M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+      <form id="templateForm" novalidate>
+        <div class="form-group">
+          <label for="templateName">Name *</label>
+          <input type="text" id="templateName" placeholder="Template name" required />
+        </div>
+        <div class="form-group">
+          <label for="templateSubtasks">Subtasks</label>
+          <textarea id="templateSubtasks" placeholder="One subtask per line"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" id="cancelTemplateBtn">Close</button>
+          <button type="submit" class="btn btn-primary" id="submitTemplateBtn">Save Template</button>
+        </div>
+      </form>
+
+      <div class="template-list" id="templateList"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="itemSettingsModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="itemSettingsModalTitle">
+      <div class="item-settings-header">
+        <h2 id="itemSettingsModalTitle">Settings</h2>
+        <button type="button" class="task-modal-close" id="closeItemSettingsModalBtn" aria-label="Close settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6 18 18M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+      <form id="itemSettingsForm" class="item-settings-form" novalidate>
+          <p class="item-settings-intro">Manage shared task and item options here. Email senders and projects feed the task form, while suppliers feed the item editors and import flow.</p>
+        <div class="item-settings-grid">
+            <div class="item-settings-group">
+              <label for="taskSenderOptionsInput">Email Senders</label>
+              <textarea id="taskSenderOptionsInput" placeholder="One sender per line"></textarea>
+              <p class="item-settings-help">These names appear in the task form sender list. Existing tasks keep their sender even if you later remove an option here.</p>
+            </div>
+          <div class="item-settings-group">
+            <label for="taskProjectOptionsInput">Projects</label>
+            <textarea id="taskProjectOptionsInput" placeholder="One project per line"></textarea>
+            <p class="item-settings-help">These project suggestions appear in the task form. Existing task project values stay intact even if you later remove an option here.</p>
+          </div>
+          <div class="item-settings-group">
+            <label for="itemSupplierOptionsInput">Suppliers</label>
+            <textarea id="itemSupplierOptionsInput" placeholder="One supplier per line"></textarea>
+            <p class="item-settings-help">Keep one supplier per line. Existing item values stay intact even if you later remove an option here.</p>
+          </div>
+        </div>
+        <div class="item-settings-grid">
+          <div class="item-settings-group">
+            <label>Detailed Export Summary</label>
+            <div class="item-settings-inline-fields">
+              <div class="item-settings-field">
+                <label for="detailedExportWeekNumberInput">Week Number</label>
+                <input type="number" id="detailedExportWeekNumberInput" min="1" max="53" inputmode="numeric" />
+              </div>
+              <div class="item-settings-field">
+                <label for="detailedExportWeekYearInput">Year</label>
+                <input type="number" id="detailedExportWeekYearInput" min="2000" max="9999" inputmode="numeric" />
+              </div>
+            </div>
+            <p class="item-settings-help">Weekly Completed uses a Sunday to Thursday working week. Choose which week and year the detailed workbook should summarize.</p>
+            <p class="item-settings-value" id="detailedExportWeekPreview">Working week preview updates here.</p>
+            <div class="item-settings-actions">
+              <button type="button" class="btn btn-ghost" id="exportDetailedExcelFromSettingsBtn">Export Detailed Excel</button>
+            </div>
+          </div>
+          <div class="item-settings-group">
+            <label>Detailed Export Columns</label>
+            <p class="item-settings-help">Choose the shared column order and visibility for All Tasks, Pending List, and Weekly Completed.</p>
+            <div class="item-settings-config-list" id="detailedExportColumnsList"></div>
+          </div>
+          <div class="item-settings-group">
+            <label>Export Counters</label>
+            <p class="item-settings-help">Choose which counters appear on the Excel Counters sheet. Dashboard counters stay unchanged.</p>
+            <div class="item-settings-config-list" id="detailedExportCountersList"></div>
+          </div>
+          <div class="item-settings-group item-settings-choice-group">
+            <label for="taskCardImageSizeInput">Task Card Image Size</label>
+            <select id="taskCardImageSizeInput">
+              <option value="small">Small</option>
+              <option value="medium">Medium</option>
+              <option value="large">Large</option>
+            </select>
+            <p class="item-settings-help">Choose how large task-card images should appear in the task list. Small matches the older thumbnail size, Medium is a balanced option, and Large keeps the current bigger look.</p>
+          </div>
+          <div class="item-settings-group">
+            <label>Completed Tasks</label>
+            <div class="item-settings-field">
+              <label for="completedTaskVisibilityModeInput">Main List Visibility</label>
+              <select id="completedTaskVisibilityModeInput">
+                <option value="all">Show all completed tasks</option>
+                <option value="hide-older">Hide older completed tasks</option>
+              </select>
+            </div>
+            <div class="item-settings-inline-fields">
+              <div class="item-settings-field">
+                <label for="completedTaskVisibleDaysInput">Hide After Days</label>
+                <input type="number" id="completedTaskVisibleDaysInput" min="1" max="3650" inputmode="numeric" />
+              </div>
+              <div class="item-settings-field">
+                <label for="completedTaskCleanupDaysInput">Clear Done Days</label>
+                <input type="number" id="completedTaskCleanupDaysInput" min="1" max="3650" inputmode="numeric" />
+              </div>
+              <div class="item-settings-field">
+                <label for="completedTaskCleanupBeforeYearInput">Clear Before Year</label>
+                <input type="number" id="completedTaskCleanupBeforeYearInput" min="2000" max="9999" inputmode="numeric" />
+              </div>
+            </div>
+            <p class="item-settings-help">Use these rules to keep older completed tasks out of the main list without deleting them. Hidden completed tasks still stay available for reports, exports, and year-end history until you clear them.</p>
+            <p class="item-settings-help">The Clear Done button uses these day and year values as the default cleanup starting points.</p>
+          </div>
+          <div class="item-settings-group">
+            <label>Storage & Backup</label>
+            <div class="item-settings-storage-topline">
+              <span class="item-settings-storage-badge" id="storageBackendBadge">Checking...</span>
+              <span class="item-settings-storage-meta" id="storageUsageText">Estimating browser storage usage...</span>
+            </div>
+            <div class="item-settings-storage-stats">
+              <div class="item-settings-storage-stat">
+                <span>Tasks</span>
+                <strong id="storageTaskCount">0</strong>
+              </div>
+              <div class="item-settings-storage-stat">
+                <span>Items</span>
+                <strong id="storageItemCount">0</strong>
+              </div>
+              <div class="item-settings-storage-stat">
+                <span>Logs</span>
+                <strong id="storageLogCount">0</strong>
+              </div>
+              <div class="item-settings-storage-stat">
+                <span>Templates</span>
+                <strong id="storageTemplateCount">0</strong>
+              </div>
+            </div>
+            <p class="item-settings-help" id="storageStatusCaption">App data uses IndexedDB when available. Theme stays in localStorage so the selected theme can be applied before the page paints.</p>
+            <div class="item-settings-actions">
+              <button type="button" class="btn btn-ghost" id="exportBackupBtn">Export Backup</button>
+              <button type="button" class="btn btn-ghost" id="importBackupBtn">Import Backup</button>
+            </div>
+            <input type="file" id="settingsBackupInput" accept=".json,application/json" hidden />
+          </div>
+          <div class="item-settings-group item-settings-danger-group">
+            <label>Danger Zone</label>
+            <p class="item-settings-help">Remove all tasks, items, logs, categories, templates, shared options, and saved preferences from this browser. Export a backup first if you may need this data later.</p>
+            <button type="button" class="btn btn-danger item-settings-danger-btn" id="clearAllDataBtn">Remove All Data</button>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" id="cancelItemSettingsBtn">Close</button>
+          <button type="submit" class="btn btn-primary">Save Settings</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="itemsModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="itemsModalTitle">
+      <div class="modal-header-inline">
+        <h2 id="itemsModalTitle">All Items</h2>
+        <button type="button" class="task-modal-close" id="closeItemsModalBtn" aria-label="Close items">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6 18 18M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+      <div class="items-modal-toolbar">
+        <div class="items-modal-search">
+          <div class="items-modal-section-label">Find Items</div>
+          <label for="itemSearchInput">Search Items</label>
+          <input type="search" id="itemSearchInput" placeholder="Search TID, BID, status, supplier, or task" />
+        </div>
+        <div class="items-modal-summary-card">
+          <div class="items-modal-section-label">Registry</div>
+          <div class="items-modal-summary" id="itemsModalSummary">0 items</div>
+        </div>
+      </div>
+      <div class="workflow-item-list-shell">
+        <div class="workflow-item-list" id="allItemsList"></div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-ghost" id="closeItemsBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="reportModal">
+    <div class="modal report-modal" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+      <div class="report-modal-header">
+        <div class="report-modal-heading">
+          <span class="report-modal-kicker">Reporting Studio</span>
+          <h2 id="reportModalTitle">Performance Snapshot</h2>
+          <p id="reportModalSubtitle">A polished weekly, monthly, quarterly, or annual reporting view built from your live task history.</p>
+        </div>
+        <div class="report-modal-actions">
+          <button type="button" class="btn btn-ghost" id="printReportBtn">Print / Save PDF</button>
+          <button type="button" class="task-modal-close" id="closeReportModalBtn" aria-label="Close reporting dashboard">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="report-modal-body">
+        <section class="report-toolbar" aria-label="Reporting controls">
+          <div class="report-period-switch" id="reportPeriodSwitch" role="tablist" aria-label="Report periods">
+            <button type="button" class="btn report-period-btn" data-report-period="weekly" role="tab" aria-selected="false">Weekly</button>
+            <button type="button" class="btn report-period-btn is-active" data-report-period="monthly" role="tab" aria-selected="true">Monthly</button>
+            <button type="button" class="btn report-period-btn" data-report-period="quarterly" role="tab" aria-selected="false">Quarterly</button>
+            <button type="button" class="btn report-period-btn" data-report-period="annual" role="tab" aria-selected="false">Annual</button>
+          </div>
+          <div class="report-toolbar-meta">
+            <span>Reporting window</span>
+            <strong id="reportRangeLabel">Current month</strong>
+            <span id="reportGeneratedLabel">Generated from live task data</span>
+          </div>
+        </section>
+
+        <div class="report-grid">
+          <section class="report-kpi-grid" id="reportKpiGrid" aria-label="Key report metrics"></section>
+
+          <div class="report-panel-grid">
+            <section class="report-card">
+              <div class="report-card-header">
+                <div>
+                  <h3 id="reportTrendTitle">Task Flow</h3>
+                  <p id="reportTrendSubtitle">Created versus completed trend across recent periods.</p>
+                </div>
+                <div class="report-card-meta" id="reportTrendMeta">Recent activity overview</div>
+              </div>
+              <div class="report-chart-shell" id="reportTrendChart"></div>
+            </section>
+
+            <section class="report-card">
+              <div class="report-card-header">
+                <div>
+                  <h3>Executive Insights</h3>
+                  <p>Auto-written highlights you can paste into a weekly or monthly email.</p>
+                </div>
+                <div class="report-card-meta">Live commentary from current data</div>
+              </div>
+              <div class="report-insight-list" id="reportInsights"></div>
+            </section>
+          </div>
+
+          <section class="report-card">
+            <div class="report-card-header">
+              <div>
+                <h3>Distribution Breakdown</h3>
+                <p>Current workload mix by category, priority, status, and aging.</p>
+              </div>
+              <div class="report-card-meta">Snapshot of open work right now</div>
+            </div>
+            <div class="report-distribution-grid">
+              <div class="report-stack-chart" id="reportCategoryBreakdown"></div>
+              <div class="report-stack-chart" id="reportPriorityBreakdown"></div>
+              <div class="report-stack-chart" id="reportStatusBreakdown"></div>
+              <div class="report-stack-chart" id="reportAgingBreakdown"></div>
+            </div>
+          </section>
+
+          <section class="report-summary-band">
+            <div class="report-card report-summary-copy">
+              <div class="report-card-header">
+                <div>
+                  <h3>Email-Ready Summary</h3>
+                  <p>Short narrative copy built from the same reporting metrics shown above.</p>
+                </div>
+                <div class="report-card-meta">Suitable for screenshot, PDF, or copy-paste</div>
+              </div>
+              <div id="reportSummaryCopy"></div>
+            </div>
+            <div class="report-summary-stamp">
+              <span class="report-summary-stamp-label">Prepared for</span>
+              <strong id="reportStampTitle">Monthly Task Review</strong>
+              <span id="reportStampMeta">Generated from the current browser dataset.</span>
+              <span class="report-print-note">Use Print / Save PDF for a shareable layout.</span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="context-menu" id="detailContextMenu" role="menu" aria-label="Task actions">
+    <div class="context-menu-label">Task Actions</div>
+    <button type="button" class="context-menu-btn is-edit" data-context-action="edit" role="menuitem">
+      <span class="context-menu-main">
+        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16v4Z"/><path d="m12.5 7.5 4 4"/></svg></span>
+        <span>Edit task</span>
+      </span>
+      <strong>Open</strong>
+    </button>
+    <button type="button" class="context-menu-btn is-toggle" data-context-action="toggle-status" role="menuitem">
+      <span class="context-menu-main">
+        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span id="detailContextToggleLabel">Mark complete</span>
+      </span>
+      <strong>State</strong>
+    </button>
+    <button type="button" class="context-menu-btn is-duplicate" data-context-action="duplicate" role="menuitem">
+      <span class="context-menu-main">
+        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg></span>
+        <span>Duplicate task</span>
+      </span>
+      <strong>Copy</strong>
+    </button>
+    <button type="button" class="context-menu-btn is-delete" data-context-action="delete" role="menuitem">
+      <span class="context-menu-main">
+        <span class="context-menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3.5h6"/><path d="M4 7.5h16"/><path d="M6.5 7.5 7.3 19a1 1 0 0 0 1 .9h7.4a1 1 0 0 0 1-.9l.8-11.5"/><path d="M10 11v5"/><path d="M14 11v5"/></svg></span>
+        <span>Delete task</span>
+      </span>
+      <strong>Danger</strong>
+    </button>
+  </div>
+
+
+  <!-- ExcelJS library (cdn) used for the detailed Excel export feature. -->
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <!-- XLSX library (cdn) used by workbook import helpers for rich-data image parsing. -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script defer src="src/core/storage.js"></script>
+  <script defer src="src/core/runtimeHelpers.js"></script>
+  <script defer src="src/state/appState.js"></script>
+  <script defer src="src/core/domain.js"></script>
+  <script defer src="src/ui/rendering.js"></script>
+  <script defer src="src/features/reporting.js"></script>
+  <script defer src="src/features/items.js"></script>
+  <script defer src="src/features/settingsCatalogs.js"></script>
+  <script defer src="src/features/taskBoard.js"></script>
+  <script defer src="src/features/export.js"></script>
+  <script defer src="src/app/bindTaskForm.js"></script>
+  <script defer src="src/app/bindToolbar.js"></script>
+  <script defer src="src/app/bindTaskList.js"></script>
+  <script defer src="src/app/bindDetailPanel.js"></script>
+  <script defer src="src/app/bindModalChrome.js"></script>
+  <script defer src="src/app/events.js"></script>
+</body>
+</html>
