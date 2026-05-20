@@ -48,26 +48,44 @@ function Export-FileNames {
 
 	$destinationFullPath = [System.IO.Path]::GetFullPath($DestinationPath)
 
-	# Only include visible, non-.ps1 files from the top level of the target folder.
-	# Exclusions:
-	# - destination file itself
-	# - PowerShell scripts (*.ps1)
-	# - Batch files (*.bat)
-	# - AutoCAD drawings (*.dwg)
-	# - Text files (*.txt)
-	# - hidden files by file attribute
-	# - dotfiles (for example .gitignore)
+	# Comment out any rule below to stop excluding that file type.
+	$exclusionChecks = @(
+		{ param($file) [System.IO.Path]::GetFullPath($file.FullName) -eq $destinationFullPath } # destination file itself
+		{ param($file) $file.Extension -ieq '.ps1' } # PowerShell scripts (*.ps1)
+		{ param($file) $file.Extension -ieq '.bat' } # Batch files (*.bat)
+		{ param($file) $file.Extension -ieq '.dwg' } # AutoCAD drawings (*.dwg)
+		{ param($file) $file.Extension -ieq '.txt' } # Text files (*.txt)
+		{ param($file) ($file.Attributes -band [System.IO.FileAttributes]::Hidden) -ne 0 } # hidden files by file attribute
+		{ param($file) $file.Name.StartsWith('.') } # dotfiles (for example .gitignore)
+		{ param($file) $file.Extension -ieq '.csv' } # CSV files (*.csv)
+		{ param($file) $file.Extension -ieq '.log' } # Log files (*.log)
+		{ param($file) $file.Extension -ieq '.json' } # JSON files (*.json)
+		{ param($file) $file.Extension -ieq '.xml' } # XML files (*.xml)
+		# { param($file) $file.Extension -ieq '.pdf' } # PDF documents (*.pdf)
+		{ param($file) $file.Extension -ieq '.doc' } # Word documents (*.doc)
+		{ param($file) $file.Extension -ieq '.docx' } # Word documents (*.docx)
+		{ param($file) $file.Extension -ieq '.xls' } # Excel workbooks (*.xls)
+		{ param($file) $file.Extension -ieq '.xlsx' } # Excel workbooks (*.xlsx)
+		{ param($file) $file.Extension -ieq '.png' } # PNG images (*.png)
+		{ param($file) $file.Extension -ieq '.jpg' } # JPEG images (*.jpg)
+		{ param($file) $file.Extension -ieq '.jpeg' } # JPEG images (*.jpeg)
+		{ param($file) $file.Extension -ieq '.zip' } # ZIP archives (*.zip)
+		{ param($file) $file.Extension -ieq '.7z' } # 7-Zip archives (*.7z)
+	)
+
 	$names = Get-ChildItem -LiteralPath $TargetFolder -File |
 		Where-Object {
-			$fullPath = [System.IO.Path]::GetFullPath($_.FullName)
-			$isHiddenAttribute = ($_.Attributes -band [System.IO.FileAttributes]::Hidden) -ne 0
-			$isDotFile = $_.Name.StartsWith('.')
-			$isPs1 = $_.Extension -ieq '.ps1'
-			$isBat = $_.Extension -ieq '.bat'
-			$isDwg = $_.Extension -ieq '.dwg'
-			$isTxt = $_.Extension -ieq '.txt'
+			$file = $_
+			$isExcluded = $false
 
-			$fullPath -ne $destinationFullPath -and -not $isPs1 -and -not $isBat -and -not $isDwg -and -not $isTxt -and -not $isHiddenAttribute -and -not $isDotFile
+			foreach ($check in $exclusionChecks) {
+				if (& $check $file) {
+					$isExcluded = $true
+					break
+				}
+			}
+
+			-not $isExcluded
 		} |
 		Sort-Object -Property Name |
 		Select-Object -ExpandProperty Name
