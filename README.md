@@ -1,68 +1,16 @@
-# Folder Standards — Tool Collection
+# Folder Standards
 
-A set of PowerShell productivity tools. Each tool lives in its own subfolder.
+A small collection of utility scripts and browser-based apps. Use this page to quickly see what each folder contains and open the matching details page.
 
-> If scripts are blocked, run once in your terminal:
->
-> ```powershell
-> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-> ```
+| Tool / App             | Brief Description                                                                | Status            | Details                                          |
+|------------------------|----------------------------------------------------------------------------------|-------------------|--------------------------------------------------|
+| CopyWithDate           | Creates a dated copy of a starter folder so you can spin up repeat work quickly. | Active            | [Open details](CopyWithDate/README.md)           |
+| GetFileNamesToTextFile | Exports file names from a folder into a text file.                               | Active            | [Open details](GetFileNamesToTextFile/README.md) |
+| ListFolderContents     | Builds a text list of files and folders using saved settings.                    | Active            | [Open details](ListFolderContents/README.md)     |
+| TaskManager            | Browser-based task tracker for managing work items, statuses, and reports.       | Testing           | [Open details](TaskManager/README.md)            |
+| TaskManagerModular     | Modular version of TaskManager that is being reorganized into smaller files.     | Under Development | [Open details](TaskManagerModular/README.md)     |
+| test app               | Small browser demo used for simple testing and experiments.                      | Draft             | [Open details](test%20app/README.md)             |
 
----
+## Quick Note
 
-## CopyWithDate
-
-Creates a dated copy of a default folder (`yyyy MM dd - Name`).
-
-### Setup
-
-Edit `CopyWithDate\config.psd1`:
-
-```powershell
-@{
-    SourceFolder = 'C:\Your\Default\Folder'
-}
-```
-
-Just paste a normal Windows path — no escaping needed.
-
-### Usage
-
-```powershell
-cd CopyWithDate
-.\Copy-WithDate.ps1            # Date-only folder
-.\Copy-WithDateAndName.ps1     # Date + custom name
-.\Copy-WithDate-UI.ps1         # GUI version
-```
-
-Or double-click `Copy-WithDateAndName.bat`.
-
-### Test
-
-```powershell
-.\Test-Copy-WithDate.ps1
-```
-
----
-
-## ListFolderContents
-
-Lists file and folder names from the current directory into a text file.
-
-### Setup
-
-1. Double-click `ListFolderContents\Settings\List-FolderContents-Settings.bat` (or run `ListFolderContents\Settings\List-FolderContents-Settings.ps1`) to open the settings GUI.
-2. Choose your filter (all files or specific extensions), toggle folder/subfolder inclusion, and set the output file name.
-3. Click **Save Settings** — your preferences are saved to a shared config in `%APPDATA%\FolderStandards\ListFolderContents\config.psd1`.
-
-### Usage
-
-Navigate to any folder you want to list, then run:
-
-```powershell
-& "C:\path\to\ListFolderContents\List-FolderContents.ps1"
-```
-
-Or copy `List-FolderContents.bat` to the target folder and double-click it.
-
-By default, the script writes a text file (default `filelist.txt`) next to the script. You can point it to any folder or file path in the settings. If the file already exists it is overwritten.
+Some folders contain PowerShell scripts. If your system blocks script execution, open PowerShell and run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` for the current session.
