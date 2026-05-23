@@ -6,7 +6,7 @@ A small collection of utility scripts and browser-based apps. Use this page to q
 |------------------------|-------------------------------------------------------------------------------------|-------------------|--------------------------------------------------|
 | StandardFolder         | Creates a dated copy of your default folder in the folder where you run the script. | Active            | [Open details](StandardFolder/README.md)         |
 | GetFileNamesToTextFile | Exports file names from a folder into a text file.                                  | Active            | [Open details](GetFileNamesToTextFile/README.md) |
-| ListFolderContents     | Builds a text list of files and folders using saved settings.                       | Active            | [Open details](ListFolderContents/README.md)     |
+| ListFolderContents     | Builds a text list of files and folders using saved settings.                       | Under Development | [Open details](ListFolderContents/README.md)     |
 | TaskManager            | Browser-based task tracker for managing work items, statuses, and reports.          | Testing           | [Open details](TaskManager/README.md)            |
 | TaskManagerModular     | Modular version of TaskManager that is being reorganized into smaller files.        | Under Development | [Open details](TaskManagerModular/README.md)     |
 | test app               | Small browser demo used for simple testing and experiments.                         | Draft             | [Open details](test%20app/README.md)             |
