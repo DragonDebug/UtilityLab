@@ -1,3 +1,4 @@
 StandardFolder/config.psd1
+GetFileNamesToTextFile/config.psd1
 LongPathTest
 ListFolderContents/Create-TestTree.ps1

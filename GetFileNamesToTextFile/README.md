@@ -24,6 +24,7 @@ It does not rename, move, edit, or delete your source files.
 ## Quick start (recommended)
 
 1. run `SetupConfig.ps1` to create or refresh `config.psd1`
+	- or run `SetupConfig.bat` if you prefer the batch launcher
 2. open `config.psd1` and set:
    - `SourceFolder`
    - `OutputPath`
@@ -163,5 +164,6 @@ This helps avoid accidental writes to redirected locations.
 - `GetFileNamesToTextFile.ps1`: main script
 - `GetFileNamesToTextFile.bat`: easy launcher
 - `SetupConfig.ps1`: creates/refreshes `config.psd1`
+- `SetupConfig.bat`: easy launcher for config setup
 - `config.psd1`: settings
 - `Test-GetFileNamesToTextFile.ps1`: tests
