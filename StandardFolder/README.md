@@ -1,19 +1,46 @@
 # StandardFolder
 
-Creates a copy of your default folder and names it with today's date plus your custom text.
+Create a ready-to-use folder in seconds.
 
-**Status:** Active
+This tool copies your template folder and creates a new folder named with:
 
-## How To Use
+- today’s date
+- your custom text
 
-1. Run `SetupConfig.ps1` or `SetupConfig.bat` once to write `config.psd1` with the path to the sibling `default` folder.
-2. Copy `StandardFolder.ps1` and `config.psd1` to the folder where you want the new dated copy to be created.
-3. Run `StandardFolder.ps1` or `StandardFolder.bat`, then enter the folder name when prompted.
+Example result:
 
-The output folder is created in the current working directory where you run the script.
+- `2026-05-24 Project Kickoff`
 
-Safety rule: do not run the script from inside your configured SourceFolder (or its subfolders). The script now blocks that scenario and exits with an error.
+## What You Need
 
-## Note
+- `default/` (your template folder)
+- `SetupConfig.ps1` or `SetupConfig.bat`
+- `StandardFolder.ps1` or `StandardFolder.bat`
+- `config.psd1` (created by setup)
 
-If PowerShell blocks the script, run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` in that PowerShell session and try again.
+## Quick Start
+
+1. Run setup once.
+	- Run `SetupConfig.ps1` (or `SetupConfig.bat`) to generate `config.psd1`.
+	- This stores the path to your sibling `default` folder.
+2. Move files to where you want to create new folders.
+	- Copy `StandardFolder.ps1` and `config.psd1` into your target working folder.
+3. Run the tool.
+	- Start `StandardFolder.ps1` (or `StandardFolder.bat`).
+	- Enter your folder label when prompted.
+
+The new dated folder is created in the folder where you run the script.
+
+## Safety Check
+
+Do not run the script from inside the configured source template folder (`SourceFolder`) or any of its subfolders.
+
+To protect your template files, the script detects this and exits with an error.
+
+## If PowerShell Blocks the Script
+
+In the same PowerShell window, run:
+
+`Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+
+Then run the script again.
