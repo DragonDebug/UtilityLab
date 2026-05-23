@@ -7440,18 +7440,26 @@
             </div>
             <p class="item-settings-help">Weekly Completed uses a Sunday to Thursday working week. Choose which week and year the detailed workbook should summarize.</p>
             <p class="item-settings-value" id="detailedExportWeekPreview">Working week preview updates here.</p>
+            <div class="item-settings-inline-fields">
+              <div class="item-settings-field">
+                <label for="detailedExportMonthInput">Month</label>
+                <input type="month" id="detailedExportMonthInput" min="2000-01" max="9999-12" />
+              </div>
+            </div>
+            <p class="item-settings-help">Monthly Completed uses the selected calendar month and the task completed date.</p>
+            <p class="item-settings-value" id="detailedExportMonthPreview">Monthly preview updates here.</p>
             <div class="item-settings-actions">
               <button type="button" class="btn btn-ghost" id="exportDetailedExcelFromSettingsBtn">Export Detailed Excel</button>
             </div>
           </div>
           <div class="item-settings-group">
             <label>Detailed Export Columns</label>
-            <p class="item-settings-help">Choose the shared column order and visibility for All Tasks, Pending List, and Weekly Completed.</p>
+            <p class="item-settings-help">Choose the shared column order and visibility for All Tasks, Pending List, Weekly Completed, and Monthly Completed.</p>
             <div class="item-settings-config-list" id="detailedExportColumnsList"></div>
           </div>
           <div class="item-settings-group">
             <label>Export Counters</label>
-            <p class="item-settings-help">Choose which counters appear on the Excel Counters sheet. Dashboard counters stay unchanged.</p>
+            <p class="item-settings-help">Choose which counters appear on the Excel counter sheets. Dashboard counters stay unchanged.</p>
             <div class="item-settings-config-list" id="detailedExportCountersList"></div>
           </div>
           <div class="item-settings-group item-settings-choice-group">
@@ -8419,6 +8427,21 @@
       return String(value || '').trim().toLowerCase() === 'hide-older' ? 'hide-older' : 'all';
     }
 
+    function normalizeDetailedExportMonthValue(value, fallback = new Date()) {
+      const matched = String(value || '').trim().match(/^(\d{4})-(\d{2})$/);
+      if (matched) {
+        const year = Number.parseInt(matched[1], 10);
+        const monthNumber = Number.parseInt(matched[2], 10);
+
+        if (year >= 2000 && year <= 9999 && monthNumber >= 1 && monthNumber <= 12) {
+          return `${String(year).padStart(4, '0')}-${String(monthNumber).padStart(2, '0')}`;
+        }
+      }
+
+      const fallbackDate = fallback instanceof Date ? fallback : (toDateOnly(fallback) || new Date());
+      return `${fallbackDate.getFullYear()}-${String(fallbackDate.getMonth() + 1).padStart(2, '0')}`;
+    }
+
     function normalizeItemSettings(settings = {}) {
       const currentWorkingWeekInfo = getWorkingWeekInfo(new Date()) || { year: new Date().getFullYear(), weekNumber: 1 };
       const currentYear = new Date().getFullYear();
@@ -8431,6 +8454,7 @@
       const projectOptions = normalizeOptionList(settings?.projectOptions || []);
       const detailedExportWeekYear = clampWorkingWeekYear(settings?.detailedExportWeekYear ?? currentWorkingWeekInfo.year);
       const detailedExportWeekNumber = clampWorkingWeekNumber(settings?.detailedExportWeekNumber ?? currentWorkingWeekInfo.weekNumber, detailedExportWeekYear);
+      const detailedExportMonth = normalizeDetailedExportMonthValue(settings?.detailedExportMonth, new Date());
       const detailedExportColumns = normalizeDetailedExportColumnSettings(settings?.detailedExportColumns);
       const detailedExportCounters = normalizeDetailedExportCounterSettings(settings?.detailedExportCounters);
       const taskCardImageSize = TASK_CARD_IMAGE_SIZE_OPTIONS.includes(String(settings?.taskCardImageSize || '').trim().toLowerCase())
@@ -8447,6 +8471,7 @@
         projectOptions,
         detailedExportWeekNumber,
         detailedExportWeekYear,
+        detailedExportMonth,
         detailedExportColumns,
         detailedExportCounters,
         taskCardImageSize,
@@ -8616,6 +8641,7 @@
       { key: 'Priority', label: 'Priority', header: 'Priority', width: 12, center: true, validationList: 'priorities' },
       { key: 'EmailSubject', label: 'Email Subject', header: 'Email Subject', width: 30 },
       { key: 'Sender', label: 'Sender', header: 'Sender', width: 15, validationList: 'senders' },
+      { key: 'Project', label: 'Project', header: 'Project', width: 18, validationList: 'projects' },
       { key: 'Created', label: 'Created', header: 'Created', width: 12, center: true, isDate: true },
       { key: 'Received', label: 'Received', header: 'Received', width: 12, center: true, isDate: true },
       { key: 'Due', label: 'Due', header: 'Due', width: 12, center: true, isDate: true },
@@ -10077,7 +10103,7 @@
       const previousStatus = normalizeStatus(options.previousStatus ?? task.status);
       task.status = normalizedStatus;
 
-      if (normalizedStatus === 'Ongoing' && previousStatus !== 'Ongoing') {
+      if (normalizedStatus === 'Ongoing' && previousStatus !== 'Ongoing' && !task.startedAt) {
         task.startedAt = today();
       }
 
@@ -10103,7 +10129,7 @@
       let startedAt = startedField.value || currentTask?.startedAt || '';
       let completedAt = completedField.value || currentTask?.completedAt || '';
 
-      if (normalizedStatus === 'Ongoing' && previousStatus !== 'Ongoing') {
+      if (normalizedStatus === 'Ongoing' && previousStatus !== 'Ongoing' && !startedAt) {
         startedAt = today();
       }
 
@@ -11505,6 +11531,24 @@
       };
     }
 
+    function getDetailedExportMonthSelection(settings = itemSettings) {
+      const monthValue = normalizeDetailedExportMonthValue(settings?.detailedExportMonth, new Date());
+      const [yearText, monthText] = monthValue.split('-');
+      const year = Number.parseInt(yearText, 10);
+      const monthNumber = Number.parseInt(monthText, 10);
+      const monthStart = new Date(year, monthNumber - 1, 1);
+      const monthEnd = endOfMonth(monthStart);
+
+      return {
+        monthValue,
+        year,
+        monthNumber,
+        monthStart,
+        monthEnd,
+        label: formatMonthYearLabel(monthStart)
+      };
+    }
+
     function getStartOfIsoWeek(value) {
       const date = toDateOnly(value instanceof Date ? value : value);
       if (!date) return null;
@@ -11561,6 +11605,7 @@
         Priority: normalizePriority(task.priority),
         Status: normalizeStatus(task.status),
         Sender: task.sender || '',
+        Project: task.project || '',
         EmailSubject: task.emailSubject || '',
         Description: task.description || '',
         Notes: task.notes || '',
@@ -11633,12 +11678,18 @@
       return getDetailedTaskExportRows(tasks.filter(task => !isTaskCompleted(task)));
     }
 
-    function getWeeklyCompletedTaskRows(weekInfo) {
-      const completedTasks = tasks
-        .filter(task => isTaskCompleted(task) && isDateInWeek(task.completedAt, weekInfo))
+    function getCompletedTasksForDetailedExportRange(start, end) {
+      return tasks
+        .filter(task => isTaskCompleted(task) && isDateWithinRange(task.completedAt, start, end))
         .sort((a, b) => (b.completedAt || '').localeCompare(a.completedAt || ''));
+    }
 
-      return getDetailedTaskExportRows(completedTasks);
+    function getWeeklyCompletedTaskRows(weekInfo) {
+      return getDetailedTaskExportRows(getCompletedTasksForDetailedExportRange(weekInfo?.weekStart, weekInfo?.weekEnd));
+    }
+
+    function getMonthlyCompletedTaskRows(monthSelection) {
+      return getDetailedTaskExportRows(getCompletedTasksForDetailedExportRange(monthSelection?.monthStart, monthSelection?.monthEnd));
     }
 
     function getExcelImageDescriptorFromDataUrl(dataUrl) {
@@ -11678,6 +11729,7 @@
         { title: 'Categories', values: categories.map(category => category.name) },
         { title: 'Priorities', values: PRIORITY_OPTIONS },
         { title: 'Statuses', values: STATUS_OPTIONS },
+        { title: 'Projects', values: getProjectOptions() },
         { title: 'Senders', values: getSenderOptions() }
       ];
 
@@ -11695,7 +11747,8 @@
         categories: `'Lists'!$A$2:$A$${Math.max(categories.length + 1, 2)}`,
         priorities: `'Lists'!$B$2:$B$${Math.max(PRIORITY_OPTIONS.length + 1, 2)}`,
         statuses: `'Lists'!$C$2:$C$${Math.max(STATUS_OPTIONS.length + 1, 2)}`,
-        senders: `'Lists'!$D$2:$D$${Math.max(getSenderOptions().length + 1, 2)}`
+        projects: `'Lists'!$D$2:$D$${Math.max(getProjectOptions().length + 1, 2)}`,
+        senders: `'Lists'!$E$2:$E$${Math.max(getSenderOptions().length + 1, 2)}`
       };
     }
 
@@ -11745,6 +11798,7 @@
       const endRow = Math.max(rows.length + context.tableStartRow, startRow);
       const categoryColumnLetter = getWorksheetColumnLetter(columns, 'Category');
       const priorityColumnLetter = getWorksheetColumnLetter(columns, 'Priority');
+      const projectColumnLetter = getWorksheetColumnLetter(columns, 'Project');
       const senderColumnLetter = getWorksheetColumnLetter(columns, 'Sender');
       const statusColumnLetter = getWorksheetColumnLetter(columns, 'Status');
       const quantityColumnLetter = getWorksheetColumnLetter(columns, 'Quantity');
@@ -11754,6 +11808,9 @@
       }
       if (priorityColumnLetter) {
         applyListValidation(worksheet, priorityColumnLetter, startRow, endRow, validationLists.priorities);
+      }
+      if (projectColumnLetter) {
+        applyListValidation(worksheet, projectColumnLetter, startRow, endRow, validationLists.projects);
       }
       if (senderColumnLetter) {
         applyListValidation(worksheet, senderColumnLetter, startRow, endRow, validationLists.senders);
@@ -11856,16 +11913,16 @@
       });
     }
 
-    function getTaskSheetHeaderLayout() {
-      const openTasks = tasks.filter(task => !isTaskCompleted(task));
+    function getTaskSheetHeaderLayout(taskList = tasks.filter(task => !isTaskCompleted(task))) {
+      const scopedTasks = Array.isArray(taskList) ? taskList : [];
       const headerRows = [
-        { key: 'openTasks', label: 'Open Tasks', value: openTasks.length, accent: '1D4ED8' },
-        { key: 'ongoing', label: 'Ongoing', value: openTasks.filter(task => normalizeStatus(task.status) === 'Ongoing').length, accent: '1D4ED8' },
-        { key: 'overdue', label: 'Overdue', value: openTasks.filter(task => isOverdue(task.dueDate)).length, accent: 'DC2626' },
+        { key: 'openTasks', label: 'Open Tasks', value: scopedTasks.length, accent: '1D4ED8' },
+        { key: 'ongoing', label: 'Ongoing', value: scopedTasks.filter(task => normalizeStatus(task.status) === 'Ongoing').length, accent: '1D4ED8' },
+        { key: 'overdue', label: 'Overdue', value: scopedTasks.filter(task => isOverdue(task.dueDate)).length, accent: 'DC2626' },
         ...categories.map(category => ({
           key: getDetailedExportCategoryCounterKey(category.name),
           label: category.name,
-          value: openTasks
+          value: scopedTasks
             .filter(task => task.category === category.name)
             .reduce((sum, task) => sum + getTaskCategoryCountWeight(task), 0),
           accent: normalizeExcelHexColor(category.color)
@@ -12048,6 +12105,55 @@
       }
     }
 
+    function styleDetailedCounterWorksheet(worksheet, rows, options = {}) {
+      const counterColumns = [
+        { key: 'No', header: 'No.', width: 8 },
+        { key: 'Name', header: 'Counter', width: 34 },
+        { key: 'Quantity', header: 'Quantity', width: 14 }
+      ];
+      const customAfterBuild = options.afterBuild;
+
+      styleDetailedWorksheet(worksheet, counterColumns, rows, {
+        ...options,
+        emptyMessage: options.emptyMessage || 'No counters available.',
+        centerColumns: options.centerColumns || [1, 3],
+        rowHeights: {
+          default: 30,
+          preTable: 30,
+          header: 30,
+          body: 30,
+          empty: 30,
+          ...(options.rowHeights || {})
+        },
+        afterBuild: (sheet, builtRows, columns, context) => {
+          builtRows.forEach((row, index) => {
+            const accent = normalizeExcelHexColor(row.Accent);
+            const rowNumber = context.tableStartRow + 1 + index;
+            const worksheetRow = sheet.getRow(rowNumber);
+
+            worksheetRow.eachCell(cell => {
+              cell.font = { size: 13, bold: true, color: { argb: `FF${accent}` } };
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.92)}` }
+              };
+              cell.border = {
+                top: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+                left: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+                bottom: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
+                right: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } }
+              };
+            });
+          });
+
+          if (typeof customAfterBuild === 'function') {
+            customAfterBuild(sheet, builtRows, columns, context);
+          }
+        }
+      });
+    }
+
     async function exportDetailedToExcel() {
       if (typeof ExcelJS === 'undefined') {
         alert('Detailed Excel export is unavailable because the ExcelJS library did not load. Reload the page and try again.');
@@ -12070,64 +12176,36 @@
         workbook.title = `Task Manager Detailed Export ${stamp}`;
 
         const validationLists = buildValidationListSheet(workbook);
+        const exportedAt = formatExcelDateTimeDisplay(new Date().toISOString());
         const selectedWeek = getDetailedExportWeekSelection();
         const currentWeekInfo = selectedWeek.weekInfo;
         const weekSubtitle = `${currentWeekInfo.label} of ${currentWeekInfo.year} (${formatWeekRangeLabel(currentWeekInfo)}; Sunday to Thursday working week)`;
+        const selectedMonth = getDetailedExportMonthSelection();
+        const monthSubtitle = `${selectedMonth.label} (${formatReportRange(selectedMonth.monthStart, selectedMonth.monthEnd)})`;
         const taskColumns = getConfiguredDetailedExportColumns();
         const taskCenterColumns = getDetailedExportCenterColumns(taskColumns);
         const taskDateColumns = getDetailedExportDateColumnKeys(taskColumns);
         const taskImageColumnKey = getDetailedExportImageColumnKey(taskColumns);
         const taskRows = getDetailedTaskExportRows();
         const pendingRows = getPendingTaskExportRows();
-        const taskHeaderLayout = getTaskSheetHeaderLayout();
+        const taskHeaderLayout = getTaskSheetHeaderLayout(tasks.filter(task => !isTaskCompleted(task)));
         const counterRows = getDetailedCounterExportRows(taskHeaderLayout);
+        const weeklyCompletedTasks = getCompletedTasksForDetailedExportRange(currentWeekInfo.weekStart, currentWeekInfo.weekEnd);
         const weeklyCompletedRows = getWeeklyCompletedTaskRows(currentWeekInfo);
-        const counterColumns = [
-          { key: 'No', header: 'No.', width: 8 },
-          { key: 'Name', header: 'Counter', width: 34 },
-          { key: 'Quantity', header: 'Quantity', width: 14 }
-        ];
+        const weeklyCompletedCounterRows = getDetailedCounterExportRows(getTaskSheetHeaderLayout(weeklyCompletedTasks));
+        const monthlyCompletedTasks = getCompletedTasksForDetailedExportRange(selectedMonth.monthStart, selectedMonth.monthEnd);
+        const monthlyCompletedRows = getMonthlyCompletedTaskRows(selectedMonth);
+        const monthlyCompletedCounterRows = getDetailedCounterExportRows(getTaskSheetHeaderLayout(monthlyCompletedTasks));
 
-        styleDetailedWorksheet(workbook.addWorksheet('Counters'), counterColumns, counterRows, {
+        styleDetailedCounterWorksheet(workbook.addWorksheet('Counters'), counterRows, {
           title: 'Task Counters',
-          subtitle: `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())}. Counters on this sheet reflect open work only and follow the counter visibility chosen in Settings.`,
+          subtitle: `Exported ${exportedAt}. Counters on this sheet reflect open work only and follow the counter visibility chosen in Settings.`,
           accentColor: '1D4ED8',
-          emptyMessage: 'No counters available.',
-          centerColumns: [1, 3],
-          rowHeights: {
-            default: 30,
-            preTable: 30,
-            header: 30,
-            body: 30,
-            empty: 30
-          },
-          afterBuild: (worksheet, rows, columns, context) => {
-            rows.forEach((row, index) => {
-              const accent = normalizeExcelHexColor(row.Accent);
-              const rowNumber = context.tableStartRow + 1 + index;
-              const worksheetRow = worksheet.getRow(rowNumber);
-
-              worksheetRow.eachCell(cell => {
-                cell.font = { size: 13, bold: true, color: { argb: `FF${accent}` } };
-                cell.fill = {
-                  type: 'pattern',
-                  pattern: 'solid',
-                  fgColor: { argb: `FF${blendExcelHexColors(accent, 'FFFFFF', 0.92)}` }
-                };
-                cell.border = {
-                  top: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
-                  left: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
-                  bottom: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } },
-                  right: { style: 'thin', color: { argb: EXCEL_TABLE_BORDER_COLOR } }
-                };
-              });
-            });
-          }
         });
 
         styleDetailedWorksheet(workbook.addWorksheet('All Tasks'), taskColumns, taskRows, {
           title: 'All Tasks',
-          subtitle: `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())}. Summary counters were moved to the Counters sheet; this sheet keeps the detailed task table only.`,
+          subtitle: `Exported ${exportedAt}. Summary counters were moved to the Counters sheet; this sheet keeps the detailed task table only.`,
           accentColor: '1D4ED8',
           emptyMessage: 'No tasks available.',
           centerColumns: taskCenterColumns,
@@ -12149,7 +12227,7 @@
 
         styleDetailedWorksheet(workbook.addWorksheet('Pending List'), taskColumns, pendingRows, {
           title: 'Pending List',
-          subtitle: `Exported ${formatExcelDateTimeDisplay(new Date().toISOString())}. This sheet includes every task that is not completed.`,
+          subtitle: `Exported ${exportedAt}. This sheet includes every task that is not completed.`,
           accentColor: 'D97706',
           emptyMessage: 'No pending tasks available.',
           centerColumns: taskCenterColumns,
@@ -12191,6 +12269,44 @@
             const { startRow } = applySharedTaskSheetValidationAndFormatting(worksheet, rows, columns, context, validationLists);
             applyTaskSheetImages(worksheet, rows, imageColumnLetter, startRow);
           }
+        });
+
+        styleDetailedCounterWorksheet(workbook.addWorksheet('Weekly Completed Counters'), weeklyCompletedCounterRows, {
+          title: `${currentWeekInfo.label} Completed Counters`,
+          subtitle: `Exported ${exportedAt}. Counter visibility follows Settings and values on this sheet are scoped to tasks completed during ${currentWeekInfo.label} (${formatWeekRangeLabel(currentWeekInfo)}).`,
+          accentColor: '15803D',
+          emptyMessage: `No counters are available for tasks completed during ${currentWeekInfo.label}.`
+        });
+
+        styleDetailedWorksheet(workbook.addWorksheet('Monthly Completed'), taskColumns, monthlyCompletedRows, {
+          title: `${selectedMonth.label} Completed Tasks`,
+          subtitle: `Completed tasks finished during ${monthSubtitle}.`,
+          titleFontSize: 24,
+          subtitleFontSize: 11,
+          accentColor: '0F766E',
+          emptyMessage: `No tasks were completed during ${selectedMonth.label} (${formatReportRange(selectedMonth.monthStart, selectedMonth.monthEnd)}).`,
+          centerColumns: taskCenterColumns,
+          dateColumns: taskDateColumns,
+          rowHeights: {
+            default: 80,
+            preTable: 40,
+            header: 50,
+            body: 80,
+            empty: 80
+          },
+          afterBuild: (worksheet, rows, columns, context) => {
+            const imageColumnLetter = getWorksheetColumnLetter(columns, taskImageColumnKey);
+            applyCompletedTaskRowFormatting(worksheet, rows, columns, context);
+            const { startRow } = applySharedTaskSheetValidationAndFormatting(worksheet, rows, columns, context, validationLists);
+            applyTaskSheetImages(worksheet, rows, imageColumnLetter, startRow);
+          }
+        });
+
+        styleDetailedCounterWorksheet(workbook.addWorksheet('Monthly Completed Counters'), monthlyCompletedCounterRows, {
+          title: `${selectedMonth.label} Completed Counters`,
+          subtitle: `Exported ${exportedAt}. Counter visibility follows Settings and values on this sheet are scoped to tasks completed during ${selectedMonth.label} (${formatReportRange(selectedMonth.monthStart, selectedMonth.monthEnd)}).`,
+          accentColor: '0F766E',
+          emptyMessage: `No counters are available for tasks completed during ${selectedMonth.label}.`
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
@@ -14693,6 +14809,7 @@
       const supplierOptions = normalizeOptionList(document.getElementById('itemSupplierOptionsInput').value);
       const detailedExportWeekYear = clampWorkingWeekYear(document.getElementById('detailedExportWeekYearInput').value);
       const detailedExportWeekNumber = clampWorkingWeekNumber(document.getElementById('detailedExportWeekNumberInput').value, detailedExportWeekYear);
+      const detailedExportMonth = normalizeDetailedExportMonthValue(document.getElementById('detailedExportMonthInput').value, new Date());
       const detailedExportColumnOrder = Array.from(document.querySelectorAll('#detailedExportColumnsList [data-export-column-key]'))
         .map(row => row.dataset.exportColumnKey || '')
         .filter(Boolean);
@@ -14731,6 +14848,7 @@
         supplierOptions,
         detailedExportWeekNumber,
         detailedExportWeekYear,
+        detailedExportMonth,
         detailedExportColumns: {
           order: detailedExportColumnOrder,
           visible: detailedExportVisibleColumns
@@ -14799,6 +14917,7 @@
     });
     document.getElementById('detailedExportWeekNumberInput').addEventListener('input', updateDetailedExportWeekPreview);
     document.getElementById('detailedExportWeekYearInput').addEventListener('input', updateDetailedExportWeekPreview);
+    document.getElementById('detailedExportMonthInput').addEventListener('input', updateDetailedExportMonthPreview);
     document.getElementById('settingsBackupInput').addEventListener('change', async e => {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -15093,11 +15212,14 @@
       document.getElementById('completedTaskCleanupDaysInput').value = getCompletedTaskCleanupDays();
       document.getElementById('completedTaskCleanupBeforeYearInput').value = getCompletedTaskCleanupBeforeYear();
       const detailedExportWeekSelection = getDetailedExportWeekSelection();
+      const detailedExportMonthSelection = getDetailedExportMonthSelection();
       document.getElementById('detailedExportWeekNumberInput').value = detailedExportWeekSelection.weekNumber;
       document.getElementById('detailedExportWeekYearInput').value = detailedExportWeekSelection.year;
+      document.getElementById('detailedExportMonthInput').value = detailedExportMonthSelection.monthValue;
       renderDetailedExportColumnSettings();
       renderDetailedExportCounterSettings();
       updateDetailedExportWeekPreview();
+      updateDetailedExportMonthPreview();
     }
 
     function renderDetailedExportColumnSettings(settings = itemSettings) {
@@ -15159,6 +15281,22 @@
 
       weekNumberInput.max = String(maxWeeks);
       preview.textContent = `${weekInfo.label} (${year}) runs ${formatWeekRangeLabel(weekInfo)}. Weekly Completed includes Sunday to Thursday only.`;
+    }
+
+    function updateDetailedExportMonthPreview() {
+      const preview = document.getElementById('detailedExportMonthPreview');
+      const monthInput = document.getElementById('detailedExportMonthInput');
+      if (!preview || !monthInput) return;
+
+      const fallbackSelection = getDetailedExportMonthSelection();
+      const monthValue = normalizeDetailedExportMonthValue(monthInput.value || fallbackSelection.monthValue, fallbackSelection.monthStart);
+      const monthSelection = getDetailedExportMonthSelection({
+        ...(itemSettings || {}),
+        detailedExportMonth: monthValue
+      });
+
+      monthInput.value = monthValue;
+      preview.textContent = `${monthSelection.label} runs ${formatReportRange(monthSelection.monthStart, monthSelection.monthEnd)}. Monthly Completed includes tasks finished during this calendar month.`;
     }
 
     function openItemSettingsModal() {
