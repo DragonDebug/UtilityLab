@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Excel Template Generator</title>
+	<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			gap: 12px;
+			padding: 24px;
+			font-family: "Segoe UI", sans-serif;
+			background: #f7f7f7;
+		}
+
+		button {
+			padding: 10px 18px;
+			border: 1px solid #c8c8c8;
+			border-radius: 6px;
+			font: inherit;
+			background: #ffffff;
+			color: #111111;
+			cursor: pointer;
+		}
+
+		button:disabled {
+			cursor: wait;
+			opacity: 0.7;
+		}
+
+		.status {
+			min-height: 1.25rem;
+			font-size: 0.9rem;
+			color: #555555;
+		}
+
+		.status.error {
+			color: #b42318;
+		}
+	</style>
+</head>
+<body>
+	<button id="generateButton" type="button">Generate Workbook</button>
+	<div id="statusMessage" class="status" aria-live="polite"></div>
+
+	<script src="./constants.js"></script>
+	<script src="./main.js"></script>
+</body>
+</html>
