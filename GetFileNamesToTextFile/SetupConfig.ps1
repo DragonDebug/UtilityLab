@@ -105,6 +105,12 @@ try {
     # Set to `$true to include files from subfolders.
     IncludeSubfolders = `$$($IncludeSubfolders.IsPresent.ToString().ToLower())
 
+	# Allow reparse-point source roots (for example, OneDrive paths).
+	AllowReparsePointSourceRoot = `$true
+
+	# Allow output folders that are reparse points.
+	AllowReparsePointOutputDirectory = `$true
+
     # Skip files marked with the hidden attribute.
     ExcludeHiddenFiles = `$true
 

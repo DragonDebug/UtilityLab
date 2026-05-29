@@ -28,6 +28,8 @@ function Get-DefaultConfig {
 		OutputPath = '.\file_names.txt'
 		ExistingOutputFileMode = 'Fail'
 		IncludeSubfolders = $false
+		AllowReparsePointSourceRoot = $true
+		AllowReparsePointOutputDirectory = $true
 		ExcludeHiddenFiles = $true
 		ExcludeDotFiles = $true
 		IncludedExtensions = @(
@@ -122,6 +124,16 @@ function Get-Config {
 		$includeSubfolders = [bool]$config.IncludeSubfolders
 	}
 
+	$allowReparsePointSourceRoot = [bool]$defaults.AllowReparsePointSourceRoot
+	if ($null -ne $config.AllowReparsePointSourceRoot) {
+		$allowReparsePointSourceRoot = [bool]$config.AllowReparsePointSourceRoot
+	}
+
+	$allowReparsePointOutputDirectory = [bool]$defaults.AllowReparsePointOutputDirectory
+	if ($null -ne $config.AllowReparsePointOutputDirectory) {
+		$allowReparsePointOutputDirectory = [bool]$config.AllowReparsePointOutputDirectory
+	}
+
 	$excludeHiddenFiles = [bool]$defaults.ExcludeHiddenFiles
 	if ($null -ne $config.ExcludeHiddenFiles) {
 		$excludeHiddenFiles = [bool]$config.ExcludeHiddenFiles
@@ -143,6 +155,8 @@ function Get-Config {
 		OutputPath = $outputPath
 		ExistingOutputFileMode = $existingOutputFileMode
 		IncludeSubfolders = $includeSubfolders
+		AllowReparsePointSourceRoot = $allowReparsePointSourceRoot
+		AllowReparsePointOutputDirectory = $allowReparsePointOutputDirectory
 		ExcludeHiddenFiles = $excludeHiddenFiles
 		ExcludeDotFiles = $excludeDotFiles
 		IncludedExtensions = $includedExtensions
@@ -234,11 +248,14 @@ function Test-AnyItemExists {
 	return [System.IO.File]::Exists($filesystemPath) -or [System.IO.Directory]::Exists($filesystemPath)
 }
 
-# Reject unsafe file targets such as directories and reparse points before we write anything.
+# Validate output-file targets before we write anything.
 function Assert-SafeOutputFileTarget {
 	param(
 		[Parameter(Mandatory = $true)]
-		[string]$Path
+		[string]$Path,
+
+		[Parameter(Mandatory = $true)]
+		[bool]$AllowReparsePointOutputDirectory
 	)
 
 	$filesystemPath = Convert-ToExtendedLengthPath -Path $Path
@@ -256,7 +273,7 @@ function Assert-SafeOutputFileTarget {
 	$outputDirectory = Split-Path -Path $Path -Parent
 	if (-not [string]::IsNullOrWhiteSpace($outputDirectory) -and (Test-AnyItemExists -Path $outputDirectory)) {
 		$directoryInfo = [System.IO.DirectoryInfo]::new((Convert-ToExtendedLengthPath -Path $outputDirectory))
-		if (Test-IsReparsePoint -Item $directoryInfo) {
+		if ((Test-IsReparsePoint -Item $directoryInfo) -and (-not $AllowReparsePointOutputDirectory)) {
 			throw "Output directory points to a reparse point, which is not supported: $outputDirectory"
 		}
 	}
@@ -391,10 +408,13 @@ function Resolve-OutputPathForWrite {
 		[string]$Path,
 
 		[Parameter(Mandatory = $true)]
-		[string]$ExistingOutputFileMode
+		[string]$ExistingOutputFileMode,
+
+		[Parameter(Mandatory = $true)]
+		[bool]$AllowReparsePointOutputDirectory
 	)
 
-	Assert-SafeOutputFileTarget -Path $Path
+	Assert-SafeOutputFileTarget -Path $Path -AllowReparsePointOutputDirectory $AllowReparsePointOutputDirectory
 	$filesystemPath = Convert-ToExtendedLengthPath -Path $Path
 
 	if (-not [System.IO.File]::Exists($filesystemPath)) {
@@ -423,7 +443,7 @@ function Resolve-OutputPathForWrite {
 				$counter++
 			} while (Test-AnyItemExists -Path $candidatePath)
 
-			Assert-SafeOutputFileTarget -Path $candidatePath
+			Assert-SafeOutputFileTarget -Path $candidatePath -AllowReparsePointOutputDirectory $AllowReparsePointOutputDirectory
 
 			return $candidatePath
 		}
@@ -535,13 +555,13 @@ try {
 	}
 
 	$resolvedFolderInfo = [System.IO.DirectoryInfo]::new($resolvedFolderFileSystemPath)
-	if (Test-IsReparsePoint -Item $resolvedFolderInfo) {
+	if ((Test-IsReparsePoint -Item $resolvedFolderInfo) -and (-not $config.AllowReparsePointSourceRoot)) {
 		throw "Source folder cannot be a reparse point: $resolvedFolderPath"
 	}
 
 	# Resolve the final output target, including overwrite/create-new behavior.
 	$resolvedOutputPath = Resolve-ConfiguredPath -Path $configuredOutputPath -BasePath $PSScriptRoot
-	$resolvedOutputPath = Resolve-OutputPathForWrite -Path $resolvedOutputPath -ExistingOutputFileMode $config.ExistingOutputFileMode
+	$resolvedOutputPath = Resolve-OutputPathForWrite -Path $resolvedOutputPath -ExistingOutputFileMode $config.ExistingOutputFileMode -AllowReparsePointOutputDirectory $config.AllowReparsePointOutputDirectory
 	$resolvedOutputFileSystemPath = Convert-ToExtendedLengthPath -Path $resolvedOutputPath
 
 	# Resolve the final output path before scanning so we can exclude that file from the results.

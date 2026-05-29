@@ -85,7 +85,8 @@ Folder to scan.
 - relative paths are based on this script folder
 - absolute paths are allowed
 - standard network paths like `\\Server\Share\Folder` are allowed
-- source folders that are junctions or symlinks are blocked for safety
+- source folders that are junctions or symlinks are allowed by default
+- set `AllowReparsePointSourceRoot = $false` to block reparse-point source roots
 
 ### OutputPath
 
@@ -94,7 +95,18 @@ Text file to create.
 - relative paths are based on this script folder
 - absolute paths are allowed
 - output folder is created if needed
-- output targets through junctions or symlinks are blocked for safety
+- output folders through junctions or symlinks are allowed by default
+- set `AllowReparsePointOutputDirectory = $false` to block reparse-point output directories
+
+### AllowReparsePointSourceRoot
+
+- `$true`: allow source roots that are reparse points (for example OneDrive)
+- `$false`: reject source roots that are reparse points
+
+### AllowReparsePointOutputDirectory
+
+- `$true`: allow output directories that are reparse points
+- `$false`: reject output directories that are reparse points
 
 ### ExistingOutputFileMode
 
@@ -147,8 +159,9 @@ This tool is designed to be safe by default.
 
 - source files are never edited
 - only the output text file is written
-- source junctions/symlinks are blocked
-- output file and output parent paths through junctions/symlinks are blocked
+- recursive scans still skip reparse-point subfolders to avoid cycles
+- reparse-point output files are still blocked
+- source and output reparse-point roots are allowed by default and can be disabled
 
 This helps avoid accidental writes to redirected locations.
 

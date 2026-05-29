@@ -108,6 +108,12 @@ function Write-TestConfig {
 		[bool]$IncludeSubfolders,
 
 		[Parameter(Mandatory = $false)]
+		[bool]$AllowReparsePointSourceRoot = $true,
+
+		[Parameter(Mandatory = $false)]
+		[bool]$AllowReparsePointOutputDirectory = $true,
+
+		[Parameter(Mandatory = $false)]
 		[ValidateSet('Fail', 'Overwrite', 'CreateNew')]
 		[string]$ExistingOutputFileMode = 'Fail'
 	)
@@ -120,6 +126,8 @@ function Write-TestConfig {
     OutputPath = '$($OutputPath.Replace("'", "''"))'
     ExistingOutputFileMode = '$ExistingOutputFileMode'
     IncludeSubfolders = `$$($IncludeSubfolders.ToString().ToLower())
+	AllowReparsePointSourceRoot = `$$($AllowReparsePointSourceRoot.ToString().ToLower())
+	AllowReparsePointOutputDirectory = `$$($AllowReparsePointOutputDirectory.ToString().ToLower())
     ExcludeHiddenFiles = `$true
     ExcludeDotFiles = `$true
 	IncludedExtensions = @(
@@ -379,7 +387,7 @@ try {
 	$case10OutputContent = Get-Content -LiteralPath $case10Output -Raw
 	Assert-Equal -Actual $case10OutputContent.Trim() -Expected "CamelCase.keep" -Message "Case 10 should preserve the file name casing in the output."
 
-	# Test 11: source roots that are junctions are rejected to avoid scanning redirected trees.
+	# Test 11: source roots that are junctions are allowed by default.
 	$case11Root = Join-Path $tempRoot "case11"
 	New-Item -ItemType Directory -Path $case11Root | Out-Null
 	$case11Tool = New-TestHarness -RootPath $case11Root
@@ -392,18 +400,15 @@ try {
 		$case11Output = Join-Path $case11Root "output.txt"
 		Write-TestConfig -ToolRoot $case11Tool -SourceFolder $case11LinkedSource -OutputPath $case11Output -IncludeSubfolders $false | Out-Null
 		$case11Run = Invoke-PowerShellFile -ScriptPath (Join-Path $case11Tool "GetFileNamesToTextFile.ps1")
-		if ($case11Run.ExitCode -eq 0) {
-			throw "Case 11 should have failed when the source folder was a junction."
-		}
-		if ($case11Run.StdErr -notmatch 'Source folder cannot be a reparse point') {
-			throw "Case 11 did not report the expected source reparse-point error. StdErr: $($case11Run.StdErr)"
-		}
+		Assert-Equal -Actual $case11Run.ExitCode -Expected 0 -Message "Case 11 failed."
+		$case11Content = Get-Content -LiteralPath $case11Output -Raw
+		Assert-Equal -Actual $case11Content.Trim() -Expected "keep.me" -Message "Case 11 should allow a junction source root by default."
 	}
 	else {
 		Write-Host "Skipped case 11 because a junction could not be created in this environment. Output: $case11JunctionOutput"
 	}
 
-	# Test 12: output paths inside junction directories are rejected to avoid redirected writes.
+	# Test 12: output paths inside junction directories are allowed by default.
 	$case12Root = Join-Path $tempRoot "case12"
 	New-Item -ItemType Directory -Path $case12Root | Out-Null
 	$case12Tool = New-TestHarness -RootPath $case12Root
@@ -418,12 +423,9 @@ try {
 		$case12Output = Join-Path $case12LinkedOutput "names.txt"
 		Write-TestConfig -ToolRoot $case12Tool -SourceFolder $case12Source -OutputPath $case12Output -IncludeSubfolders $false | Out-Null
 		$case12Run = Invoke-PowerShellFile -ScriptPath (Join-Path $case12Tool "GetFileNamesToTextFile.ps1")
-		if ($case12Run.ExitCode -eq 0) {
-			throw "Case 12 should have failed when the output directory was a junction."
-		}
-		if ($case12Run.StdErr -notmatch 'Output directory points to a reparse point') {
-			throw "Case 12 did not report the expected output reparse-point error. StdErr: $($case12Run.StdErr)"
-		}
+		Assert-Equal -Actual $case12Run.ExitCode -Expected 0 -Message "Case 12 failed."
+		$case12Content = Get-Content -LiteralPath $case12Output -Raw
+		Assert-Equal -Actual $case12Content.Trim() -Expected "keep.me" -Message "Case 12 should allow a junction output directory by default."
 	}
 	else {
 		Write-Host "Skipped case 12 because a junction could not be created in this environment. Output: $case12JunctionOutput"
