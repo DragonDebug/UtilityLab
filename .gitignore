@@ -4,3 +4,4 @@ LongPathTest
 ListFolderContents/Create-TestTree.ps1
 **/bin/
 **/obj/
+DataAnalyser/file_names.txt
