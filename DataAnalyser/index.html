@@ -131,6 +131,11 @@
             cursor: pointer;
         }
 
+        button:disabled {
+            opacity: 0.56;
+            cursor: not-allowed;
+        }
+
         button.secondary-button {
             background: rgba(19, 38, 53, 0.08);
             color: var(--text);
@@ -167,33 +172,321 @@
             font-size: 1.8rem;
         }
 
-        .table-wrapper {
-            overflow: auto;
+        .approval-dashboard {
+            position: relative;
+            display: grid;
+            gap: 20px;
+            overflow: hidden;
+            padding: 22px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1400px;
+        .approval-dashboard::before {
+            content: "";
+            position: absolute;
+            inset: -38% auto auto -12%;
+            width: 420px;
+            height: 420px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(15, 109, 119, 0.18), transparent 68%);
+            pointer-events: none;
         }
 
-        th,
-        td {
-            padding: 14px 12px;
-            border-bottom: 1px solid rgba(33, 52, 68, 0.08);
-            text-align: left;
-            vertical-align: top;
+        .dashboard-hero,
+        .approval-chart-card-header,
+        .approval-breakdown-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
         }
 
-        thead th {
-            position: sticky;
-            top: 0;
-            background: rgba(246, 251, 251, 0.96);
+        .dashboard-hero,
+        .dashboard-controls,
+        .approval-kpi-grid,
+        .approval-chart-layout {
+            position: relative;
+            z-index: 1;
         }
 
-        .empty-state {
-            text-align: center;
+        .dashboard-eyebrow,
+        .dashboard-label,
+        .approval-kpi-card span {
+            color: var(--accent);
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .dashboard-hero h2,
+        .approval-chart-card h3,
+        .approval-breakdown-card h3 {
+            margin: 0;
+            letter-spacing: -0.03em;
+        }
+
+        .dashboard-hero h2 {
+            margin-top: 6px;
+            font-size: clamp(1.7rem, 3vw, 2.45rem);
+        }
+
+        .dashboard-hero p,
+        .approval-chart-card p,
+        .approval-breakdown-card p,
+        .approval-kpi-card p,
+        .approval-chart-empty,
+        .approval-breakdown-empty,
+        .approval-chart-meta {
             color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .dashboard-hero p,
+        .approval-chart-card p,
+        .approval-breakdown-card p,
+        .approval-kpi-card p {
+            margin: 6px 0 0;
+        }
+
+        .dashboard-badge {
+            min-width: 180px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(15, 109, 119, 0.18);
+            background: linear-gradient(135deg, rgba(15, 109, 119, 0.12), rgba(240, 138, 36, 0.12));
+            color: var(--muted);
+        }
+
+        .dashboard-badge strong {
+            display: block;
+            color: var(--text);
+            font-size: 1.35rem;
+            line-height: 1.1;
+        }
+
+        .dashboard-controls {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            padding: 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.68);
+            border: 1px solid rgba(33, 52, 68, 0.08);
+        }
+
+        .dashboard-control-group,
+        .dashboard-select-field,
+        .revision-toggle,
+        .range-toggle {
+            display: grid;
+            gap: 9px;
+        }
+
+        .dashboard-tab-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chart-tab {
+            min-height: 38px;
+            padding: 8px 13px;
+            border: 1px solid rgba(15, 109, 119, 0.14);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.78);
+            color: var(--muted);
+            box-shadow: none;
+        }
+
+        .chart-tab.is-active {
+            color: #fff;
+            background: linear-gradient(135deg, #07868f, #0f6d77 58%, #264b63);
+            border-color: transparent;
+            box-shadow: 0 12px 24px rgba(15, 109, 119, 0.18);
+        }
+
+        .dashboard-select-field select {
+            min-height: 42px;
+            border: 1px solid rgba(15, 109, 119, 0.18);
+            border-radius: 14px;
+            padding: 0 12px;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.82);
+            font: inherit;
+        }
+
+        .revision-toggle,
+        .range-toggle {
+            align-content: start;
+            justify-items: start;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .revision-toggle input,
+        .range-toggle input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
+        .revision-toggle span,
+        .range-toggle span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .approval-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .approval-kpi-card,
+        .approval-chart-card,
+        .approval-breakdown-card {
+            border: 1px solid rgba(33, 52, 68, 0.1);
+            background: rgba(255, 255, 255, 0.74);
+            border-radius: 20px;
+        }
+
+        .approval-kpi-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 132px;
+            padding: 16px;
+        }
+
+        .approval-kpi-card::after {
+            content: "";
+            position: absolute;
+            inset: auto -18% -42% auto;
+            width: 128px;
+            height: 128px;
+            border-radius: 999px;
+            background: radial-gradient(circle, color-mix(in srgb, var(--metric-accent) 24%, transparent), transparent 70%);
+        }
+
+        .approval-kpi-card strong {
+            display: block;
+            margin-top: 10px;
+            color: var(--metric-accent, var(--accent));
+            font-size: clamp(1.9rem, 4vw, 2.65rem);
+            line-height: 1;
+        }
+
+        .approval-kpi-card p {
+            position: relative;
+            z-index: 1;
+            font-size: 0.84rem;
+        }
+
+        .approval-chart-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.72fr);
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .approval-chart-card,
+        .approval-breakdown-card {
+            padding: 18px;
+        }
+
+        .approval-chart-meta {
+            max-width: 320px;
+            text-align: right;
+            font-size: 0.86rem;
+        }
+
+        .approval-chart-shell {
+            position: relative;
+            min-height: 390px;
+            margin-top: 16px;
+            padding: 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(33, 52, 68, 0.08);
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(242, 249, 248, 0.92)),
+                repeating-linear-gradient(180deg, transparent, transparent 47px, rgba(33, 52, 68, 0.06) 48px);
+        }
+
+        #approval-chart {
+            width: 100%;
+            height: 352px;
+        }
+
+        .approval-chart-empty {
+            display: grid;
+            min-height: 320px;
+            place-items: center;
+            text-align: center;
+            padding: 24px;
+            border: 1px dashed rgba(15, 109, 119, 0.22);
+            border-radius: 16px;
+            background: rgba(15, 109, 119, 0.06);
+        }
+
+        .approval-chart-empty[hidden],
+        #approval-chart[hidden] {
+            display: none;
+        }
+
+        .approval-breakdowns {
+            display: grid;
+            gap: 16px;
+        }
+
+        .approval-breakdown-card {
+            display: grid;
+            gap: 14px;
+        }
+
+        .approval-breakdown-head strong {
+            font-size: 0.95rem;
+        }
+
+        .approval-breakdown-head span {
+            color: var(--muted);
+            font-weight: 800;
+        }
+
+        .approval-breakdown-row {
+            display: grid;
+            gap: 7px;
+        }
+
+        .approval-breakdown-bar {
+            position: relative;
+            overflow: hidden;
+            height: 12px;
+            border-radius: 999px;
+            background: rgba(33, 52, 68, 0.08);
+        }
+
+        .approval-breakdown-bar span {
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: var(--bar-width, 0%);
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--bar-accent), color-mix(in srgb, var(--bar-accent) 54%, white));
+        }
+
+        @media (max-width: 960px) {
+            .dashboard-controls,
+            .approval-chart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .approval-kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .approval-chart-meta {
+                max-width: none;
+                text-align: left;
+            }
         }
 
         @media (max-width: 720px) {
@@ -205,6 +498,32 @@
             .controls,
             .summary-card {
                 padding: 16px;
+            }
+
+            .approval-dashboard {
+                padding: 16px;
+            }
+
+            .dashboard-hero,
+            .approval-chart-card-header {
+                display: grid;
+            }
+
+            .dashboard-badge {
+                min-width: 0;
+            }
+
+            .approval-kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .approval-chart-shell {
+                min-height: 320px;
+                padding: 12px;
+            }
+
+            #approval-chart {
+                height: 292px;
             }
         }
     </style>
@@ -240,39 +559,101 @@
             <div class="control-row">
                 <button id="clear-button" class="secondary-button" type="button">Clear imported data</button>
                 <button id="export-button" type="button" disabled>Export Excel</button>
+                <button id="approval-report-export-button" class="secondary-button" type="button" disabled>Export Approval Report</button>
             </div>
             <p id="status" class="status">Import one or more text files into Profile, Gaskets, or Accessories.</p>
         </section>
 
         <section id="summary" class="summary-grid"></section>
 
-        <section class="panel table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item Type</th>
-                        <th>Category</th>
-                        <th>File Name</th>
-                        <th>Path</th>
-                        <th>Reference Number</th>
-                        <th>Die Number</th>
-                        <th>Project</th>
-                        <th>Supplier</th>
-                        <th>System</th>
-                        <th>Approval Type</th>
-                        <th>Approval Status</th>
-                        <th>Date</th>
-                        <th>Revision</th>
-                        <th>FCDD</th>
-                        <th>Validation Notes</th>
-                    </tr>
-                </thead>
-                <tbody id="results-body"></tbody>
-            </table>
+        <section class="panel approval-dashboard" aria-labelledby="approval-dashboard-title">
+            <div class="dashboard-hero">
+                <div>
+                    <span class="dashboard-eyebrow">Approval Intelligence</span>
+                    <h2 id="approval-dashboard-title">CDD and SAM approvals over time</h2>
+                    <p>Switch between item types, approval families, statuses, and time periods to inspect totals from every imported file without leaving the dashboard.</p>
+                </div>
+                <div class="dashboard-badge">
+                    <strong>Live Filters</strong>
+                    All PDF CDD/SAM records are counted by default, regardless of approval status.
+                </div>
+            </div>
+
+            <div class="dashboard-controls" aria-label="Approval chart controls">
+                <div class="dashboard-control-group">
+                    <span class="dashboard-label">Item Type</span>
+                    <div class="dashboard-tab-list" role="tablist" aria-label="Item type filters">
+                        <button type="button" class="chart-tab is-active" data-approval-item-type="all" role="tab" aria-selected="true">All</button>
+                        <button type="button" class="chart-tab" data-approval-item-type="Profile" role="tab" aria-selected="false">Profile</button>
+                        <button type="button" class="chart-tab" data-approval-item-type="Gaskets" role="tab" aria-selected="false">Gaskets</button>
+                        <button type="button" class="chart-tab" data-approval-item-type="Accessories" role="tab" aria-selected="false">Accessories</button>
+                    </div>
+                </div>
+
+                <div class="dashboard-control-group">
+                    <span class="dashboard-label">Time Period</span>
+                    <div class="dashboard-tab-list" role="tablist" aria-label="Time period filters">
+                        <button type="button" class="chart-tab" data-approval-period="yearly" role="tab" aria-selected="false">Yearly</button>
+                        <button type="button" class="chart-tab is-active" data-approval-period="monthly" role="tab" aria-selected="true">Monthly</button>
+                        <button type="button" class="chart-tab" data-approval-period="weekly" role="tab" aria-selected="false">Weekly</button>
+                    </div>
+                </div>
+
+                <div class="dashboard-control-group">
+                    <span class="dashboard-label">Approval Type</span>
+                    <div class="dashboard-tab-list" role="tablist" aria-label="Approval type filters">
+                        <button type="button" class="chart-tab is-active" data-approval-type="all" role="tab" aria-selected="true">All</button>
+                        <button type="button" class="chart-tab" data-approval-type="cdd" role="tab" aria-selected="false">CDD</button>
+                        <button type="button" class="chart-tab" data-approval-type="sam" role="tab" aria-selected="false">SAM</button>
+                    </div>
+                </div>
+
+                <label class="dashboard-select-field">
+                    <span class="dashboard-label">Approval Status</span>
+                    <select id="approval-status-select">
+                        <option value="all">All statuses</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Approved with Comments">Approved with Comments</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="unclassified">Unclassified</option>
+                    </select>
+                </label>
+
+                <label class="range-toggle">
+                    <span class="dashboard-label">Chart Range</span>
+                    <span><input id="recent-range-toggle" type="checkbox" checked> Show recent periods only</span>
+                </label>
+
+                <label class="revision-toggle">
+                    <span class="dashboard-label">Revisions</span>
+                    <span><input id="include-revisions-toggle" type="checkbox" checked> Include revision records</span>
+                </label>
+            </div>
+
+            <section id="approval-kpis" class="approval-kpi-grid" aria-label="Approval metrics"></section>
+
+            <div class="approval-chart-layout">
+                <section class="approval-chart-card" aria-label="Approval trend chart">
+                    <div class="approval-chart-card-header">
+                        <div>
+                            <h3>Approval Trend</h3>
+                            <p>Stacked PDF CDD and SAM approval volume across the selected timeline.</p>
+                        </div>
+                        <div id="approval-chart-meta" class="approval-chart-meta">Waiting for imported approval data.</div>
+                    </div>
+                    <div class="approval-chart-shell">
+                        <canvas id="approval-chart"></canvas>
+                        <div id="approval-chart-empty" class="approval-chart-empty" hidden>Import CDD or SAM approval records to populate the chart.</div>
+                    </div>
+                </section>
+
+                <aside id="approval-breakdowns" class="approval-breakdowns" aria-label="Approval breakdowns"></aside>
+            </div>
         </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script type="module" src="./src/main.js"></script>
 </body>
 </html>

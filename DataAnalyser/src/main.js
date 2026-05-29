@@ -1,4 +1,11 @@
-import { exportGroupedRecordsToExcel } from "./exporter.js";
+import {
+  bindApprovalDashboardControls,
+  renderApprovalDashboard,
+} from "./approvalDashboard.js";
+import {
+  exportCurrentYearApprovalReportToExcel,
+  exportGroupedRecordsToExcel,
+} from "./exporter.js";
 import { parseLines, summarizeParsedRecords } from "./parser.js";
 
 const ITEM_TYPES = [
@@ -21,14 +28,6 @@ const ITEM_TYPES = [
     dropZoneId: "accessories-dropzone",
   },
 ];
-
-const RECORD_CATEGORIES = {
-  FCDD: "FCDD",
-  PRELIMINARY: "Preliminary CAD die drwg",
-  CDD_APPROVAL: "CDD approvals",
-  SAM_APPROVAL: "SAM approvals",
-  OTHERS: "Others",
-};
 
 const appState = {
   records: [],
@@ -74,32 +73,13 @@ function updateStatus(message) {
 
 function setExportEnabled(isEnabled) {
   getButton("export-button").disabled = !isEnabled;
+  getButton("approval-report-export-button").disabled = !isEnabled;
 }
 
 function isTextFile(file) {
   return (
     /\.txt$/i.test(file.name) || file.type === "text/plain" || file.type === ""
   );
-}
-
-function getRecordCategory(record) {
-  if (record.fcdd) {
-    return RECORD_CATEGORIES.FCDD;
-  }
-
-  if (/PRELIMINARY CAD DIE DRWG/i.test(record.path)) {
-    return RECORD_CATEGORIES.PRELIMINARY;
-  }
-
-  if (record.approvalType === "Counter Die Drawing") {
-    return RECORD_CATEGORIES.CDD_APPROVAL;
-  }
-
-  if (record.approvalType === "Sample") {
-    return RECORD_CATEGORIES.SAM_APPROVAL;
-  }
-
-  return RECORD_CATEGORIES.OTHERS;
 }
 
 function groupRecordsByItemType(records) {
@@ -161,63 +141,13 @@ function renderSummary() {
   summary.replaceChildren(...cards);
 }
 
-function appendCell(row, value, className = "") {
-  const cell = document.createElement("td");
-  if (className) {
-    cell.className = className;
-  }
-
-  cell.textContent = value ?? "-";
-  row.append(cell);
-}
-
-function renderResults() {
-  const resultsBody = byId("results-body");
-  if (!(resultsBody instanceof HTMLTableSectionElement)) {
-    throw new Error("Results body is not a table body element.");
-  }
-
-  resultsBody.replaceChildren();
-
-  if (appState.records.length === 0) {
-    const emptyRow = document.createElement("tr");
-    const emptyCell = document.createElement("td");
-    emptyCell.colSpan = 15;
-    emptyCell.className = "empty-state";
-    emptyCell.textContent = "No imported data yet.";
-    emptyRow.append(emptyCell);
-    resultsBody.append(emptyRow);
-    return;
-  }
-
-  for (const record of appState.records) {
-    const row = document.createElement("tr");
-    appendCell(row, record.itemType);
-    appendCell(row, getRecordCategory(record));
-    appendCell(row, record.fileName);
-    appendCell(row, record.path);
-    appendCell(row, record.referenceNumber);
-    appendCell(row, record.dieNumber);
-    appendCell(row, record.project);
-    appendCell(row, record.supplier);
-    appendCell(row, record.system);
-    appendCell(row, record.approvalType);
-    appendCell(row, record.approvalStatus);
-    appendCell(row, record.date);
-    appendCell(row, record.revision);
-    appendCell(row, record.fcdd ? "Yes" : "No");
-    appendCell(row, record.validationNotes);
-    resultsBody.append(row);
-  }
-}
-
 function syncState(records) {
   appState.records = records;
   appState.groupedRecords = groupRecordsByItemType(records);
   appState.validationSummary = summarizeParsedRecords(records);
   setExportEnabled(records.length > 0);
   renderSummary();
-  renderResults();
+  renderApprovalDashboard(records);
 }
 
 function formatImportStatus(importedFileCount, itemType, ignoredFileCount) {
@@ -310,6 +240,7 @@ function bindImportControl({ label, inputId, dropZoneId }) {
 
 function bindControls() {
   const exportButton = getButton("export-button");
+  const approvalReportExportButton = getButton("approval-report-export-button");
   const clearButton = getButton("clear-button");
 
   for (const itemType of ITEM_TYPES) {
@@ -339,16 +270,37 @@ function bindControls() {
       exportButton.disabled = false;
     }
   });
+
+  approvalReportExportButton.addEventListener("click", async () => {
+    if (appState.records.length === 0) {
+      updateStatus("Import data before exporting the approval report.");
+      return;
+    }
+
+    approvalReportExportButton.disabled = true;
+    updateStatus("Exporting current-year approval report...");
+
+    try {
+      await exportCurrentYearApprovalReportToExcel(appState.records);
+      updateStatus("Current-year approval report exported.");
+    } catch (error) {
+      updateStatus("Approval report export failed.");
+      console.error("Approval report export failed.", error);
+    } finally {
+      approvalReportExportButton.disabled = false;
+    }
+  });
 }
 
 function initialize() {
   setExportEnabled(false);
   renderSummary();
-  renderResults();
+  renderApprovalDashboard(appState.records);
   updateStatus(
     "Import one or more text files into Profile, Gaskets, or Accessories.",
   );
   bindControls();
+  bindApprovalDashboardControls();
 }
 
 initialize();
