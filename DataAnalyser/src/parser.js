@@ -16,8 +16,9 @@ const DATE_VALIDATION_STATUS = {
 const TRAILING_DATE_PATTERN =
   /(?:^|[.\s-])(?<value>\d{4}-\d{2}-\d{2}|\d{2}[.\-/]\d{2}(?:[.\-/,\s])\d{2})(?:[\s._-]+[A-Z][A-Z0-9\s._-]*)?\s*$/i;
 const TRAILING_REVISION_PATTERN =
-  /(?:^|[\s-])(?<value>P\d+|REV(?:ISION)?[\s-]*[A-Z0-9]+)\s*$/i;
-const BRACKET_REVISION_PATTERN = /\[(?<prefix>R)\s*(?<number>\d+)\]/i;
+  /(?:^|[\s-])(?<value>P\d+|R\d+|REV(?:ISION)?[\s-]*[A-Z0-9]+)\s*$/i;
+const GROUPED_REVISION_PATTERN = /[\[(](?<prefix>R)\s*(?<number>\d+)[\])]/i;
+const INLINE_REVISION_PATTERN = /[\s._-](?<value>R\s*\d+)(?=$|[\s._-])/i;
 const COMPACT_APPROVAL_SUFFIX_PATTERN =
   /^(?<reference>[A-Z0-9-]*\d[A-Z0-9-]*)(?<approval>(?:S(?:AM|AMPLE)?|D)(?:$|[.\s-].*))$/i;
 
@@ -586,10 +587,20 @@ function extractTrailingValue(text, pattern) {
   };
 }
 
-function extractBracketRevision(text) {
+function extractEmbeddedRevision(text) {
   const cleanedText = cleanText(text);
-  const match = cleanedText.match(BRACKET_REVISION_PATTERN);
-  if (!match || match.index === undefined) {
+  const groupedMatch = cleanedText.match(GROUPED_REVISION_PATTERN);
+  if (groupedMatch && groupedMatch.index !== undefined) {
+    return {
+      remainder: trimTokenSeparators(
+        `${cleanedText.slice(0, groupedMatch.index)} ${cleanedText.slice(groupedMatch.index + groupedMatch[0].length)}`,
+      ),
+      value: `R${groupedMatch.groups?.number}`,
+    };
+  }
+
+  const inlineMatch = cleanedText.match(INLINE_REVISION_PATTERN);
+  if (!inlineMatch || inlineMatch.index === undefined) {
     return {
       remainder: cleanedText,
       value: null,
@@ -598,9 +609,9 @@ function extractBracketRevision(text) {
 
   return {
     remainder: trimTokenSeparators(
-      `${cleanedText.slice(0, match.index)} ${cleanedText.slice(match.index + match[0].length)}`,
+      `${cleanedText.slice(0, inlineMatch.index)} ${cleanedText.slice(inlineMatch.index + inlineMatch[0].length)}`,
     ),
-    value: `R${match.groups?.number}`,
+    value: cleanText(inlineMatch.groups?.value) || null,
   };
 }
 
@@ -904,10 +915,13 @@ export function parseLine(rawLine, itemType = null) {
 
   const fileType = getFileType(fileName);
   const fileStem = fileName.replace(/\.[^.]+$/, "");
-  const { remainder: stemWithoutBracketRevision, value: bracketRevision } =
-    extractBracketRevision(fileStem);
+  const { remainder: stemWithoutEmbeddedRevision, value: embeddedRevision } =
+    extractEmbeddedRevision(fileStem);
   const { remainder: stemWithoutRevision, value: rawRevisionSuffix } =
-    extractTrailingValue(stemWithoutBracketRevision, TRAILING_REVISION_PATTERN);
+    extractTrailingValue(
+      stemWithoutEmbeddedRevision,
+      TRAILING_REVISION_PATTERN,
+    );
   const { remainder: stemWithoutDate, value: rawDate } = extractTrailingValue(
     stemWithoutRevision,
     TRAILING_DATE_PATTERN,
@@ -931,7 +945,7 @@ export function parseLine(rawLine, itemType = null) {
   );
   const dateAnalysis = analyzeDate(rawDate);
   const revision = normalizeRevision(
-    bracketRevision ?? rawRevisionSuffix,
+    embeddedRevision ?? rawRevisionSuffix,
     referenceCandidate ?? stemWithoutDate ?? fileStem,
   );
   const projectInfo = extractProjectInfo(path);
