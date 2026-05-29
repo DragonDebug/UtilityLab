@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analyser</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --page-bg: linear-gradient(180deg, #f4efe3 0%, #f7faf5 45%, #eef4f7 100%);
+            --panel-bg: rgba(255, 255, 255, 0.86);
+            --panel-border: rgba(33, 52, 68, 0.14);
+            --text: #132635;
+            --muted: #4e6474;
+            --accent: #0f6d77;
+            --accent-soft: rgba(15, 109, 119, 0.12);
+            --shadow: 0 24px 60px rgba(19, 38, 53, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background: var(--page-bg);
+        }
+
+        main {
+            width: min(1200px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 32px 0 48px;
+        }
+
+        .hero {
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 4vw, 3.25rem);
+            line-height: 1;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 760px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+        }
+
+        .controls {
+            display: grid;
+            gap: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .import-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .import-tile {
+            display: grid;
+            gap: 10px;
+            padding: 18px;
+            border-radius: 18px;
+            border: 1px dashed rgba(15, 109, 119, 0.28);
+            background: rgba(255, 255, 255, 0.74);
+            cursor: pointer;
+            transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
+        }
+
+        .import-tile:hover,
+        .import-tile.is-dragover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            transform: translateY(-1px);
+        }
+
+        .import-tile input {
+            display: none;
+        }
+
+        .import-tag {
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .import-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .import-hint {
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        button {
+            border: 0;
+            border-radius: 12px;
+            padding: 12px 18px;
+            background: var(--accent);
+            color: #fff;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button.secondary-button {
+            background: rgba(19, 38, 53, 0.08);
+            color: var(--text);
+        }
+
+        .status {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            padding: 18px;
+            border-radius: 18px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            box-shadow: var(--shadow);
+        }
+
+        .summary-label {
+            display: block;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .summary-card strong {
+            font-size: 1.8rem;
+        }
+
+        .table-wrapper {
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1400px;
+        }
+
+        th,
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(33, 52, 68, 0.08);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background: rgba(246, 251, 251, 0.96);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+        }
+
+        @media (max-width: 720px) {
+            main {
+                width: min(100%, calc(100% - 20px));
+                padding-top: 20px;
+            }
+
+            .controls,
+            .summary-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section class="hero">
+            <h1>Data Analyser</h1>
+            <p>Import one or more text files into Profile, Gaskets, or Accessories. Each non-empty line is parsed into one record and tagged with its item type.</p>
+        </section>
+
+        <section class="panel controls">
+            <div class="import-grid">
+                <label id="profile-dropzone" class="import-tile">
+                    <span class="import-tag">Profile</span>
+                    <span class="import-title">Import Profile Files</span>
+                    <span class="import-hint">Click to choose multiple .txt files or drop them here.</span>
+                    <input id="profile-input" type="file" accept=".txt,text/plain" multiple>
+                </label>
+                <label id="gaskets-dropzone" class="import-tile">
+                    <span class="import-tag">Gaskets</span>
+                    <span class="import-title">Import Gaskets Files</span>
+                    <span class="import-hint">Click to choose multiple .txt files or drop them here.</span>
+                    <input id="gaskets-input" type="file" accept=".txt,text/plain" multiple>
+                </label>
+                <label id="accessories-dropzone" class="import-tile">
+                    <span class="import-tag">Accessories</span>
+                    <span class="import-title">Import Accessories Files</span>
+                    <span class="import-hint">Click to choose multiple .txt files or drop them here.</span>
+                    <input id="accessories-input" type="file" accept=".txt,text/plain" multiple>
+                </label>
+            </div>
+            <div class="control-row">
+                <button id="clear-button" class="secondary-button" type="button">Clear imported data</button>
+                <button id="export-button" type="button" disabled>Export Excel</button>
+            </div>
+            <p id="status" class="status">Import one or more text files into Profile, Gaskets, or Accessories.</p>
+        </section>
+
+        <section id="summary" class="summary-grid"></section>
+
+        <section class="panel table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Type</th>
+                        <th>Category</th>
+                        <th>File Name</th>
+                        <th>Path</th>
+                        <th>Reference Number</th>
+                        <th>Die Number</th>
+                        <th>Project</th>
+                        <th>Supplier</th>
+                        <th>System</th>
+                        <th>Approval Type</th>
+                        <th>Approval Status</th>
+                        <th>Date</th>
+                        <th>Revision</th>
+                        <th>FCDD</th>
+                        <th>Validation Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>
