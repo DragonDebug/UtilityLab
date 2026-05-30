@@ -12,7 +12,7 @@ const RECORD_CATEGORIES = {
   OTHERS: "Others",
 };
 
-const EXCEL_DATE_FORMAT = "yyyy-mm-dd";
+const EXCEL_DATE_FORMAT = "dd-mmm-yy";
 const DOWNLOAD_FILE_NAME = "data-analyser-export.xlsx";
 const APPROVAL_REPORT_FILE_PREFIX = "data-analyser-approvals";
 const APPROVAL_SUMMARY_SHEET_NAME = "YTD Summary";
@@ -190,12 +190,39 @@ function formatDateColumn(worksheet) {
   dateColumn.numFmt = EXCEL_DATE_FORMAT;
 }
 
+function appendEmptySheetHeaderRow(worksheet) {
+  const headerRow = worksheet.addRow(TABLE_COLUMNS.map(({ label }) => label));
+  headerRow.eachCell((cell) => {
+    cell.font = {
+      bold: true,
+      color: { argb: "FFFFFFFF" },
+    };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF3E7CB1" },
+    };
+    cell.alignment = {
+      vertical: "middle",
+      horizontal: "left",
+    };
+  });
+}
+
 function appendSheet(workbook, sheetName, rows) {
   const worksheet = workbook.addWorksheet(sheetName, {
     views: [{ state: "frozen", ySplit: 1 }],
   });
 
   setWorksheetColumns(worksheet);
+  if ((rows ?? []).length === 0) {
+    // Some ExcelJS/browser combinations can throw when creating a table with no data rows.
+    // Keep the sheet exportable by writing only the header row for empty datasets.
+    appendEmptySheetHeaderRow(worksheet);
+    formatDateColumn(worksheet);
+    return;
+  }
+
   worksheet.addTable({
     name: sanitizeTableName(sheetName),
     ref: "A1",

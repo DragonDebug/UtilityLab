@@ -35,6 +35,8 @@ const APPROVAL_TYPE_LABELS = new Map([
   [APPROVAL_TYPES.SAM, "SAM"],
 ]);
 
+const PRELIMINARY_CAD_PATH_PATTERN = /PRELIMINARY CAD DIE DRWG/i;
+
 const MONTH_LABELS = [
   "Jan",
   "Feb",
@@ -78,8 +80,12 @@ function getApprovalKey(record) {
   return null;
 }
 
+function isPreliminaryCadRecord(record) {
+  return PRELIMINARY_CAD_PATH_PATTERN.test(String(record.path ?? ""));
+}
+
 function isApprovalRecord(record) {
-  return Boolean(getApprovalKey(record));
+  return Boolean(getApprovalKey(record)) && !isPreliminaryCadRecord(record);
 }
 
 function isPdfApprovalRecord(record) {

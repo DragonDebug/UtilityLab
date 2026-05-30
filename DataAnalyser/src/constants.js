@@ -55,6 +55,7 @@ export const PROJECTS = [
 ];
 
 export const SUPPLIERS = [
+  "Avigiri",
   "ALUPCO",
   "AREXCO",
   "ELITE",
@@ -73,6 +74,13 @@ export const SUPPLIERS = [
   "PV-TECH",
   "YUANFA",
   "ALKAS",
+  "SYSTRANS POLYMERS",
+  "THERMOPLAST",
+  "Techno form",
+  "Viexal",
+  "Vedali Hardware",
+  "3H",
+  "Ensinger",
 ];
 
 export const SUPPLIER_ALIAS_GROUPS = new Map([
@@ -82,6 +90,17 @@ export const SUPPLIER_ALIAS_GROUPS = new Map([
   ["GRI", ["GULF RUBBER INDUSTRIES ( GRI )", "GULF RUBBER INDUSTRIES", "GRI"]],
   ["TRC", ["TRC", "TECHNO RUBBER CO."]],
   ["IRC", ["IRC", "INTERNATIONAL RUBBER CO."]],
+  ["KELEGENT", ["KELEGENT", "SHREE MAHAVIR METAL", "SHREE", "SHREE HAHAVIR METAL IND"]],
+  [
+    "PV-TECH",
+    [
+      "PV-TECH",
+      "PV TECH",
+      "POLYMER VISION TECHNOLOGY",
+      "PV-TECH (POLYMER VISION TECHNOLOGY)",
+    ],
+  ],
+  ["YUANFA", ["YUANFA", "WUHAN YUANFA", "WUHAN YUANFA (CHINA)"]],
 ]);
 
 export const SYSTEMS = ["Tental", "Galene Next GTz", "Topaze"];

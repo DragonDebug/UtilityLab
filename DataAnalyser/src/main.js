@@ -6,6 +6,7 @@ import {
   exportCurrentYearApprovalReportToExcel,
   exportGroupedRecordsToExcel,
 } from "./exporter.js";
+import { exportCombinedApprovalRecordsToExcel } from "./combinedApprovalExporter.js";
 import { parseLines, summarizeParsedRecords } from "./parser.js";
 
 const ITEM_TYPES = [
@@ -74,6 +75,7 @@ function updateStatus(message) {
 function setExportEnabled(isEnabled) {
   getButton("export-button").disabled = !isEnabled;
   getButton("approval-report-export-button").disabled = !isEnabled;
+  getButton("combined-approval-export-button").disabled = !isEnabled;
 }
 
 function isTextFile(file) {
@@ -241,6 +243,9 @@ function bindImportControl({ label, inputId, dropZoneId }) {
 function bindControls() {
   const exportButton = getButton("export-button");
   const approvalReportExportButton = getButton("approval-report-export-button");
+  const combinedApprovalExportButton = getButton(
+    "combined-approval-export-button",
+  );
   const clearButton = getButton("clear-button");
 
   for (const itemType of ITEM_TYPES) {
@@ -288,6 +293,26 @@ function bindControls() {
       console.error("Approval report export failed.", error);
     } finally {
       approvalReportExportButton.disabled = false;
+    }
+  });
+
+  combinedApprovalExportButton.addEventListener("click", async () => {
+    if (appState.records.length === 0) {
+      updateStatus("Import data before exporting combined approvals.");
+      return;
+    }
+
+    combinedApprovalExportButton.disabled = true;
+    updateStatus("Exporting combined approval workbook...");
+
+    try {
+      await exportCombinedApprovalRecordsToExcel(appState.records);
+      updateStatus("Combined approval workbook exported.");
+    } catch (error) {
+      updateStatus("Combined approval export failed.");
+      console.error("Combined approval export failed.", error);
+    } finally {
+      combinedApprovalExportButton.disabled = false;
     }
   });
 }

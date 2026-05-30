@@ -14,7 +14,8 @@ A browser-based file-list analyser for drawing records. It parses one path per l
 6. Filter the chart to all approvals, **CDD** only, **SAM** only, specific approval statuses, or totals with revision records included/excluded.
 7. Click **Export Excel** to download the workbook grouped by item type.
 8. Click **Export Approval Report** to download a separate current-year PDF approval report with YTD category totals and a monthly breakdown.
-9. Use **Clear imported data** to reset the current session.
+9. Click **Export Combined Approvals** to download CDD and SAM approvals grouped by supplier and reference number.
+10. Use **Clear imported data** to reset the current session.
 
 ## What It Parses
 
@@ -46,6 +47,12 @@ Revision records are included by default so dashboard totals match imported appr
 ## Approval Report Export
 
 The separate approval report export uses the current calendar year only. It includes PDF CDD and SAM approvals with valid dates, summarizes totals across `All Categories`, `Profile`, `Gaskets`, and `Accessories`, and adds a month-by-month worksheet for the same year.
+
+## Combined Approval Export
+
+The combined approval export groups imported CDD and SAM records by supplier and reference number. A missing leading `T` is tolerated during reference comparison, so `TGT4025` and `GT4025` are treated as the same reference. The workbook lists all CDD and SAM statuses, dates, latest dates, and revisions found for the group; revisions are formatted as two digits and duplicates are preserved, for example `[00,00]` or `[00,01]`. If no SAM approval exists for a CDD item, the SAM columns stay empty.
+
+The workbook also includes catalog sheets for configured suppliers, projects, systems, and categories (`Profile`, `Gaskets`, and `Accessories`).
 
 ## Note
 

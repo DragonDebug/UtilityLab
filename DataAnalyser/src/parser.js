@@ -251,6 +251,12 @@ function findFuzzySupplierMatch(normalizedSegment) {
     return null;
   }
 
+  // Very short tokens (for example ASS) create noisy fuzzy matches against
+  // short supplier codes like SMS/TRC/IRC, so require a longer candidate.
+  if (normalizedSegment.length < 4) {
+    return null;
+  }
+
   const maxDistance = 2;
   let bestMatch = null;
   let bestDistance = maxDistance + 1;
@@ -731,20 +737,56 @@ function buildValidationNotes(...noteGroups) {
   return notes.length > 0 ? notes.join(" | ") : null;
 }
 
-function normalizeRevision(rawRevision, rawReferenceNumber) {
-  if (rawRevision) {
-    const bracketRevisionMatch = cleanText(rawRevision).match(/^R\s*(\d+)$/i);
-    if (bracketRevisionMatch) {
-      return bracketRevisionMatch[1];
+function parseStrictRevisionValue(value) {
+  const cleanedValue = cleanText(value);
+  if (!cleanedValue) {
+    return null;
+  }
+
+  const wrapperMatch = cleanedValue.match(/^([\[(])\s*(R\d+)\s*([\])])$/i);
+  if (wrapperMatch) {
+    const hasMatchingBrackets =
+      (wrapperMatch[1] === "[" && wrapperMatch[3] === "]") ||
+      (wrapperMatch[1] === "(" && wrapperMatch[3] === ")");
+    if (!hasMatchingBrackets) {
+      return null;
     }
 
-    return cleanText(rawRevision).toUpperCase();
+    const wrappedRevision = wrapperMatch[2].match(/^R(\d+)$/i);
+    if (!wrappedRevision) {
+      return null;
+    }
+
+    return String(Number(wrappedRevision[1]));
+  }
+
+  const directMatch = cleanedValue.match(/^R(\d+)$/i);
+  if (!directMatch) {
+    return null;
+  }
+
+  return String(Number(directMatch[1]));
+}
+
+function normalizeRevision(rawRevision, rawReferenceNumber) {
+  if (rawRevision) {
+    const normalizedRevision = parseStrictRevisionValue(rawRevision);
+    if (normalizedRevision !== null) {
+      return normalizedRevision;
+    }
   }
 
   const referenceMatch = cleanText(rawReferenceNumber).match(
-    /^(.*?)[\s-]+(P\d+|REV(?:ISION)?[\s-]*[A-Z0-9]+)$/i,
+    /^(.*?)[\s-]+(\[[Rr]\d+\]|\([Rr]\d+\)|[Rr]\d+)$/,
   );
-  return referenceMatch ? cleanText(referenceMatch[2]).toUpperCase() : "0";
+  if (referenceMatch) {
+    const normalizedRevision = parseStrictRevisionValue(referenceMatch[2]);
+    if (normalizedRevision !== null) {
+      return normalizedRevision;
+    }
+  }
+
+  return "0";
 }
 
 function normalizeReferenceNumber(rawReferenceNumber, revision) {
