@@ -36,7 +36,9 @@ function getExcelLibrary() {
 }
 
 function cleanText(value) {
-  return String(value ?? "").replace(/\s+/g, " ").trim();
+  return String(value ?? "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function normalizeSupplierKey(value) {
@@ -185,11 +187,15 @@ function getApprovalSummary(records) {
   const sortedRecords = sortApprovalRecords(records);
   const revisions = sortedRecords
     .map((record) => formatRevision(record.revision))
-    .sort((left, right) => left.localeCompare(right, undefined, { numeric: true }));
+    .sort((left, right) =>
+      left.localeCompare(right, undefined, { numeric: true }),
+    );
 
   return {
     statuses: formatList(sortedRecords.map((record) => record.approvalStatus)),
-    dates: formatList(sortedRecords.map((record) => formatDisplayDate(record.date))),
+    dates: formatList(
+      sortedRecords.map((record) => formatDisplayDate(record.date)),
+    ),
     latestDate: getLatestDate(sortedRecords),
     revisions: formatList(revisions),
   };
@@ -234,7 +240,8 @@ export function buildCombinedApprovalWorkbookData(records) {
 
     const supplier = cleanText(record.supplier);
     const referenceNumber = normalizeReferenceDisplay(record.referenceNumber);
-    const referenceComparisonKey = normalizeReferenceComparisonKey(referenceNumber);
+    const referenceComparisonKey =
+      normalizeReferenceComparisonKey(referenceNumber);
 
     if (!supplier || !referenceComparisonKey) {
       skippedMissingKeyCount += 1;
@@ -242,7 +249,8 @@ export function buildCombinedApprovalWorkbookData(records) {
     }
 
     const groupKey = `${normalizeSupplierKey(supplier)}|${referenceComparisonKey}`;
-    const group = groups.get(groupKey) ?? createGroup(record, referenceComparisonKey);
+    const group =
+      groups.get(groupKey) ?? createGroup(record, referenceComparisonKey);
     group.referenceNumber = preferDisplayReference(
       group.referenceNumber,
       referenceNumber,
@@ -351,12 +359,7 @@ function appendTableSheet(workbook, sheetName, columns, rows) {
 }
 
 function appendCatalogSheet(workbook, sheetName, key, label, rows) {
-  appendTableSheet(
-    workbook,
-    sheetName,
-    [{ key, label, width: 34 }],
-    rows,
-  );
+  appendTableSheet(workbook, sheetName, [{ key, label, width: 34 }], rows);
 }
 
 function downloadWorkbook(buffer, fileName = DOWNLOAD_FILE_NAME) {
@@ -385,10 +388,34 @@ export async function exportCombinedApprovalRecordsToExcel(records) {
     COMBINED_APPROVAL_COLUMNS,
     workbookData.combinedRows,
   );
-  appendCatalogSheet(workbook, "Suppliers", "supplier", "Supplier", workbookData.suppliers);
-  appendCatalogSheet(workbook, "Projects", "project", "Project", workbookData.projects);
-  appendCatalogSheet(workbook, "Systems", "system", "System", workbookData.systems);
-  appendCatalogSheet(workbook, "Categories", "category", "Category", workbookData.categories);
+  appendCatalogSheet(
+    workbook,
+    "Suppliers",
+    "supplier",
+    "Supplier",
+    workbookData.suppliers,
+  );
+  appendCatalogSheet(
+    workbook,
+    "Projects",
+    "project",
+    "Project",
+    workbookData.projects,
+  );
+  appendCatalogSheet(
+    workbook,
+    "Systems",
+    "system",
+    "System",
+    workbookData.systems,
+  );
+  appendCatalogSheet(
+    workbook,
+    "Categories",
+    "category",
+    "Category",
+    workbookData.categories,
+  );
 
   const buffer = await workbook.xlsx.writeBuffer();
   downloadWorkbook(buffer);
