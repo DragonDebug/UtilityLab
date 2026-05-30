@@ -7,6 +7,7 @@ A small collection of utility scripts and browser-based apps. Use this page to q
 | DataAnalyser           | Browser-based parser for drawing file lists with project, supplier, approval, item type, and export support. | Testing           | [Open details](DataAnalyser/README.md)           |
 | StandardFolder         | Creates a dated copy of your default folder in the folder where you run the script.                          | Active            | [Open details](StandardFolder/README.md)         |
 | GetFileNamesToTextFile | Exports file names from a folder into a text file.                                                           | Active            | [Open details](GetFileNamesToTextFile/README.md) |
+| GetFileNamesToTextFileBatch | Exports file names from multiple folders into separate text files in one run.                          | Active            | [Open details](GetFileNamesToTextFileBatch/README.md) |
 | ExcelListsGenerator    | Browser-based Excel template generator for reusable dropdown list tables.                                    | Testing           | [Open details](ExcelListsGenerator/README.md)    |
 | SimpleExcelXllAddIn    | Minimal C# Excel-DNA add-in that builds to an Excel `.xll` file.                                             | Under Development | [Open details](SimpleExcelXllAddIn/README.md)    |
 | TaskManager            | Browser-based task tracker for managing work items, statuses, and reports.                                   | Testing           | [Open details](TaskManager/README.md)            |
