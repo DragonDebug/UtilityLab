@@ -4,7 +4,8 @@ A small collection of utility scripts and browser-based apps. Use this page to q
 
 | Tool / App                  | Brief Description                                                                                            | Status            | Details                                               |
 |-----------------------------|--------------------------------------------------------------------------------------------------------------|-------------------|-------------------------------------------------------|
-| DataAnalyser                | Browser-based parser for drawing file lists with project, supplier, approval, item type, and export support. | Testing           | [Open details](DataAnalyser/README.md)                |
+| DataAnalyser modular        | Modular browser-based parser for drawing file lists with project, supplier, approval, item type, and export support. | Testing           | [Open details](DataAnalyser%20modular/README.md)      |
+| DataAnalyser                | Single-file browser-based parser for drawing file lists with project, supplier, approval, item type, and export support. | Testing           | [Open details](DataAnalyser/README.md)                |
 | StandardFolder              | Creates a dated copy of your default folder in the folder where you run the script.                          | Active            | [Open details](StandardFolder/README.md)              |
 | GetFileNamesToTextFile      | Exports file names from a folder into a text file.                                                           | Active            | [Open details](GetFileNamesToTextFile/README.md)      |
 | GetFileNamesToTextFileBatch | Exports file names from multiple folders into separate text files in one run.                                | Active            | [Open details](GetFileNamesToTextFileBatch/README.md) |

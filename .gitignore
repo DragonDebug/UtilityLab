@@ -5,3 +5,4 @@ ListFolderContents/Create-TestTree.ps1
 **/bin/
 **/obj/
 DataAnalyser/file_names.txt
+DataAnalyser modular/file_names.txt

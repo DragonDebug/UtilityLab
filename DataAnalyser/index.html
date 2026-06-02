@@ -655,6 +655,3486 @@
 
     <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script type="module" src="./src/main.js"></script>
+    <script>
+// Generated from the modular DataAnalyser source files.
+
+const constantsModule = (() => {
+const PROJECTS = [
+  "31N festival tower",
+  "ALTA TOWER",
+  "Al Inma Bank",
+  "Alianz",
+  "Amazon Tower",
+  "Azrieli Spiral Tower",
+  "Ascendes & ind proj",
+  "Bugatti",
+  "Burj 2020",
+  "Burj Azizi SZR",
+  "Burj vista",
+  "Burj Binghatti",
+  "Captial Jerusalem",
+  "COMO Residences",
+  "Crospy",
+  "DIFC - 2024",
+  "DMCC",
+  "Dewa",
+  "FGRF",
+  "Four seasons",
+  "G.M.I.C",
+  "Guggenhein Cone 2",
+  "Hail Water Tank Tower",
+  "Hilton",
+  "Imperial",
+  "India",
+  "JANGO Projects",
+  "Jiddah Hospital",
+  "Lusail plaza tower",
+  "Masref al Rayyan",
+  "Mercedes Benz Places",
+  "Mixed used developement",
+  "Mozoom tower",
+  "NAPCO",
+  "NPP64",
+  "Oppera",
+  "Oryx Tower",
+  "Phoenix",
+  "Queens boulevard",
+  "ROVE HOME",
+  "S-Tower Project",
+  "SAFA 2",
+  "SAFA ONE",
+  "Security Force",
+  "Ski Village",
+  "Sky Rise",
+  "Sky view",
+  "Sofitel",
+  "STC - ksa",
+  "Trafalghar",
+  "Vida Mall",
+  "Wasal 2020",
+  "Yacht Club",
+];
+
+const SUPPLIERS = [
+  "Avigiri",
+  "ALUPCO",
+  "AREXCO",
+  "ELITE",
+  "EASTERN ALUMINUM",
+  "BALEXCO",
+  "CANEX",
+  "MADAR",
+  "NAPCO",
+  "SMS",
+  "PMB",
+  "ALTAISEER",
+  "GRI",
+  "TRC",
+  "IRC",
+  "KELEGENT",
+  "PV-TECH",
+  "YUANFA",
+  "ALKAS",
+  "SYSTRANS POLYMERS",
+  "THERMOPLAST",
+  "Techno form",
+  "Viexal",
+  "Vedali Hardware",
+  "3H",
+  "Ensinger",
+];
+
+const SUPPLIER_ALIAS_GROUPS = new Map([
+  ["EASTERN ALUMINUM", ["EASTERN ALUMINIUM", "EASTERN ALUMINUM"]],
+  ["ELITE", ["ELITE EXTRUSUION", "ELITE EXTRUSAION", "ELITE"]],
+  ["SMS", ["SCHIMMER METAL STANDARD", "SCHIMMER METAL STANDARD (SMS)", "SMS"]],
+  ["GRI", ["GULF RUBBER INDUSTRIES ( GRI )", "GULF RUBBER INDUSTRIES", "GRI"]],
+  ["TRC", ["TRC", "TECHNO RUBBER CO."]],
+  ["IRC", ["IRC", "INTERNATIONAL RUBBER CO."]],
+  ["KELEGENT", ["KELEGENT", "SHREE MAHAVIR METAL", "SHREE", "SHREE HAHAVIR METAL IND"]],
+  [
+    "PV-TECH",
+    [
+      "PV-TECH",
+      "PV TECH",
+      "POLYMER VISION TECHNOLOGY",
+      "PV-TECH (POLYMER VISION TECHNOLOGY)",
+    ],
+  ],
+  ["YUANFA", ["YUANFA", "WUHAN YUANFA", "WUHAN YUANFA (CHINA)"]],
+]);
+
+const SYSTEMS = ["Tental", "Galene Next GTz", "Topaze"];
+
+  return { PROJECTS, SUPPLIERS, SUPPLIER_ALIAS_GROUPS, SYSTEMS };
+})();
+
+const approvalAnalyticsModule = (() => {
+const APPROVAL_TYPES = {
+  CDD: "Counter Die Drawing",
+  SAM: "Sample",
+};
+
+const APPROVAL_FILTERS = {
+  ALL: "all",
+  CDD: "cdd",
+  SAM: "sam",
+};
+
+const ITEM_TYPE_FILTERS = {
+  ALL: "all",
+};
+
+const PERIOD_FILTERS = {
+  YEARLY: "yearly",
+  MONTHLY: "monthly",
+  WEEKLY: "weekly",
+};
+
+const STATUS_FILTERS = {
+  ALL: "all",
+  UNCLASSIFIED: "unclassified",
+};
+
+const RECENT_BUCKET_LIMITS = {
+  [PERIOD_FILTERS.YEARLY]: 6,
+  [PERIOD_FILTERS.MONTHLY]: 12,
+  [PERIOD_FILTERS.WEEKLY]: 16,
+};
+
+const APPROVAL_TYPE_LABELS = new Map([
+  [APPROVAL_TYPES.CDD, "CDD"],
+  [APPROVAL_TYPES.SAM, "SAM"],
+]);
+
+const PRELIMINARY_CAD_PATH_PATTERN = /PRELIMINARY CAD DIE DRWG/i;
+
+const MONTH_LABELS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+const DEFAULT_APPROVAL_DASHBOARD_FILTERS = {
+  itemType: ITEM_TYPE_FILTERS.ALL,
+  period: PERIOD_FILTERS.MONTHLY,
+  approvalType: APPROVAL_FILTERS.ALL,
+  approvalStatus: STATUS_FILTERS.ALL,
+  includeRevisions: true,
+  showRecentOnly: true,
+};
+
+function normalizeFilters(filters = {}) {
+  return {
+    ...DEFAULT_APPROVAL_DASHBOARD_FILTERS,
+    ...filters,
+  };
+}
+
+function getApprovalKey(record) {
+  if (record.approvalType === APPROVAL_TYPES.CDD) {
+    return APPROVAL_FILTERS.CDD;
+  }
+
+  if (record.approvalType === APPROVAL_TYPES.SAM) {
+    return APPROVAL_FILTERS.SAM;
+  }
+
+  return null;
+}
+
+function isPreliminaryCadRecord(record) {
+  return PRELIMINARY_CAD_PATH_PATTERN.test(String(record.path ?? ""));
+}
+
+function isApprovalRecord(record) {
+  return Boolean(getApprovalKey(record)) && !isPreliminaryCadRecord(record);
+}
+
+function isPdfApprovalRecord(record) {
+  return isApprovalRecord(record) && record.fileType === "pdf";
+}
+
+function getRecentBucketLimit(period) {
+  return (
+    RECENT_BUCKET_LIMITS[period] ?? RECENT_BUCKET_LIMITS[PERIOD_FILTERS.MONTHLY]
+  );
+}
+
+function hasBaseRevision(record) {
+  const value = String(record.revision ?? "")
+    .trim()
+    .toUpperCase();
+  return value === "" || value === "0" || value === "R0" || value === "REV0";
+}
+
+function parseIsoDate(value) {
+  const match = String(value ?? "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return null;
+  }
+
+  const [, year, month, day] = match.map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    return null;
+  }
+
+  return date;
+}
+
+function getIsoWeekInfo(date) {
+  const target = new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
+  );
+  const dayNumber = target.getUTCDay() || 7;
+  target.setUTCDate(target.getUTCDate() + 4 - dayNumber);
+
+  const weekYear = target.getUTCFullYear();
+  const firstThursday = new Date(Date.UTC(weekYear, 0, 4));
+  const firstThursdayDayNumber = firstThursday.getUTCDay() || 7;
+  firstThursday.setUTCDate(
+    firstThursday.getUTCDate() + 4 - firstThursdayDayNumber,
+  );
+
+  const weekNumber = Math.ceil(
+    ((target.getTime() - firstThursday.getTime()) / 86400000 + 1) / 7,
+  );
+
+  return { weekYear, weekNumber };
+}
+
+function getPeriodBucket(date, period) {
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth();
+
+  if (period === PERIOD_FILTERS.YEARLY) {
+    return {
+      key: String(year),
+      label: String(year),
+      sortValue: year * 10000,
+    };
+  }
+
+  if (period === PERIOD_FILTERS.WEEKLY) {
+    const { weekYear, weekNumber } = getIsoWeekInfo(date);
+    return {
+      key: `${weekYear}-W${String(weekNumber).padStart(2, "0")}`,
+      label: `W${weekNumber} ${weekYear}`,
+      sortValue: weekYear * 100 + weekNumber,
+    };
+  }
+
+  return {
+    key: `${year}-${String(month + 1).padStart(2, "0")}`,
+    label: `${MONTH_LABELS[month]} ${year}`,
+    sortValue: year * 100 + month,
+  };
+}
+
+function matchesItemType(record, itemType) {
+  return itemType === ITEM_TYPE_FILTERS.ALL || record.itemType === itemType;
+}
+
+function matchesApprovalType(record, approvalType) {
+  return (
+    approvalType === APPROVAL_FILTERS.ALL ||
+    getApprovalKey(record) === approvalType
+  );
+}
+
+function matchesApprovalStatus(record, approvalStatus) {
+  if (approvalStatus === STATUS_FILTERS.ALL) {
+    return true;
+  }
+
+  if (approvalStatus === STATUS_FILTERS.UNCLASSIFIED) {
+    return !record.approvalStatus;
+  }
+
+  return record.approvalStatus === approvalStatus;
+}
+
+function incrementCounter(counter, key) {
+  counter.set(key, (counter.get(key) ?? 0) + 1);
+}
+
+function toSortedCounterList(counter) {
+  return Array.from(counter.entries())
+    .map(([label, count]) => ({ label, count }))
+    .sort(
+      (left, right) =>
+        right.count - left.count || left.label.localeCompare(right.label),
+    );
+}
+
+function createBucket(bucketInfo) {
+  return {
+    ...bucketInfo,
+    cdd: 0,
+    sam: 0,
+    total: 0,
+  };
+}
+
+function aggregateApprovalRecords(records, filters = {}) {
+  const normalizedFilters = normalizeFilters(filters);
+  const buckets = new Map();
+  const statusCounts = new Map();
+  const itemTypeCounts = new Map();
+  let cddCount = 0;
+  let samCount = 0;
+  let revisionCount = 0;
+  let excludedRevisionCount = 0;
+  let excludedNonPdfCount = 0;
+  let undatedCount = 0;
+
+  const approvalCandidates = records.filter(isApprovalRecord);
+  const filteredRecords = [];
+
+  for (const record of approvalCandidates) {
+    if (!matchesItemType(record, normalizedFilters.itemType)) {
+      continue;
+    }
+
+    if (!matchesApprovalType(record, normalizedFilters.approvalType)) {
+      continue;
+    }
+
+    if (!matchesApprovalStatus(record, normalizedFilters.approvalStatus)) {
+      continue;
+    }
+
+    if (!isPdfApprovalRecord(record)) {
+      excludedNonPdfCount += 1;
+      continue;
+    }
+
+    const isRevision = !hasBaseRevision(record);
+    if (isRevision) {
+      revisionCount += 1;
+    }
+
+    if (!normalizedFilters.includeRevisions && isRevision) {
+      excludedRevisionCount += 1;
+      continue;
+    }
+
+    const approvalKey = getApprovalKey(record);
+    const approvalLabel =
+      APPROVAL_TYPE_LABELS.get(record.approvalType) ?? "Other";
+    const statusLabel = record.approvalStatus || "Unclassified";
+    filteredRecords.push(record);
+    incrementCounter(statusCounts, statusLabel);
+    incrementCounter(itemTypeCounts, record.itemType || "Unclassified");
+
+    if (approvalKey === APPROVAL_FILTERS.CDD) {
+      cddCount += 1;
+    }
+
+    if (approvalKey === APPROVAL_FILTERS.SAM) {
+      samCount += 1;
+    }
+
+    const date = parseIsoDate(record.date);
+    if (!date) {
+      undatedCount += 1;
+      continue;
+    }
+
+    const bucketInfo = getPeriodBucket(date, normalizedFilters.period);
+    const bucket = buckets.get(bucketInfo.key) ?? createBucket(bucketInfo);
+    bucket.total += 1;
+    bucket[approvalKey] += 1;
+    bucket.approvalLabel = approvalLabel;
+    buckets.set(bucketInfo.key, bucket);
+  }
+
+  const timeline = Array.from(buckets.values()).sort(
+    (left, right) => left.sortValue - right.sortValue,
+  );
+  const fullTimelineCount = timeline.reduce(
+    (sum, bucket) => sum + bucket.total,
+    0,
+  );
+  const visibleTimeline = normalizedFilters.showRecentOnly
+    ? timeline.slice(-getRecentBucketLimit(normalizedFilters.period))
+    : timeline;
+  const plottedCount = visibleTimeline.reduce(
+    (sum, bucket) => sum + bucket.total,
+    0,
+  );
+
+  return {
+    filters: normalizedFilters,
+    totalApprovalRecords: approvalCandidates.length,
+    filteredRecords,
+    timeline: visibleTimeline,
+    totals: {
+      all: filteredRecords.length,
+      cdd: cddCount,
+      sam: samCount,
+      dated: filteredRecords.length - undatedCount,
+      undated: undatedCount,
+      plotted: plottedCount,
+      hiddenOlderDated: Math.max(0, fullTimelineCount - plottedCount),
+      revisions: revisionCount,
+      excludedRevisions: excludedRevisionCount,
+      excludedNonPdf: excludedNonPdfCount,
+    },
+    breakdowns: {
+      status: toSortedCounterList(statusCounts),
+      itemType: toSortedCounterList(itemTypeCounts),
+    },
+    window: {
+      showRecentOnly: normalizedFilters.showRecentOnly,
+      bucketLimit: getRecentBucketLimit(normalizedFilters.period),
+      visibleBucketCount: visibleTimeline.length,
+      hiddenBucketCount: Math.max(0, timeline.length - visibleTimeline.length),
+    },
+  };
+}
+
+  return {
+    APPROVAL_TYPES,
+    APPROVAL_FILTERS,
+    ITEM_TYPE_FILTERS,
+    PERIOD_FILTERS,
+    STATUS_FILTERS,
+    DEFAULT_APPROVAL_DASHBOARD_FILTERS,
+    aggregateApprovalRecords,
+  };
+})();
+
+const parserModule = (({ SUPPLIER_ALIAS_GROUPS, SUPPLIERS, SYSTEMS }) => {
+const APPROVAL_TYPES = {
+  D: "Counter Die Drawing",
+  S: "Sample",
+};
+
+const DATE_VALIDATION_STATUS = {
+  MISSING: "missing",
+  VALID: "valid",
+  REORDERED: "reordered",
+  FUTURE: "future",
+  INVALID: "invalid",
+};
+
+const TRAILING_DATE_PATTERN =
+  /(?:^|[.\s-])(?<value>\d{4}-\d{2}-\d{2}|\d{2}[.\-/]\d{2}(?:[.\-/,\s])\d{2})(?:[\s._-]+[A-Z][A-Z0-9\s._-]*)?\s*$/i;
+const TRAILING_REVISION_PATTERN =
+  /(?:^|[\s-])(?<value>P\d+|R\d+|REV(?:ISION)?[\s-]*[A-Z0-9]+)\s*$/i;
+const GROUPED_REVISION_PATTERN = /[\[(](?<prefix>R)\s*(?<number>\d+)[\])]/i;
+const INLINE_REVISION_PATTERN = /[\s._-](?<value>R\s*\d+)(?=$|[\s._-])/i;
+const COMPACT_APPROVAL_SUFFIX_PATTERN =
+  /^(?<reference>[A-Z0-9-]*\d[A-Z0-9-]*)(?<approval>(?:S(?:AM|AMPLE)?|D)(?:$|[.\s-].*))$/i;
+
+const PROJECTS_ROOT = "PROJECTS EXTRUDERS";
+const WICONA_PROJECTS_FOLDER = "WICONA PROJECTS";
+const WICONA_PROJECTS_FOLDER_ALIASES = new Set([
+  normalizeCode(WICONA_PROJECTS_FOLDER),
+  "WICONA PROJECT",
+]);
+
+const INVALID_REFERENCE_WORDS = new Set([
+  "APP",
+  "APPD",
+  "APPROVED",
+  "APD",
+  "APPR",
+  "APPRD",
+  "APRD",
+  "CDD",
+  "COMM",
+  "COMMENT",
+  "COMMENTS",
+  "D",
+  "DIE",
+  "DRAWING",
+  "DRG",
+  "FINAL",
+  "FIN",
+  "REJ",
+  "REJECTED",
+  "S",
+  "SAM",
+  "SAMPLE",
+  "WC",
+]);
+
+const GENERIC_SUPPLIER_SEGMENTS = new Set([
+  PROJECTS_ROOT,
+  WICONA_PROJECTS_FOLDER,
+  "FINAL DRAWINGS OR RECORD",
+  "FINAL COUNTER DIE DRAWINGS COMMON",
+  "PRELIMINARY CAD DIE DRWG",
+  "PDF DATA BASE",
+  "PENDING SAMPLES",
+  "SAMPLES",
+  "SAMPLE",
+  "DATA",
+]);
+
+/**
+ * One parsed record is created for every non-empty input line.
+ * Unknown fields stay null so the parser does not invent metadata.
+ *
+ * @typedef {Object} FileAnalysisRecord
+ * @property {string} fileName
+ * @property {string} path
+ * @property {string | null} project
+ * @property {string | null} supplier
+ * @property {string | null} system
+ * @property {string | null} referenceNumber
+ * @property {string | null} dieNumber
+ * @property {string | null} approvalChunk
+ * @property {string | null} approvalType
+ * @property {string | null} approvalRuleKey
+ * @property {boolean} approvalPatternUnmatched
+ * @property {string | null} approvalStatus
+ * @property {string | null} itemType
+ * @property {string | null} rawDate
+ * @property {string | null} date
+ * @property {string} dateValidationStatus
+ * @property {boolean} dateWasReordered
+ * @property {boolean} dateIsFuture
+ * @property {string | null} revision
+ * @property {string | null} fileType
+ * @property {string | null} validationNotes
+ * @property {boolean} fcdd
+ */
+
+function cleanText(value) {
+  return (value ?? "").replace(/\s+/g, " ").trim();
+}
+
+function normalizePath(rawPath) {
+  return cleanText(rawPath).replace(/\//g, "\\");
+}
+
+function normalizeCode(value) {
+  return cleanText(value)
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, " ")
+    .trim();
+}
+
+function trimTokenSeparators(value) {
+  return cleanText(value).replace(/^[\s.,;:_-]+|[\s.,;:_-]+$/g, "");
+}
+
+const CANONICAL_SUPPLIERS = new Set([
+  ...SUPPLIERS,
+  ...SUPPLIER_ALIAS_GROUPS.keys(),
+]);
+
+const SUPPLIER_LOOKUP = new Map(
+  Array.from(CANONICAL_SUPPLIERS, (supplier) => [
+    normalizeCode(supplier),
+    supplier,
+  ]),
+);
+
+const SUPPLIER_ALIAS_LOOKUP = new Map(
+  Array.from(SUPPLIER_ALIAS_GROUPS.entries()).flatMap(([supplier, aliases]) =>
+    aliases.map((alias) => [normalizeCode(alias), supplier]),
+  ),
+);
+
+const SUPPLIER_FUZZY_CANDIDATES = [
+  ...Array.from(CANONICAL_SUPPLIERS, (supplier) => ({
+    supplier,
+    normalizedValue: normalizeCode(supplier),
+  })),
+  ...Array.from(SUPPLIER_ALIAS_GROUPS.entries()).flatMap(
+    ([supplier, aliases]) =>
+      aliases.map((alias) => ({
+        supplier,
+        normalizedValue: normalizeCode(alias),
+      })),
+  ),
+];
+
+const SUPPLIER_SEGMENT_CANDIDATES = Array.from(
+  new Map(
+    [
+      ...Array.from(CANONICAL_SUPPLIERS, (supplier) => [supplier, supplier]),
+      ...Array.from(SUPPLIER_ALIAS_GROUPS.entries()).flatMap(
+        ([supplier, aliases]) => aliases.map((alias) => [alias, supplier]),
+      ),
+    ].map(([value, supplier]) => [normalizeCode(value), supplier]),
+  ).entries(),
+)
+  .map(([normalizedValue, supplier]) => ({
+    normalizedValue,
+    supplier,
+  }))
+  .sort(
+    (left, right) => right.normalizedValue.length - left.normalizedValue.length,
+  );
+
+const SYSTEM_LOOKUP = new Map(
+  SYSTEMS.map((system) => [normalizeCode(system), system]),
+);
+
+function matchKnownSupplier(segment) {
+  const normalizedSegment = normalizeCode(segment);
+  return (
+    SUPPLIER_LOOKUP.get(normalizedSegment) ??
+    SUPPLIER_ALIAS_LOOKUP.get(normalizedSegment) ??
+    findFuzzySupplierMatch(normalizedSegment)
+  );
+}
+
+function normalizeSupplierName(segment) {
+  const cleanedSegment = cleanText(segment);
+  if (!cleanedSegment) {
+    return null;
+  }
+
+  return matchKnownSupplier(cleanedSegment);
+}
+
+function findSupplierMention(segment) {
+  const normalizedSegment = normalizeCode(segment);
+  if (!normalizedSegment) {
+    return null;
+  }
+
+  for (const candidate of SUPPLIER_SEGMENT_CANDIDATES) {
+    const escapedCandidate = candidate.normalizedValue.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&",
+    );
+    if (new RegExp(`(^| )${escapedCandidate}( |$)`).test(normalizedSegment)) {
+      return candidate.supplier;
+    }
+  }
+
+  return null;
+}
+
+function getEditDistanceWithinLimit(left, right, limit) {
+  if (left === right) {
+    return 0;
+  }
+
+  if (Math.abs(left.length - right.length) > limit) {
+    return limit + 1;
+  }
+
+  let previousRow = Array.from(
+    { length: right.length + 1 },
+    (_, index) => index,
+  );
+
+  for (let leftIndex = 0; leftIndex < left.length; leftIndex += 1) {
+    const currentRow = [leftIndex + 1];
+    let rowMinimum = currentRow[0];
+
+    for (let rightIndex = 0; rightIndex < right.length; rightIndex += 1) {
+      const substitutionCost = left[leftIndex] === right[rightIndex] ? 0 : 1;
+      const value = Math.min(
+        previousRow[rightIndex + 1] + 1,
+        currentRow[rightIndex] + 1,
+        previousRow[rightIndex] + substitutionCost,
+      );
+      currentRow.push(value);
+      rowMinimum = Math.min(rowMinimum, value);
+    }
+
+    if (rowMinimum > limit) {
+      return limit + 1;
+    }
+
+    previousRow = currentRow;
+  }
+
+  return previousRow[right.length];
+}
+
+function findFuzzySupplierMatch(normalizedSegment) {
+  if (!normalizedSegment) {
+    return null;
+  }
+
+  // Very short tokens (for example ASS) create noisy fuzzy matches against
+  // short supplier codes like SMS/TRC/IRC, so require a longer candidate.
+  if (normalizedSegment.length < 4) {
+    return null;
+  }
+
+  const maxDistance = 2;
+  let bestMatch = null;
+  let bestDistance = maxDistance + 1;
+
+  for (const candidate of SUPPLIER_FUZZY_CANDIDATES) {
+    const distance = getEditDistanceWithinLimit(
+      normalizedSegment,
+      candidate.normalizedValue,
+      maxDistance,
+    );
+
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      bestMatch = candidate.supplier;
+    }
+  }
+
+  return bestDistance <= maxDistance ? bestMatch : null;
+}
+
+function getFileType(fileName) {
+  const extensionMatch = fileName.match(/\.([^.]+)$/);
+  return extensionMatch ? extensionMatch[1].toLowerCase() : null;
+}
+
+// Approval detection is intentionally catalog-driven so every CDD/SAM decision
+// can be traced back to one named rule instead of a loose substring heuristic.
+const APPROVAL_RULES = [
+  {
+    key: "sample-leading-code",
+    type: APPROVAL_TYPES.S,
+    pattern: /^S($|[ .-])/,
+  },
+  {
+    key: "cdd-leading-code",
+    type: APPROVAL_TYPES.D,
+    pattern: /^D($|[ .-])/,
+  },
+  {
+    key: "sample-named-with-status",
+    type: APPROVAL_TYPES.S,
+    pattern: /(^| )SAM(PLE)?( |$)/,
+    requiresStatus: true,
+  },
+  {
+    key: "cdd-drawing-with-status",
+    type: APPROVAL_TYPES.D,
+    pattern: /(^| )((FIN(AL)?) )?(DIE|DRG|DRAWING|CDD)( |$)/,
+    requiresStatus: true,
+  },
+];
+
+const APPROVAL_CANDIDATE_PATTERNS = [
+  /(^| )(S|SAM|SAMPLE)( |$)/,
+  /(^| )D($| )/,
+  /(^| )(DIE|DRG|DRAWING|FIN|FINAL)( |$)/,
+  /(^| )(APP|APPD|APPR|APD|APV|APRD|APPRD|APPROVED|REJ|REJECTED|COMM|COMMENTS?|WC)( |$)/,
+];
+
+function getTodayIsoDate() {
+  const today = new Date();
+  const year = String(today.getFullYear()).padStart(4, "0");
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function isFutureIsoDate(isoDate) {
+  return isoDate > getTodayIsoDate();
+}
+
+function toFullYear(rawYear) {
+  const year = Number(rawYear);
+  if (!Number.isInteger(year)) {
+    return null;
+  }
+
+  return rawYear.length === 4 ? year : 2000 + year;
+}
+
+function buildIsoDate(year, month, day) {
+  return [
+    String(year).padStart(4, "0"),
+    String(month).padStart(2, "0"),
+    String(day).padStart(2, "0"),
+  ].join("-");
+}
+
+function isValidCalendarDate(year, month, day) {
+  if (
+    !Number.isInteger(year) ||
+    !Number.isInteger(month) ||
+    !Number.isInteger(day)
+  ) {
+    return false;
+  }
+
+  const candidate = new Date(year, month - 1, day);
+  return (
+    candidate.getFullYear() === year &&
+    candidate.getMonth() === month - 1 &&
+    candidate.getDate() === day
+  );
+}
+
+function buildDateCandidate(dayText, monthText, yearText) {
+  const day = Number(dayText);
+  const month = Number(monthText);
+  const year = toFullYear(yearText);
+
+  if (!Number.isInteger(day) || !Number.isInteger(month) || year === null) {
+    return null;
+  }
+
+  if (!isValidCalendarDate(year, month, day)) {
+    return null;
+  }
+
+  return {
+    day,
+    month,
+    year,
+    date: buildIsoDate(year, month, day),
+  };
+}
+
+// Dates are validated separately from extraction so we can explain when a date
+// stayed as-is, was reordered, is still future-dated, or is simply invalid.
+function analyzeDate(rawDate) {
+  const cleanedRawDate = cleanText(rawDate) || null;
+
+  if (!cleanedRawDate) {
+    return {
+      rawDate: null,
+      date: null,
+      dateValidationStatus: DATE_VALIDATION_STATUS.MISSING,
+      dateWasReordered: false,
+      dateIsFuture: false,
+      notes: [],
+    };
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(cleanedRawDate)) {
+    const [year, month, day] = cleanedRawDate.split("-").map(Number);
+    if (!isValidCalendarDate(year, month, day)) {
+      return {
+        rawDate: cleanedRawDate,
+        date: null,
+        dateValidationStatus: DATE_VALIDATION_STATUS.INVALID,
+        dateWasReordered: false,
+        dateIsFuture: false,
+        notes: [`Invalid ISO date: ${cleanedRawDate}`],
+      };
+    }
+
+    const dateIsFuture = isFutureIsoDate(cleanedRawDate);
+    return {
+      rawDate: cleanedRawDate,
+      date: cleanedRawDate,
+      dateValidationStatus: dateIsFuture
+        ? DATE_VALIDATION_STATUS.FUTURE
+        : DATE_VALIDATION_STATUS.VALID,
+      dateWasReordered: false,
+      dateIsFuture,
+      notes: dateIsFuture ? [`Future date detected: ${cleanedRawDate}`] : [],
+    };
+  }
+
+  const parts = cleanedRawDate
+    .replace(/[^\d]+/g, ".")
+    .split(".")
+    .filter(Boolean);
+  if (parts.length !== 3) {
+    return {
+      rawDate: cleanedRawDate,
+      date: null,
+      dateValidationStatus: DATE_VALIDATION_STATUS.INVALID,
+      dateWasReordered: false,
+      dateIsFuture: false,
+      notes: [`Could not parse date: ${cleanedRawDate}`],
+    };
+  }
+
+  const [dayText, monthText, yearText] = parts;
+  const primaryCandidate = buildDateCandidate(dayText, monthText, yearText);
+  const swappedCandidate = buildDateCandidate(monthText, dayText, yearText);
+  const isAmbiguousDayMonth = Number(dayText) <= 12 && Number(monthText) <= 12;
+
+  if (!primaryCandidate && swappedCandidate) {
+    return {
+      rawDate: cleanedRawDate,
+      date: swappedCandidate.date,
+      dateValidationStatus: DATE_VALIDATION_STATUS.REORDERED,
+      dateWasReordered: true,
+      dateIsFuture: false,
+      notes: [
+        `Date reordered to resolve invalid day/month order: ${cleanedRawDate}`,
+      ],
+    };
+  }
+
+  if (!primaryCandidate) {
+    return {
+      rawDate: cleanedRawDate,
+      date: null,
+      dateValidationStatus: DATE_VALIDATION_STATUS.INVALID,
+      dateWasReordered: false,
+      dateIsFuture: false,
+      notes: [`Invalid calendar date: ${cleanedRawDate}`],
+    };
+  }
+
+  const primaryIsFuture = isFutureIsoDate(primaryCandidate.date);
+  if (
+    primaryIsFuture &&
+    isAmbiguousDayMonth &&
+    swappedCandidate &&
+    !isFutureIsoDate(swappedCandidate.date)
+  ) {
+    return {
+      rawDate: cleanedRawDate,
+      date: swappedCandidate.date,
+      dateValidationStatus: DATE_VALIDATION_STATUS.REORDERED,
+      dateWasReordered: true,
+      dateIsFuture: false,
+      notes: [
+        `Date reordered because the original parse was future-dated: ${cleanedRawDate}`,
+      ],
+    };
+  }
+
+  return {
+    rawDate: cleanedRawDate,
+    date: primaryCandidate.date,
+    dateValidationStatus: primaryIsFuture
+      ? DATE_VALIDATION_STATUS.FUTURE
+      : DATE_VALIDATION_STATUS.VALID,
+    dateWasReordered: false,
+    dateIsFuture: primaryIsFuture,
+    notes: primaryIsFuture
+      ? [`Future date detected: ${primaryCandidate.date}`]
+      : [],
+  };
+}
+
+function normalizeApprovalStatus(approvalChunk) {
+  const normalizedChunk = normalizeCode(approvalChunk);
+
+  if (!normalizedChunk) {
+    return null;
+  }
+
+  if (/(^| )(REJ|REJECTED)( |$)/.test(normalizedChunk)) {
+    return "Rejected";
+  }
+
+  if (
+    /(W C|WC|W COM|W COMM|WITH COMMENTS?|COMM|COMMENTS?)/.test(
+      normalizedChunk,
+    ) ||
+    /(APD C|APPD C|APD WC|APPD WC|APD W C|APPD W C|APV WC|APV W C|APPRD W COM|APPRD W COMM|APPROVED WITH COMMENTS)/.test(
+      normalizedChunk,
+    )
+  ) {
+    return "Approved with Comments";
+  }
+
+  if (
+    /(^| )(APP|APPD|APPR|APD|APV|APRD|APPRD|APPROVED)( |$)/.test(
+      normalizedChunk,
+    )
+  ) {
+    return "Approved";
+  }
+
+  return null;
+}
+
+function looksLikeApprovalCandidate(approvalChunk) {
+  const normalizedChunk = normalizeCode(approvalChunk);
+
+  if (!normalizedChunk || normalizedChunk === "-") {
+    return false;
+  }
+
+  return APPROVAL_CANDIDATE_PATTERNS.some((pattern) =>
+    pattern.test(normalizedChunk),
+  );
+}
+
+function findApprovalRule(normalizedChunk, approvalStatus) {
+  for (const rule of APPROVAL_RULES) {
+    if (rule.requiresStatus && !approvalStatus) {
+      continue;
+    }
+
+    if (rule.pattern.test(normalizedChunk)) {
+      return rule;
+    }
+  }
+
+  return null;
+}
+
+function isValidStructuredIdentifier(value) {
+  const cleanedValue = trimTokenSeparators(value).toUpperCase();
+  if (!cleanedValue || cleanedValue.includes(" ")) {
+    return false;
+  }
+
+  const normalizedValue = cleanedValue.replace(/[.]/g, "");
+  if (!/^[A-Z0-9-]+$/.test(normalizedValue)) {
+    return false;
+  }
+
+  return (
+    /\d/.test(normalizedValue) && !INVALID_REFERENCE_WORDS.has(normalizedValue)
+  );
+}
+
+function extractTrailingValue(text, pattern) {
+  const cleanedText = trimTokenSeparators(text);
+  const match = cleanedText.match(pattern);
+  if (!match || match.index === undefined) {
+    return {
+      remainder: cleanedText,
+      value: null,
+    };
+  }
+
+  return {
+    remainder: trimTokenSeparators(cleanedText.slice(0, match.index)),
+    value: cleanText(match.groups?.value) || null,
+  };
+}
+
+function extractEmbeddedRevision(text) {
+  const cleanedText = cleanText(text);
+  const groupedMatch = cleanedText.match(GROUPED_REVISION_PATTERN);
+  if (groupedMatch && groupedMatch.index !== undefined) {
+    return {
+      remainder: trimTokenSeparators(
+        `${cleanedText.slice(0, groupedMatch.index)} ${cleanedText.slice(groupedMatch.index + groupedMatch[0].length)}`,
+      ),
+      value: `R${groupedMatch.groups?.number}`,
+    };
+  }
+
+  const inlineMatch = cleanedText.match(INLINE_REVISION_PATTERN);
+  if (!inlineMatch || inlineMatch.index === undefined) {
+    return {
+      remainder: cleanedText,
+      value: null,
+    };
+  }
+
+  return {
+    remainder: trimTokenSeparators(
+      `${cleanedText.slice(0, inlineMatch.index)} ${cleanedText.slice(inlineMatch.index + inlineMatch[0].length)}`,
+    ),
+    value: cleanText(inlineMatch.groups?.value) || null,
+  };
+}
+
+function extractReferenceParts(rawStem) {
+  const cleanedStem = trimTokenSeparators(rawStem);
+  if (!cleanedStem) {
+    return {
+      referenceCandidate: null,
+      dieNumberCandidate: null,
+      approvalChunkCandidate: null,
+    };
+  }
+
+  const openIndex = cleanedStem.indexOf("(");
+  const closeIndex =
+    openIndex >= 0 ? cleanedStem.indexOf(")", openIndex + 1) : -1;
+
+  if (openIndex > 0 && closeIndex > openIndex) {
+    return {
+      referenceCandidate:
+        trimTokenSeparators(cleanedStem.slice(0, openIndex)) || null,
+      dieNumberCandidate:
+        trimTokenSeparators(cleanedStem.slice(openIndex + 1, closeIndex)) ||
+        null,
+      approvalChunkCandidate:
+        trimTokenSeparators(cleanedStem.slice(closeIndex + 1)) || null,
+    };
+  }
+
+  const compactApprovalMatch = cleanedStem.match(
+    COMPACT_APPROVAL_SUFFIX_PATTERN,
+  );
+  if (
+    compactApprovalMatch?.groups?.reference &&
+    isValidStructuredIdentifier(compactApprovalMatch.groups.reference)
+  ) {
+    return {
+      referenceCandidate:
+        trimTokenSeparators(compactApprovalMatch.groups.reference) || null,
+      dieNumberCandidate: null,
+      approvalChunkCandidate:
+        trimTokenSeparators(compactApprovalMatch.groups.approval) || null,
+    };
+  }
+
+  if (isValidStructuredIdentifier(cleanedStem)) {
+    return {
+      referenceCandidate: cleanedStem,
+      dieNumberCandidate: null,
+      approvalChunkCandidate: null,
+    };
+  }
+
+  const [firstToken, ...restTokens] = cleanedStem.split(/\s+/).filter(Boolean);
+  if (firstToken && isValidStructuredIdentifier(firstToken)) {
+    return {
+      referenceCandidate: firstToken,
+      dieNumberCandidate: null,
+      approvalChunkCandidate: trimTokenSeparators(restTokens.join(" ")) || null,
+    };
+  }
+
+  return {
+    referenceCandidate: null,
+    dieNumberCandidate: null,
+    approvalChunkCandidate: looksLikeApprovalCandidate(cleanedStem)
+      ? cleanedStem
+      : null,
+  };
+}
+
+// Approval analysis returns both the final category and the evidence used to
+// reach it so unmatched patterns can be audited against the real dataset later.
+function analyzeApprovalChunk(approvalChunk, hasValidReference) {
+  const cleanedChunk = cleanText(approvalChunk) || null;
+  const normalizedChunk = normalizeCode(approvalChunk);
+
+  if (!normalizedChunk) {
+    return {
+      approvalChunk: cleanedChunk,
+      approvalType: null,
+      approvalRuleKey: null,
+      approvalPatternUnmatched: false,
+      approvalStatus: null,
+      notes: [],
+    };
+  }
+
+  const approvalStatus = normalizeApprovalStatus(approvalChunk);
+  const approvalRule = hasValidReference
+    ? findApprovalRule(normalizedChunk, approvalStatus)
+    : null;
+  const approvalPatternUnmatched =
+    looksLikeApprovalCandidate(approvalChunk) && !approvalRule;
+  const notes = [];
+
+  if (approvalPatternUnmatched) {
+    notes.push(
+      hasValidReference
+        ? `Review approval pattern: ${cleanedChunk}`
+        : `Approval-like text without valid reference: ${cleanedChunk}`,
+    );
+  }
+
+  return {
+    approvalChunk: cleanedChunk,
+    approvalType: approvalRule?.type ?? null,
+    approvalRuleKey: approvalRule?.key ?? null,
+    approvalPatternUnmatched,
+    approvalStatus,
+    notes,
+  };
+}
+
+function buildValidationNotes(...noteGroups) {
+  const notes = noteGroups.flat().filter(Boolean);
+  return notes.length > 0 ? notes.join(" | ") : null;
+}
+
+function parseStrictRevisionValue(value) {
+  const cleanedValue = cleanText(value);
+  if (!cleanedValue) {
+    return null;
+  }
+
+  const wrapperMatch = cleanedValue.match(/^([\[(])\s*(R\d+)\s*([\])])$/i);
+  if (wrapperMatch) {
+    const hasMatchingBrackets =
+      (wrapperMatch[1] === "[" && wrapperMatch[3] === "]") ||
+      (wrapperMatch[1] === "(" && wrapperMatch[3] === ")");
+    if (!hasMatchingBrackets) {
+      return null;
+    }
+
+    const wrappedRevision = wrapperMatch[2].match(/^R(\d+)$/i);
+    if (!wrappedRevision) {
+      return null;
+    }
+
+    return String(Number(wrappedRevision[1]));
+  }
+
+  const directMatch = cleanedValue.match(/^R(\d+)$/i);
+  if (!directMatch) {
+    return null;
+  }
+
+  return String(Number(directMatch[1]));
+}
+
+function normalizeRevision(rawRevision, rawReferenceNumber) {
+  if (rawRevision) {
+    const normalizedRevision = parseStrictRevisionValue(rawRevision);
+    if (normalizedRevision !== null) {
+      return normalizedRevision;
+    }
+  }
+
+  const referenceMatch = cleanText(rawReferenceNumber).match(
+    /^(.*?)[\s-]+(\[[Rr]\d+\]|\([Rr]\d+\)|[Rr]\d+)$/,
+  );
+  if (referenceMatch) {
+    const normalizedRevision = parseStrictRevisionValue(referenceMatch[2]);
+    if (normalizedRevision !== null) {
+      return normalizedRevision;
+    }
+  }
+
+  return "0";
+}
+
+function normalizeReferenceNumber(rawReferenceNumber, revision) {
+  const cleanedReference = cleanText(rawReferenceNumber);
+
+  if (!cleanedReference || !revision) {
+    return cleanedReference || null;
+  }
+
+  const escapedRevision = revision.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return (
+    cleanText(
+      cleanedReference.replace(
+        new RegExp(`[\\s-]+${escapedRevision}$`, "i"),
+        "",
+      ),
+    ) || null
+  );
+}
+
+function extractProjectInfo(path) {
+  const segments = path.split("\\").map(cleanText).filter(Boolean);
+  const normalizedSegments = segments.map((segment) => normalizeCode(segment));
+  const projectsRootIndex = normalizedSegments.indexOf(PROJECTS_ROOT);
+  const wiconaRootIndex = normalizedSegments.findIndex((segment) =>
+    WICONA_PROJECTS_FOLDER_ALIASES.has(segment),
+  );
+
+  if (projectsRootIndex === -1 && wiconaRootIndex === -1) {
+    return {
+      project: null,
+      projectIndex: -1,
+      isWiconaProject: false,
+      segments,
+      normalizedSegments,
+    };
+  }
+
+  const isNestedWiconaProject =
+    projectsRootIndex >= 0 &&
+    WICONA_PROJECTS_FOLDER_ALIASES.has(
+      normalizedSegments[projectsRootIndex + 1],
+    );
+  const isDirectWiconaProject = wiconaRootIndex === 0;
+  const isWiconaProject = isNestedWiconaProject || isDirectWiconaProject;
+  const projectIndex = isDirectWiconaProject
+    ? 1
+    : isNestedWiconaProject
+      ? projectsRootIndex + 2
+      : projectsRootIndex + 1;
+
+  return {
+    project: cleanText(segments[projectIndex]) || null,
+    projectIndex,
+    isWiconaProject,
+    segments,
+    normalizedSegments,
+  };
+}
+
+function extractSystem(path) {
+  const normalizedPath = normalizeCode(path);
+
+  for (const [normalizedSystem, system] of SYSTEM_LOOKUP.entries()) {
+    if (normalizedPath.includes(normalizedSystem)) {
+      return system;
+    }
+  }
+
+  return null;
+}
+
+function isSupplierCandidateSegment(segment, index, segments) {
+  const normalizedSegment = normalizeCode(segment);
+  return (
+    Boolean(segment) &&
+    index < segments.length - 1 &&
+    !GENERIC_SUPPLIER_SEGMENTS.has(normalizedSegment) &&
+    !/\.[A-Z0-9]{2,5}$/i.test(segment)
+  );
+}
+
+function extractSupplier(path, approvalType, projectInfo) {
+  const segments =
+    projectInfo?.segments ?? path.split("\\").map(cleanText).filter(Boolean);
+
+  for (let index = segments.length - 1; index >= 0; index -= 1) {
+    const supplier = matchKnownSupplier(segments[index]);
+    if (supplier) {
+      return supplier;
+    }
+  }
+
+  if (projectInfo?.projectIndex >= 0) {
+    const supplierSegmentIndex = projectInfo.projectIndex + 1;
+    const supplierSegment = segments[supplierSegmentIndex];
+    const supplierMention = findSupplierMention(supplierSegment);
+
+    if (supplierMention) {
+      return supplierMention;
+    }
+
+    if (
+      isSupplierCandidateSegment(
+        supplierSegment,
+        supplierSegmentIndex,
+        segments,
+      )
+    ) {
+      return normalizeSupplierName(supplierSegment);
+    }
+
+    if (projectInfo.isWiconaProject) {
+      return supplierMention ?? "WICONA";
+    }
+  }
+
+  if (normalizeCode(segments[0]) === "PENDING SAMPLES" && segments[1]) {
+    return normalizeSupplierName(segments[1]);
+  }
+
+  if (
+    (approvalType === APPROVAL_TYPES.D || approvalType === APPROVAL_TYPES.S) &&
+    segments[0]
+  ) {
+    const normalizedFirstSegment = normalizeCode(segments[0]);
+    if (!GENERIC_SUPPLIER_SEGMENTS.has(normalizedFirstSegment)) {
+      return normalizeSupplierName(segments[0]);
+    }
+  }
+
+  return null;
+}
+
+function extractFcdd(path) {
+  return /FCDD|FINAL COUNTER DIE DRAWINGS|FINAL DRAWINGS OR RECORD/i.test(path);
+}
+
+function buildStructureNotes(referenceCandidate, dieNumberCandidate) {
+  const notes = [];
+
+  if (referenceCandidate && !isValidStructuredIdentifier(referenceCandidate)) {
+    notes.push(`Ignored invalid reference: ${referenceCandidate}`);
+  }
+
+  if (dieNumberCandidate && !isValidStructuredIdentifier(dieNumberCandidate)) {
+    notes.push(`Ignored invalid die number: ${dieNumberCandidate}`);
+  }
+
+  return notes;
+}
+
+/**
+ * @param {string} rawLine
+ * @param {string | null} [itemType]
+ * @returns {FileAnalysisRecord | null}
+ */
+function parseLine(rawLine, itemType = null) {
+  const path = normalizePath(rawLine);
+  if (!path) {
+    return null;
+  }
+
+  const fileName = path.split("\\").pop() ?? "";
+  if (!fileName) {
+    return null;
+  }
+
+  const fileType = getFileType(fileName);
+  const fileStem = fileName.replace(/\.[^.]+$/, "");
+  const { remainder: stemWithoutEmbeddedRevision, value: embeddedRevision } =
+    extractEmbeddedRevision(fileStem);
+  const { remainder: stemWithoutRevision, value: rawRevisionSuffix } =
+    extractTrailingValue(
+      stemWithoutEmbeddedRevision,
+      TRAILING_REVISION_PATTERN,
+    );
+  const { remainder: stemWithoutDate, value: rawDate } = extractTrailingValue(
+    stemWithoutRevision,
+    TRAILING_DATE_PATTERN,
+  );
+  const { referenceCandidate, dieNumberCandidate, approvalChunkCandidate } =
+    extractReferenceParts(stemWithoutDate);
+  const structureNotes = buildStructureNotes(
+    referenceCandidate,
+    dieNumberCandidate,
+  );
+  const referenceNumber = isValidStructuredIdentifier(referenceCandidate)
+    ? normalizeReferenceNumber(referenceCandidate, null)
+    : null;
+  const dieNumber = isValidStructuredIdentifier(dieNumberCandidate)
+    ? trimTokenSeparators(dieNumberCandidate)
+    : null;
+
+  const approvalAnalysis = analyzeApprovalChunk(
+    approvalChunkCandidate,
+    Boolean(referenceNumber),
+  );
+  const dateAnalysis = analyzeDate(rawDate);
+  const revision = normalizeRevision(
+    embeddedRevision ?? rawRevisionSuffix,
+    referenceCandidate ?? stemWithoutDate ?? fileStem,
+  );
+  const projectInfo = extractProjectInfo(path);
+
+  return {
+    fileName,
+    path,
+    project: projectInfo.project,
+    supplier: extractSupplier(path, approvalAnalysis.approvalType, projectInfo),
+    system: extractSystem(path),
+    referenceNumber,
+    dieNumber,
+    approvalChunk: approvalAnalysis.approvalChunk,
+    approvalType: approvalAnalysis.approvalType,
+    approvalRuleKey: approvalAnalysis.approvalRuleKey,
+    approvalPatternUnmatched: approvalAnalysis.approvalPatternUnmatched,
+    approvalStatus: approvalAnalysis.approvalStatus,
+    itemType,
+    rawDate: dateAnalysis.rawDate,
+    date: dateAnalysis.date,
+    dateValidationStatus: dateAnalysis.dateValidationStatus,
+    dateWasReordered: dateAnalysis.dateWasReordered,
+    dateIsFuture: dateAnalysis.dateIsFuture,
+    revision,
+    fileType,
+    validationNotes: buildValidationNotes(
+      structureNotes,
+      approvalAnalysis.notes,
+      dateAnalysis.notes,
+    ),
+    fcdd: extractFcdd(path),
+  };
+}
+
+/**
+ * Convert a multi-line text input into one parsed record per non-empty row.
+ *
+ * @param {string} rawText
+ * @param {string | null} [itemType]
+ * @returns {FileAnalysisRecord[]}
+ */
+function parseLines(rawText, itemType = null) {
+  return rawText
+    .split(/\r?\n/)
+    .map((line) => parseLine(line, itemType))
+    .filter((record) => record !== null);
+}
+
+function toSortedCountList(counter) {
+  return Array.from(counter.entries())
+    .map(([value, count]) => ({ value, count }))
+    .sort(
+      (left, right) =>
+        right.count - left.count || left.value.localeCompare(right.value),
+    );
+}
+
+function summarizeParsedRecords(records) {
+  const approvalRuleCounts = new Map();
+  const unmatchedApprovalCounts = new Map();
+  const dateStatusCounts = new Map(
+    Object.values(DATE_VALIDATION_STATUS).map((status) => [status, 0]),
+  );
+
+  for (const record of records) {
+    if (record.approvalRuleKey) {
+      approvalRuleCounts.set(
+        record.approvalRuleKey,
+        (approvalRuleCounts.get(record.approvalRuleKey) ?? 0) + 1,
+      );
+    }
+
+    if (record.approvalPatternUnmatched && record.approvalChunk) {
+      unmatchedApprovalCounts.set(
+        record.approvalChunk,
+        (unmatchedApprovalCounts.get(record.approvalChunk) ?? 0) + 1,
+      );
+    }
+
+    dateStatusCounts.set(
+      record.dateValidationStatus,
+      (dateStatusCounts.get(record.dateValidationStatus) ?? 0) + 1,
+    );
+  }
+
+  const reorderedCount =
+    dateStatusCounts.get(DATE_VALIDATION_STATUS.REORDERED) ?? 0;
+  const futureCount = dateStatusCounts.get(DATE_VALIDATION_STATUS.FUTURE) ?? 0;
+  const invalidCount =
+    dateStatusCounts.get(DATE_VALIDATION_STATUS.INVALID) ?? 0;
+
+  return {
+    totalRecords: records.length,
+    approval: {
+      matchedCount: records.filter((record) => Boolean(record.approvalRuleKey))
+        .length,
+      unmatchedCandidateCount: records.filter(
+        (record) => record.approvalPatternUnmatched,
+      ).length,
+      matchedByRule: toSortedCountList(approvalRuleCounts),
+      unmatchedCandidates: toSortedCountList(unmatchedApprovalCounts),
+    },
+    dates: {
+      missingCount: dateStatusCounts.get(DATE_VALIDATION_STATUS.MISSING) ?? 0,
+      validCount: dateStatusCounts.get(DATE_VALIDATION_STATUS.VALID) ?? 0,
+      reorderedCount,
+      futureCount,
+      invalidCount,
+      warningCount: reorderedCount + futureCount + invalidCount,
+    },
+  };
+}
+
+  return { parseLine, parseLines, summarizeParsedRecords };
+})(constantsModule);
+
+const approvalDashboardModule = (({
+  aggregateApprovalRecords,
+  APPROVAL_FILTERS,
+  DEFAULT_APPROVAL_DASHBOARD_FILTERS,
+  PERIOD_FILTERS,
+  STATUS_FILTERS,
+}) => {
+const CHART_COLORS = {
+  cdd: {
+    border: "#07868f",
+    fill: "rgba(7, 134, 143, 0.78)",
+    hover: "rgba(7, 134, 143, 0.96)",
+  },
+  sam: {
+    border: "#f08a24",
+    fill: "rgba(240, 138, 36, 0.78)",
+    hover: "rgba(240, 138, 36, 0.96)",
+  },
+};
+
+const STATUS_ACCENTS = new Map([
+  ["Approved", "#15995b"],
+  ["Approved with Comments", "#d97706"],
+  ["Rejected", "#dc2626"],
+  ["Unclassified", "#64748b"],
+]);
+
+const dashboardState = { ...DEFAULT_APPROVAL_DASHBOARD_FILTERS };
+let currentRecords = [];
+let approvalChart = null;
+
+function byId(id) {
+  const element = document.getElementById(id);
+  if (!(element instanceof HTMLElement)) {
+    throw new Error(`Expected an element with id "${id}".`);
+  }
+
+  return element;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function formatNumber(value) {
+  return new Intl.NumberFormat().format(Number(value) || 0);
+}
+
+function getChartLibrary() {
+  return globalThis.Chart;
+}
+
+function destroyChart() {
+  if (approvalChart) {
+    approvalChart.destroy();
+    approvalChart = null;
+  }
+}
+
+function setTabState(attribute, activeValue) {
+  document.querySelectorAll(`[${attribute}]`).forEach((button) => {
+    const isActive = button.getAttribute(attribute) === activeValue;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-selected", isActive ? "true" : "false");
+  });
+}
+
+function syncControls() {
+  setTabState("data-approval-item-type", dashboardState.itemType);
+  setTabState("data-approval-period", dashboardState.period);
+  setTabState("data-approval-type", dashboardState.approvalType);
+
+  const statusSelect = byId("approval-status-select");
+  if (statusSelect instanceof HTMLSelectElement) {
+    statusSelect.value = dashboardState.approvalStatus;
+  }
+
+  const revisionsToggle = byId("include-revisions-toggle");
+  if (revisionsToggle instanceof HTMLInputElement) {
+    revisionsToggle.checked = dashboardState.includeRevisions;
+  }
+
+  const recentRangeToggle = byId("recent-range-toggle");
+  if (recentRangeToggle instanceof HTMLInputElement) {
+    recentRangeToggle.checked = dashboardState.showRecentOnly;
+  }
+}
+
+function getPeriodLabel(period) {
+  if (period === PERIOD_FILTERS.YEARLY) {
+    return "year";
+  }
+
+  if (period === PERIOD_FILTERS.WEEKLY) {
+    return "ISO week";
+  }
+
+  return "month";
+}
+
+function getApprovalTypeLabel(approvalType) {
+  if (approvalType === APPROVAL_FILTERS.CDD) {
+    return "CDD only";
+  }
+
+  if (approvalType === APPROVAL_FILTERS.SAM) {
+    return "SAM only";
+  }
+
+  return "CDD and SAM";
+}
+
+function getStatusLabel(status) {
+  if (status === STATUS_FILTERS.ALL) {
+    return "all statuses";
+  }
+
+  if (status === STATUS_FILTERS.UNCLASSIFIED) {
+    return "unclassified status";
+  }
+
+  return status;
+}
+
+function getRangeLabel(analysis) {
+  if (!analysis.window.showRecentOnly) {
+    return "showing the full chart history";
+  }
+
+  const unit = getPeriodLabel(dashboardState.period);
+  const count = analysis.window.visibleBucketCount;
+  const suffix = count === 1 ? "" : "s";
+  return `showing the latest ${count} ${unit}${suffix}`;
+}
+
+function renderKpis(analysis) {
+  const kpiHost = byId("approval-kpis");
+  const cards = [
+    {
+      label: "Approval records",
+      value: analysis.totals.all,
+      hint: "PDF CDD and SAM records after the current filters.",
+      accent: "#07868f",
+    },
+    {
+      label: "CDD approvals",
+      value: analysis.totals.cdd,
+      hint: "Counter Die Drawing records in scope.",
+      accent: CHART_COLORS.cdd.border,
+    },
+    {
+      label: "SAM approvals",
+      value: analysis.totals.sam,
+      hint: "Sample records in scope.",
+      accent: CHART_COLORS.sam.border,
+    },
+    {
+      label: "Visible on chart",
+      value: analysis.totals.plotted,
+      hint: analysis.window.showRecentOnly
+        ? "Dated PDF approval records visible in the reduced chart window."
+        : "Dated PDF approval records visible in the chart.",
+      accent: "#2563eb",
+    },
+    {
+      label: dashboardState.includeRevisions
+        ? "Revision records"
+        : "Revisions excluded",
+      value: dashboardState.includeRevisions
+        ? analysis.totals.revisions
+        : analysis.totals.excludedRevisions,
+      hint: dashboardState.includeRevisions
+        ? "Non-zero revisions included in the chart."
+        : "Non-zero revisions removed from the chart.",
+      accent: "#7c3aed",
+    },
+  ];
+
+  kpiHost.innerHTML = cards
+    .map(
+      (card) => `
+        <article class="approval-kpi-card" style="--metric-accent:${card.accent}">
+            <span>${escapeHtml(card.label)}</span>
+            <strong>${formatNumber(card.value)}</strong>
+            <p>${escapeHtml(card.hint)}</p>
+        </article>`,
+    )
+    .join("");
+}
+
+function renderMeta(analysis) {
+  const meta = byId("approval-chart-meta");
+  const itemScope =
+    dashboardState.itemType === "all"
+      ? "all item types"
+      : dashboardState.itemType;
+  const revisionScope = dashboardState.includeRevisions
+    ? "including revisions"
+    : "excluding revisions";
+
+  meta.textContent = `${formatNumber(analysis.totals.all)} ${getApprovalTypeLabel(
+    dashboardState.approvalType,
+  )} PDF records across ${itemScope}, ${getStatusLabel(
+    dashboardState.approvalStatus,
+  )}, grouped by ${getPeriodLabel(dashboardState.period)}, ${revisionScope}, ${getRangeLabel(analysis)}.`;
+}
+
+function renderBreakdownPanel(title, subtitle, entries, fallbackAccent) {
+  const maxValue = Math.max(1, ...entries.map((entry) => entry.count));
+  const rows = entries.length
+    ? entries
+        .map((entry) => {
+          const accent = STATUS_ACCENTS.get(entry.label) ?? fallbackAccent;
+          const width = Math.max(6, Math.round((entry.count / maxValue) * 100));
+          return `
+            <div class="approval-breakdown-row">
+                <div class="approval-breakdown-head">
+                    <strong>${escapeHtml(entry.label)}</strong>
+                    <span>${formatNumber(entry.count)}</span>
+                </div>
+                <div class="approval-breakdown-bar" style="--bar-accent:${accent}; --bar-width:${width}%"><span></span></div>
+            </div>`;
+        })
+        .join("")
+    : `<p class="approval-breakdown-empty">No matching approval records yet.</p>`;
+
+  return `
+    <article class="approval-breakdown-card">
+        <div>
+            <h3>${escapeHtml(title)}</h3>
+            <p>${escapeHtml(subtitle)}</p>
+        </div>
+        ${rows}
+    </article>`;
+}
+
+function renderBreakdowns(analysis) {
+  const host = byId("approval-breakdowns");
+  host.innerHTML = [
+    renderBreakdownPanel(
+      "Status Mix",
+      "Current CDD/SAM approval records by approval status.",
+      analysis.breakdowns.status,
+      "#07868f",
+    ),
+    renderBreakdownPanel(
+      "Item Type Mix",
+      "Profile, Gaskets, and Accessories share after filters.",
+      analysis.breakdowns.itemType,
+      "#f08a24",
+    ),
+  ].join("");
+}
+
+function buildDatasets(analysis) {
+  const datasets = [];
+
+  if (dashboardState.approvalType !== APPROVAL_FILTERS.SAM) {
+    datasets.push({
+      label: "CDD approvals",
+      data: analysis.timeline.map((bucket) => bucket.cdd),
+      backgroundColor: CHART_COLORS.cdd.fill,
+      borderColor: CHART_COLORS.cdd.border,
+      hoverBackgroundColor: CHART_COLORS.cdd.hover,
+      borderWidth: 1,
+      borderRadius: 12,
+      borderSkipped: false,
+      stack: "approvals",
+    });
+  }
+
+  if (dashboardState.approvalType !== APPROVAL_FILTERS.CDD) {
+    datasets.push({
+      label: "SAM approvals",
+      data: analysis.timeline.map((bucket) => bucket.sam),
+      backgroundColor: CHART_COLORS.sam.fill,
+      borderColor: CHART_COLORS.sam.border,
+      hoverBackgroundColor: CHART_COLORS.sam.hover,
+      borderWidth: 1,
+      borderRadius: 12,
+      borderSkipped: false,
+      stack: "approvals",
+    });
+  }
+
+  return datasets;
+}
+
+function renderChart(analysis) {
+  const canvas = byId("approval-chart");
+  if (!(canvas instanceof HTMLCanvasElement)) {
+    throw new Error("Approval chart target is not a canvas element.");
+  }
+
+  const emptyState = byId("approval-chart-empty");
+  const chartLibrary = getChartLibrary();
+
+  if (!chartLibrary) {
+    destroyChart();
+    canvas.hidden = true;
+    emptyState.hidden = false;
+    emptyState.textContent =
+      "Chart.js could not be loaded. Check your connection and reload this local page.";
+    return;
+  }
+
+  if (!analysis.timeline.length) {
+    destroyChart();
+    canvas.hidden = true;
+    emptyState.hidden = false;
+    emptyState.textContent = analysis.totals.all
+      ? `${formatNumber(analysis.totals.undated)} matching approval record(s) have no valid date, so they are counted in KPI cards but not plotted.`
+      : analysis.totals.excludedNonPdf > 0
+        ? "Matching approvals were found, but only PDF files are counted in the chart."
+        : "Import PDF CDD or SAM approval records to populate the chart.";
+    return;
+  }
+
+  canvas.hidden = false;
+  emptyState.hidden = true;
+
+  const data = {
+    labels: analysis.timeline.map((bucket) => bucket.label),
+    datasets: buildDatasets(analysis),
+  };
+
+  if (approvalChart) {
+    approvalChart.data = data;
+    approvalChart.update();
+    return;
+  }
+
+  approvalChart = new chartLibrary(canvas, {
+    type: "bar",
+    data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 520,
+        easing: "easeOutQuart",
+      },
+      interaction: {
+        intersect: false,
+        mode: "index",
+      },
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            color: "#132635",
+            boxWidth: 12,
+            boxHeight: 12,
+            useBorderRadius: true,
+          },
+        },
+        tooltip: {
+          backgroundColor: "rgba(19, 38, 53, 0.94)",
+          borderColor: "rgba(255, 255, 255, 0.18)",
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {
+            footer(items) {
+              const total = items.reduce((sum, item) => sum + item.parsed.y, 0);
+              return `Total: ${formatNumber(total)}`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          stacked: true,
+          grid: {
+            display: false,
+          },
+          ticks: {
+            color: "#4e6474",
+            maxRotation: 0,
+            autoSkipPadding: 18,
+          },
+        },
+        y: {
+          stacked: true,
+          beginAtZero: true,
+          ticks: {
+            color: "#4e6474",
+            precision: 0,
+          },
+          grid: {
+            color: "rgba(33, 52, 68, 0.1)",
+            drawBorder: false,
+          },
+        },
+      },
+    },
+  });
+}
+
+function renderApprovalDashboard(records) {
+  currentRecords = Array.isArray(records) ? records : [];
+  syncControls();
+
+  const analysis = aggregateApprovalRecords(currentRecords, dashboardState);
+  renderKpis(analysis);
+  renderMeta(analysis);
+  renderBreakdowns(analysis);
+  renderChart(analysis);
+}
+
+function bindApprovalDashboardControls() {
+  document.querySelectorAll("[data-approval-item-type]").forEach((button) => {
+    button.addEventListener("click", () => {
+      dashboardState.itemType =
+        button.getAttribute("data-approval-item-type") ?? "all";
+      renderApprovalDashboard(currentRecords);
+    });
+  });
+
+  document.querySelectorAll("[data-approval-period]").forEach((button) => {
+    button.addEventListener("click", () => {
+      dashboardState.period =
+        button.getAttribute("data-approval-period") ?? PERIOD_FILTERS.MONTHLY;
+      renderApprovalDashboard(currentRecords);
+    });
+  });
+
+  document.querySelectorAll("[data-approval-type]").forEach((button) => {
+    button.addEventListener("click", () => {
+      dashboardState.approvalType =
+        button.getAttribute("data-approval-type") ?? APPROVAL_FILTERS.ALL;
+      renderApprovalDashboard(currentRecords);
+    });
+  });
+
+  const statusSelect = byId("approval-status-select");
+  if (statusSelect instanceof HTMLSelectElement) {
+    statusSelect.addEventListener("change", () => {
+      dashboardState.approvalStatus = statusSelect.value;
+      renderApprovalDashboard(currentRecords);
+    });
+  }
+
+  const revisionsToggle = byId("include-revisions-toggle");
+  if (revisionsToggle instanceof HTMLInputElement) {
+    revisionsToggle.addEventListener("change", () => {
+      dashboardState.includeRevisions = revisionsToggle.checked;
+      renderApprovalDashboard(currentRecords);
+    });
+  }
+
+  const recentRangeToggle = byId("recent-range-toggle");
+  if (recentRangeToggle instanceof HTMLInputElement) {
+    recentRangeToggle.addEventListener("change", () => {
+      dashboardState.showRecentOnly = recentRangeToggle.checked;
+      renderApprovalDashboard(currentRecords);
+    });
+  }
+}
+
+  return { renderApprovalDashboard, bindApprovalDashboardControls };
+})(approvalAnalyticsModule);
+
+const exporterModule = (() => {
+const SHEET_ORDER = [
+  ["profile", "Profile"],
+  ["gaskets", "Gaskets"],
+  ["accessories", "Accessories"],
+];
+
+const RECORD_CATEGORIES = {
+  FCDD: "FCDD",
+  PRELIMINARY: "Preliminary CAD die drwg",
+  CDD_APPROVAL: "CDD approvals",
+  SAM_APPROVAL: "SAM approvals",
+  OTHERS: "Others",
+};
+
+const EXCEL_DATE_FORMAT = "dd-mmm-yy";
+const DOWNLOAD_FILE_NAME = "data-analyser-export.xlsx";
+const APPROVAL_REPORT_FILE_PREFIX = "data-analyser-approvals";
+const APPROVAL_SUMMARY_SHEET_NAME = "YTD Summary";
+const APPROVAL_MONTHLY_SHEET_NAME = "Items by Month";
+const APPROVAL_ITEM_TYPES = ["Profile", "Gaskets", "Accessories"];
+const MONTH_LABELS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const APPROVAL_TYPE_KEYS = {
+  CDD: "Counter Die Drawing",
+  SAM: "Sample",
+};
+const APPROVAL_REPORT_SUMMARY_COLUMNS = [
+  { key: "category", label: "Category", width: 24 },
+  { key: "cdd", label: "CDD", width: 12 },
+  { key: "sam", label: "SAM", width: 12 },
+  { key: "total", label: "Total", width: 12 },
+];
+const APPROVAL_REPORT_MONTHLY_COLUMNS = [
+  { key: "month", label: "Month", width: 18 },
+  { key: "cdd", label: "CDD", width: 12 },
+  { key: "sam", label: "SAM", width: 12 },
+  { key: "total", label: "Total", width: 12 },
+];
+const APPROVAL_REPORT_CHART_COLORS = {
+  cdd: "#07868f",
+  sam: "#f08a24",
+  text: "#132635",
+  muted: "#4e6474",
+  grid: "#d7e3e8",
+  axis: "#9cb0bc",
+  background: "#ffffff",
+};
+const TABLE_COLUMNS = [
+  { key: "itemType", label: "Item Type", width: 18 },
+  { key: "category", label: "Category", width: 26 },
+  { key: "fileName", label: "File Name", width: 36 },
+  { key: "path", label: "Path", width: 84 },
+  { key: "project", label: "Project", width: 28 },
+  { key: "supplier", label: "Supplier", width: 24 },
+  { key: "system", label: "System", width: 22 },
+  { key: "referenceNumber", label: "Reference Number", width: 22 },
+  { key: "dieNumber", label: "Die Number", width: 18 },
+  { key: "approvalChunk", label: "Approval Chunk", width: 32 },
+  { key: "approvalType", label: "Approval Type", width: 24 },
+  { key: "approvalRuleKey", label: "Approval Rule", width: 28 },
+  { key: "approvalStatus", label: "Approval Status", width: 28 },
+  { key: "date", label: "Date", width: 16 },
+  { key: "revision", label: "Revision", width: 14 },
+  { key: "fileType", label: "File Type", width: 14 },
+  { key: "validationNotes", label: "Validation Notes", width: 48 },
+];
+
+function getRecordCategory(record) {
+  if (record.fcdd) {
+    return RECORD_CATEGORIES.FCDD;
+  }
+
+  if (/PRELIMINARY CAD DIE DRWG/i.test(record.path)) {
+    return RECORD_CATEGORIES.PRELIMINARY;
+  }
+
+  if (record.approvalType === "Counter Die Drawing") {
+    return RECORD_CATEGORIES.CDD_APPROVAL;
+  }
+
+  if (record.approvalType === "Sample") {
+    return RECORD_CATEGORIES.SAM_APPROVAL;
+  }
+
+  return RECORD_CATEGORIES.OTHERS;
+}
+
+function getExcelLibrary() {
+  const workbookLibrary = globalThis.ExcelJS;
+  if (!workbookLibrary?.Workbook) {
+    throw new Error("ExcelJS library is not loaded.");
+  }
+
+  return workbookLibrary;
+}
+
+function toExcelDate(value) {
+  if (!value) {
+    return null;
+  }
+
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return value;
+  }
+
+  const [, year, month, day] = match;
+  return new Date(Number(year), Number(month) - 1, Number(day));
+}
+
+function toWorksheetRows(records) {
+  return records.map((record) => ({
+    itemType: record.itemType,
+    category: getRecordCategory(record),
+    fileName: record.fileName,
+    path: record.path,
+    project: record.project,
+    supplier: record.supplier,
+    system: record.system,
+    referenceNumber: record.referenceNumber,
+    dieNumber: record.dieNumber,
+    approvalChunk: record.approvalChunk,
+    approvalType: record.approvalType,
+    approvalRuleKey: record.approvalRuleKey,
+    approvalStatus: record.approvalStatus,
+    date: toExcelDate(record.date),
+    revision: record.revision,
+    fileType: record.fileType,
+    validationNotes: record.validationNotes,
+  }));
+}
+
+function buildWorkbookData(groupedRecords) {
+  return {
+    profile: toWorksheetRows(groupedRecords.profile ?? []),
+    gaskets: toWorksheetRows(groupedRecords.gaskets ?? []),
+    accessories: toWorksheetRows(groupedRecords.accessories ?? []),
+  };
+}
+
+function sanitizeTableName(sheetName) {
+  const compactName = sheetName.replace(/[^A-Za-z0-9]+/g, " ").trim();
+  const words = compactName.split(/\s+/).filter(Boolean);
+  const pascalName = words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("");
+
+  return `tbl${pascalName || "Sheet"}`;
+}
+
+function toTableRows(rows) {
+  return rows.map((row) =>
+    TABLE_COLUMNS.map(({ key }) => {
+      const value = row[key];
+      return value ?? null;
+    }),
+  );
+}
+
+function setWorksheetColumns(worksheet) {
+  worksheet.columns = TABLE_COLUMNS.map(({ key, width }) => ({
+    key,
+    width,
+  }));
+}
+
+function setCustomWorksheetColumns(worksheet, columns) {
+  worksheet.columns = columns.map(({ key, width }) => ({
+    key,
+    width,
+  }));
+}
+
+function formatDateColumn(worksheet) {
+  const dateColumnIndex =
+    TABLE_COLUMNS.findIndex(({ key }) => key === "date") + 1;
+  const dateColumn = worksheet.getColumn(dateColumnIndex);
+  dateColumn.numFmt = EXCEL_DATE_FORMAT;
+}
+
+function appendEmptySheetHeaderRow(worksheet) {
+  const headerRow = worksheet.addRow(TABLE_COLUMNS.map(({ label }) => label));
+  headerRow.eachCell((cell) => {
+    cell.font = {
+      bold: true,
+      color: { argb: "FFFFFFFF" },
+    };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF3E7CB1" },
+    };
+    cell.alignment = {
+      vertical: "middle",
+      horizontal: "left",
+    };
+  });
+}
+
+function appendSheet(workbook, sheetName, rows) {
+  const worksheet = workbook.addWorksheet(sheetName, {
+    views: [{ state: "frozen", ySplit: 1 }],
+  });
+
+  setWorksheetColumns(worksheet);
+  if ((rows ?? []).length === 0) {
+    // Some ExcelJS/browser combinations can throw when creating a table with no data rows.
+    // Keep the sheet exportable by writing only the header row for empty datasets.
+    appendEmptySheetHeaderRow(worksheet);
+    formatDateColumn(worksheet);
+    return;
+  }
+
+  worksheet.addTable({
+    name: sanitizeTableName(sheetName),
+    ref: "A1",
+    headerRow: true,
+    totalsRow: false,
+    style: {
+      theme: "TableStyleMedium2",
+      showRowStripes: true,
+    },
+    columns: TABLE_COLUMNS.map(({ label }) => ({
+      name: label,
+      filterButton: true,
+    })),
+    rows: toTableRows(rows),
+  });
+
+  formatDateColumn(worksheet);
+}
+
+function appendObjectTable(worksheet, tableName, ref, columns, rows, theme) {
+  worksheet.addTable({
+    name: sanitizeTableName(tableName),
+    ref,
+    headerRow: true,
+    totalsRow: false,
+    style: {
+      theme,
+      showRowStripes: true,
+    },
+    columns: columns.map(({ label }) => ({
+      name: label,
+      filterButton: false,
+    })),
+    rows: rows.map((row) =>
+      columns.map(({ key }) => {
+        const value = row[key];
+        return value ?? null;
+      }),
+    ),
+  });
+}
+
+function downloadWorkbook(buffer, fileName = DOWNLOAD_FILE_NAME) {
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function extractIsoDateParts(value) {
+  const match = String(value ?? "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return null;
+  }
+
+  return {
+    year: Number(match[1]),
+    month: Number(match[2]),
+    day: Number(match[3]),
+  };
+}
+
+function isApprovalReportRecord(record, currentYear) {
+  if (record.fileType !== "pdf") {
+    return false;
+  }
+
+  if (
+    record.approvalType !== APPROVAL_TYPE_KEYS.CDD &&
+    record.approvalType !== APPROVAL_TYPE_KEYS.SAM
+  ) {
+    return false;
+  }
+
+  const dateParts = extractIsoDateParts(record.date);
+  if (!dateParts) {
+    return false;
+  }
+
+  return dateParts.year === currentYear;
+}
+
+function createApprovalCountRow(category) {
+  return {
+    category,
+    cdd: 0,
+    sam: 0,
+    total: 0,
+  };
+}
+
+function getReferenceYear(referenceDate = new Date()) {
+  const safeDate =
+    referenceDate instanceof Date ? referenceDate : new Date(referenceDate);
+
+  return Number.isNaN(safeDate.valueOf())
+    ? new Date().getFullYear()
+    : safeDate.getFullYear();
+}
+
+function buildCurrentYearApprovalReportData(
+  records,
+  referenceDate = new Date(),
+) {
+  const currentYear = getReferenceYear(referenceDate);
+  const summaryByCategory = new Map([
+    ["All Categories", createApprovalCountRow("All Categories")],
+    ...APPROVAL_ITEM_TYPES.map((itemType) => [
+      itemType,
+      createApprovalCountRow(itemType),
+    ]),
+  ]);
+  const monthlyRows = MONTH_LABELS.map((month) => ({
+    month,
+    cdd: 0,
+    sam: 0,
+    total: 0,
+  }));
+  let includedRecordCount = 0;
+  let excludedNonPdfCount = 0;
+  let excludedInvalidDateCount = 0;
+  let excludedOtherYearCount = 0;
+
+  for (const record of records ?? []) {
+    const isApprovalCandidate =
+      record.approvalType === APPROVAL_TYPE_KEYS.CDD ||
+      record.approvalType === APPROVAL_TYPE_KEYS.SAM;
+
+    if (!isApprovalCandidate) {
+      continue;
+    }
+
+    if (record.fileType !== "pdf") {
+      excludedNonPdfCount += 1;
+      continue;
+    }
+
+    const dateParts = extractIsoDateParts(record.date);
+    if (!dateParts) {
+      excludedInvalidDateCount += 1;
+      continue;
+    }
+
+    if (dateParts.year !== currentYear) {
+      excludedOtherYearCount += 1;
+      continue;
+    }
+
+    includedRecordCount += 1;
+    const approvalKey =
+      record.approvalType === APPROVAL_TYPE_KEYS.CDD ? "cdd" : "sam";
+    const allCategoriesRow = summaryByCategory.get("All Categories");
+    allCategoriesRow[approvalKey] += 1;
+    allCategoriesRow.total += 1;
+
+    const itemTypeRow = summaryByCategory.get(record.itemType);
+    if (itemTypeRow) {
+      itemTypeRow[approvalKey] += 1;
+      itemTypeRow.total += 1;
+    }
+
+    const monthRow = monthlyRows[dateParts.month - 1];
+    if (monthRow) {
+      monthRow[approvalKey] += 1;
+      monthRow.total += 1;
+    }
+  }
+
+  const summaryRows = [
+    summaryByCategory.get("All Categories"),
+    ...APPROVAL_ITEM_TYPES.map((itemType) => summaryByCategory.get(itemType)),
+  ];
+
+  return {
+    currentYear,
+    summaryRows,
+    monthlyRows,
+    totals: { ...summaryRows[0] },
+    chartRows: summaryRows,
+    includedRecordCount,
+    excludedCounts: {
+      nonPdf: excludedNonPdfCount,
+      invalidDate: excludedInvalidDateCount,
+      otherYear: excludedOtherYearCount,
+    },
+    notes: [
+      `Scope: PDF-only CDD and SAM approvals with valid ${currentYear} dates.`,
+      "Inclusions: all approval statuses and revision records remain included.",
+      "Exclusions: DWG files, undated approvals, and records outside the current year.",
+    ],
+  };
+}
+
+function addTitleBlock(worksheet, reportData) {
+  worksheet.mergeCells("A1:D1");
+  worksheet.getCell("A1").value = `${reportData.currentYear} Approval Report`;
+  worksheet.getCell("A1").font = {
+    bold: true,
+    size: 16,
+    color: { argb: "FF132635" },
+  };
+
+  worksheet.mergeCells("A2:D2");
+  worksheet.getCell("A2").value =
+    "YTD summary and monthly breakdown for current-year PDF CDD and SAM approvals.";
+  worksheet.getCell("A2").font = {
+    italic: true,
+    size: 10,
+    color: { argb: "FF4E6474" },
+  };
+
+  reportData.notes.forEach((note, index) => {
+    const cell = worksheet.getCell(`A${4 + index}`);
+    cell.value = note;
+    cell.font = {
+      size: 10,
+      color: { argb: "FF4E6474" },
+    };
+  });
+}
+
+function applyCountNumberFormat(worksheet, columns) {
+  for (const columnLetter of columns) {
+    worksheet.getColumn(columnLetter).numFmt = "0";
+  }
+}
+
+function createApprovalReportChartBase64(reportData) {
+  if (!globalThis.document?.createElement) {
+    return null;
+  }
+
+  const canvas = globalThis.document.createElement("canvas");
+  canvas.width = 720;
+  canvas.height = 360;
+  const context = canvas.getContext("2d");
+  if (!context) {
+    return null;
+  }
+
+  const rows = reportData.chartRows;
+  const width = canvas.width;
+  const height = canvas.height;
+  const chartLeft = 72;
+  const chartTop = 70;
+  const chartWidth = width - chartLeft - 36;
+  const chartHeight = height - chartTop - 70;
+  const maxValue = Math.max(1, ...rows.flatMap((row) => [row.cdd, row.sam]));
+
+  context.fillStyle = APPROVAL_REPORT_CHART_COLORS.background;
+  context.fillRect(0, 0, width, height);
+
+  context.fillStyle = APPROVAL_REPORT_CHART_COLORS.text;
+  context.font = "700 24px 'Segoe UI', Arial, sans-serif";
+  context.fillText("Current-Year CDD and SAM Totals", 28, 34);
+  context.fillStyle = APPROVAL_REPORT_CHART_COLORS.muted;
+  context.font = "14px 'Segoe UI', Arial, sans-serif";
+  context.fillText("PDF approval records by category", 28, 56);
+
+  context.strokeStyle = APPROVAL_REPORT_CHART_COLORS.grid;
+  context.lineWidth = 1;
+  const gridSteps = 4;
+  for (let step = 0; step <= gridSteps; step += 1) {
+    const y = chartTop + (chartHeight / gridSteps) * step;
+    const value = Math.round(maxValue - (maxValue / gridSteps) * step);
+    context.beginPath();
+    context.moveTo(chartLeft, y);
+    context.lineTo(chartLeft + chartWidth, y);
+    context.stroke();
+    context.fillStyle = APPROVAL_REPORT_CHART_COLORS.muted;
+    context.font = "12px 'Segoe UI', Arial, sans-serif";
+    context.fillText(String(value), 28, y + 4);
+  }
+
+  context.strokeStyle = APPROVAL_REPORT_CHART_COLORS.axis;
+  context.lineWidth = 1.5;
+  context.beginPath();
+  context.moveTo(chartLeft, chartTop);
+  context.lineTo(chartLeft, chartTop + chartHeight);
+  context.lineTo(chartLeft + chartWidth, chartTop + chartHeight);
+  context.stroke();
+
+  const groupWidth = chartWidth / Math.max(1, rows.length);
+  const barWidth = Math.min(32, groupWidth * 0.24);
+  const gap = 8;
+  const baseline = chartTop + chartHeight;
+
+  rows.forEach((row, index) => {
+    const centerX = chartLeft + groupWidth * index + groupWidth / 2;
+    const cddHeight = (row.cdd / maxValue) * (chartHeight - 12);
+    const samHeight = (row.sam / maxValue) * (chartHeight - 12);
+    const cddX = centerX - barWidth - gap / 2;
+    const samX = centerX + gap / 2;
+
+    context.fillStyle = APPROVAL_REPORT_CHART_COLORS.cdd;
+    context.fillRect(cddX, baseline - cddHeight, barWidth, cddHeight);
+    context.fillStyle = APPROVAL_REPORT_CHART_COLORS.sam;
+    context.fillRect(samX, baseline - samHeight, barWidth, samHeight);
+
+    context.fillStyle = APPROVAL_REPORT_CHART_COLORS.text;
+    context.font = "12px 'Segoe UI', Arial, sans-serif";
+    context.textAlign = "center";
+    if (row.cdd > 0) {
+      context.fillText(
+        String(row.cdd),
+        cddX + barWidth / 2,
+        baseline - cddHeight - 8,
+      );
+    }
+    if (row.sam > 0) {
+      context.fillText(
+        String(row.sam),
+        samX + barWidth / 2,
+        baseline - samHeight - 8,
+      );
+    }
+    context.fillStyle = APPROVAL_REPORT_CHART_COLORS.muted;
+    context.fillText(row.category, centerX, baseline + 22);
+  });
+
+  context.textAlign = "left";
+  context.fillStyle = APPROVAL_REPORT_CHART_COLORS.text;
+  context.fillRect(width - 186, 28, 14, 14);
+  context.fillStyle = APPROVAL_REPORT_CHART_COLORS.text;
+  context.font = "13px 'Segoe UI', Arial, sans-serif";
+  context.fillText("CDD", width - 164, 40);
+  context.fillStyle = APPROVAL_REPORT_CHART_COLORS.sam;
+  context.fillRect(width - 108, 28, 14, 14);
+  context.fillStyle = APPROVAL_REPORT_CHART_COLORS.text;
+  context.fillText("SAM", width - 86, 40);
+
+  return canvas.toDataURL("image/png");
+}
+
+function appendApprovalSummarySheet(workbook, reportData) {
+  const worksheet = workbook.addWorksheet(APPROVAL_SUMMARY_SHEET_NAME, {
+    views: [{ state: "frozen", ySplit: 7 }],
+  });
+
+  setCustomWorksheetColumns(worksheet, [
+    ...APPROVAL_REPORT_SUMMARY_COLUMNS,
+    { key: "spacer", width: 4 },
+    { key: "chartA", width: 14 },
+    { key: "chartB", width: 14 },
+    { key: "chartC", width: 14 },
+    { key: "chartD", width: 14 },
+  ]);
+  addTitleBlock(worksheet, reportData);
+
+  appendObjectTable(
+    worksheet,
+    `${APPROVAL_SUMMARY_SHEET_NAME} Summary`,
+    "A8",
+    APPROVAL_REPORT_SUMMARY_COLUMNS,
+    reportData.summaryRows,
+    "TableStyleLight1",
+  );
+  applyCountNumberFormat(worksheet, ["B", "C", "D"]);
+
+  const chartBase64 = createApprovalReportChartBase64(reportData);
+  if (chartBase64) {
+    const imageId = workbook.addImage({
+      base64: chartBase64,
+      extension: "png",
+    });
+    worksheet.addImage(imageId, {
+      tl: { col: 5.1, row: 1.2 },
+      ext: { width: 520, height: 280 },
+    });
+  }
+}
+
+function appendApprovalMonthlySheet(workbook, reportData) {
+  const worksheet = workbook.addWorksheet(APPROVAL_MONTHLY_SHEET_NAME, {
+    views: [{ state: "frozen", ySplit: 3 }],
+  });
+
+  setCustomWorksheetColumns(worksheet, APPROVAL_REPORT_MONTHLY_COLUMNS);
+  worksheet.mergeCells("A1:D1");
+  worksheet.getCell("A1").value =
+    `${reportData.currentYear} monthly PDF approval totals`;
+  worksheet.getCell("A1").font = {
+    bold: true,
+    size: 14,
+    color: { argb: "FF132635" },
+  };
+
+  worksheet.mergeCells("A2:D2");
+  worksheet.getCell("A2").value =
+    "Month-by-month CDD and SAM totals for the current calendar year.";
+  worksheet.getCell("A2").font = {
+    italic: true,
+    size: 10,
+    color: { argb: "FF4E6474" },
+  };
+
+  appendObjectTable(
+    worksheet,
+    `${APPROVAL_MONTHLY_SHEET_NAME} Table`,
+    "A4",
+    APPROVAL_REPORT_MONTHLY_COLUMNS,
+    reportData.monthlyRows,
+    "TableStyleLight1",
+  );
+  applyCountNumberFormat(worksheet, ["B", "C", "D"]);
+}
+
+async function exportGroupedRecordsToExcel(groupedRecords) {
+  const workbookLibrary = getExcelLibrary();
+  const workbook = new workbookLibrary.Workbook();
+  const workbookData = buildWorkbookData(groupedRecords);
+
+  workbook.created = new Date();
+  workbook.modified = new Date();
+
+  for (const [key, label] of SHEET_ORDER) {
+    appendSheet(workbook, label, workbookData[key] ?? []);
+  }
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  downloadWorkbook(buffer);
+}
+
+async function exportCurrentYearApprovalReportToExcel(
+  records,
+  referenceDate = new Date(),
+) {
+  const workbookLibrary = getExcelLibrary();
+  const workbook = new workbookLibrary.Workbook();
+  const reportData = buildCurrentYearApprovalReportData(records, referenceDate);
+
+  workbook.created = new Date();
+  workbook.modified = new Date();
+
+  appendApprovalSummarySheet(workbook, reportData);
+  appendApprovalMonthlySheet(workbook, reportData);
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  downloadWorkbook(
+    buffer,
+    `${APPROVAL_REPORT_FILE_PREFIX}-${reportData.currentYear}.xlsx`,
+  );
+}
+
+  return {
+    buildCurrentYearApprovalReportData,
+    exportGroupedRecordsToExcel,
+    exportCurrentYearApprovalReportToExcel,
+  };
+})();
+
+const combinedApprovalExporterModule = (({ PROJECTS, SUPPLIERS, SYSTEMS }) => {
+const APPROVAL_TYPE_KEYS = {
+  CDD: "Counter Die Drawing",
+  SAM: "Sample",
+};
+
+const CATEGORIES = ["Profile", "Gaskets", "Accessories"];
+const DOWNLOAD_FILE_NAME = "data-analyser-combined-approvals.xlsx";
+const COMBINED_APPROVALS_SHEET_NAME = "Combined Approvals";
+const EXCEL_DATE_FORMAT = "dd-mmm-yy";
+const COMBINED_APPROVAL_COLUMNS = [
+  { key: "supplier", label: "Supplier", width: 24 },
+  { key: "referenceNumber", label: "Reference Number", width: 22 },
+  { key: "categories", label: "Categories", width: 28 },
+  { key: "projects", label: "Projects", width: 34 },
+  { key: "systems", label: "Systems", width: 26 },
+  { key: "recordCount", label: "Record Count", width: 14 },
+  { key: "cddStatuses", label: "CDD Statuses", width: 34 },
+  { key: "cddDates", label: "CDD Dates", width: 34 },
+  { key: "cddLatestDate", label: "CDD Latest Date", width: 18 },
+  { key: "cddRevisions", label: "CDD Revisions", width: 24 },
+  { key: "samStatuses", label: "SAM Statuses", width: 34 },
+  { key: "samDates", label: "SAM Dates", width: 34 },
+  { key: "samLatestDate", label: "SAM Latest Date", width: 18 },
+  { key: "samRevisions", label: "SAM Revisions", width: 24 },
+];
+
+function getExcelLibrary() {
+  const workbookLibrary = globalThis.ExcelJS;
+  if (!workbookLibrary?.Workbook) {
+    throw new Error("ExcelJS library is not loaded.");
+  }
+
+  return workbookLibrary;
+}
+
+function cleanText(value) {
+  return String(value ?? "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeSupplierKey(value) {
+  return cleanText(value).toUpperCase();
+}
+
+function normalizeReferenceDisplay(value) {
+  return cleanText(value).toUpperCase();
+}
+
+function normalizeReferenceComparisonKey(value) {
+  const normalizedReference = normalizeReferenceDisplay(value);
+  return normalizedReference.startsWith("T")
+    ? normalizedReference.slice(1)
+    : normalizedReference;
+}
+
+function isApprovalRecord(record) {
+  return (
+    record?.approvalType === APPROVAL_TYPE_KEYS.CDD ||
+    record?.approvalType === APPROVAL_TYPE_KEYS.SAM
+  );
+}
+
+function createGroup(record, referenceComparisonKey) {
+  return {
+    supplier: cleanText(record.supplier),
+    referenceNumber: normalizeReferenceDisplay(record.referenceNumber),
+    referenceComparisonKey,
+    records: [],
+    cddRecords: [],
+    samRecords: [],
+    categories: [],
+    projects: [],
+    systems: [],
+  };
+}
+
+function preferDisplayReference(currentReference, nextReference) {
+  if (!currentReference) {
+    return nextReference;
+  }
+
+  if (!nextReference) {
+    return currentReference;
+  }
+
+  const currentHasLeadingT = currentReference.startsWith("T");
+  const nextHasLeadingT = nextReference.startsWith("T");
+  if (nextHasLeadingT && !currentHasLeadingT) {
+    return nextReference;
+  }
+
+  return currentReference.length >= nextReference.length
+    ? currentReference
+    : nextReference;
+}
+
+function addDistinct(values, value) {
+  const cleanedValue = cleanText(value);
+  if (cleanedValue && !values.includes(cleanedValue)) {
+    values.push(cleanedValue);
+  }
+}
+
+function getRecordSortValue(record) {
+  return [
+    cleanText(record.date) || "9999-99-99",
+    String(Number(record.revision ?? 0)).padStart(8, "0"),
+    cleanText(record.fileName),
+  ].join("|");
+}
+
+function sortApprovalRecords(records) {
+  return [...records].sort((left, right) =>
+    getRecordSortValue(left).localeCompare(getRecordSortValue(right)),
+  );
+}
+
+function formatList(values) {
+  const cleanedValues = values.map(cleanText).filter(Boolean);
+  return cleanedValues.length > 0 ? `[${cleanedValues.join(",")}]` : "";
+}
+
+function formatDisplayDate(value) {
+  const cleanedValue = cleanText(value);
+  const match = cleanedValue.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return cleanedValue;
+  }
+
+  const [, year, month, day] = match;
+  const monthIndex = Number(month) - 1;
+  const monthLabel = [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec",
+  ][monthIndex];
+
+  if (!monthLabel) {
+    return cleanedValue;
+  }
+
+  return `${day}-${monthLabel}-${year.slice(-2)}`;
+}
+
+function toExcelDate(value) {
+  const cleanedValue = cleanText(value);
+  const match = cleanedValue.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return null;
+  }
+
+  const [, year, month, day] = match;
+  return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+}
+
+function formatRevision(value) {
+  const revisionNumber = Number(cleanText(value) || "0");
+  if (Number.isFinite(revisionNumber)) {
+    return String(revisionNumber).padStart(2, "0");
+  }
+
+  return cleanText(value);
+}
+
+function getLatestDate(records) {
+  const dates = records.map((record) => cleanText(record.date)).filter(Boolean);
+  if (dates.length === 0) {
+    return null;
+  }
+
+  return dates.sort((left, right) => left.localeCompare(right)).at(-1) ?? null;
+}
+
+function getApprovalSummary(records) {
+  const sortedRecords = sortApprovalRecords(records);
+  const revisions = sortedRecords
+    .map((record) => formatRevision(record.revision))
+    .sort((left, right) =>
+      left.localeCompare(right, undefined, { numeric: true }),
+    );
+
+  return {
+    statuses: formatList(sortedRecords.map((record) => record.approvalStatus)),
+    dates: formatList(
+      sortedRecords.map((record) => formatDisplayDate(record.date)),
+    ),
+    latestDate: getLatestDate(sortedRecords),
+    revisions: formatList(revisions),
+  };
+}
+
+function toCombinedApprovalRow(group) {
+  const cddSummary = getApprovalSummary(group.cddRecords);
+  const samSummary = getApprovalSummary(group.samRecords);
+
+  return {
+    supplier: group.supplier,
+    referenceNumber: group.referenceNumber,
+    categories: formatList(group.categories),
+    projects: formatList(group.projects),
+    systems: formatList(group.systems),
+    recordCount: group.records.length,
+    cddStatuses: cddSummary.statuses,
+    cddDates: cddSummary.dates,
+    cddLatestDate: toExcelDate(cddSummary.latestDate),
+    cddRevisions: cddSummary.revisions,
+    samStatuses: samSummary.statuses,
+    samDates: samSummary.dates,
+    samLatestDate: toExcelDate(samSummary.latestDate),
+    samRevisions: samSummary.revisions,
+  };
+}
+
+function toCatalogRows(values, key) {
+  return values.map((value) => ({ [key]: value }));
+}
+
+function buildCombinedApprovalWorkbookData(records) {
+  const groups = new Map();
+  let skippedMissingKeyCount = 0;
+  let skippedNonApprovalCount = 0;
+
+  for (const record of records ?? []) {
+    if (!isApprovalRecord(record)) {
+      skippedNonApprovalCount += 1;
+      continue;
+    }
+
+    const supplier = cleanText(record.supplier);
+    const referenceNumber = normalizeReferenceDisplay(record.referenceNumber);
+    const referenceComparisonKey =
+      normalizeReferenceComparisonKey(referenceNumber);
+
+    if (!supplier || !referenceComparisonKey) {
+      skippedMissingKeyCount += 1;
+      continue;
+    }
+
+    const groupKey = `${normalizeSupplierKey(supplier)}|${referenceComparisonKey}`;
+    const group =
+      groups.get(groupKey) ?? createGroup(record, referenceComparisonKey);
+    group.referenceNumber = preferDisplayReference(
+      group.referenceNumber,
+      referenceNumber,
+    );
+    group.records.push(record);
+    addDistinct(group.categories, record.itemType);
+    addDistinct(group.projects, record.project);
+    addDistinct(group.systems, record.system);
+
+    if (record.approvalType === APPROVAL_TYPE_KEYS.CDD) {
+      group.cddRecords.push(record);
+    } else if (record.approvalType === APPROVAL_TYPE_KEYS.SAM) {
+      group.samRecords.push(record);
+    }
+
+    groups.set(groupKey, group);
+  }
+
+  const combinedRows = Array.from(groups.values())
+    .map(toCombinedApprovalRow)
+    .sort((left, right) =>
+      `${left.supplier}|${left.referenceNumber}`.localeCompare(
+        `${right.supplier}|${right.referenceNumber}`,
+      ),
+    );
+
+  return {
+    combinedRows,
+    suppliers: toCatalogRows(SUPPLIERS, "supplier"),
+    projects: toCatalogRows(PROJECTS, "project"),
+    systems: toCatalogRows(SYSTEMS, "system"),
+    categories: toCatalogRows(CATEGORIES, "category"),
+    summary: {
+      combinedRowCount: combinedRows.length,
+      skippedMissingKeyCount,
+      skippedNonApprovalCount,
+    },
+  };
+}
+
+function sanitizeTableName(sheetName) {
+  const compactName = sheetName.replace(/[^A-Za-z0-9]+/g, " ").trim();
+  const words = compactName.split(/\s+/).filter(Boolean);
+  const pascalName = words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("");
+
+  return `tbl${pascalName || "Sheet"}`;
+}
+
+function setWorksheetColumns(worksheet, columns) {
+  worksheet.columns = columns.map(({ key, width }) => ({
+    key,
+    width,
+  }));
+}
+
+function appendHeaderOnlySheet(worksheet, columns) {
+  const headerRow = worksheet.addRow(columns.map(({ label }) => label));
+  headerRow.eachCell((cell) => {
+    cell.font = {
+      bold: true,
+      color: { argb: "FFFFFFFF" },
+    };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF3E7CB1" },
+    };
+  });
+}
+
+function appendTableSheet(workbook, sheetName, columns, rows) {
+  const worksheet = workbook.addWorksheet(sheetName, {
+    views: [{ state: "frozen", ySplit: 1 }],
+  });
+  setWorksheetColumns(worksheet, columns);
+
+  for (const dateKey of ["cddLatestDate", "samLatestDate"]) {
+    const columnIndex = columns.findIndex(({ key }) => key === dateKey) + 1;
+    if (columnIndex > 0) {
+      worksheet.getColumn(columnIndex).numFmt = EXCEL_DATE_FORMAT;
+    }
+  }
+
+  if ((rows ?? []).length === 0) {
+    appendHeaderOnlySheet(worksheet, columns);
+    return;
+  }
+
+  worksheet.addTable({
+    name: sanitizeTableName(sheetName),
+    ref: "A1",
+    headerRow: true,
+    totalsRow: false,
+    style: {
+      theme: "TableStyleMedium2",
+      showRowStripes: true,
+    },
+    columns: columns.map(({ label }) => ({
+      name: label,
+      filterButton: true,
+    })),
+    rows: rows.map((row) => columns.map(({ key }) => row[key] ?? null)),
+  });
+}
+
+function appendCatalogSheet(workbook, sheetName, key, label, rows) {
+  appendTableSheet(workbook, sheetName, [{ key, label, width: 34 }], rows);
+}
+
+function downloadWorkbook(buffer, fileName = DOWNLOAD_FILE_NAME) {
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+async function exportCombinedApprovalRecordsToExcel(records) {
+  const workbookLibrary = getExcelLibrary();
+  const workbook = new workbookLibrary.Workbook();
+  const workbookData = buildCombinedApprovalWorkbookData(records);
+
+  workbook.created = new Date();
+  workbook.modified = new Date();
+
+  appendTableSheet(
+    workbook,
+    COMBINED_APPROVALS_SHEET_NAME,
+    COMBINED_APPROVAL_COLUMNS,
+    workbookData.combinedRows,
+  );
+  appendCatalogSheet(
+    workbook,
+    "Suppliers",
+    "supplier",
+    "Supplier",
+    workbookData.suppliers,
+  );
+  appendCatalogSheet(
+    workbook,
+    "Projects",
+    "project",
+    "Project",
+    workbookData.projects,
+  );
+  appendCatalogSheet(
+    workbook,
+    "Systems",
+    "system",
+    "System",
+    workbookData.systems,
+  );
+  appendCatalogSheet(
+    workbook,
+    "Categories",
+    "category",
+    "Category",
+    workbookData.categories,
+  );
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  downloadWorkbook(buffer);
+}
+
+  return {
+    normalizeReferenceComparisonKey,
+    buildCombinedApprovalWorkbookData,
+    exportCombinedApprovalRecordsToExcel,
+  };
+})(constantsModule);
+
+((
+  { bindApprovalDashboardControls, renderApprovalDashboard },
+  { exportCurrentYearApprovalReportToExcel, exportGroupedRecordsToExcel },
+  { exportCombinedApprovalRecordsToExcel },
+  { parseLines, summarizeParsedRecords },
+) => {
+const ITEM_TYPES = [
+  {
+    key: "profile",
+    label: "Profile",
+    inputId: "profile-input",
+    dropZoneId: "profile-dropzone",
+  },
+  {
+    key: "gaskets",
+    label: "Gaskets",
+    inputId: "gaskets-input",
+    dropZoneId: "gaskets-dropzone",
+  },
+  {
+    key: "accessories",
+    label: "Accessories",
+    inputId: "accessories-input",
+    dropZoneId: "accessories-dropzone",
+  },
+];
+
+const appState = {
+  records: [],
+  groupedRecords: createEmptyGroups(),
+  validationSummary: summarizeParsedRecords([]),
+  importedFileCount: 0,
+};
+
+function createEmptyGroups() {
+  return Object.fromEntries(ITEM_TYPES.map(({ key }) => [key, []]));
+}
+
+function byId(id) {
+  const element = document.getElementById(id);
+  if (!(element instanceof HTMLElement)) {
+    throw new Error(`Expected an element with id \"${id}\".`);
+  }
+
+  return element;
+}
+
+function getButton(id) {
+  const button = byId(id);
+  if (!(button instanceof HTMLButtonElement)) {
+    throw new Error(`Expected button with id "${id}".`);
+  }
+
+  return button;
+}
+
+function getFileInput(id) {
+  const input = byId(id);
+  if (!(input instanceof HTMLInputElement)) {
+    throw new Error(`Expected file input with id "${id}".`);
+  }
+
+  return input;
+}
+
+function updateStatus(message) {
+  byId("status").textContent = message;
+}
+
+function setExportEnabled(isEnabled) {
+  getButton("export-button").disabled = !isEnabled;
+  getButton("approval-report-export-button").disabled = !isEnabled;
+  getButton("combined-approval-export-button").disabled = !isEnabled;
+}
+
+function isTextFile(file) {
+  return (
+    /\.txt$/i.test(file.name) || file.type === "text/plain" || file.type === ""
+  );
+}
+
+function groupRecordsByItemType(records) {
+  const groups = createEmptyGroups();
+
+  for (const record of records) {
+    const matchingType = ITEM_TYPES.find(
+      ({ label }) => label === record.itemType,
+    );
+    if (!matchingType) {
+      continue;
+    }
+
+    groups[matchingType.key].push(record);
+  }
+
+  return groups;
+}
+
+function createSummaryCard(label, value) {
+  const card = document.createElement("article");
+  card.className = "summary-card";
+
+  const title = document.createElement("span");
+  title.className = "summary-label";
+  title.textContent = label;
+
+  const number = document.createElement("strong");
+  number.textContent = String(value);
+
+  card.append(title, number);
+  return card;
+}
+
+function renderSummary() {
+  const summary = byId("summary");
+  const validationSummary = appState.validationSummary;
+  const cards = [
+    createSummaryCard("Imported Files", appState.importedFileCount),
+    createSummaryCard(
+      "Profile Records",
+      appState.groupedRecords.profile.length,
+    ),
+    createSummaryCard(
+      "Gaskets Records",
+      appState.groupedRecords.gaskets.length,
+    ),
+    createSummaryCard(
+      "Accessories Records",
+      appState.groupedRecords.accessories.length,
+    ),
+    createSummaryCard(
+      "Approval Review",
+      validationSummary.approval.unmatchedCandidateCount,
+    ),
+    createSummaryCard("Date Warnings", validationSummary.dates.warningCount),
+  ];
+
+  summary.replaceChildren(...cards);
+}
+
+function syncState(records) {
+  appState.records = records;
+  appState.groupedRecords = groupRecordsByItemType(records);
+  appState.validationSummary = summarizeParsedRecords(records);
+  setExportEnabled(records.length > 0);
+  renderSummary();
+  renderApprovalDashboard(records);
+}
+
+function formatImportStatus(importedFileCount, itemType, ignoredFileCount) {
+  const { approval, dates } = appState.validationSummary;
+  const ignoredSuffix =
+    ignoredFileCount > 0
+      ? ` Ignored ${ignoredFileCount} non-text file(s).`
+      : "";
+
+  return (
+    `Imported ${importedFileCount} ${itemType} file(s). ` +
+    `Total records: ${appState.records.length}. ` +
+    `${approval.unmatchedCandidateCount} approval patterns need review. ` +
+    `${dates.warningCount} date warnings found.` +
+    ignoredSuffix
+  );
+}
+
+async function importFiles(fileList, itemType) {
+  const files = Array.from(fileList ?? []);
+  if (files.length === 0) {
+    return;
+  }
+
+  const textFiles = files.filter(isTextFile);
+  const ignoredFileCount = files.length - textFiles.length;
+
+  if (textFiles.length === 0) {
+    updateStatus(`No .txt files found for ${itemType}.`);
+    return;
+  }
+
+  updateStatus(`Importing ${textFiles.length} ${itemType} file(s)...`);
+
+  const parsedBatches = await Promise.all(
+    textFiles.map(async (file) => parseLines(await file.text(), itemType)),
+  );
+  const nextRecords = [...appState.records, ...parsedBatches.flat()];
+
+  appState.importedFileCount += textFiles.length;
+  syncState(nextRecords);
+  updateStatus(
+    formatImportStatus(textFiles.length, itemType, ignoredFileCount),
+  );
+}
+
+function clearImportedData() {
+  appState.importedFileCount = 0;
+  syncState([]);
+  for (const { inputId } of ITEM_TYPES) {
+    getFileInput(inputId).value = "";
+  }
+
+  updateStatus("Imported data cleared.");
+}
+
+function setDropZoneActive(dropZone, isActive) {
+  dropZone.classList.toggle("is-dragover", isActive);
+}
+
+function bindImportControl({ label, inputId, dropZoneId }) {
+  const fileInput = getFileInput(inputId);
+  const dropZone = byId(dropZoneId);
+
+  fileInput.addEventListener("change", async () => {
+    await importFiles(fileInput.files, label);
+    fileInput.value = "";
+  });
+
+  dropZone.addEventListener("dragenter", (event) => {
+    event.preventDefault();
+    setDropZoneActive(dropZone, true);
+  });
+
+  dropZone.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    setDropZoneActive(dropZone, true);
+  });
+
+  dropZone.addEventListener("dragleave", () => {
+    setDropZoneActive(dropZone, false);
+  });
+
+  dropZone.addEventListener("drop", async (event) => {
+    event.preventDefault();
+    setDropZoneActive(dropZone, false);
+    await importFiles(event.dataTransfer?.files, label);
+  });
+}
+
+function bindControls() {
+  const exportButton = getButton("export-button");
+  const approvalReportExportButton = getButton("approval-report-export-button");
+  const combinedApprovalExportButton = getButton(
+    "combined-approval-export-button",
+  );
+  const clearButton = getButton("clear-button");
+
+  for (const itemType of ITEM_TYPES) {
+    bindImportControl(itemType);
+  }
+
+  clearButton.addEventListener("click", () => {
+    clearImportedData();
+  });
+
+  exportButton.addEventListener("click", async () => {
+    if (appState.records.length === 0) {
+      updateStatus("Import data before exporting.");
+      return;
+    }
+
+    exportButton.disabled = true;
+    updateStatus("Exporting Excel workbook...");
+
+    try {
+      await exportGroupedRecordsToExcel(appState.groupedRecords);
+      updateStatus("Excel workbook exported.");
+    } catch (error) {
+      updateStatus("Excel export failed.");
+      console.error("Excel export failed.", error);
+    } finally {
+      exportButton.disabled = false;
+    }
+  });
+
+  approvalReportExportButton.addEventListener("click", async () => {
+    if (appState.records.length === 0) {
+      updateStatus("Import data before exporting the approval report.");
+      return;
+    }
+
+    approvalReportExportButton.disabled = true;
+    updateStatus("Exporting current-year approval report...");
+
+    try {
+      await exportCurrentYearApprovalReportToExcel(appState.records);
+      updateStatus("Current-year approval report exported.");
+    } catch (error) {
+      updateStatus("Approval report export failed.");
+      console.error("Approval report export failed.", error);
+    } finally {
+      approvalReportExportButton.disabled = false;
+    }
+  });
+
+  combinedApprovalExportButton.addEventListener("click", async () => {
+    if (appState.records.length === 0) {
+      updateStatus("Import data before exporting combined approvals.");
+      return;
+    }
+
+    combinedApprovalExportButton.disabled = true;
+    updateStatus("Exporting combined approval workbook...");
+
+    try {
+      await exportCombinedApprovalRecordsToExcel(appState.records);
+      updateStatus("Combined approval workbook exported.");
+    } catch (error) {
+      updateStatus("Combined approval export failed.");
+      console.error("Combined approval export failed.", error);
+    } finally {
+      combinedApprovalExportButton.disabled = false;
+    }
+  });
+}
+
+function initialize() {
+  setExportEnabled(false);
+  renderSummary();
+  renderApprovalDashboard(appState.records);
+  updateStatus(
+    "Import one or more text files into Profile, Gaskets, or Accessories.",
+  );
+  bindControls();
+  bindApprovalDashboardControls();
+}
+
+initialize();
+})(
+  approvalDashboardModule,
+  exporterModule,
+  combinedApprovalExporterModule,
+  parserModule,
+);
+
+    </script>
 </body>
 </html>

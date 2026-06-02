@@ -1,6 +1,6 @@
-# DataAnalyser
+# DataAnalyser modular
 
-A single-file browser-based file-list analyser for drawing records. It preserves the current import, dashboard, and export behavior while keeping the runtime logic inside `index.html`.
+The modular source version of DataAnalyser. This copy keeps the existing multi-file `src/` layout for maintenance and feature work.
 
 A browser-based file-list analyser for drawing records. It parses one path per line, extracts project and supplier metadata, classifies approval types, keeps item type and category as separate fields, and exports the imported data to Excel.
 
@@ -30,8 +30,13 @@ A browser-based file-list analyser for drawing records. It parses one path per l
 
 ## Files
 
-- `index.html` contains the browser UI, import zones, summary layout, Chart.js approval dashboard, dashboard controls, and the full runtime logic in one file.
-- `../DataAnalyser modular/` keeps the equivalent modular source layout for maintenance work.
+- `index.html` contains the browser UI, import zones, summary layout, Chart.js approval dashboard, and dashboard controls.
+- `src/main.js` handles imports, drag and drop, state updates, dashboard rendering, and export actions.
+- `src/approvalAnalytics.js` aggregates CDD and SAM approval records for the dashboard.
+- `src/approvalDashboard.js` binds dashboard controls and renders the Chart.js approval chart.
+- `src/parser.js` contains the parsing and validation rules for file names and paths.
+- `src/exporter.js` builds both the grouped-record workbook and the separate current-year approval report workbook.
+- `src/constants.js` stores the project, supplier, and system reference data.
 
 ## Dashboard Counting
 
