@@ -19,7 +19,7 @@
     })();
     </script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap');
 
     /* ── Reset & Base ──
        Removes default margins/padding and sets the CSS custom-property colour
@@ -32,44 +32,44 @@
     }
 
     :root {
-      --bg:        #0d0f14;
-      --surface:   #14171f;
-      --surface2:  #1a1e28;
-      --surface3:  #222734;
-      --panel-bg:  #14171f;
-      --panel-alt: #1a1e28;
-      --field-bg:  #0f1218;
-      --field-bg-strong: #0d1015;
-      --border:    #262c3a;
-      --border-strong:#394153;
-      --text:      #eceff5;
-      --text-muted:#8f98ac;
-      --accent:    #7c7cf8;
-      --accent-h:  #9d9dfc;
-      --accent-soft: rgba(124,124,248,.14);
-      --accent-soft-strong: rgba(124,124,248,.22);
-      --success-soft: rgba(52,211,153,.14);
-      --warning-soft: rgba(250,204,21,.14);
-      --danger-soft: rgba(248,113,113,.14);
-      --ongoing-soft: rgba(96,165,250,.14);
-      --focus-ring: rgba(124,124,248,.30);
-      --bg-glow-1: rgba(124,124,248,.05);
-      --bg-glow-2: transparent;
-      --bg-glow-3: transparent;
-      --shadow-soft: 0 1px 2px rgba(0, 0, 0, .18);
-      --shadow-panel: 0 8px 24px rgba(0, 0, 0, .22);
+      --bg:        #0f1622;
+      --surface:   #182130;
+      --surface2:  #202c3f;
+      --surface3:  #27354c;
+      --panel-bg:  rgba(24, 33, 48, .9);
+      --panel-alt: rgba(32, 44, 63, .94);
+      --field-bg:  rgba(10, 16, 27, .72);
+      --field-bg-strong: rgba(14, 21, 34, .84);
+      --border:    #324157;
+      --border-strong:#465a77;
+      --text:      #edf3fb;
+      --text-muted:#9aa8be;
+      --accent:    #5b7dff;
+      --accent-h:  #84a2ff;
+      --accent-soft: rgba(91,125,255,.16);
+      --accent-soft-strong: rgba(91,125,255,.24);
+      --success-soft: rgba(34,197,94,.16);
+      --warning-soft: rgba(245,158,11,.16);
+      --danger-soft: rgba(239,68,68,.16);
+      --ongoing-soft: rgba(99,102,241,.16);
+      --focus-ring: rgba(91,125,255,.22);
+      --bg-glow-1: rgba(91,125,255,.16);
+      --bg-glow-2: rgba(34,197,94,.1);
+      --bg-glow-3: rgba(245,158,11,.08);
+      --shadow-soft: 0 12px 30px rgba(2, 6, 23, .24);
+      --shadow-panel: 0 22px 48px rgba(2, 6, 23, .34);
 
-      --critical: #f4536e;
-      --high:   #fb923c;
-      --medium: #facc15;
-      --low:    #34d399;
+      --critical: #dc2626;
+      --high:   #f97316;
+      --medium: #f59e0b;
+      --low:    #22c55e;
       --very-low: #38bdf8;
 
       --status-not-started: #94a3b8;
-      --status-pending: #facc15;
-      --status-waiting: #fb923c;
-      --status-ongoing: #60a5fa;
-      --status-done:    #64748b;
+      --status-pending: #f59e0b;
+      --status-waiting: #f97316;
+      --status-ongoing: #3b82f6;
+      --status-done:    #475569;
 
       --task-card-media-min-width: 96px;
       --task-card-media-max-width: 176px;
@@ -81,42 +81,42 @@
     }
 
     :root.theme-light {
-      --bg:        #e9ebf1;
-      --surface:   #fbfcfe;
-      --surface2:  #f1f3f8;
-      --surface3:  #e7eaf1;
-      --panel-bg:  #fbfcfe;
-      --panel-alt: #f1f3f8;
-      --field-bg:  #eef0f6;
-      --field-bg-strong: #e7eaf1;
-      --border:    #dde1ea;
-      --border-strong:#c4cad9;
-      --text:      #242a37;
-      --text-muted:#5c6678;
-      --accent:    #5b5bd6;
-      --accent-h:  #4747c2;
-      --accent-soft: rgba(91,91,214,.10);
-      --accent-soft-strong: rgba(91,91,214,.16);
-      --success-soft: rgba(16,150,102,.11);
-      --warning-soft: rgba(202,138,4,.12);
-      --danger-soft: rgba(220,64,90,.10);
-      --ongoing-soft: rgba(37,99,235,.10);
-      --focus-ring: rgba(91,91,214,.25);
-      --bg-glow-1: rgba(91,91,214,.04);
-      --bg-glow-2: transparent;
-      --bg-glow-3: transparent;
-      --shadow-soft: 0 1px 2px rgba(23, 27, 38, .05);
-      --shadow-panel: 0 6px 20px rgba(23, 27, 38, .07);
-      --critical: #dc405a;
-      --high: #ea700b;
-      --medium: #ca8a04;
-      --low: #109666;
-      --very-low: #0e7ea3;
-      --status-not-started: #64748b;
-      --status-pending: #ca8a04;
-      --status-waiting: #ea700b;
-      --status-ongoing: #2563eb;
-      --status-done: #8a94a5;
+      --bg:        #ecf2f8;
+      --surface:   #f8fbff;
+      --surface2:  #edf3fb;
+      --surface3:  #dce7f5;
+      --panel-bg:  rgba(248, 251, 255, .92);
+      --panel-alt: rgba(237, 243, 251, .96);
+      --field-bg:  rgba(231, 239, 249, .88);
+      --field-bg-strong: rgba(223, 233, 245, .94);
+      --border:    #cedaed;
+      --border-strong:#aebfd7;
+      --text:      #162235;
+      --text-muted:#5c6f88;
+      --accent:    #2f63e0;
+      --accent-h:  #4f7beb;
+      --accent-soft: rgba(47,99,224,.12);
+      --accent-soft-strong: rgba(47,99,224,.18);
+      --success-soft: rgba(31,140,90,.14);
+      --warning-soft: rgba(199,132,19,.14);
+      --danger-soft: rgba(217,79,79,.14);
+      --ongoing-soft: rgba(47,99,224,.13);
+      --focus-ring: rgba(47,99,224,.16);
+      --bg-glow-1: rgba(47,99,224,.1);
+      --bg-glow-2: rgba(31,140,90,.07);
+      --bg-glow-3: rgba(199,132,19,.06);
+      --shadow-soft: 0 10px 24px rgba(31, 45, 61, .08);
+      --shadow-panel: 0 24px 48px rgba(31, 45, 61, .12);
+      --critical: #b91c1c;
+      --high: #c2410c;
+      --medium: #c78413;
+      --low: #1f8c5a;
+      --very-low: #1f7ea7;
+      --status-not-started: #5e7088;
+      --status-pending: #c78413;
+      --status-waiting: #c2410c;
+      --status-ongoing: #2f63e0;
+      --status-done: #66768a;
     }
 
     body {
@@ -126,11 +126,20 @@
         radial-gradient(circle at bottom center, var(--bg-glow-3), transparent 32%),
         var(--bg);
       color: var(--text);
-      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-      font-feature-settings: 'cv05' 1, 'ss01' 1;
+      font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
       font-size: 14px;
       min-height: 100vh;
       overflow: hidden;
+    }
+
+    ::selection {
+      background: #2f63e0;
+      color: #ffffff;
+    }
+
+    ::-moz-selection {
+      background: #2f63e0;
+      color: #ffffff;
     }
 
     mark.search-highlight {
@@ -6585,299 +6594,6 @@
     *, *::before, *::after {
       box-shadow: none !important;
       text-shadow: none !important;
-    }
-
-    /* ══════════════════════════════════════════════════════════════════
-       DESIGN OVERHAUL LAYER — minimal, flat, functional color.
-       Overrides paint-only properties (background, border, radius, type);
-       layout rules above are untouched. Loaded last so it wins the cascade.
-       ══════════════════════════════════════════════════════════════════ */
-
-    /* ── Base: flat canvas, crisp type ── */
-    body {
-      background: var(--bg);
-    }
-
-    ::selection {
-      background: #2f63e0;
-      color: #ffffff;
-    }
-
-    ::-moz-selection {
-      background: #2f63e0;
-      color: #ffffff;
-    }
-
-    /* Restore visible keyboard focus (shadows are globally disabled). */
-    :focus-visible {
-      outline: 2px solid var(--accent) !important;
-      outline-offset: 2px;
-    }
-    input:focus-visible, select:focus-visible, textarea:focus-visible {
-      outline-offset: 0;
-    }
-
-    /* Thin, theme-aware scrollbars everywhere. */
-    * {
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-strong) transparent;
-    }
-    *::-webkit-scrollbar { width: 8px; height: 8px; }
-    *::-webkit-scrollbar-track { background: transparent; }
-    *::-webkit-scrollbar-thumb {
-      background: var(--border-strong);
-      border-radius: 999px;
-    }
-    *::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
-    /* ── Header: solid bar, no gradient wash ── */
-    .app-header {
-      background: var(--panel-bg);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: none;
-    }
-
-    .app-header h1 {
-      color: var(--text);
-      letter-spacing: -.01em;
-      font-weight: 800;
-    }
-
-    /* ── Panels: flat surfaces, quieter borders ── */
-    .list-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      backdrop-filter: none;
-    }
-
-    .detail-panel {
-      background: var(--surface);
-      border-color: var(--border);
-      border-radius: 16px;
-      backdrop-filter: none;
-    }
-
-    .filters-strip {
-      background: var(--bg);
-      backdrop-filter: none;
-    }
-
-    /* ── Buttons: flat fills, honest hover states ── */
-    .btn {
-      border-radius: 9px;
-      font-weight: 600;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-    }
-    .btn-primary:hover {
-      background: var(--accent-h);
-      filter: none;
-      transform: none;
-    }
-
-    .btn-ghost {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-    }
-    .btn-ghost:hover {
-      background: var(--surface2);
-      border-color: var(--border-strong);
-      color: var(--text);
-      transform: none;
-    }
-
-    .btn-danger {
-      background: transparent;
-      border: 1px solid color-mix(in srgb, var(--critical) 30%, transparent);
-      color: var(--critical);
-    }
-    .btn-danger:hover {
-      background: var(--danger-soft);
-      border-color: var(--critical);
-    }
-
-    .header-actions .btn-header { border-radius: 8px; }
-
-    /* ── Filters bar: quiet chrome so colored content stands out ── */
-    .filters-bar {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-    }
-
-    .filters-bar select,
-    .search-input {
-      background: var(--field-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-    }
-
-    .filters-bar select:focus,
-    .search-input:focus {
-      border-color: var(--accent);
-      background: var(--surface);
-    }
-
-    .filter-label { color: var(--text-muted); }
-
-    /* ── Stat chips: flat card + strong functional color bar ── */
-    .stat-chip {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-    }
-    .stat-chip::before { background: none; }
-    .stat-chip::after { opacity: 1; }
-    .stat-label {
-      color: color-mix(in srgb, var(--chip-accent, var(--accent)) 72%, var(--text) 28%);
-    }
-    .stat-value {
-      font-weight: 800;
-      letter-spacing: -.03em;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .task-stats-secondary-shell {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-    }
-
-    .task-stats-secondary-tab {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-    }
-    .task-stats-secondary-tab:hover {
-      background: var(--surface3);
-      border-color: var(--border-strong);
-    }
-    .task-stats-secondary-tab.is-active {
-      background: color-mix(in srgb, var(--tab-accent, var(--accent)) 12%, var(--surface));
-      border-color: color-mix(in srgb, var(--tab-accent, var(--accent)) 45%, var(--border));
-      color: color-mix(in srgb, var(--tab-accent, var(--accent)) 60%, var(--text) 40%);
-    }
-
-    /* ── Task cards: flat, priority color owns the left edge ── */
-    .task-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-left-width: 3px;
-      border-radius: 12px;
-    }
-    .task-card::before { opacity: .45; }
-    .task-card:hover {
-      background: var(--surface3);
-      border-color: var(--border-strong);
-      transform: none;
-    }
-    .task-card.priority-critical:hover { border-left-color: var(--critical); }
-    .task-card.priority-high:hover     { border-left-color: var(--high); }
-    .task-card.priority-medium:hover   { border-left-color: var(--medium); }
-    .task-card.priority-low:hover      { border-left-color: var(--low); }
-    .task-card.priority-very-low:hover { border-left-color: var(--very-low); }
-    .task-card.is-active {
-      background: color-mix(in srgb, var(--accent) 7%, var(--surface2));
-      border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
-      border-left-width: 4px;
-    }
-    .task-card.is-active::after {
-      border-radius: 9px;
-      border-color: color-mix(in srgb, var(--accent) 28%, transparent);
-    }
-
-    .task-card-media { border-radius: 9px; border-color: var(--border); }
-
-    /* ── Modal: clean sheet ── */
-    .modal-backdrop {
-      background: rgba(8, 10, 16, .62);
-      backdrop-filter: blur(4px);
-    }
-    :root.theme-light .modal-backdrop {
-      background: rgba(28, 33, 46, .32);
-      backdrop-filter: blur(3px);
-    }
-
-    .modal {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      /* Overlays are the one place elevation earns its keep: a soft,
-         diffuse shadow lifts the sheet off the backdrop. Overrides the
-         global flat rule intentionally, for overlays only. */
-      box-shadow:
-        0 1px 1px rgba(2, 6, 23, .04),
-        0 24px 60px -12px rgba(2, 6, 23, .55) !important;
-    }
-    :root.theme-light .modal {
-      box-shadow:
-        0 1px 2px rgba(28, 33, 46, .04),
-        0 20px 48px -12px rgba(28, 33, 46, .22) !important;
-    }
-
-    /* ── Popup / context menu: flat, professional sheet ──
-       Replaces the old glow-gradient chrome with a clean surface that
-       matches the rest of the flattened UI, plus subtle overlay elevation. */
-    .context-menu {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      backdrop-filter: none;
-      box-shadow:
-        0 1px 2px rgba(2, 6, 23, .04),
-        0 16px 40px -12px rgba(2, 6, 23, .45) !important;
-    }
-    :root.theme-light .context-menu {
-      box-shadow:
-        0 1px 2px rgba(28, 33, 46, .05),
-        0 14px 36px -12px rgba(28, 33, 46, .20) !important;
-    }
-    .context-menu-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 8px;
-      color: var(--text);
-    }
-    .context-menu-btn:hover {
-      background: var(--surface2);
-      border-color: var(--border);
-      color: var(--text);
-    }
-    .context-menu-btn strong,
-    .context-menu-label {
-      color: var(--text-muted);
-    }
-
-    /* ── Pills & badges: quiet, uniform, legible ── */
-    .items-table-status-pill,
-    .workflow-item-status-pill,
-    .task-project-pill,
-    .task-mode-badge,
-    .detail-tab-badge {
-      border-radius: 999px;
-      font-weight: 600;
-      letter-spacing: 0;
-    }
-
-    /* ── Inputs & selects: consistent flat fields ── */
-    input, select, textarea {
-      border-radius: 8px;
-    }
-    input:hover, select:hover, textarea:hover {
-      border-color: var(--border-strong);
-    }
-
-    /* ── Motion: respect user preference ── */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        transition-duration: .01ms !important;
-        animation-duration: .01ms !important;
-      }
     }
   </style>
 </head>
