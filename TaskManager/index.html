@@ -74,10 +74,6 @@
       --task-card-media-min-width: 96px;
       --task-card-media-max-width: 176px;
       --task-card-media-max-height: 176px;
-      --task-card-media-compact-min-width: 82px;
-      --task-card-media-compact-max-width: 136px;
-      --task-card-media-compact-max-height: 136px;
-
       --sticky-panel-top: 82px;
       --sticky-panel-gap: 16px;
       --task-list-offset: 270px;
@@ -253,14 +249,6 @@
       height: calc(100dvh - var(--workspace-height-offset));
       min-height: 0;
       overflow: hidden;
-    }
-
-    .workspace-grid.is-table-view {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .workspace-grid.is-table-view .detail-panel {
-      display: none;
     }
 
     .list-panel,
@@ -1133,53 +1121,6 @@
       min-width: 220px;
       flex: 1 1 320px;
     }
-
-    .view-switch {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px;
-      border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
-      border-radius: 12px;
-      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, transparent), rgba(255,255,255,.02));
-      flex: 0 0 auto;
-    }
-
-    .view-switch-btn {
-      --view-accent: var(--accent);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 30px;
-      padding: 6px 10px;
-      border-radius: 9px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: color-mix(in srgb, var(--text-muted) 78%, var(--text) 22%);
-      font-size: 10px;
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: border-color .12s ease, background-color .12s ease, color .12s ease;
-      white-space: nowrap;
-    }
-
-    .view-switch-btn:hover {
-      color: var(--text);
-      background: color-mix(in srgb, var(--accent) 8%, transparent);
-    }
-
-    .view-switch-btn.is-active {
-      border-color: color-mix(in srgb, var(--view-accent) 30%, var(--border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--view-accent) 14%, var(--surface2)), color-mix(in srgb, var(--view-accent) 7%, var(--surface)));
-      color: color-mix(in srgb, var(--text) 80%, var(--view-accent) 20%);
-    }
-
-    .view-switch-btn[data-view-mode="standard"] { --view-accent: #5b7dff; }
-    .view-switch-btn[data-view-mode="compact"] { --view-accent: #14b8a6; }
-    .view-switch-btn[data-view-mode="table"] { --view-accent: #f59e0b; }
 
     .toggle-done-btn {
       margin-left: auto;
@@ -2143,8 +2084,7 @@
       fill: currentColor;
     }
 
-    .task-card.is-favorite,
-    .task-table-row.is-favorite {
+    .task-card.is-favorite {
       border-color: color-mix(in srgb, #f4b942 22%, var(--border));
     }
 
@@ -2533,398 +2473,6 @@
       font-style: italic;
     }
 
-    .task-list.view-compact {
-      gap: 8px;
-    }
-
-    .task-table-shell {
-      min-width: 1760px;
-      overflow: visible;
-      padding-bottom: 6px;
-      border-radius: 18px;
-    }
-
-    .task-data-table {
-      width: max-content;
-      min-width: 100%;
-      table-layout: fixed;
-      border-collapse: separate;
-      border-spacing: 0 8px;
-    }
-
-    .task-table-head {
-      position: sticky;
-      top: 0;
-      z-index: 4;
-      padding: 0;
-      background:
-        linear-gradient(180deg, color-mix(in srgb, #f59e0b 12%, var(--surface2)), color-mix(in srgb, #f59e0b 4%, var(--surface))),
-        var(--surface);
-      border-top: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
-      border-bottom: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
-      border-right: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
-      box-shadow: 0 14px 26px rgba(15, 23, 42, .14);
-      backdrop-filter: blur(16px);
-      box-sizing: border-box;
-      vertical-align: middle;
-    }
-
-    .task-table-head:first-child {
-      border-left: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
-      border-top-left-radius: 16px;
-      border-bottom-left-radius: 16px;
-    }
-
-    .task-table-head:last-child {
-      border-top-right-radius: 16px;
-      border-bottom-right-radius: 16px;
-    }
-
-    .task-table-sort-btn,
-    .task-table-sort-label {
-      width: 100%;
-      min-height: 52px;
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      color: color-mix(in srgb, var(--text-muted) 74%, var(--text) 26%);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      text-align: center;
-      box-sizing: border-box;
-    }
-
-    .task-table-sort-btn {
-      border: 0;
-      background: transparent;
-      cursor: pointer;
-      transition: color .12s ease, background-color .12s ease;
-    }
-
-    .task-table-sort-btn:hover,
-    .task-table-sort-btn:focus-visible,
-    .task-table-sort-btn.is-active {
-      color: var(--text);
-      background: color-mix(in srgb, var(--accent) 10%, transparent);
-      outline: none;
-    }
-
-    .task-table-sort-indicator {
-      min-width: 34px;
-      padding: 3px 6px;
-      border-radius: 999px;
-      background: color-mix(in srgb, var(--surface2) 72%, transparent);
-      color: color-mix(in srgb, var(--text-muted) 70%, var(--text) 30%);
-      font-size: 9px;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      line-height: 1;
-    }
-
-    .task-table-sort-btn.is-active .task-table-sort-indicator {
-      background: color-mix(in srgb, var(--accent) 18%, var(--surface2));
-      color: var(--text);
-    }
-
-    .task-table-head.is-title .task-table-sort-btn,
-    .task-table-head.is-title .task-table-sort-label {
-      justify-content: flex-start;
-      text-align: left;
-    }
-
-    .task-table-head.is-actions .task-table-sort-label {
-      justify-content: flex-end;
-      text-align: right;
-    }
-
-    .task-table-row {
-      cursor: pointer;
-    }
-
-    .task-table-cell {
-      min-width: 0;
-      padding: 12px 14px;
-      background:
-        linear-gradient(180deg, color-mix(in srgb, white 2%, var(--surface)), color-mix(in srgb, var(--surface2) 26%, var(--surface)));
-      border-top: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
-      border-bottom: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
-      border-right: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
-      box-sizing: border-box;
-      vertical-align: middle;
-      text-align: center;
-    }
-
-    .task-table-row .task-table-cell:first-child {
-      border-left: 4px solid var(--border);
-      border-top-left-radius: 16px;
-      border-bottom-left-radius: 16px;
-    }
-
-    .task-table-row .task-table-cell:last-child {
-      border-top-right-radius: 16px;
-      border-bottom-right-radius: 16px;
-    }
-
-    .task-table-row:hover .task-table-cell {
-      border-top-color: var(--accent);
-      border-bottom-color: var(--accent);
-      border-right-color: var(--accent);
-      background: linear-gradient(180deg, color-mix(in srgb, white 3%, var(--surface)), color-mix(in srgb, var(--accent) 5%, var(--surface)));
-    }
-
-    .task-table-row.is-active .task-table-cell {
-      border-top-color: color-mix(in srgb, var(--accent-h) 52%, var(--border-strong) 48%);
-      border-bottom-color: color-mix(in srgb, var(--accent-h) 52%, var(--border-strong) 48%);
-      border-right-color: color-mix(in srgb, var(--accent-h) 34%, var(--border));
-      background: linear-gradient(180deg, color-mix(in srgb, white 4%, var(--surface)), color-mix(in srgb, var(--accent-h) 6%, var(--surface)));
-    }
-
-    .task-table-row.priority-critical .task-table-cell:first-child { border-left-color: var(--critical); }
-    .task-table-row.priority-high .task-table-cell:first-child { border-left-color: var(--high); }
-    .task-table-row.priority-medium .task-table-cell:first-child { border-left-color: var(--medium); }
-    .task-table-row.priority-low .task-table-cell:first-child { border-left-color: var(--low); }
-    .task-table-row.priority-very-low .task-table-cell:first-child { border-left-color: var(--very-low); }
-
-    .task-table-row.status-completed .task-table-cell {
-      opacity: .7;
-    }
-
-    .task-table-row.status-completed .task-table-title {
-      text-decoration: line-through;
-      color: var(--text-muted);
-    }
-
-    .task-table-cell-inner {
-      min-width: 0;
-      min-height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .task-table-cell-inner.is-title {
-      justify-content: flex-start;
-      align-items: flex-start;
-      text-align: left;
-    }
-
-    .task-table-cell-inner.is-description {
-      align-items: flex-start;
-    }
-
-    .task-table-cell-inner.is-actions {
-      justify-content: flex-end;
-    }
-
-    .task-table-title-wrap,
-    .task-table-date-wrap {
-      min-width: 0;
-      display: grid;
-      gap: 5px;
-    }
-
-    .task-table-title-wrap {
-      gap: 7px;
-    }
-
-    .task-table-title-top {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .task-table-title-main {
-      min-width: 0;
-      display: grid;
-      gap: 6px;
-      align-content: start;
-    }
-
-    .task-table-title {
-      margin: 0;
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 800;
-      line-height: 1.3;
-      word-break: break-word;
-    }
-
-    .task-table-title-main .task-type-line {
-      padding-left: 0;
-      gap: 6px;
-    }
-
-    .task-table-title-main .task-type-name {
-      font-size: 11px;
-      letter-spacing: .08em;
-    }
-
-    .task-table-title-main .task-card-media {
-      width: 58px;
-      min-width: 58px;
-      border-radius: 12px;
-    }
-
-    .task-table-title-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px 8px;
-      color: var(--text-muted);
-      font-size: 11px;
-      line-height: 1.35;
-    }
-
-    .task-table-text {
-      min-width: 0;
-      color: var(--text);
-      font-size: 12px;
-      line-height: 1.45;
-      word-break: break-word;
-    }
-
-    .task-table-text.is-muted {
-      color: var(--text-muted);
-    }
-
-    .task-table-text.is-description {
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
-      overflow: hidden;
-    }
-
-    .task-table-date-wrap {
-      gap: 3px;
-    }
-
-    .task-table-date-label {
-      color: var(--text-muted);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-
-    .task-table-date-value {
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 1.25;
-    }
-
-    .task-table-actions {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      width: 100%;
-      margin-left: auto;
-    }
-
-    .task-table-actions .quick-toggle {
-      flex: 0 0 auto;
-    }
-
-    .task-data-table .task-action-tools {
-      padding-top: 0;
-    }
-
-    .task-data-table .task-action-icon-btn {
-      width: 30px;
-      height: 30px;
-    }
-
-    .task-data-table .badge,
-    .task-data-table .task-project-pill {
-      min-height: 30px;
-      font-size: 10px;
-    }
-
-    .task-data-table mark.search-highlight {
-      padding: 0 .18em;
-    }
-
-    @media (max-width: 900px) {
-      .task-table-shell {
-        min-width: 1560px;
-      }
-    }
-
-    .task-card-compact .task-card-body {
-      grid-template-columns: minmax(0, 1fr) auto;
-      padding: 9px 10px;
-      align-items: start;
-    }
-
-    .task-card-compact .task-main {
-      gap: 4px;
-      padding-right: 0;
-    }
-
-    .task-card-compact.has-compact-dates .task-main {
-      grid-template-columns: minmax(0, 1fr) minmax(132px, 148px);
-      gap: 6px;
-      align-items: start;
-    }
-
-    .task-card-compact.has-compact-dates .task-heading {
-      grid-column: 1;
-      grid-row: 1;
-    }
-
-    .task-card-compact .task-heading-main {
-      gap: 4px;
-    }
-
-    .task-card-compact .task-title {
-      margin-top: 0;
-      font-size: 14px;
-      line-height: 1.24;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-      margin-bottom: 0;
-    }
-
-    .task-card-compact .task-type-line {
-      gap: 6px;
-      padding-left: 10px;
-    }
-
-    .task-card-compact .task-type-name {
-      font-size: 12px;
-      letter-spacing: .12em;
-    }
-
-    .task-card-compact .task-priority-bar {
-      width: 46px;
-      height: 5px;
-    }
-
-    .task-card-compact .task-priority-label {
-      font-size: 8px;
-    }
-
-    .task-card-compact .task-card-media {
-      width: auto;
-      min-width: var(--task-card-media-compact-min-width);
-      max-width: var(--task-card-media-compact-max-width);
-      max-height: var(--task-card-media-compact-max-height);
-      border-radius: 12px;
-    }
-
-    .task-card-compact .task-project-pill {
-      font-size: 10px;
-      padding: 3px 8px;
-      min-height: 24px;
-    }
-
     @media (max-width: 760px) {
       .task-card-media {
         width: auto;
@@ -2944,120 +2492,6 @@
         min-width: 72px;
         border-radius: 10px;
       }
-    }
-
-    .task-card-compact .task-heading {
-      gap: 6px;
-    }
-
-    .task-card-compact .quick-toggle {
-      width: 22px;
-      height: 22px;
-    }
-
-    .task-card-compact .task-actions {
-      grid-template-columns: 1fr;
-      align-self: start;
-      justify-self: end;
-      align-content: start;
-      min-width: 112px;
-      width: 112px;
-      gap: 3px;
-    }
-
-    .task-card-compact .task-action-tools {
-      align-self: start;
-    }
-
-    .task-card-compact .task-action-icon-btn {
-      width: 30px;
-      height: 30px;
-    }
-
-    .task-card-compact .task-signal-row {
-      gap: 4px 8px;
-      align-items: center;
-    }
-
-    .task-card-compact .task-progress-summary {
-      font-size: 11px;
-      line-height: 1.1;
-    }
-
-    .task-card-compact .task-progress-label,
-    .task-card-compact .task-progress-value {
-      letter-spacing: .06em;
-    }
-
-    .task-card-compact .task-progress-bar {
-      height: 7px;
-    }
-
-    .task-card-compact .task-sender-label,
-    .task-card-compact .task-email-subject {
-      font-size: 9px;
-      line-height: 1.25;
-    }
-
-    .task-card-compact .task-compact-context {
-      display: grid;
-      gap: 3px;
-      min-width: 0;
-      align-content: start;
-    }
-
-    .task-card-compact .task-compact-dates-column {
-      grid-column: 2;
-      grid-row: 1;
-      min-width: 0;
-      align-self: start;
-      justify-self: start;
-    }
-
-    .task-card-compact .task-compact-dates-column .task-preview-dates {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 3px;
-      width: 100%;
-      max-width: none;
-      justify-self: stretch;
-      min-width: 144px;
-    }
-
-    .task-card-compact .task-preview-date {
-      gap: 2px;
-      padding: 6px 34px 6px 8px;
-      border-radius: 10px;
-    }
-
-    .task-card-compact .task-preview-date::after {
-      top: 6px;
-      right: 6px;
-      min-width: 22px;
-      height: 18px;
-      padding: 0 5px;
-      font-size: 7px;
-    }
-
-    .task-card-compact .task-preview-date-label {
-      font-size: 8px;
-      letter-spacing: .08em;
-    }
-
-    .task-card-compact .task-preview-date-value {
-      font-size: 10px;
-      line-height: 1.15;
-    }
-
-    .task-card-compact .task-action-status {
-      padding-top: 0;
-      align-self: start;
-    }
-
-    .task-card-compact .task-action-status .badge {
-      min-height: 40px;
-      padding: 6px 9px;
-      font-size: 11px;
-      border-radius: 9px;
     }
 
     .task-preview-date.is-received {
@@ -6277,20 +5711,12 @@
       }
       .filters-bar select,
       .search-input,
-      .view-switch,
       .toggle-done-btn {
         width: 100%;
       }
       .filters-bar select,
       .search-input {
         flex: 1 1 180px;
-      }
-      .view-switch {
-        justify-content: stretch;
-        flex-wrap: wrap;
-      }
-      .view-switch-btn {
-        flex: 1 1 calc(50% - 4px);
       }
       .toggle-done-btn {
         margin-left: 0;
@@ -6366,15 +5792,9 @@
         padding: 8px;
         min-height: 50px;
       }
-      .view-switch-btn {
-        flex-basis: calc(50% - 4px);
-      }
       .list-panel,
       .detail-panel { padding: 14px; }
       .task-card-body {
-        grid-template-columns: 1fr;
-      }
-      .task-card-compact .task-card-body {
         grid-template-columns: 1fr;
       }
       .task-main,
@@ -7247,11 +6667,6 @@
         <option value="title">Sort: Title</option>
       </select>
       <button class="btn btn-ghost apply-sorting-btn" id="applyTaskSortingBtn" type="button" hidden disabled>Refresh View</button>
-      <div class="view-switch" id="taskViewSwitch" role="tablist" aria-label="Task views">
-        <button type="button" class="view-switch-btn is-active" data-view-mode="standard" role="tab" aria-selected="true">Standard</button>
-        <button type="button" class="view-switch-btn" data-view-mode="compact" role="tab" aria-selected="false">Compact</button>
-        <button type="button" class="view-switch-btn" data-view-mode="table" role="tab" aria-selected="false">Table</button>
-      </div>
       <button class="btn btn-ghost toggle-done-btn" id="toggleDoneBtn">Hide Completed</button>
     </div>
   </div>
@@ -7906,7 +7321,6 @@
       categories: 'tm_categories',
       templates: 'tm_templates',
       hideDone: 'tm_hide_done',
-      viewMode: 'tm_view_mode',
       sortMode: 'tm_sort_mode',
       theme: 'tm_theme',
       showSecondaryStats: 'tm_show_secondary_stats',
@@ -7930,7 +7344,6 @@
     ];
     const PERSISTED_PREFERENCE_KEYS = [
       KEYS.hideDone,
-      KEYS.viewMode,
       KEYS.sortMode,
       KEYS.showSecondaryStats,
       KEYS.activeSecondaryStatsTab
@@ -8276,7 +7689,6 @@
             hideDone,
             showSecondaryStats,
             activeSecondaryStatsTab,
-            viewMode: currentViewMode,
             sortMode: currentSortMode,
             theme: currentTheme
           }
@@ -8311,7 +7723,6 @@
           hideDone: preferences.hideDone === true || preferences.hideDone === 'true' ? 'true' : 'false',
           showSecondaryStats: preferences.showSecondaryStats === false || preferences.showSecondaryStats === 'false' ? 'false' : 'true',
           activeSecondaryStatsTab: String(preferences.activeSecondaryStatsTab || 'status'),
-          viewMode: String(preferences.viewMode || 'standard'),
           sortMode: String(preferences.sortMode || 'workflow'),
           theme: theme || getSystemPreferredTheme()
         }
@@ -8330,7 +7741,6 @@
         { key: KEYS.hideDone, value: snapshot.preferences.hideDone },
         { key: KEYS.showSecondaryStats, value: snapshot.preferences.showSecondaryStats },
         { key: KEYS.activeSecondaryStatsTab, value: snapshot.preferences.activeSecondaryStatsTab },
-        { key: KEYS.viewMode, value: snapshot.preferences.viewMode },
         { key: KEYS.sortMode, value: snapshot.preferences.sortMode }
       ];
 
@@ -8693,23 +8103,17 @@
         case 'small':
           return {
             standardMin: '96px',
-            standardMax: '96px',
-            compactMin: '82px',
-            compactMax: '82px'
+            standardMax: '96px'
           };
         case 'medium':
           return {
             standardMin: '96px',
-            standardMax: '136px',
-            compactMin: '82px',
-            compactMax: '112px'
+            standardMax: '136px'
           };
         default:
           return {
             standardMin: '96px',
-            standardMax: '176px',
-            compactMin: '82px',
-            compactMax: '136px'
+            standardMax: '176px'
           };
       }
     }
@@ -8721,9 +8125,6 @@
       root.style.setProperty('--task-card-media-min-width', config.standardMin);
       root.style.setProperty('--task-card-media-max-width', config.standardMax);
       root.style.setProperty('--task-card-media-max-height', config.standardMax);
-      root.style.setProperty('--task-card-media-compact-min-width', config.compactMin);
-      root.style.setProperty('--task-card-media-compact-max-width', config.compactMax);
-      root.style.setProperty('--task-card-media-compact-max-height', config.compactMax);
     }
 
     function getSupplierOptions(extraValue = '') {
@@ -8759,9 +8160,7 @@
     let hideDone    = false;
     let showSecondaryStats = true;
     let currentTheme = 'dark';
-    let currentViewMode = 'standard';
     let currentSortMode = 'workflow';
-    let currentTableSort = { column: '', direction: 'asc' };
     let editingId   = null;
     let editingCategoryName = null;
     let editingTemplateId = null;
@@ -8815,7 +8214,6 @@
     const STATUS_OPTIONS = ['Not Started','Pending','Ongoing', 'Waiting for Someone Else', 'Completed'];
     const YES_NO_OPTIONS = ['Yes', 'No'];
     const HIDDEN_FILTER_GROUPS = ['status', 'priority', 'category'];
-    const TASK_VIEW_OPTIONS = ['standard', 'compact', 'table'];
     const TASK_SORT_OPTIONS = ['workflow', 'due-date', 'received-date', 'created-date', 'priority', 'title'];
     const DETAILED_EXPORT_COUNTER_SUMMARY_DEFINITIONS = [
       { key: 'openTasks', label: 'Open Tasks', accent: '1D4ED8' },
@@ -8908,20 +8306,6 @@
       return columns.find(column => column.isImage)?.key || '';
     }
 
-    const TASK_TABLE_COLUMNS = [
-      { key: 'title', label: 'Title', width: '560px', headerClass: 'is-title', cellClass: 'is-title', sortable: true },
-      { key: 'category', label: 'Category', width: '108px', sortable: true },
-      { key: 'priority', label: 'Priority', width: '102px', sortable: true },
-      { key: 'status', label: 'Status', width: '112px', sortable: true },
-      { key: 'description', label: 'Description', width: '460px', cellClass: 'is-description', sortable: true },
-      { key: 'quantity', label: 'Qty', width: '50px', sortable: true },
-      { key: 'sender', label: 'Sender', width: '136px', sortable: true },
-      { key: 'project', label: 'Project', width: '150px', sortable: true },
-      { key: 'receivedAt', label: 'Received', width: '92px', sortable: true },
-      { key: 'startedAt', label: 'Started', width: '92px', sortable: true },
-      { key: 'completedAt', label: 'Completed', width: '102px', sortable: true },
-      { key: 'actions', label: 'Actions', width: '88px', headerClass: 'is-actions', cellClass: 'is-actions', sortable: false }
-    ];
     const DEFAULT_PRIORITY = 'Medium';
     const DEFAULT_STATUS = 'Not Started';
     const LEGACY_STATUS_ALIASES = {
@@ -9065,13 +8449,7 @@
       showSecondaryStats = (await loadPreference(KEYS.showSecondaryStats, 'true')) !== 'false';
       activeSecondaryStatsTab = await loadPreference(KEYS.activeSecondaryStatsTab, 'status') || 'status';
       currentTheme = await loadPreference(KEYS.theme, document.documentElement.dataset.theme || 'dark');
-      const storedViewMode = await loadPreference(KEYS.viewMode, 'standard');
-      currentViewMode = normalizeTaskViewMode(storedViewMode);
       currentSortMode = normalizeTaskSortMode(await loadPreference(KEYS.sortMode, 'workflow'));
-
-      if (storedViewMode !== currentViewMode) {
-        saveViewModePreference();
-      }
 
       if (!categories.length) {
         categories = getDefaultCategories();
@@ -9157,10 +8535,6 @@
 
     function saveActiveSecondaryStatsTabPreference() {
       savePreference(KEYS.activeSecondaryStatsTab, activeSecondaryStatsTab);
-    }
-
-    function saveViewModePreference() {
-      savePreference(KEYS.viewMode, currentViewMode);
     }
 
     function saveSortModePreference() {
@@ -9336,11 +8710,6 @@
     function normalizeTaskSortMode(sortMode) {
       const normalizedSortMode = String(sortMode || '').trim();
       return TASK_SORT_OPTIONS.includes(normalizedSortMode) ? normalizedSortMode : 'workflow';
-    }
-
-    function normalizeTaskViewMode(viewMode) {
-      const normalizedViewMode = String(viewMode || '').trim().toLowerCase();
-      return TASK_VIEW_OPTIONS.includes(normalizedViewMode) ? normalizedViewMode : 'standard';
     }
 
     function normalizeTaskFavorite(value) {
@@ -9526,17 +8895,6 @@
         const selectedSortMode = normalizeTaskSortMode(sortTasks.value || currentSortMode);
         sortTasks.value = selectedSortMode;
         currentSortMode = selectedSortMode;
-      }
-
-      const taskViewSwitch = document.getElementById('taskViewSwitch');
-      if (taskViewSwitch) {
-        const selectedViewMode = normalizeTaskViewMode(currentViewMode);
-        currentViewMode = selectedViewMode;
-        taskViewSwitch.querySelectorAll('[data-view-mode]').forEach(button => {
-          const isActive = button.dataset.viewMode === selectedViewMode;
-          button.classList.toggle('is-active', isActive);
-          button.setAttribute('aria-selected', isActive ? 'true' : 'false');
-        });
       }
 
       syncTaskModalFieldAccents();
@@ -11054,103 +10412,6 @@
       return (a.dueDate || '9999-12-31').localeCompare(b.dueDate || '9999-12-31');
     }
 
-    function getTaskTableColumn(columnKey) {
-      return TASK_TABLE_COLUMNS.find(column => column.key === columnKey) || null;
-    }
-
-    function getDefaultTaskTableSortDirection(columnKey) {
-      return ['quantity', 'receivedAt', 'startedAt', 'completedAt'].includes(columnKey) ? 'desc' : 'asc';
-    }
-
-    function toggleTaskTableSort(columnKey) {
-      const column = getTaskTableColumn(columnKey);
-      if (!column || column.sortable === false) return;
-
-      if (currentTableSort.column === columnKey) {
-        currentTableSort.direction = currentTableSort.direction === 'asc' ? 'desc' : 'asc';
-        return;
-      }
-
-      currentTableSort = {
-        column: columnKey,
-        direction: getDefaultTaskTableSortDirection(columnKey)
-      };
-    }
-
-    function compareTableTextValues(left, right, direction) {
-      const normalizedLeft = normalizeSearchText(left);
-      const normalizedRight = normalizeSearchText(right);
-      const comparison = normalizedLeft.localeCompare(normalizedRight);
-      return direction === 'desc' ? comparison * -1 : comparison;
-    }
-
-    function compareTableDateValues(left, right, direction) {
-      const normalizedLeft = left || '';
-      const normalizedRight = right || '';
-      if (!normalizedLeft && !normalizedRight) return 0;
-      if (!normalizedLeft) return 1;
-      if (!normalizedRight) return -1;
-
-      const comparison = normalizedLeft.localeCompare(normalizedRight);
-      return direction === 'desc' ? comparison * -1 : comparison;
-    }
-
-    function compareTableNumericValues(left, right, direction) {
-      const comparison = Number(left || 0) - Number(right || 0);
-      return direction === 'desc' ? comparison * -1 : comparison;
-    }
-
-    function compareTaskTableTasks(a, b, fallbackSortMode) {
-      const columnKey = currentTableSort.column;
-      const direction = currentTableSort.direction || 'asc';
-      if (!columnKey) return compareTasks(a, b, fallbackSortMode);
-
-      let comparison = 0;
-      switch (columnKey) {
-        case 'title':
-          comparison = compareTableTextValues(a.title, b.title, direction);
-          break;
-        case 'category':
-          comparison = compareTableTextValues(a.category, b.category, direction);
-          break;
-        case 'priority':
-          comparison = compareTableNumericValues(
-            PRIORITY_ORDER[normalizePriority(a.priority)] ?? PRIORITY_OPTIONS.length,
-            PRIORITY_ORDER[normalizePriority(b.priority)] ?? PRIORITY_OPTIONS.length,
-            direction
-          );
-          break;
-        case 'status':
-          comparison = compareTableNumericValues(
-            STATUS_ORDER[normalizeStatus(a.status)] ?? STATUS_OPTIONS.length,
-            STATUS_ORDER[normalizeStatus(b.status)] ?? STATUS_OPTIONS.length,
-            direction
-          );
-          break;
-        case 'description':
-          comparison = compareTableTextValues(a.description, b.description, direction);
-          break;
-        case 'quantity':
-          comparison = compareTableNumericValues(getTaskCategoryCountWeight(a), getTaskCategoryCountWeight(b), direction);
-          break;
-        case 'sender':
-          comparison = compareTableTextValues(a.sender, b.sender, direction);
-          break;
-        case 'project':
-          comparison = compareTableTextValues(a.project, b.project, direction);
-          break;
-        case 'receivedAt':
-        case 'startedAt':
-        case 'completedAt':
-          comparison = compareTableDateValues(a[columnKey], b[columnKey], direction);
-          break;
-        default:
-          comparison = 0;
-      }
-
-      return comparison || compareTasks(a, b, fallbackSortMode);
-    }
-
     function getVisibleTasks(tasksToFilter, filters, options = {}) {
       const preserveVisibleIds = options.preserveVisibleIds instanceof Set
         ? options.preserveVisibleIds
@@ -11170,12 +10431,6 @@
         if (filters.search && !getTaskSearchText(task).includes(filters.search)) return false;
         return true;
       });
-    }
-
-    function getTaskComparatorForView(viewMode, sortMode) {
-      return viewMode === 'table'
-        ? (a, b) => compareTaskTableTasks(a, b, sortMode)
-        : (a, b) => compareTasks(a, b, sortMode);
     }
 
     function buildRenderedTaskOrderIndex(referenceOrderIds = renderedTaskOrderIds) {
@@ -11203,9 +10458,8 @@
     }
 
     function orderVisibleTasks(visibleTasks, options = {}) {
-      const activeViewMode = normalizeTaskViewMode(options.viewMode || currentViewMode);
       const activeSortMode = normalizeTaskSortMode(options.sortMode || currentSortMode);
-      const compareWithinBucket = getTaskComparatorForView(activeViewMode, activeSortMode);
+      const compareWithinBucket = (a, b) => compareTasks(a, b, activeSortMode);
       const referenceOrderIds = options.referenceOrderIds || renderedTaskOrderIds;
       const favoriteTasks = [];
       const standardTasks = [];
@@ -11243,27 +10497,6 @@
 
       button.hidden = !hasDeferredTaskSort;
       button.disabled = !hasDeferredTaskSort;
-    }
-
-    function setTaskListViewMode(list, viewMode) {
-      if (!list) return;
-
-      list.classList.remove(...TASK_VIEW_OPTIONS.map(option => `view-${option}`));
-      list.classList.add(`view-${viewMode}`);
-      list.dataset.viewMode = viewMode;
-    }
-
-    function setTaskWorkspaceViewMode(viewMode) {
-      const workspaceGrid = document.getElementById('workspaceGrid');
-      const detailPanel = document.getElementById('taskDetailPanel');
-      const isTableView = viewMode === 'table';
-
-      workspaceGrid?.classList.toggle('is-table-view', isTableView);
-
-      if (detailPanel) {
-        detailPanel.classList.toggle('is-hidden', isTableView);
-        detailPanel.setAttribute('aria-hidden', isTableView ? 'true' : 'false');
-      }
     }
 
     function getTaskCardData(task) {
@@ -11384,201 +10617,7 @@
         </div>`;
     }
 
-    function getCompactTaskCardMarkup(task, searchQuery = '') {
-      const taskData = getTaskCardData(task);
-      const compactDateMarkup = [
-        task.receivedAt ? `<div class="task-preview-date is-received"><span class="task-preview-date-label">Received</span><span class="task-preview-date-value">${escHtml(formatDate(task.receivedAt))}</span></div>` : '',
-        task.dueDate ? `<div class="task-preview-date is-due ${taskData.overdue ? 'overdue' : ''}"><span class="task-preview-date-label">Due</span><span class="task-preview-date-value">${taskData.overdue ? 'Overdue ' : ''}${escHtml(formatDate(task.dueDate))}</span></div>` : '',
-        task.completedAt ? `<div class="task-preview-date is-completed"><span class="task-preview-date-label">Completed</span><span class="task-preview-date-value">${escHtml(formatDate(task.completedAt))}</span></div>` : ''
-      ].filter(Boolean).join('');
-
-      return `
-        <div class="task-card task-card-compact ${compactDateMarkup ? 'has-compact-dates' : ''} ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isFavorite ? 'is-favorite' : ''} ${taskData.isActive ? 'is-active' : ''}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
-          <div class="task-card-body">
-            <div class="task-main">
-              <div class="task-heading">
-                ${getTaskQuickActionsMarkup(task)}
-                ${getTaskMediaMarkup(task)}
-                <div class="task-heading-main">
-                  <div class="task-heading-top">
-                    <div class="task-heading-copy">
-                      ${getTaskTypeMarkup(task.category)}
-                    </div>
-                    ${getTaskActionToolsMarkup(task.id)}
-                  </div>
-                  <div class="task-title">${getHighlightedMarkup(task.title, searchQuery)}</div>
-                  <div class="task-signal-row">
-                    ${getTaskProjectMarkup(task.project, searchQuery)}
-                    ${getTaskPriorityMarkup(taskData.priority)}
-                  </div>
-                  <div class="task-progress-row" style="--task-progress:${taskData.progressPercent}%">
-                    <div class="task-progress-summary">
-                      <span class="task-progress-label">Progress</span>
-                      <span class="task-progress-value">${escHtml(taskData.progressLabel)}</span>
-                    </div>
-                    <div class="task-progress-bar" aria-hidden="true"></div>
-                  </div>
-                </div>
-              </div>
-              ${compactDateMarkup ? `<div class="task-compact-dates-column"><div class="task-preview-dates">${compactDateMarkup}</div></div>` : ''}
-            </div>
-            <div class="task-actions task-actions-compact">
-              <div class="task-action-status">
-                ${getFilterBadgeMarkup('status', taskData.status)}
-              </div>
-            </div>
-          </div>
-        </div>`;
-    }
-
-    function getTaskTableDateMarkup(label, value) {
-      return `
-        <div class="task-table-date-wrap">
-          <span class="task-table-date-label">${escHtml(label)}</span>
-          <span class="task-table-date-value">${value ? escHtml(formatDate(value)) : '—'}</span>
-        </div>`;
-    }
-
-    function getTaskTableActionToolsMarkup(taskId) {
-      return `
-        <div class="task-action-tools">
-          <button class="task-action-icon-btn is-edit" type="button" data-edit="${taskId}" title="Edit task" aria-label="Edit task">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
-            </svg>
-          </button>
-          <button class="task-action-icon-btn is-delete" type="button" data-delete="${taskId}" title="Delete task" aria-label="Delete task">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M18 6 6 18" />
-              <path d="M6 6l12 12" />
-            </svg>
-          </button>
-        </div>`;
-    }
-
-    function getTaskTableHeaderMarkup(column) {
-      const isSortable = column.sortable !== false;
-      const isActive = currentTableSort.column === column.key;
-      const direction = isActive ? currentTableSort.direction : getDefaultTaskTableSortDirection(column.key);
-      const ariaSort = isSortable
-        ? (isActive ? (direction === 'asc' ? 'ascending' : 'descending') : 'none')
-        : null;
-      const headerClasses = ['task-table-head'];
-      if (column.headerClass) headerClasses.push(column.headerClass);
-
-      return `
-        <th scope="col" class="${headerClasses.join(' ')}" style="width:${escHtml(column.width)}"${ariaSort ? ` aria-sort="${ariaSort}"` : ''}>
-          ${isSortable ? `
-            <button class="task-table-sort-btn ${isActive ? 'is-active' : ''}" type="button" data-table-sort="${escHtml(column.key)}" aria-label="Sort by ${escHtml(column.label)} ${isActive ? (direction === 'asc' ? 'descending' : 'ascending') : (direction === 'asc' ? 'ascending' : 'descending')}">
-              <span>${escHtml(column.label)}</span>
-              <span class="task-table-sort-indicator" aria-hidden="true">${isActive ? (direction === 'asc' ? 'Asc' : 'Desc') : 'Sort'}</span>
-            </button>`
-            : `<span class="task-table-sort-label">${escHtml(column.label)}</span>`}
-        </th>`;
-    }
-
-    function getTaskTableCellMarkup(task, column, taskData, searchQuery = '') {
-      const quantity = getTaskCategoryCountWeight(task);
-      const cellClasses = ['task-table-cell'];
-      const innerClasses = ['task-table-cell-inner'];
-      if (column.cellClass) {
-        cellClasses.push(column.cellClass);
-        innerClasses.push(column.cellClass);
-      }
-
-      let content = '';
-      switch (column.key) {
-        case 'title':
-          content = `
-            <div class="task-table-title-wrap">
-              <div class="task-table-title-top">
-                ${getTaskQuickActionsMarkup(task)}
-                ${getTaskMediaMarkup(task)}
-                <div class="task-table-title-main">
-                  <h3 class="task-table-title">${getHighlightedMarkup(task.title, searchQuery)}</h3>
-                </div>
-              </div>
-            </div>`;
-          break;
-        case 'category':
-          content = getCategoryMarkup(task.category);
-          break;
-        case 'priority':
-          content = getFilterBadgeMarkup('priority', taskData.priority);
-          break;
-        case 'status':
-          content = getFilterBadgeMarkup('status', taskData.status);
-          break;
-        case 'description':
-          content = `<div class="task-table-text is-description">${task.description ? getHighlightedMarkup(task.description, searchQuery) : '<span class="task-table-text is-muted">No description</span>'}</div>`;
-          break;
-        case 'quantity':
-          content = `<div class="task-table-text">${escHtml(String(quantity))}</div>`;
-          break;
-        case 'sender':
-          content = `<div class="task-table-text">${task.sender ? getHighlightedMarkup(task.sender, searchQuery) : '<span class="task-table-text is-muted">No sender</span>'}</div>`;
-          break;
-        case 'project':
-          content = task.project
-            ? getTaskProjectMarkup(task.project, searchQuery)
-            : '<span class="task-table-text is-muted">No project</span>';
-          break;
-        case 'receivedAt':
-          content = getTaskTableDateMarkup('Received', task.receivedAt);
-          break;
-        case 'startedAt':
-          content = getTaskTableDateMarkup('Started', task.startedAt);
-          break;
-        case 'completedAt':
-          content = getTaskTableDateMarkup('Completed', task.completedAt);
-          break;
-        case 'actions':
-          content = `<div class="task-table-actions task-actions">${getTaskTableActionToolsMarkup(task.id)}</div>`;
-          break;
-        default:
-          content = '<span class="task-table-text is-muted">-</span>';
-      }
-
-      return `<td class="${cellClasses.join(' ')}"><div class="${innerClasses.join(' ')}">${content}</div></td>`;
-    }
-
-    function getTableTaskRowMarkup(task, searchQuery = '') {
-      const taskData = getTaskCardData(task);
-      return `
-        <tr class="task-table-row ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isFavorite ? 'is-favorite' : ''} ${taskData.isActive ? 'is-active' : ''}" data-task-row="${task.id}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
-          ${TASK_TABLE_COLUMNS.map(column => getTaskTableCellMarkup(task, column, taskData, searchQuery)).join('')}
-        </tr>`;
-    }
-
-    function getTableTaskListMarkup(tasksToRender, searchQuery = '') {
-      return `
-        <div class="task-table-shell">
-          <table class="task-data-table" aria-label="Task overview table">
-            <colgroup>
-              ${TASK_TABLE_COLUMNS.map(column => `<col style="width:${escHtml(column.width)}">`).join('')}
-            </colgroup>
-            <thead>
-              <tr>
-                ${TASK_TABLE_COLUMNS.map(column => getTaskTableHeaderMarkup(column)).join('')}
-              </tr>
-            </thead>
-            <tbody>
-              ${tasksToRender.map(task => getTableTaskRowMarkup(task, searchQuery)).join('')}
-            </tbody>
-          </table>
-        </div>`;
-    }
-
     function renderTaskListMarkup(tasksToRender, searchQuery = '') {
-      if (currentViewMode === 'table') {
-        return getTableTaskListMarkup(tasksToRender, searchQuery);
-      }
-
-      if (currentViewMode === 'compact') {
-        return tasksToRender.map(task => getCompactTaskCardMarkup(task, searchQuery)).join('');
-      }
-
       return tasksToRender.map(task => getStandardTaskCardMarkup(task, searchQuery)).join('');
     }
 
@@ -12892,12 +11931,10 @@
       renderTaskOptionSets();
 
       const filters = getCurrentFilters();
-      const activeViewMode = normalizeTaskViewMode(currentViewMode);
       const preserveOrder = shouldPreserveTaskOrder(options);
       const preserveVisibleIds = preserveOrder && options.recomputeOrder !== true
         ? renderedTaskOrderIds
         : undefined;
-      currentViewMode = activeViewMode;
 
       let visible = getVisibleTasks(tasks, filters, { preserveVisibleIds });
 
@@ -12908,8 +11945,6 @@
       }
 
       const list = document.getElementById('taskList');
-      setTaskListViewMode(list, activeViewMode);
-      setTaskWorkspaceViewMode(activeViewMode);
       updateApplySortingButton();
 
       if (visible.length === 0) {
@@ -12931,8 +11966,7 @@
 
       visible = orderVisibleTasks(visible, {
         preserveOrder,
-        sortMode: filters.sort,
-        viewMode: activeViewMode
+        sortMode: filters.sort
       });
 
       renderedTaskOrderIds = visible.map(task => task.id);
@@ -13577,17 +12611,10 @@
     // Single click listener on the list container handles quick-toggle (circle
     // button), card selection, edit, and delete via data-* attributes.
     document.getElementById('taskList').addEventListener('click', e => {
-      const tableSortColumn = e.target.closest('[data-table-sort]')?.dataset.tableSort;
       const editId   = e.target.closest('[data-edit]')?.dataset.edit;
       const deleteId = e.target.closest('[data-delete]')?.dataset.delete;
       const completeId = e.target.closest('[data-toggle-complete]')?.dataset.toggleComplete;
       const favoriteId = e.target.closest('[data-toggle-favorite]')?.dataset.toggleFavorite;
-
-      if (tableSortColumn) {
-        toggleTaskTableSort(tableSortColumn);
-        renderTasks({ recomputeOrder: true });
-        return;
-      }
 
       if (favoriteId) {
         const task = tasks.find(item => item.id === favoriteId);
@@ -13655,8 +12682,6 @@
     });
 
     document.getElementById('taskList').addEventListener('contextmenu', e => {
-      if (currentViewMode === 'table') return;
-
       const taskRow = e.target.closest('[data-task-row], .task-card');
       const taskId = taskRow?.dataset.taskRow || taskRow?.dataset.id;
       if (!taskRow || !taskId) return;
@@ -15151,18 +14176,6 @@
 
     document.getElementById('applyTaskSortingBtn').addEventListener('click', () => {
       renderTasks({ recomputeOrder: true, preserveDetailScroll: true, preserveItemsModalScroll: true });
-    });
-
-    document.getElementById('taskViewSwitch').addEventListener('click', e => {
-      const nextViewMode = e.target.closest('[data-view-mode]')?.dataset.viewMode;
-      if (!nextViewMode) return;
-
-      const normalizedViewMode = normalizeTaskViewMode(nextViewMode);
-      if (normalizedViewMode === currentViewMode) return;
-
-      currentViewMode = normalizedViewMode;
-      saveViewModePreference();
-      renderTasks({ recomputeOrder: true });
     });
 
     // ── Toggle Done ──
