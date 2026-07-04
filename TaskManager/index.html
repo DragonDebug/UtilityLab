@@ -627,6 +627,10 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    #taskForm .form-row.form-row-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
     #taskForm .task-form-field {
       --task-group-accent: var(--accent);
       margin-bottom: 0;
@@ -854,7 +858,8 @@
       }
 
       #taskForm .form-row.form-row-2,
-      #taskForm .form-row.form-row-3 {
+      #taskForm .form-row.form-row-3,
+      #taskForm .form-row.form-row-4 {
         grid-template-columns: 1fr;
       }
 
@@ -1133,7 +1138,7 @@
        Secondary grid: micro-stats for every status, priority, and category. ── */
     .task-stats {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
       margin-bottom: 10px;
       flex: 0 0 auto;
@@ -1157,7 +1162,7 @@
 
     .task-stats-secondary-tabs {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 6px;
       min-width: 0;
       align-items: stretch;
@@ -1276,7 +1281,7 @@
 
     .task-stats-secondary-controls .task-stats-secondary-tabs {
       flex: 1 1 auto;
-      max-width: 420px;
+      max-width: 520px;
     }
 
     .task-stats-secondary-shell.is-collapsed .task-stats-secondary {
@@ -1741,6 +1746,45 @@
       object-fit: cover;
     }
 
+    .task-card-media.is-icon-fallback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .task-card-icon-tile,
+    .detail-media-icon-tile,
+    .category-icon-preview,
+    .category-icon-option-preview {
+      display: grid;
+      place-items: center;
+      color: var(--category-icon-color, var(--accent));
+      background:
+        radial-gradient(circle at top, color-mix(in srgb, var(--category-icon-color, var(--accent)) 24%, transparent), transparent 64%),
+        linear-gradient(180deg, color-mix(in srgb, var(--category-icon-color, var(--accent)) 10%, var(--surface2)), color-mix(in srgb, var(--surface) 94%, transparent));
+      border: 1px solid color-mix(in srgb, var(--category-icon-color, var(--accent)) 32%, var(--border));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    .category-icon-svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.85;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .task-card-icon-tile {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      padding: 18%;
+    }
+
     .task-heading-main {
       width: 100%;
       min-width: 0;
@@ -1790,6 +1834,172 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .task-effort-block {
+      display: inline-grid;
+      gap: 6px;
+      min-width: 164px;
+      max-width: 100%;
+      padding: 6px 7px;
+      border: 1px solid color-mix(in srgb, var(--effort-accent, #0ea5e9) 14%, var(--border));
+      border-left: 2px solid color-mix(in srgb, var(--effort-accent, #0ea5e9) 52%, transparent);
+      border-radius: 8px;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--effort-accent, #0ea5e9) 10%, transparent), rgba(255,255,255,.025));
+    }
+
+    .task-effort-block.is-card {
+      width: 100%;
+      min-width: 0;
+      gap: 3px 8px;
+      padding: 5px 6px;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+    }
+
+    .task-effort-block.is-detail {
+      width: 100%;
+      min-width: 0;
+      grid-column: 1 / -1;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 4px 9px;
+      padding: 6px 7px;
+      align-items: center;
+    }
+
+    .task-effort-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .task-effort-block.is-card .task-effort-top {
+      gap: 6px;
+      align-items: baseline;
+    }
+
+    .task-effort-block.is-detail .task-effort-top {
+      gap: 8px;
+      align-items: baseline;
+    }
+
+    .task-effort-caption {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text-muted) 62%, var(--effort-accent, #0ea5e9) 38%);
+    }
+
+    .task-effort-block.is-card .task-effort-caption,
+    .task-effort-block.is-detail .task-effort-caption {
+      font-size: 10px;
+      letter-spacing: .07em;
+    }
+
+    .task-effort-size {
+      font-size: 14px;
+      font-weight: 800;
+      color: color-mix(in srgb, var(--text) 82%, var(--effort-accent, #0ea5e9) 18%);
+      white-space: nowrap;
+    }
+
+    .task-effort-block.is-card .task-effort-size,
+    .task-effort-block.is-detail .task-effort-size {
+      font-size: 12px;
+    }
+
+    .task-effort-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .task-effort-block.is-card .task-effort-grid {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-end;
+      gap: 7px;
+    }
+
+    .task-effort-block.is-detail .task-effort-grid {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .task-effort-stat {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .task-effort-block.is-card .task-effort-stat,
+    .task-effort-block.is-detail .task-effort-stat {
+      gap: 1px;
+    }
+
+    .task-effort-stat span {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .task-effort-block.is-card .task-effort-stat span,
+    .task-effort-block.is-detail .task-effort-stat span {
+      font-size: 8px;
+    }
+
+    .task-effort-stat strong {
+      font-size: 12px;
+      color: color-mix(in srgb, var(--text) 88%, var(--effort-accent, #0ea5e9) 12%);
+      white-space: nowrap;
+    }
+
+    .task-effort-block.is-card .task-effort-stat strong,
+    .task-effort-block.is-detail .task-effort-stat strong {
+      font-size: 10px;
+    }
+
+    .task-effort-bar {
+      height: 6px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--effort-accent, #0ea5e9) 12%, var(--surface));
+      overflow: hidden;
+    }
+
+    .task-effort-bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--effort-accent, #0ea5e9) 78%, white 22%), color-mix(in srgb, var(--effort-accent, #0ea5e9) 92%, #082f49 8%));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.05);
+    }
+
+    .task-effort-block.is-card .task-effort-bar,
+    .task-effort-block.is-card .task-effort-note {
+      display: none;
+    }
+
+    .task-effort-block.is-detail .task-effort-bar {
+      grid-column: 1 / -1;
+      height: 4px;
+    }
+
+    .task-effort-note {
+      font-size: 10px;
+      color: color-mix(in srgb, var(--text-muted) 76%, var(--effort-accent, #0ea5e9) 24%);
+      line-height: 1.3;
+    }
+
+    .task-effort-block.is-detail .task-effort-note {
+      grid-column: 1 / -1;
+      font-size: 10px;
+      line-height: 1.15;
     }
 
     .task-heading-top {
@@ -2262,7 +2472,16 @@
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,.05),
         0 1px 0 rgba(15, 23, 42, .08);
-        cursor: default;
+      cursor: default;
+    }
+
+    .task-action-item.is-effort {
+      grid-column: 1 / -1;
+      margin-top: 2px;
+    }
+
+    .task-actions .task-effort-block.is-card {
+      width: 100%;
     }
 
     .task-action-label {
@@ -2739,6 +2958,13 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
     }
 
+    .detail-submeta-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px;
+      grid-column: 1 / -1;
+    }
+
     .detail-media-card {
       display: grid;
       gap: 10px;
@@ -2799,6 +3025,17 @@
       box-shadow: 0 18px 30px rgba(2, 6, 23, .16);
     }
 
+    .detail-media-frame.is-icon-fallback {
+      padding: 20px;
+    }
+
+    .detail-media-icon-tile {
+      width: min(180px, 58vw);
+      aspect-ratio: 1;
+      border-radius: 28px;
+      padding: 24%;
+    }
+
     .detail-row {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
@@ -2815,6 +3052,23 @@
 
     .detail-row.is-full-width {
       grid-column: 1 / -1;
+    }
+
+    .detail-row.is-effort {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: stretch;
+      gap: 6px;
+      padding: 0;
+      border: 0;
+      background: none;
+    }
+
+    .detail-row.is-effort .task-effort-block.is-detail {
+      width: 100%;
+    }
+
+    .detail-row.is-effort > span:first-child {
+      padding: 0 7px;
     }
 
     .detail-row span:first-child {
@@ -3675,6 +3929,82 @@
       align-items: end;
     }
 
+    .category-icon-field {
+      display: grid;
+      gap: 10px;
+    }
+
+    .category-icon-field-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .category-icon-field-header label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .category-icon-helper {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .category-icon-picker {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(68px, 1fr));
+      gap: 8px;
+      max-height: 248px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .category-icon-option {
+      display: grid;
+      place-items: center;
+      gap: 7px;
+      min-height: 72px;
+      padding: 10px 8px;
+      border-radius: 16px;
+      border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 4%, var(--surface2)), var(--surface2));
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color .2s ease, transform .2s ease, background .2s ease;
+    }
+
+    .category-icon-option:hover {
+      border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
+      transform: translateY(-1px);
+    }
+
+    .category-icon-option.is-active {
+      border-color: color-mix(in srgb, var(--accent) 68%, var(--border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 10%, var(--surface2)), color-mix(in srgb, var(--accent-h) 10%, transparent));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 34%, transparent);
+    }
+
+    .category-icon-option-preview,
+    .category-icon-preview {
+      border-radius: 14px;
+    }
+
+    .category-icon-option-preview {
+      width: 34px;
+      height: 34px;
+      padding: 8px;
+    }
+
+    .category-icon-option-label {
+      font-size: 10px;
+      line-height: 1.15;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
     #categoryForm {
       display: grid;
       gap: 12px;
@@ -3735,6 +4065,13 @@
       min-width: 0;
     }
 
+    .category-icon-preview {
+      width: 36px;
+      height: 36px;
+      padding: 8px;
+      flex: 0 0 auto;
+    }
+
     .category-dot {
       width: 11px;
       height: 11px;
@@ -3755,6 +4092,13 @@
       font-size: 10px;
       color: var(--text-muted);
       margin-top: 1px;
+    }
+
+    .category-item-meta-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .category-item-locked {
@@ -7067,7 +7411,7 @@
                 </div>
               </div>
 
-              <div class="form-row form-row-3">
+              <div class="form-row form-row-4">
                 <div class="form-group task-form-field task-field-priority">
                   <label for="taskPriority">Priority</label>
                   <select id="taskPriority">
@@ -7081,6 +7425,10 @@
                 <div class="form-group task-form-field task-field-category">
                   <label for="taskCategory">Category</label>
                   <select id="taskCategory"></select>
+                </div>
+                <div class="form-group task-form-field task-field-effort">
+                  <label for="taskEffortSize">Effort</label>
+                  <select id="taskEffortSize"></select>
                 </div>
                 <div class="form-group task-form-field task-field-status">
                   <label for="taskStatus">Status</label>
@@ -7175,6 +7523,15 @@
             <label for="categoryColor">Color</label>
             <input type="color" id="categoryColor" class="color-input" value="#5b8def" />
           </div>
+        </div>
+
+        <div class="category-icon-field">
+          <div class="category-icon-field-header">
+            <label for="categoryIconKey">Default Icon</label>
+            <span class="category-icon-helper">Used on task cards when a task has no uploaded image</span>
+          </div>
+          <input type="hidden" id="categoryIconKey" value="folder" />
+          <div class="category-icon-picker" id="categoryIconPicker" aria-label="Category icon picker"></div>
         </div>
 
         <div class="form-actions category-form-actions">
@@ -7357,6 +7714,11 @@
                     <option value="large">Large</option>
                   </select>
                   <p class="item-settings-help">Choose how large task-card images should appear in the task list. Small matches the older thumbnail size, Medium is a balanced option, and Large keeps the current bigger look.</p>
+                </div>
+                <div class="item-settings-group">
+                  <label>Effort Estimates</label>
+                  <p class="item-settings-help">These sizes feed the task effort selector and the remaining-hours summary for incomplete tasks. Edit hours only; the six size labels stay fixed.</p>
+                  <div class="item-settings-config-list" id="effortSettingsList"></div>
                 </div>
                 <div class="item-settings-group">
                   <label>Completed Tasks</label>
@@ -8280,10 +8642,20 @@
     function normalizeDetailedExportColumnSettings(settings = {}) {
       const allowedKeys = DETAILED_EXPORT_COLUMN_DEFINITIONS.map(column => column.key);
       const fallbackKeys = [...allowedKeys];
+      const normalizedOrder = normalizeOrderedKeyList(settings?.order, allowedKeys, fallbackKeys);
+      const normalizedVisible = normalizeVisibleKeyList(settings?.visible, allowedKeys, fallbackKeys);
+      const rawOrderKeys = new Set((Array.isArray(settings?.order) ? settings.order : []).map(key => String(key || '').trim()));
+      const visibleKeySet = new Set(normalizedVisible);
+
+      normalizedOrder.forEach(columnKey => {
+        if (visibleKeySet.has(columnKey) || rawOrderKeys.has(columnKey)) return;
+        normalizedVisible.push(columnKey);
+        visibleKeySet.add(columnKey);
+      });
 
       return {
-        order: normalizeOrderedKeyList(settings?.order, allowedKeys, fallbackKeys),
-        visible: normalizeVisibleKeyList(settings?.visible, allowedKeys, fallbackKeys)
+        order: normalizedOrder,
+        visible: normalizedVisible.length ? normalizedVisible : [...fallbackKeys]
       };
     }
 
@@ -8315,6 +8687,215 @@
       const parsed = Number.parseInt(value, 10);
       if (!Number.isFinite(parsed)) return fallback;
       return Math.min(max, Math.max(min, parsed));
+    }
+
+    function normalizeNonNegativeNumber(value, fallback = 0, max = Number.MAX_SAFE_INTEGER) {
+      const parsed = Number.parseFloat(String(value ?? '').trim());
+      if (!Number.isFinite(parsed) || parsed < 0) return fallback;
+      return Math.min(max, Math.round(parsed * 100) / 100);
+    }
+
+    function normalizeEffortSize(value) {
+      const normalizedValue = String(value || '').trim().toUpperCase();
+      return EFFORT_SIZE_OPTIONS.includes(normalizedValue) ? normalizedValue : '';
+    }
+
+    function getDefaultEffortSettings() {
+      return DEFAULT_EFFORT_SETTINGS.map(setting => ({ ...setting }));
+    }
+
+    function normalizeEffortSettings(settings = []) {
+      const defaults = getDefaultEffortSettings();
+      const rawSettings = Array.isArray(settings)
+        ? settings
+        : (settings && typeof settings === 'object'
+            ? Object.entries(settings).map(([size, values]) => ({ size, ...(values || {}) }))
+            : []);
+      const rawSettingsBySize = new Map();
+
+      rawSettings.forEach(setting => {
+        const size = normalizeEffortSize(setting?.size);
+        if (!size) return;
+        rawSettingsBySize.set(size, setting);
+      });
+
+      return defaults.map(defaultSetting => {
+        const storedSetting = rawSettingsBySize.get(defaultSetting.size) || {};
+        const bestHours = normalizeNonNegativeNumber(storedSetting.bestHours ?? storedSetting.best, defaultSetting.bestHours);
+        const baseHours = normalizeNonNegativeNumber(storedSetting.baseHours ?? storedSetting.base, defaultSetting.baseHours);
+        const worstHours = normalizeNonNegativeNumber(storedSetting.worstHours ?? storedSetting.worst, defaultSetting.worstHours);
+
+        if (bestHours > baseHours || baseHours > worstHours) {
+          return { ...defaultSetting };
+        }
+
+        return {
+          size: defaultSetting.size,
+          bestHours,
+          baseHours,
+          worstHours
+        };
+      });
+    }
+
+    function getEffortSetting(effortSize, settings = itemSettings) {
+      const normalizedSize = normalizeEffortSize(effortSize);
+      if (!normalizedSize) return null;
+
+      return normalizeEffortSettings(settings?.effortSettings).find(setting => setting.size === normalizedSize) || null;
+    }
+
+    function normalizeCategoryIconKey(value) {
+      const normalizedValue = String(value || '').trim().toLowerCase();
+      return CATEGORY_ICON_BY_KEY.has(normalizedValue) ? normalizedValue : DEFAULT_CATEGORY_ICON_KEY;
+    }
+
+    function getCategoryIconDefinition(iconKey) {
+      return CATEGORY_ICON_BY_KEY.get(normalizeCategoryIconKey(iconKey)) || CATEGORY_ICON_BY_KEY.get(DEFAULT_CATEGORY_ICON_KEY);
+    }
+
+    function getCategoryIconSvgMarkup(iconKey) {
+      return `<svg class="category-icon-svg" viewBox="0 0 24 24" aria-hidden="true">${getCategoryIconDefinition(iconKey).markup}</svg>`;
+    }
+
+    function getCategoryIconPreviewMarkup(iconKey, color) {
+      return `<span class="category-icon-preview" style="--category-icon-color:${escHtml(color || 'var(--accent)')}" aria-hidden="true">${getCategoryIconSvgMarkup(iconKey)}</span>`;
+    }
+
+    function getTaskEffortMetrics(task) {
+      const effortSetting = getEffortSetting(task?.effortSize);
+      if (!effortSetting) return null;
+
+      const progressPercent = isTaskCompleted(task)
+        ? 100
+        : normalizeTaskProgressPercent(task?.progressPercent);
+      const remainingPercent = isTaskCompleted(task)
+        ? 0
+        : Math.max(0, 100 - progressPercent);
+      const remainingRatio = remainingPercent / 100;
+
+      return {
+        size: effortSetting.size,
+        progressPercent,
+        remainingPercent,
+        totalBestHours: effortSetting.bestHours,
+        totalBaseHours: effortSetting.baseHours,
+        totalWorstHours: effortSetting.worstHours,
+        remainingBestHours: normalizeNonNegativeNumber(effortSetting.bestHours * remainingRatio, 0),
+        remainingBaseHours: normalizeNonNegativeNumber(effortSetting.baseHours * remainingRatio, 0),
+        remainingWorstHours: normalizeNonNegativeNumber(effortSetting.worstHours * remainingRatio, 0)
+      };
+    }
+
+    function getTaskEffortExportDisplay(task, metric = 'remaining') {
+      const directMetrics = getTaskEffortMetrics(task);
+      if (directMetrics) {
+        if (metric === 'total') return formatEffortHours(directMetrics.totalBaseHours);
+        return formatEffortHours(directMetrics.remainingBaseHours);
+      }
+
+      const legacyEffortSize = normalizeEffortSize(task?.effortSize ?? task?.effort ?? task?.estimateSize ?? task?.estimatedEffort);
+      const effortSetting = getEffortSetting(legacyEffortSize);
+      if (!effortSetting) return '';
+
+      const legacyProgressPercent = isTaskCompleted(task)
+        ? 100
+        : normalizeTaskProgressPercent(task?.progressPercent ?? task?.progress ?? task?.completionPercent);
+      const remainingRatio = Math.max(0, 100 - legacyProgressPercent) / 100;
+      const value = metric === 'total'
+        ? effortSetting.baseHours
+        : normalizeNonNegativeNumber(effortSetting.baseHours * remainingRatio, 0);
+
+      return formatEffortHours(value);
+    }
+
+    function formatEffortHours(value) {
+      const normalizedValue = normalizeNonNegativeNumber(value, 0);
+      const displayValue = Number.isInteger(normalizedValue)
+        ? String(normalizedValue)
+        : String(Number(normalizedValue.toFixed(2)));
+      return `${displayValue}h`;
+    }
+
+    function getTaskEffortLabel(taskOrEffortSize) {
+      const effortMetrics = taskOrEffortSize && typeof taskOrEffortSize === 'object'
+        ? getTaskEffortMetrics(taskOrEffortSize)
+        : null;
+      const setting = effortMetrics || getEffortSetting(taskOrEffortSize);
+      if (!setting) return '';
+      return `${setting.size} · ${formatEffortHours(effortMetrics ? effortMetrics.totalBaseHours : setting.baseHours)} total`;
+    }
+
+    function getTaskEffortRangeLabel(taskOrEffortSize) {
+      const effortMetrics = taskOrEffortSize && typeof taskOrEffortSize === 'object'
+        ? getTaskEffortMetrics(taskOrEffortSize)
+        : null;
+      if (effortMetrics) {
+        return `Total ${formatEffortHours(effortMetrics.totalBaseHours)} · Remaining ${formatEffortHours(effortMetrics.remainingBaseHours)} · Best left ${formatEffortHours(effortMetrics.remainingBestHours)} · Worst left ${formatEffortHours(effortMetrics.remainingWorstHours)}`;
+      }
+
+      const setting = getEffortSetting(taskOrEffortSize);
+      if (!setting) return 'Not estimated';
+      return `Best ${formatEffortHours(setting.bestHours)} · Base ${formatEffortHours(setting.baseHours)} · Worst ${formatEffortHours(setting.worstHours)}`;
+    }
+
+    function getTaskEffortBlockMarkup(task, options = {}) {
+      const effortMetrics = getTaskEffortMetrics(task);
+      if (!effortMetrics) return '';
+
+      const variantClass = options.variant === 'detail' ? ' is-detail' : ' is-card';
+      const note = options.variant === 'detail'
+        ? `${effortMetrics.remainingPercent}% remaining · Best left ${formatEffortHours(effortMetrics.remainingBestHours)} · Worst left ${formatEffortHours(effortMetrics.remainingWorstHours)}`
+        : `${effortMetrics.remainingPercent}% remaining`;
+
+      return `
+        <div class="task-effort-block${variantClass}" style="--effort-accent:${EFFORT_STATS_ACCENT}" title="${escHtml(getTaskEffortRangeLabel(task))}">
+          <div class="task-effort-top">
+            <span class="task-effort-caption">Effort</span>
+            <strong class="task-effort-size">${escHtml(effortMetrics.size)}</strong>
+          </div>
+          <div class="task-effort-grid">
+            <div class="task-effort-stat">
+              <span>Total</span>
+              <strong>${formatEffortHours(effortMetrics.totalBaseHours)}</strong>
+            </div>
+            <div class="task-effort-stat">
+              <span>Left</span>
+              <strong>${formatEffortHours(effortMetrics.remainingBaseHours)}</strong>
+            </div>
+          </div>
+          <div class="task-effort-bar" aria-hidden="true"><span style="width:${effortMetrics.remainingPercent}%"></span></div>
+          <div class="task-effort-note">${escHtml(note)}</div>
+        </div>`;
+    }
+
+    function renderCategoryIconPicker(selectedKey = DEFAULT_CATEGORY_ICON_KEY) {
+      const picker = document.getElementById('categoryIconPicker');
+      if (!picker) return;
+
+      picker.innerHTML = CATEGORY_ICON_OPTIONS.map(icon => `
+        <button type="button" class="category-icon-option" data-category-icon-key="${escHtml(icon.key)}" aria-pressed="false" title="${escHtml(icon.label)}">
+          <span class="category-icon-option-preview" style="--category-icon-color:var(--accent)" aria-hidden="true">${getCategoryIconSvgMarkup(icon.key)}</span>
+          <span class="category-icon-option-label">${escHtml(icon.label)}</span>
+        </button>`).join('');
+
+      syncCategoryIconSelection(selectedKey);
+    }
+
+    function syncCategoryIconSelection(iconKey = DEFAULT_CATEGORY_ICON_KEY) {
+      const normalizedKey = normalizeCategoryIconKey(iconKey);
+      const iconField = document.getElementById('categoryIconKey');
+      if (iconField) {
+        iconField.value = normalizedKey;
+      }
+
+      document.querySelectorAll('#categoryIconPicker [data-category-icon-key]').forEach(button => {
+        const isActive = button.dataset.categoryIconKey === normalizedKey;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+
+      return normalizedKey;
     }
 
     function normalizeCompletedTaskVisibilityMode(value) {
@@ -8354,6 +8935,7 @@
       const taskCardImageSize = TASK_CARD_IMAGE_SIZE_OPTIONS.includes(String(settings?.taskCardImageSize || '').trim().toLowerCase())
         ? String(settings.taskCardImageSize).trim().toLowerCase()
         : 'large';
+      const effortSettings = normalizeEffortSettings(settings?.effortSettings);
       const completedTaskVisibilityMode = normalizeCompletedTaskVisibilityMode(settings?.completedTaskVisibilityMode);
       const completedTaskVisibleDays = normalizePositiveInteger(settings?.completedTaskVisibleDays, 30, 1, 3650);
       const completedTaskCleanupDays = normalizePositiveInteger(settings?.completedTaskCleanupDays, completedTaskVisibleDays, 1, 3650);
@@ -8369,6 +8951,7 @@
         detailedExportColumns,
         detailedExportCounters,
         taskCardImageSize,
+        effortSettings,
         completedTaskVisibilityMode,
         completedTaskVisibleDays,
         completedTaskCleanupDays,
@@ -8506,9 +9089,59 @@
 
     const PRIORITY_OPTIONS = ['Critical', 'High', 'Medium', 'Low', 'Very Low'];
     const STATUS_OPTIONS = ['Not Started','Pending','Ongoing', 'Waiting for Someone Else', 'Completed'];
+    const EFFORT_SIZE_OPTIONS = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
     const YES_NO_OPTIONS = ['Yes', 'No'];
     const HIDDEN_FILTER_GROUPS = ['status', 'priority', 'category'];
     const TASK_SORT_OPTIONS = ['workflow', 'due-date', 'received-date', 'created-date', 'priority', 'title'];
+    const DEFAULT_CATEGORY_ICON_KEY = 'folder';
+    const CATEGORY_ICON_OPTIONS = [
+      { key: 'folder', label: 'Folder', markup: '<path d="M3.5 8.5h5l2-2h10v9.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><path d="M3.5 9.5h17"/>' },
+      { key: 'briefcase', label: 'Briefcase', markup: '<path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7"/><path d="M4 8.5h16v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 11.5h16"/>' },
+      { key: 'calendar', label: 'Calendar', markup: '<path d="M6 5.5v3"/><path d="M18 5.5v3"/><path d="M4.5 8.5h15"/><rect x="4.5" y="6.5" width="15" height="13" rx="2.5"/><path d="M8 12h3"/><path d="M13 12h3"/><path d="M8 16h3"/>' },
+      { key: 'mail', label: 'Mail', markup: '<rect x="4" y="6.5" width="16" height="11" rx="2.5"/><path d="m5.5 8 6.5 5 6.5-5"/>' },
+      { key: 'chart', label: 'Chart', markup: '<path d="M5 19.5h14"/><path d="M7.5 17V12"/><path d="M12 17V8"/><path d="M16.5 17v-5"/>' },
+      { key: 'star', label: 'Star', markup: '<path d="m12 4.5 2.2 4.45 4.9.72-3.55 3.46.84 4.87L12 15.7l-4.39 2.3.84-4.87-3.55-3.46 4.9-.72Z"/>' },
+      { key: 'wrench', label: 'Wrench', markup: '<path d="M14.5 6.5a3.5 3.5 0 0 0 4.32 4.32l-7.9 7.9a1.75 1.75 0 0 1-2.48-2.47l7.9-7.9A3.5 3.5 0 0 1 14.5 6.5Z"/><path d="m15.5 5.5 3 3"/>' },
+      { key: 'home', label: 'Home', markup: '<path d="m4.5 10.5 7.5-6 7.5 6"/><path d="M6.5 9.5v9h11v-9"/><path d="M10 18.5v-4h4v4"/>' },
+      { key: 'heart', label: 'Heart', markup: '<path d="M12 19.2 5.8 13A4.1 4.1 0 0 1 11.6 7.2L12 7.6l.4-.4A4.1 4.1 0 0 1 18.2 13Z"/>' },
+      { key: 'book', label: 'Book', markup: '<path d="M6 5.5h8.5a3 3 0 0 1 3 3v10H9a3 3 0 0 0-3 3z"/><path d="M6 5.5v16"/><path d="M9 9h6"/><path d="M9 12h6"/>' },
+      { key: 'code', label: 'Code', markup: '<path d="m9 8-4 4 4 4"/><path d="m15 8 4 4-4 4"/><path d="M13 6 11 18"/>' },
+      { key: 'globe', label: 'Globe', markup: '<circle cx="12" cy="12" r="8"/><path d="M4 12h16"/><path d="M12 4a12 12 0 0 1 0 16"/><path d="M12 4a12 12 0 0 0 0 16"/>' },
+      { key: 'camera', label: 'Camera', markup: '<path d="M7.5 8.5 9 6h6l1.5 2.5H19a2 2 0 0 1 2 2v6.5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10.5a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3.25"/>' },
+      { key: 'tag', label: 'Tag', markup: '<path d="M11 5H6.5A1.5 1.5 0 0 0 5 6.5V11l7.5 7.5 6-6Z"/><circle cx="8.25" cy="8.25" r="1"/>' },
+      { key: 'check', label: 'Check', markup: '<circle cx="12" cy="12" r="8"/><path d="m8.5 12 2.2 2.2 4.8-4.9"/>' },
+      { key: 'phone', label: 'Phone', markup: '<path d="M8 4.5h8A1.5 1.5 0 0 1 17.5 6v12A1.5 1.5 0 0 1 16 19.5H8A1.5 1.5 0 0 1 6.5 18V6A1.5 1.5 0 0 1 8 4.5Z"/><path d="M10 7h4"/><circle cx="12" cy="16.25" r=".75" fill="currentColor" stroke="none"/>' },
+      { key: 'package', label: 'Package', markup: '<path d="m12 3.8 7.2 3.7v9L12 20.2l-7.2-3.7v-9Z"/><path d="M12 3.8v8.3"/><path d="m4.8 7.5 7.2 4 7.2-4"/>' },
+      { key: 'shield', label: 'Shield', markup: '<path d="M12 4.5 18.5 7v4.8c0 3.2-2 6.15-6.5 7.7-4.5-1.55-6.5-4.5-6.5-7.7V7Z"/><path d="m9.3 12 1.8 1.8 3.6-3.8"/>' },
+      { key: 'users', label: 'Users', markup: '<circle cx="9" cy="9.25" r="2.5"/><circle cx="16" cy="10.25" r="2"/><path d="M4.5 18a4.5 4.5 0 0 1 9 0"/><path d="M13.5 17.5a3.5 3.5 0 0 1 6 0"/>' },
+      { key: 'lightbulb', label: 'Idea', markup: '<path d="M12 4.5a5 5 0 0 1 3.7 8.35c-.78.84-1.2 1.46-1.45 2.4h-4.5c-.25-.94-.67-1.56-1.45-2.4A5 5 0 0 1 12 4.5Z"/><path d="M9.75 17.25h4.5"/><path d="M10.25 19.25h3.5"/>' },
+      { key: 'clipboard', label: 'Clipboard', markup: '<rect x="6" y="5.5" width="12" height="14" rx="2"/><path d="M9.5 5.5V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 5v.5"/><path d="M9 10h6"/><path d="M9 13.5h6"/>' },
+      { key: 'target', label: 'Target', markup: '<circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="3.5"/><path d="M12 4.5v3"/><path d="M19.5 12h-3"/>' },
+      { key: 'database', label: 'Database', markup: '<ellipse cx="12" cy="6.5" rx="6.5" ry="2.5"/><path d="M5.5 6.5v9c0 1.38 2.91 2.5 6.5 2.5s6.5-1.12 6.5-2.5v-9"/><path d="M5.5 11c0 1.38 2.91 2.5 6.5 2.5s6.5-1.12 6.5-2.5"/>' },
+      { key: 'die-drawing', label: 'Die Drawing', markup: '<path d="M5 5.5h14v10H5z"/><path d="M8 8.5h8"/><path d="M8 12h5"/><path d="m15.5 16.5 3 3"/><path d="m18.5 16.5-3 3"/>' },
+      { key: 'counter-die', label: 'Counter Die Drawings', markup: '<path d="M7 5.5h10l2 3v8l-2 3H7l-2-3v-8z"/><path d="M9.5 9h5"/><path d="M9.5 12h5"/><path d="M9.5 15h3"/>' },
+      { key: 'samples', label: 'Samples', markup: '<path d="M5 9.5 11 6l8 4v6.5L13 20l-8-4z"/><path d="M11 6v6.5"/><path d="m5 9.5 8 4.5 6-3.5"/>' },
+      { key: 'sample-board', label: 'Sample Boards', markup: '<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M8 8h3"/><path d="M13 8h3"/><path d="M8 12h8"/><path d="M8 16h4"/><path d="M16.5 14.5v3"/>' },
+      { key: 'ruler', label: 'Ruler', markup: '<path d="M6 18 18 6"/><path d="M8 16l-2-2"/><path d="M10.5 13.5l-2-2"/><path d="M13 11l-2-2"/><path d="M15.5 8.5l-2-2"/>' },
+      { key: 'caliper', label: 'Caliper', markup: '<path d="M5 7.5h10"/><path d="M5 7.5v9"/><path d="M15 7.5v5"/><path d="M5 12.5h10"/><path d="M10 12.5V17"/><path d="M15 9.5h4"/><path d="M15 12.5h4"/>' },
+      { key: 'compass', label: 'Drafting Compass', markup: '<path d="M12 5.5 8 18.5"/><path d="M12 5.5 16 18.5"/><path d="M9.5 13h5"/><circle cx="12" cy="4.75" r="1.25"/>' },
+      { key: 'chip', label: 'Microchip', markup: '<rect x="8" y="8" width="8" height="8" rx="1.5"/><path d="M10 4.5v2"/><path d="M14 4.5v2"/><path d="M10 17.5v2"/><path d="M14 17.5v2"/><path d="M4.5 10h2"/><path d="M4.5 14h2"/><path d="M17.5 10h2"/><path d="M17.5 14h2"/>' },
+      { key: 'circuit', label: 'Circuit', markup: '<path d="M6 8h4"/><path d="M14 8h4"/><path d="M10 8v8"/><path d="M14 8v4"/><path d="M6 16h8"/><circle cx="10" cy="8" r="1.2"/><circle cx="14" cy="8" r="1.2"/><circle cx="10" cy="16" r="1.2"/><circle cx="14" cy="12" r="1.2"/>' },
+      { key: 'layers', label: 'Layers', markup: '<path d="m12 5 7 3.5-7 3.5-7-3.5Z"/><path d="m5 12 7 3.5 7-3.5"/><path d="m5 15.5 7 3.5 7-3.5"/>' },
+      { key: 'blueprint', label: 'Blueprint', markup: '<path d="M6 4.5h10l2 2v13H6z"/><path d="M16 4.5v2h2"/><path d="M8.5 10h7"/><path d="M8.5 13h4"/><path d="M8.5 16h6"/>' },
+      { key: 'factory', label: 'Factory', markup: '<path d="M4.5 19V9.5l5 2.5V9.5l5 2.5V6.5l5 2.5V19"/><path d="M3.5 19.5h17"/><path d="M8 19v-4h3v4"/>' },
+      { key: 'bolt', label: 'Engineering', markup: '<path d="M13 3.5 7.5 12H12l-1 8.5 5.5-8H12z"/>' },
+      { key: 'gear', label: 'Gear', markup: '<circle cx="12" cy="12" r="2.4"/><path d="M12 4.5v2"/><path d="M12 17.5v2"/><path d="M4.5 12h2"/><path d="M17.5 12h2"/><path d="m6.7 6.7 1.4 1.4"/><path d="m15.9 15.9 1.4 1.4"/><path d="m17.3 6.7-1.4 1.4"/><path d="m8.1 15.9-1.4 1.4"/><circle cx="12" cy="12" r="5.2"/>' },
+      { key: 'bearing', label: 'Bearing', markup: '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><circle cx="12" cy="5" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="12" cy="19" r="1"/><circle cx="5" cy="12" r="1"/>' },
+      { key: 'hex-nut', label: 'Hex Nut', markup: '<path d="m9 4.8 6 0 3 5.2-3 5.2H9L6 10z"/><circle cx="12" cy="10" r="2.2"/>' },
+      { key: 'piston', label: 'Piston', markup: '<path d="M9 5.5h6v5H9z"/><path d="M12 10.5v7"/><path d="M9 7.5H6"/><path d="M18 7.5h-3"/><path d="M10 17.5h4"/>' },
+      { key: 'shaft', label: 'Shaft', markup: '<path d="M4.5 12h15"/><path d="M7 9.5v5"/><path d="M12 8v8"/><path d="M17 9.5v5"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="19.5" cy="12" r="1.2"/>' },
+      { key: 'weld', label: 'Modification Work', markup: '<path d="M8 5.5h8"/><path d="M9.5 8.5h5"/><path d="M7 19.5 12 10l5 9.5"/><path d="m12 10 2-3"/><path d="m15 5.5.7 1.3"/><path d="m17.3 7 .7 1.3"/>' },
+      { key: 'drill-press', label: 'Drill Press', markup: '<path d="M7 5.5h6"/><path d="M10 5.5v8"/><path d="M10 9.5h5"/><path d="M15 9.5v4"/><path d="M6 18.5h10"/><path d="M8.5 18.5v-2.5"/>' },
+      { key: 'lathe', label: 'Lathe', markup: '<path d="M5 9.5h4"/><path d="M9 9.5h6"/><path d="M15 9.5h4"/><path d="M7 9.5v5"/><path d="M17 9.5v5"/><path d="M5 16.5h14"/><path d="M11 9.5v3"/>' },
+      { key: 'spring', label: 'Spring', markup: '<path d="M5 15.5c2-5 4 5 6 0s4 5 8-4"/><path d="M5 9.5c2 5 4-5 6 0s4-5 8 4"/>' }
+    ];
+    const CATEGORY_ICON_BY_KEY = new Map(CATEGORY_ICON_OPTIONS.map(icon => [icon.key, icon]));
     const DETAILED_EXPORT_COUNTER_SUMMARY_DEFINITIONS = [
       { key: 'openTasks', label: 'Open Tasks', accent: '1D4ED8' },
       { key: 'ongoing', label: 'Ongoing', accent: '1D4ED8' },
@@ -8521,6 +9154,8 @@
       { key: 'Title', label: 'Title', header: 'Title', width: 35 },
       { key: 'Description', label: 'Description', header: 'Description', width: 50 },
       { key: 'Category', label: 'Category', header: 'Category', width: 12, center: true, validationList: 'categories' },
+      { key: 'EffortTotalHours', label: 'Effort Total Hours', header: 'Effort Total Hours', width: 16, center: true },
+      { key: 'EffortRemainingHours', label: 'Effort Remaining Hours', header: 'Effort Remaining Hours', width: 18, center: true },
       { key: 'Priority', label: 'Priority', header: 'Priority', width: 12, center: true, validationList: 'priorities' },
       { key: 'EmailSubject', label: 'Email Subject', header: 'Email Subject', width: 30 },
       { key: 'Sender', label: 'Sender', header: 'Sender', width: 15, validationList: 'senders' },
@@ -8602,6 +9237,15 @@
 
     const DEFAULT_PRIORITY = 'Medium';
     const DEFAULT_STATUS = 'Not Started';
+    const EFFORT_STATS_ACCENT = '#0ea5e9';
+    const DEFAULT_EFFORT_SETTINGS = [
+      { size: 'XS', bestHours: 0.5, baseHours: 1, worstHours: 2 },
+      { size: 'S', bestHours: 2, baseHours: 4, worstHours: 6 },
+      { size: 'M', bestHours: 6, baseHours: 8, worstHours: 12 },
+      { size: 'L', bestHours: 12, baseHours: 16, worstHours: 24 },
+      { size: 'XL', bestHours: 24, baseHours: 32, worstHours: 40 },
+      { size: 'XXL', bestHours: 40, baseHours: 56, worstHours: 80 }
+    ];
     const LEGACY_STATUS_ALIASES = {
       Done: 'Completed'
     };
@@ -8752,12 +9396,13 @@
       categories = categories
         .map(category => ({
           name: normalizeCategoryName(category.name),
-          color: category.color || '#5b8def'
+          color: category.color || '#5b8def',
+          iconKey: normalizeCategoryIconKey(category.iconKey)
         }))
         .filter(category => category.name);
 
       if (!getCategoryByName('General')) {
-        categories.unshift({ name: 'General', color: '#64748b' });
+        categories.unshift({ name: 'General', color: '#64748b', iconKey: DEFAULT_CATEGORY_ICON_KEY });
       }
 
       hiddenFilters = { status: [], priority: [], category: [] };
@@ -8772,6 +9417,7 @@
           emailSubject: String(task.emailSubject || '').trim() || null,
           sender: String(task.sender || '').trim() || null,
           category: getCategoryByName(task.category)?.name || fallbackCategory,
+          effortSize: normalizeEffortSize(task.effortSize),
           priority: normalizePriority(task.priority),
           status: normalizeStatus(task.status),
           subtasks: normalizeTaskSubtasks(task.subtasks),
@@ -8947,9 +9593,11 @@
     function syncTaskModalFieldAccents() {
       const categoryField = document.querySelector('#taskForm .task-field-category');
       const priorityField = document.querySelector('#taskForm .task-field-priority');
+      const effortField = document.querySelector('#taskForm .task-field-effort');
       const statusField = document.querySelector('#taskForm .task-field-status');
       const categoryValue = document.getElementById('taskCategory')?.value || '';
       const priorityValue = document.getElementById('taskPriority')?.value || DEFAULT_PRIORITY;
+      const effortValue = document.getElementById('taskEffortSize')?.value || '';
       const statusValue = document.getElementById('taskStatus')?.value || DEFAULT_STATUS;
 
       if (categoryField) {
@@ -8958,6 +9606,10 @@
 
       if (priorityField) {
         priorityField.style.setProperty('--task-group-accent', PRIORITY_ACCENTS[normalizePriority(priorityValue)] || 'var(--medium)');
+      }
+
+      if (effortField) {
+        effortField.style.setProperty('--task-group-accent', getEffortSetting(effortValue) ? EFFORT_STATS_ACCENT : '#64748b');
       }
 
       if (statusField) {
@@ -9148,6 +9800,7 @@
     function renderTaskOptionSets() {
       const taskPriority = document.getElementById('taskPriority');
       const taskStatus = document.getElementById('taskStatus');
+      const taskEffortSize = document.getElementById('taskEffortSize');
       const taskSender = document.getElementById('taskSender');
       const filterPriority = document.getElementById('filterPriority');
       const filterStatus = document.getElementById('filterStatus');
@@ -9162,6 +9815,13 @@
         const selectedStatus = normalizeStatus(taskStatus.value || DEFAULT_STATUS);
         taskStatus.innerHTML = buildOptionMarkup(STATUS_OPTIONS, selectedStatus);
         taskStatus.value = selectedStatus;
+      }
+
+      if (taskEffortSize) {
+        const selectedEffortSize = normalizeEffortSize(taskEffortSize.value);
+        taskEffortSize.innerHTML = `<option value="">No Estimate</option>${normalizeEffortSettings(itemSettings?.effortSettings).map(setting => `
+          <option value="${escHtml(setting.size)}">${escHtml(setting.size)} · ${escHtml(formatEffortHours(setting.baseHours))} base</option>`).join('')}`;
+        taskEffortSize.value = selectedEffortSize;
       }
 
       if (taskSender) {
@@ -9196,10 +9856,10 @@
 
     function getDefaultCategories() {
       return [
-        { name: 'General', color: '#64748b' },
-        { name: 'Work', color: '#ef7d57' },
-        { name: 'Follow-up', color: '#34c38f' },
-        { name: 'Personal', color: '#f4b740' }
+        { name: 'General', color: '#64748b', iconKey: 'folder' },
+        { name: 'Work', color: '#ef7d57', iconKey: 'briefcase' },
+        { name: 'Follow-up', color: '#34c38f', iconKey: 'mail' },
+        { name: 'Personal', color: '#f4b740', iconKey: 'home' }
       ];
     }
 
@@ -10055,6 +10715,10 @@
       return getFilterBadgeMarkup('category', category.name, { accent: category.color });
     }
 
+    function getTaskEffortPillMarkup(task) {
+      return getTaskEffortBlockMarkup(task);
+    }
+
     function getTaskTypeMarkup(categoryName) {
       const category = getCategoryByName(categoryName) || categories[0];
       if (!category) return '';
@@ -10082,27 +10746,55 @@
     }
 
     function getTaskMediaMarkup(task) {
-      if (!task?.imageDataUrl) return '';
+      const imageDataUrl = String(task?.imageDataUrl || '').trim();
+      if (imageDataUrl) {
+        return `
+          <div class="task-card-media">
+            <img src="${escHtml(imageDataUrl)}" alt="${escHtml(getTaskImageAlt(task))}" loading="lazy" />
+          </div>`;
+      }
+
+      const category = getCategoryByName(task?.category) || categories[0];
+      if (!category) return '';
 
       return `
-        <div class="task-card-media">
-          <img src="${escHtml(task.imageDataUrl)}" alt="${escHtml(getTaskImageAlt(task))}" loading="lazy" />
+        <div class="task-card-media is-icon-fallback" role="img" aria-label="${escHtml(`${category.name} default icon`)}">
+          <div class="task-card-icon-tile" style="--category-icon-color:${escHtml(category.color || 'var(--accent)')}">
+            ${getCategoryIconSvgMarkup(category.iconKey)}
+          </div>
         </div>`;
     }
 
     function getTaskDetailMediaMarkup(task) {
-      if (!task?.imageDataUrl) return '';
+      const imageDataUrl = String(task?.imageDataUrl || '').trim();
+      if (imageDataUrl) {
+        const imageName = String(task.imageName || '').trim();
 
-      const imageName = String(task.imageName || '').trim();
+        return `
+          <div class="detail-media-card" aria-label="Task reference image">
+            <div class="detail-media-header">
+              <div class="section-title">Reference Image</div>
+              <span class="detail-media-name" title="${escHtml(imageName || 'Attached image')}">${escHtml(imageName || 'Attached image')}</span>
+            </div>
+            <div class="detail-media-frame">
+              <img src="${escHtml(imageDataUrl)}" alt="${escHtml(getTaskImageAlt(task))}" loading="lazy" />
+            </div>
+          </div>`;
+      }
+
+      const category = getCategoryByName(task?.category) || categories[0];
+      if (!category) return '';
 
       return `
-        <div class="detail-media-card" aria-label="Task reference image">
+        <div class="detail-media-card" aria-label="Default category icon">
           <div class="detail-media-header">
-            <div class="section-title">Reference Image</div>
-            <span class="detail-media-name" title="${escHtml(imageName || 'Attached image')}">${escHtml(imageName || 'Attached image')}</span>
+            <div class="section-title">Default Category Icon</div>
+            <span class="detail-media-name" title="${escHtml(category.name)}">${escHtml(category.name)}</span>
           </div>
-          <div class="detail-media-frame">
-            <img src="${escHtml(task.imageDataUrl)}" alt="${escHtml(getTaskImageAlt(task))}" loading="lazy" />
+          <div class="detail-media-frame is-icon-fallback">
+            <div class="detail-media-icon-tile" style="--category-icon-color:${escHtml(category.color || 'var(--accent)')}" role="img" aria-label="${escHtml(`${category.name} default icon`)}">
+              ${getCategoryIconSvgMarkup(category.iconKey)}
+            </div>
           </div>
         </div>`;
     }
@@ -10862,8 +11554,6 @@
                     ${getTaskProjectMarkup(task.project, searchQuery)}
                     ${getTaskPriorityMarkup(taskData.priority)}
                   </div>
-                  ${task.sender ? `<div class="task-sender-label">From: ${getHighlightedMarkup(task.sender, searchQuery)}</div>` : ''}
-                  ${task.emailSubject ? `<div class="task-email-subject">Email: ${getHighlightedMarkup(task.emailSubject, searchQuery)}</div>` : ''}
                   <div class="task-progress-row" style="--task-progress:${taskData.progressPercent}%">
                     <div class="task-progress-summary">
                       <span class="task-progress-label">Progress</span>
@@ -10906,6 +11596,7 @@
               <div class="task-action-status">
                 ${getFilterBadgeMarkup('status', taskData.status)}
               </div>
+              ${task.effortSize ? `<div class="task-action-item is-effort">${getTaskEffortPillMarkup(task)}</div>` : ''}
             </div>
           </div>
         </div>`;
@@ -11126,6 +11817,8 @@
         Title: task.title,
         Quantity: getTaskCategoryCountWeight(task),
         Category: task.category || '',
+        EffortTotalHours: getTaskEffortExportDisplay(task, 'total'),
+        EffortRemainingHours: getTaskEffortExportDisplay(task, 'remaining'),
         Priority: normalizePriority(task.priority),
         Status: normalizeStatus(task.status),
         Sender: task.sender || '',
@@ -11975,6 +12668,26 @@
       const ongoing = openTasks.filter(task => normalizeStatus(task.status) === 'Ongoing').length;
       const done    = tasks.filter(task => isTaskCompleted(task)).length;
       const attention = openTasks.filter(task => ATTENTION_PRIORITIES.has(normalizePriority(task.priority))).length;
+      const effortSettings = normalizeEffortSettings(itemSettings?.effortSettings);
+      const effortTotals = openTasks.reduce((totals, task) => {
+        const effortMetrics = getTaskEffortMetrics(task);
+        if (!effortMetrics) {
+          totals.unsizedTaskCount += 1;
+          return totals;
+        }
+
+        totals.bestHours += effortMetrics.remainingBestHours;
+        totals.baseHours += effortMetrics.remainingBaseHours;
+        totals.worstHours += effortMetrics.remainingWorstHours;
+        totals.sizedTaskCount += 1;
+        return totals;
+      }, {
+        bestHours: 0,
+        baseHours: 0,
+        worstHours: 0,
+        sizedTaskCount: 0,
+        unsizedTaskCount: 0
+      });
       const statusStats = STATUS_OPTIONS
         .filter(status => status !== 'Completed')
         .map(status => ({
@@ -12003,6 +12716,12 @@
         accent: category.color,
         itemClass: 'is-category'
       }));
+      const effortStats = effortSettings.map(setting => ({
+        label: `${setting.size} · ${formatEffortHours(setting.baseHours)} total`,
+        value: openTasks.filter(task => normalizeEffortSize(task.effortSize) === setting.size).length,
+        accent: EFFORT_STATS_ACCENT,
+        itemClass: 'is-category'
+      }));
       const categoryUnits = categoryStats.reduce((sum, item) => sum + item.value, 0);
       const CATEGORY_STATS_PAGE_SIZE = 15;
       const totalCategoryPages = Math.max(1, Math.ceil(categoryStats.length / CATEGORY_STATS_PAGE_SIZE));
@@ -12029,6 +12748,11 @@
           <strong class="stat-value" style="color:var(--critical)">${attention}</strong>
           <span class="stat-hint">Open urgent work</span>
         </div>
+        <div class="stat-chip" style="--chip-accent:${EFFORT_STATS_ACCENT}">
+          <span class="stat-label">Remaining Effort</span>
+          <strong class="stat-value">${formatEffortHours(effortTotals.baseHours)}</strong>
+          <span class="stat-hint">Best ${formatEffortHours(effortTotals.bestHours)} · Worst ${formatEffortHours(effortTotals.worstHours)}${effortTotals.unsizedTaskCount ? ` · ${effortTotals.unsizedTaskCount} unsized` : ''}</span>
+        </div>
       `;
 
       const secondaryGroups = [
@@ -12052,6 +12776,13 @@
           accent: 'var(--accent)',
           summary: `${categoryUnits} open unit${categoryUnits === 1 ? '' : 's'} across ${categoryStats.length} categor${categoryStats.length === 1 ? 'y' : 'ies'}`,
           items: categoryStats
+        },
+        {
+          id: 'effort',
+          title: 'Effort',
+          accent: EFFORT_STATS_ACCENT,
+          summary: `${effortTotals.sizedTaskCount}/${total} open task${total === 1 ? '' : 's'} estimated · ${formatEffortHours(effortTotals.baseHours)} remaining`,
+          items: effortStats
         }
       ];
 
@@ -12151,13 +12882,20 @@
         const categoryIndex = categories.findIndex(item => item.name === category.name);
         const canMoveUp = !isLocked && categoryIndex > 1;
         const canMoveDown = !isLocked && categoryIndex < categories.length - 1;
+        const iconDefinition = getCategoryIconDefinition(category.iconKey);
         return `
           <div class="category-item">
             <div class="category-item-main">
-              <span class="category-dot" style="--category-color:${escHtml(category.color)}"></span>
+              ${getCategoryIconPreviewMarkup(category.iconKey, category.color)}
               <div class="category-item-summary">
                 <div class="category-item-name">${escHtml(category.name)}</div>
-                <div class="category-item-meta">${escHtml(category.color)}</div>
+                <div class="category-item-meta">
+                  <span class="category-item-meta-line">
+                    <span class="category-dot" style="--category-color:${escHtml(category.color)}"></span>
+                    <span>${escHtml(category.color)}</span>
+                    <span>${escHtml(iconDefinition.label)}</span>
+                  </span>
+                </div>
               </div>
             </div>
             ${isLocked
@@ -12316,6 +13054,7 @@
       const subtaskCompletionPercent = getSubtaskCompletionPercent(task);
       const progressPercent = normalizeTaskProgressPercent(task.progressPercent);
       const workflowItemCount = getItemsForTask(task.id).length;
+      const detailMediaMarkup = getTaskDetailMediaMarkup(task);
       const isEditingDescription = activeDetailEditTaskId === task.id && activeDetailEditField === 'description';
       const isEditingNotes = activeDetailEditTaskId === task.id && activeDetailEditField === 'notes';
 
@@ -12352,13 +13091,13 @@
                 </div>`}
             </div>`
         },
-        ...(task.imageDataUrl ? [{
+        ...(detailMediaMarkup ? [{
           id: 'image',
           label: 'Image',
           accent: '#0ea5e9',
           meta: null,
           panelClass: 'detail-image-section',
-          content: getTaskDetailMediaMarkup(task)
+          content: detailMediaMarkup
         }] : []),
         {
           id: 'schedule',
@@ -12536,6 +13275,7 @@
             <div class="detail-title">${escHtml(task.title)}</div>
             <div class="task-meta">
               ${getCategoryMarkup(task.category)}
+                ${task.effortSize ? `<span class="badge badge-category" style="--category-color:${EFFORT_STATS_ACCENT}" title="${escHtml(getTaskEffortRangeLabel(task))}">Effort ${escHtml(getTaskEffortLabel(task))}</span>` : ''}
               ${getFilterBadgeMarkup('priority', priority)}
               ${getFilterBadgeMarkup('status', status)}
               <span class="badge badge-category" style="--category-color:#14b8a6">${workflowItemCount} item${workflowItemCount === 1 ? '' : 's'}</span>
@@ -12546,7 +13286,11 @@
         </div>
 
         <div class="detail-submeta">
-          <div class="detail-row is-full-width"><span>Sender</span><strong>${task.sender ? escHtml(task.sender) : 'N/A'}</strong></div>
+          <div class="detail-submeta-pair">
+            <div class="detail-row"><span>Sender</span><strong>${task.sender ? escHtml(task.sender) : 'N/A'}</strong></div>
+            <div class="detail-row"><span>Project</span><strong>${task.project ? escHtml(task.project) : 'N/A'}</strong></div>
+          </div>
+${task.effortSize ? getTaskEffortBlockMarkup(task, { variant: 'detail' }) : '<strong>Time not estimated</strong>'}
           <div class="detail-row is-full-width"><span>Email Subject</span><strong>${task.emailSubject ? escHtml(task.emailSubject) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-created"><span>Created</span><strong>${task.createdAt ? escHtml(formatDate(task.createdAt)) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-received"><span>Received</span><strong>${task.receivedAt ? escHtml(formatDate(task.receivedAt)) : 'N/A'}</strong></div>
@@ -12659,6 +13403,7 @@
         document.getElementById('taskDescription').value = t.description || '';
         document.getElementById('taskProject').value = t.project || '';
         document.getElementById('taskCategory').value   = getCategoryByName(t.category)?.name || categories[0]?.name || '';
+        document.getElementById('taskEffortSize').value = normalizeEffortSize(t.effortSize);
         document.getElementById('taskPriority').value   = normalizePriority(t.priority);
         document.getElementById('taskStatus').value     = normalizeStatus(t.status);
         document.getElementById('taskReceivedAt').value = t.receivedAt || '';
@@ -12682,6 +13427,7 @@
         document.getElementById('taskDescription').value = '';
         document.getElementById('taskProject').value = '';
         document.getElementById('taskCategory').value   = categories[0]?.name || '';
+        document.getElementById('taskEffortSize').value = '';
         document.getElementById('taskPriority').value   = DEFAULT_PRIORITY;
         document.getElementById('taskStatus').value     = DEFAULT_STATUS;
         document.getElementById('taskReceivedAt').value = today();
@@ -12822,6 +13568,7 @@
         imageDataUrl: taskDraftImageDataUrl || '',
         imageName: taskDraftImageName || '',
         category:   document.getElementById('taskCategory').value,
+        effortSize: normalizeEffortSize(document.getElementById('taskEffortSize').value),
         priority:   normalizePriority(document.getElementById('taskPriority').value),
         status:     normalizeStatus(document.getElementById('taskStatus').value),
         progressPercent: editingId
@@ -14222,6 +14969,7 @@
       e.preventDefault();
       const name = normalizeCategoryName(document.getElementById('categoryName').value);
       const color = document.getElementById('categoryColor').value;
+      const iconKey = normalizeCategoryIconKey(document.getElementById('categoryIconKey').value);
 
       if (!name) {
         document.getElementById('categoryName').focus();
@@ -14243,7 +14991,7 @@
       if (editingCategoryName) {
         categories = categories.map(category => {
           if (category.name !== editingCategoryName) return category;
-          return { name, color };
+          return { name, color, iconKey };
         });
         tasks = tasks.map(task => task.category === editingCategoryName ? { ...task, category: name } : task);
         hiddenFilters = {
@@ -14254,13 +15002,14 @@
           )
         };
       } else {
-        categories.push({ name, color });
+        categories.push({ name, color, iconKey });
       }
 
       editingCategoryName = null;
       document.getElementById('submitCategoryBtn').textContent = 'Save Category';
       document.getElementById('categoryForm').reset();
       document.getElementById('categoryColor').value = '#5b8def';
+      syncCategoryIconSelection(DEFAULT_CATEGORY_ICON_KEY);
       syncCategoryColorPresets('#5b8def');
       saveCategories();
       saveTasks();
@@ -14271,11 +15020,17 @@
 
     document.getElementById('categoryForm').addEventListener('click', e => {
       const presetButton = e.target.closest('[data-category-color]');
-      if (!presetButton) return;
+      if (presetButton) {
+        const colorField = document.getElementById('categoryColor');
+        colorField.value = presetButton.dataset.categoryColor;
+        syncCategoryColorPresets(colorField.value);
+        return;
+      }
 
-      const colorField = document.getElementById('categoryColor');
-      colorField.value = presetButton.dataset.categoryColor;
-      syncCategoryColorPresets(colorField.value);
+      const iconButton = e.target.closest('[data-category-icon-key]');
+      if (!iconButton) return;
+
+      syncCategoryIconSelection(iconButton.dataset.categoryIconKey);
     });
 
     document.getElementById('categoryColor').addEventListener('input', e => {
@@ -14346,10 +15101,34 @@
       const completedTaskVisibleDays = normalizePositiveInteger(document.getElementById('completedTaskVisibleDaysInput').value, 30, 1, 3650);
       const completedTaskCleanupDays = normalizePositiveInteger(document.getElementById('completedTaskCleanupDaysInput').value, completedTaskVisibleDays, 1, 3650);
       const completedTaskCleanupBeforeYear = normalizePositiveInteger(document.getElementById('completedTaskCleanupBeforeYearInput').value, new Date().getFullYear(), 2000, 9999);
+      const effortSettings = [];
 
       if (!supplierOptions.length) {
         document.getElementById('itemSupplierOptionsInput').focus();
         return false;
+      }
+
+      for (const size of EFFORT_SIZE_OPTIONS) {
+        const bestInput = document.querySelector(`[data-effort-size="${size}"][data-effort-field="bestHours"]`);
+        const baseInput = document.querySelector(`[data-effort-size="${size}"][data-effort-field="baseHours"]`);
+        const worstInput = document.querySelector(`[data-effort-size="${size}"][data-effort-field="worstHours"]`);
+        const bestHours = normalizeNonNegativeNumber(bestInput?.value, NaN);
+        const baseHours = normalizeNonNegativeNumber(baseInput?.value, NaN);
+        const worstHours = normalizeNonNegativeNumber(worstInput?.value, NaN);
+
+        if (![bestHours, baseHours, worstHours].every(Number.isFinite)) {
+          alert(`Enter valid non-negative effort hours for ${size}.`);
+          bestInput?.focus();
+          return false;
+        }
+
+        if (bestHours > baseHours || baseHours > worstHours) {
+          alert(`Keep ${size} effort hours ordered as best <= base <= worst.`);
+          bestInput?.focus();
+          return false;
+        }
+
+        effortSettings.push({ size, bestHours, baseHours, worstHours });
       }
 
       itemSettings = normalizeItemSettings({
@@ -14365,6 +15144,7 @@
         },
         detailedExportCounters,
         taskCardImageSize,
+        effortSettings,
         completedTaskVisibilityMode,
         completedTaskVisibleDays,
         completedTaskCleanupDays,
@@ -14632,6 +15412,7 @@
         editingCategoryName = category.name;
         document.getElementById('categoryName').value = category.name;
         document.getElementById('categoryColor').value = category.color;
+        syncCategoryIconSelection(category.iconKey);
         syncCategoryColorPresets(category.color);
         document.getElementById('submitCategoryBtn').textContent = 'Update Category';
         document.getElementById('categoryName').disabled = isProtectedCategory(category.name);
@@ -14720,10 +15501,38 @@
       document.getElementById('detailedExportWeekNumberInput').value = detailedExportWeekSelection.weekNumber;
       document.getElementById('detailedExportWeekYearInput').value = detailedExportWeekSelection.year;
       document.getElementById('detailedExportMonthInput').value = detailedExportMonthSelection.monthValue;
+      renderEffortSettingsForm();
       renderDetailedExportColumnSettings();
       renderDetailedExportCounterSettings();
       updateDetailedExportWeekPreview();
       updateDetailedExportMonthPreview();
+    }
+
+    function renderEffortSettingsForm(settings = itemSettings) {
+      const list = document.getElementById('effortSettingsList');
+      if (!list) return;
+
+      list.innerHTML = normalizeEffortSettings(settings?.effortSettings).map(setting => `
+        <div class="item-settings-config-row">
+          <div class="item-settings-config-copy">
+            <strong>${escHtml(setting.size)}</strong>
+            <span>Best, base, and worst-case hours for ${escHtml(setting.size)} work.</span>
+          </div>
+          <div class="item-settings-inline-fields">
+            <div class="item-settings-field">
+              <label>Best</label>
+              <input type="number" min="0" step="0.25" inputmode="decimal" data-effort-size="${escHtml(setting.size)}" data-effort-field="bestHours" value="${escHtml(String(setting.bestHours))}" />
+            </div>
+            <div class="item-settings-field">
+              <label>Base</label>
+              <input type="number" min="0" step="0.25" inputmode="decimal" data-effort-size="${escHtml(setting.size)}" data-effort-field="baseHours" value="${escHtml(String(setting.baseHours))}" />
+            </div>
+            <div class="item-settings-field">
+              <label>Worst</label>
+              <input type="number" min="0" step="0.25" inputmode="decimal" data-effort-size="${escHtml(setting.size)}" data-effort-field="worstHours" value="${escHtml(String(setting.worstHours))}" />
+            </div>
+          </div>
+        </div>`).join('');
     }
 
     function renderDetailedExportColumnSettings(settings = itemSettings) {
@@ -14849,6 +15658,7 @@
     function openCategoryModal() {
       document.getElementById('categoryModal').classList.add('open');
       renderCategoryList();
+      renderCategoryIconPicker(document.getElementById('categoryIconKey')?.value || DEFAULT_CATEGORY_ICON_KEY);
       syncCategoryColorPresets(document.getElementById('categoryColor').value || '#5b8def');
       document.getElementById('categoryName').focus();
     }
@@ -14859,6 +15669,8 @@
       document.getElementById('categoryForm').reset();
       document.getElementById('categoryName').disabled = false;
       document.getElementById('categoryColor').value = '#5b8def';
+      syncCategoryIconSelection(DEFAULT_CATEGORY_ICON_KEY);
+      renderCategoryIconPicker(DEFAULT_CATEGORY_ICON_KEY);
       syncCategoryColorPresets('#5b8def');
       document.getElementById('submitCategoryBtn').textContent = 'Save Category';
     }
