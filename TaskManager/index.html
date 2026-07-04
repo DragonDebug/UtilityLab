@@ -1895,12 +1895,12 @@
 
     .task-effort-block.is-card .task-effort-caption,
     .task-effort-block.is-detail .task-effort-caption {
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: .07em;
     }
 
     .task-effort-size {
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 800;
       color: color-mix(in srgb, var(--text) 82%, var(--effort-accent, #0ea5e9) 18%);
       white-space: nowrap;
@@ -1908,7 +1908,7 @@
 
     .task-effort-block.is-card .task-effort-size,
     .task-effort-block.is-detail .task-effort-size {
-      font-size: 16px;
+      font-size: 14px;
     }
 
     .task-effort-grid {
@@ -1935,6 +1935,8 @@
       display: grid;
       gap: 2px;
       min-width: 0;
+      text-align: center;
+      justify-items: center;
     }
 
     .task-effort-block.is-card .task-effort-stat,
@@ -1998,7 +2000,7 @@
 
     .task-effort-block.is-detail .task-effort-note {
       grid-column: 1 / -1;
-      font-size: 10px;
+      font-size: 12px;
       line-height: 1.15;
     }
 
@@ -2928,9 +2930,48 @@
 
     .detail-header-main {
       min-width: 0;
+      display: flex;
+      gap: 12px;
+      flex: 1 1 auto;
+      align-items: flex-start;
+    }
+
+    .detail-header-thumb {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      flex: 0 0 56px;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+      background: var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-header-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .detail-header-thumb .detail-header-thumb-icon {
+      color: color-mix(in srgb, var(--accent-h) 60%, var(--text-muted));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-header-thumb .detail-header-thumb-icon svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .detail-header-info {
+      min-width: 0;
       display: grid;
       gap: 6px;
-      flex: 1 1 auto;
+      flex: 1;
     }
 
     .detail-header .section-title {
@@ -7223,6 +7264,717 @@
         animation-duration: .01ms !important;
       }
     }
+    /* ── Daily Activity ──
+       Header button, task-card tracking controls, and the activity modal.
+       Uses the shared theme tokens so dark/light themes both work. ── */
+    .btn-header-activity {
+      --header-btn-color: #22c55e;
+      position: relative;
+    }
+
+    .btn-header-activity.is-tracking {
+      border-color: color-mix(in srgb, #22c55e 55%, var(--border-strong));
+      background: color-mix(in srgb, #22c55e 16%, var(--surface2));
+      color: color-mix(in srgb, var(--text) 60%, #22c55e 40%);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .activity-header-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, .5);
+      animation: activity-pulse 1.6s ease-out infinite;
+      flex: 0 0 auto;
+    }
+
+    @keyframes activity-pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, .45); }
+      70%  { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+
+    .track-toggle {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, #22c55e 20%, var(--border-strong));
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      color: color-mix(in srgb, #22c55e 55%, var(--text-muted));
+      cursor: pointer;
+      transition: color .12s ease, border-color .12s ease, background-color .12s ease, transform .12s ease;
+      flex: 0 0 auto;
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .track-toggle svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: currentColor;
+      stroke-width: 1.2;
+    }
+
+    .track-toggle:hover {
+      border-color: color-mix(in srgb, #22c55e 72%, var(--border-strong));
+      color: #22c55e;
+      background: color-mix(in srgb, #22c55e 12%, transparent);
+      transform: translateY(-1px);
+    }
+
+    .track-toggle.is-active {
+      border-color: color-mix(in srgb, #22c55e 78%, var(--border-strong));
+      color: #22c55e;
+      background: color-mix(in srgb, #22c55e 16%, transparent);
+      animation: activity-pulse 1.6s ease-out infinite;
+    }
+
+    .task-card.is-tracking {
+      border-color: color-mix(in srgb, #22c55e 34%, var(--border));
+      box-shadow: 0 0 0 1px color-mix(in srgb, #22c55e 22%, transparent), 0 10px 28px rgba(34, 197, 94, .07);
+    }
+
+    .task-tracking-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, #22c55e 38%, var(--border));
+      background: color-mix(in srgb, #22c55e 12%, transparent);
+      color: color-mix(in srgb, var(--text) 55%, #22c55e 45%);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: .02em;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .task-tracking-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      animation: activity-pulse 1.6s ease-out infinite;
+    }
+
+    /* Activity modal */
+    #activityModal .modal {
+      width: min(100%, 1020px);
+      min-height: min(88vh, 900px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .activity-modal-header {
+      align-items: flex-start;
+    }
+
+    .activity-modal-heading {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .activity-modal-subtitle {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* ── Sticky top section (summary + form + filters) ── */
+    .activity-sticky-top {
+      flex: 0 0 auto;
+    }
+
+    .activity-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0 14px;
+    }
+
+    .activity-summary-card {
+      display: grid;
+      gap: 3px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--surface2) 88%, transparent);
+      min-width: 0;
+    }
+
+    .activity-summary-card strong {
+      font-size: 13.5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .activity-summary-card.is-live {
+      border-color: color-mix(in srgb, #22c55e 40%, var(--border));
+      background: color-mix(in srgb, #22c55e 8%, var(--surface2));
+    }
+
+    .activity-summary-card.is-live strong {
+      color: color-mix(in srgb, var(--text) 55%, #22c55e 45%);
+    }
+
+    .activity-summary-label {
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+    }
+
+    .activity-form {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: color-mix(in srgb, var(--surface2) 70%, transparent);
+      margin-bottom: 12px;
+    }
+
+    .activity-form-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .activity-form-hint {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    /* Row 1: task search + note (wider), Row 2: dates + button */
+    .activity-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .activity-form-grid .form-group {
+      margin: 0;
+      min-width: 0;
+    }
+
+    .activity-form-row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-top: 10px;
+    }
+
+    .activity-form-row2 .form-group {
+      margin: 0;
+      min-width: 0;
+    }
+
+    .activity-form-row2 .btn {
+      height: 36px;
+      white-space: nowrap;
+    }
+
+    /* ── Searchable task dropdown ── */
+    .activity-task-search-wrap {
+      position: relative;
+    }
+
+    .activity-task-search-wrap label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .activity-task-search-label-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .activity-hide-toggle {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      transition: color .12s, border-color .12s, background .12s;
+    }
+
+    .activity-hide-toggle:hover {
+      border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+      color: var(--accent-h);
+      background: var(--accent-soft);
+    }
+
+    .activity-hide-toggle.is-active {
+      border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+      color: var(--accent-h);
+      background: var(--accent-soft);
+    }
+
+    .activity-task-search-input {
+      width: 100%;
+      padding: 7px 10px 7px 30px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--field-bg);
+      color: var(--text);
+      font-size: 12.5px;
+      outline: none;
+      transition: border-color .12s;
+    }
+
+    .activity-task-search-input:focus {
+      border-color: var(--accent);
+    }
+
+    .activity-task-search-input::placeholder {
+      color: var(--text-muted);
+      padding-left: 15px;
+    }
+
+    .activity-task-search-icon {
+      position: absolute;
+      left: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .activity-task-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      box-shadow: var(--shadow-panel);
+      margin-top: 4px;
+      padding: 4px;
+      display: none;
+    }
+
+    .activity-task-dropdown.is-open {
+      display: block;
+    }
+
+    .activity-task-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: background .1s;
+      color: var(--text);
+    }
+
+    .activity-task-option:hover,
+    .activity-task-option.is-focused {
+      background: var(--accent-soft);
+    }
+
+    .activity-task-option.is-selected {
+      background: var(--accent-soft-strong);
+      font-weight: 600;
+    }
+
+    .activity-task-option-status {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+
+    .activity-task-option-title {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .activity-task-option-group {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+      padding: 8px 10px 4px;
+      font-weight: 600;
+    }
+
+    .activity-task-selected-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--field-bg);
+      font-size: 12.5px;
+      cursor: pointer;
+      width: 100%;
+      min-height: 36px;
+      transition: border-color .12s;
+    }
+
+    .activity-task-selected-chip:hover {
+      border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+    }
+
+    .activity-task-selected-chip .chip-label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .activity-task-selected-chip .chip-clear {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: none;
+      background: color-mix(in srgb, var(--text-muted) 20%, transparent);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      font-size: 11px;
+      line-height: 1;
+      transition: background .12s, color .12s;
+    }
+
+    .activity-task-selected-chip .chip-clear:hover {
+      background: color-mix(in srgb, #ef4444 20%, transparent);
+      color: #ef4444;
+    }
+
+    /* ── Activity filter bar ── */
+    .activity-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 2px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .activity-filter-bar label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .activity-filter-bar select {
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--field-bg);
+      color: var(--text);
+      font-size: 11.5px;
+      outline: none;
+    }
+
+    .activity-filter-bar select:focus {
+      border-color: var(--accent);
+    }
+
+    /* ── Scrollable activity list ── */
+    .activity-list-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 4px;
+    }
+
+    .activity-list-scroll::-webkit-scrollbar { width: 5px; }
+    .activity-list-scroll::-webkit-scrollbar-track { background: transparent; }
+    .activity-list-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+    .activity-list-scroll::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+    .activity-list {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      min-height: 120px;
+    }
+
+    .activity-day-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .activity-day-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 0 2px;
+    }
+
+    .activity-day-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--text) 78%, var(--accent) 22%);
+    }
+
+    .activity-day-meta {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .activity-day-tracked {
+      padding: 1px 8px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
+      background: var(--accent-soft);
+      color: color-mix(in srgb, var(--text) 62%, var(--accent-h) 38%);
+      font-weight: 600;
+    }
+
+    .activity-day-entries {
+      display: grid;
+      gap: 6px;
+    }
+
+    .activity-entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--surface2) 82%, transparent);
+      transition: border-color .12s ease, background-color .12s ease;
+    }
+
+    .activity-entry:hover {
+      border-color: color-mix(in srgb, var(--accent) 26%, var(--border));
+    }
+
+    .activity-entry-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
+      background: var(--accent-soft);
+      color: var(--accent-h);
+      margin-top: 1px;
+    }
+
+    .activity-entry-icon svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .activity-entry.is-general .activity-entry-icon {
+      border-color: color-mix(in srgb, #f59e0b 32%, var(--border));
+      background: color-mix(in srgb, #f59e0b 12%, transparent);
+      color: #f59e0b;
+    }
+
+    .activity-entry.is-session .activity-entry-icon {
+      border-color: color-mix(in srgb, #06b6d4 32%, var(--border));
+      background: color-mix(in srgb, #06b6d4 12%, transparent);
+      color: #06b6d4;
+    }
+
+    .activity-entry.is-session-end .activity-entry-icon {
+      border-color: color-mix(in srgb, #94a3b8 32%, var(--border));
+      background: color-mix(in srgb, #94a3b8 12%, transparent);
+      color: #94a3b8;
+    }
+
+    .activity-entry.is-session,
+    .activity-entry.is-session-end {
+      background: color-mix(in srgb, var(--surface2) 55%, transparent);
+      border-style: dashed;
+    }
+
+    .activity-entry.is-running {
+      border-color: color-mix(in srgb, #22c55e 45%, var(--border));
+      background: color-mix(in srgb, #22c55e 7%, var(--surface2));
+    }
+
+    .activity-entry-main {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .activity-entry-title {
+      font-size: 13px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .activity-entry-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      flex-wrap: wrap;
+    }
+
+    .activity-entry-source {
+      padding: 0 7px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 10px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .activity-running-label {
+      color: #22c55e;
+      font-weight: 700;
+    }
+
+    .activity-entry-note {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      overflow-wrap: anywhere;
+    }
+
+    .activity-entry-actions {
+      display: inline-flex;
+      gap: 5px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
+
+    .activity-icon-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: color .12s ease, border-color .12s ease, background-color .12s ease;
+    }
+
+    .activity-icon-btn svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .activity-icon-btn.is-stop svg {
+      fill: currentColor;
+      stroke-width: 1.2;
+    }
+
+    .activity-icon-btn.is-stop {
+      border-color: color-mix(in srgb, #22c55e 40%, var(--border));
+      color: #22c55e;
+    }
+
+    .activity-icon-btn.is-stop:hover {
+      background: color-mix(in srgb, #22c55e 14%, transparent);
+    }
+
+    .activity-icon-btn.is-edit:hover {
+      border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+      color: var(--accent-h);
+      background: var(--accent-soft);
+    }
+
+    .activity-icon-btn.is-delete:hover {
+      border-color: color-mix(in srgb, #ef4444 46%, var(--border));
+      color: #ef4444;
+      background: color-mix(in srgb, #ef4444 10%, transparent);
+    }
+
+    .activity-edit-form {
+      display: block;
+      border-color: color-mix(in srgb, var(--accent) 36%, var(--border));
+      background: color-mix(in srgb, var(--accent) 5%, var(--surface2));
+    }
+
+    .activity-empty-state {
+      padding: 34px 12px;
+    }
+
+    @media (max-width: 760px) {
+      .activity-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .activity-form-grid { grid-template-columns: 1fr; }
+      .activity-form-row2 { grid-template-columns: 1fr 1fr; }
+      .activity-form-row2 .btn { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 540px) {
+      .activity-form-row2 { grid-template-columns: 1fr; }
+      .activity-day-header { flex-direction: column; gap: 3px; }
+      .activity-entry { flex-wrap: wrap; }
+      .activity-entry-actions { margin-left: 36px; }
+    }
   </style>
 </head>
 <body>
@@ -7257,6 +8009,11 @@
       <button class="btn btn-header btn-header-reports" id="openReportsBtn" type="button" title="Open reporting dashboard" aria-label="Open reporting dashboard">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 18.5h16"/><path d="M7 16V9"/><path d="M12 16V5.5"/><path d="M17 16v-3.5"/></svg>
         <span class="btn-header-label">Reports</span>
+      </button>
+      <button class="btn btn-header btn-header-activity" id="openActivityBtn" type="button" title="Open daily activity" aria-label="Open daily activity">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M3 12h4l2.5-6.5L14 18.5 16.5 12H21"/></svg>
+        <span class="btn-header-label" id="activityHeaderLabel">Activity</span>
+        <span class="activity-header-dot" id="activityHeaderDot" hidden aria-hidden="true"></span>
       </button>
       <button class="btn btn-header btn-header-clear" id="clearCompletedBtn" type="button" title="Clean up completed tasks" aria-label="Clean up completed tasks">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M9 3.5h6"/><path d="M4 7.5h16"/><path d="M6.5 7.5 7.3 19a1 1 0 0 0 1 .9h7.4a1 1 0 0 0 1-.9l.8-11.5"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>
@@ -7484,6 +8241,11 @@
                     <option value="">No Sender</option>
                   </select>
                 </div>
+              </div>
+
+              <div class="form-group task-form-field task-field-folder-path">
+                <label for="taskFolderPath">Folder Path</label>
+                <input type="text" id="taskFolderPath" placeholder="e.g. C:\Projects\MyApp or /home/user/docs" />
               </div>
 
               <div class="form-group task-form-field task-field-notes">
@@ -7961,6 +8723,96 @@
     </button>
   </div>
 
+  <!-- ── Activity Modal ──
+       Daily activity journal: session events, tracked task sessions, and manual entries. -->
+  <div class="modal-backdrop" id="activityModal">
+    <div class="modal activity-modal" role="dialog" aria-modal="true" aria-labelledby="activityModalTitle">
+      <div class="modal-header-inline activity-modal-header">
+        <div class="activity-modal-heading">
+          <h2 id="activityModalTitle">Daily Activity</h2>
+          <p class="activity-modal-subtitle" id="activityModalSubtitle">Track when you start the day, what you work on, and when you wrap up.</p>
+        </div>
+        <button type="button" class="task-modal-close" id="closeActivityModalBtn" aria-label="Close daily activity">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18" /></svg>
+        </button>
+      </div>
+
+      <!-- Sticky top: summary + form + filters (never scrolls away) -->
+      <div class="activity-sticky-top">
+        <div class="activity-summary" id="activitySummary" aria-live="polite"></div>
+
+        <form id="activityForm" class="activity-form" novalidate>
+          <div class="activity-form-title">
+            <span>Add activity</span>
+            <span class="activity-form-hint">Leave "End" empty to keep it running</span>
+          </div>
+          <!-- Row 1: Task search + Note -->
+          <div class="activity-form-grid">
+            <div class="form-group activity-form-task activity-task-search-wrap">
+              <label>
+                <span class="activity-task-search-label-row">
+                  <span>Task</span>
+                  <button type="button" class="activity-hide-toggle" id="activityHideOldBtn" title="Hide completed &amp; old tasks (>30 days)">Hide done/old</button>
+                </span>
+              </label>
+              <!-- Selected chip (shown when a task is picked) -->
+              <div id="activityTaskChip" class="activity-task-selected-chip" style="display:none;">
+                <span class="chip-label" id="activityTaskChipLabel"></span>
+                <button type="button" class="chip-clear" id="activityTaskChipClear" title="Clear selection" aria-label="Clear task">&times;</button>
+              </div>
+              <!-- Search input (shown when no task selected) -->
+              <div id="activityTaskSearchBox" style="position:relative;">
+                <svg class="activity-task-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" class="activity-task-search-input" id="activityTaskSearchInput" placeholder="Search tasks or leave empty for general…" autocomplete="off" />
+                <div class="activity-task-dropdown" id="activityTaskDropdown"></div>
+              </div>
+              <input type="hidden" id="activityTaskSelect" value="" />
+            </div>
+            <div class="form-group activity-form-note">
+              <label for="activityNoteInput">Note</label>
+              <input type="text" id="activityNoteInput" maxlength="240" placeholder="What was this time spent on?" />
+            </div>
+          </div>
+          <!-- Row 2: Start + End + Submit -->
+          <div class="activity-form-row2">
+            <div class="form-group">
+              <label for="activityStartInput">Start *</label>
+              <input type="datetime-local" id="activityStartInput" required />
+            </div>
+            <div class="form-group">
+              <label for="activityEndInput">End</label>
+              <input type="datetime-local" id="activityEndInput" />
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitActivityBtn">Add Activity</button>
+          </div>
+        </form>
+
+        <!-- Filter bar -->
+        <div class="activity-filter-bar" id="activityFilterBar">
+          <label>Show:</label>
+          <select id="activityTimelineFilter">
+            <option value="all">All time</option>
+            <option value="today">Today</option>
+            <option value="yesterday">Yesterday</option>
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+          </select>
+          <select id="activityTypeFilter">
+            <option value="all">All types</option>
+            <option value="task">Task activities</option>
+            <option value="general">General activities</option>
+            <option value="session">Session events</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Scrollable activity entries -->
+      <div class="activity-list-scroll" id="activityListScroll">
+        <div class="activity-list" id="activityList"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- ExcelJS library (cdn) used for the detailed Excel export feature. -->
   <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <!-- XLSX library (cdn) used by workbook import helpers for rich-data image parsing. -->
@@ -7974,6 +8826,8 @@
       itemSettings: 'tm_item_settings',
       hiddenFilters: 'tm_hidden_filters',
       logs: 'tm_logs',
+      activities: 'tm_activities',
+      activitySession: 'tm_activity_session',
       categories: 'tm_categories',
       templates: 'tm_templates',
       hideDone: 'tm_hide_done',
@@ -7995,6 +8849,7 @@
       KEYS.itemSettings,
       KEYS.hiddenFilters,
       KEYS.logs,
+      KEYS.activities,
       KEYS.categories,
       KEYS.templates
     ];
@@ -8339,6 +9194,7 @@
           itemSettings,
           hiddenFilters,
           logs,
+          activities,
           categories,
           templates,
           preferences: {
@@ -8373,6 +9229,7 @@
           ? data.hiddenFilters
           : { status: [], priority: [], category: [] },
         logs: Array.isArray(data.logs) ? data.logs : [],
+        activities: Array.isArray(data.activities) ? data.activities : [],
         categories: Array.isArray(data.categories) ? data.categories : [],
         templates: Array.isArray(data.templates) ? data.templates : [],
         preferences: {
@@ -8392,6 +9249,7 @@
         { key: KEYS.itemSettings, value: snapshot.itemSettings },
         { key: KEYS.hiddenFilters, value: snapshot.hiddenFilters },
         { key: KEYS.logs, value: snapshot.logs },
+        { key: KEYS.activities, value: snapshot.activities },
         { key: KEYS.categories, value: snapshot.categories },
         { key: KEYS.templates, value: snapshot.templates },
         { key: KEYS.hideDone, value: snapshot.preferences.hideDone },
@@ -8444,6 +9302,7 @@
       activeDetailEditField = null;
       activeDetailEditTaskId = null;
       activeLogDateEditId = null;
+      activityEditingId = null;
       activeSubtaskEditTaskId = null;
       activeSubtaskEditId = null;
       itemSearchQuery = '';
@@ -8481,6 +9340,7 @@
       applyInputLimits();
       fillItemSettingsForm();
       updateStorageStatusCard();
+      refreshActivityUi();
       if (document.getElementById('reportModal')?.classList.contains('open')) {
         renderReportDashboard();
       }
@@ -8498,6 +9358,7 @@
       saveItemSettings();
       saveHiddenFilters();
       saveTemplates();
+      saveActivities();
       renderAppState();
     }
 
@@ -8543,8 +9404,8 @@
     }
 
     async function removeAllTaskManagerData() {
-      const totalRecords = tasks.length + items.length + logs.length;
-      const confirmed = confirm(`Remove all Task Manager data from this browser? This will delete ${tasks.length} task${tasks.length === 1 ? '' : 's'}, ${items.length} item${items.length === 1 ? '' : 's'}, ${logs.length} log${logs.length === 1 ? '' : 's'}, templates, categories, and saved preferences.`);
+      const totalRecords = tasks.length + items.length + logs.length + activities.length;
+      const confirmed = confirm(`Remove all Task Manager data from this browser? This will delete ${tasks.length} task${tasks.length === 1 ? '' : 's'}, ${items.length} item${items.length === 1 ? '' : 's'}, ${logs.length} log${logs.length === 1 ? '' : 's'}, ${activities.length} activit${activities.length === 1 ? 'y' : 'ies'}, templates, categories, and saved preferences.`);
       if (!confirmed) return false;
 
       await clearPersistedTaskManagerData();
@@ -9030,6 +9891,7 @@
     let tasks       = [];
     let items       = [];
     let logs        = [];
+    let activities  = [];
     let categories  = [];
     let templates   = [];
     let itemSettings = null;
@@ -9049,6 +9911,8 @@
     let activeDetailEditField = null;
     let activeDetailEditTaskId = null;
     let activeLogDateEditId = null;
+    let activityEditingId = null;
+    let activityTickerId = null;
     let activeSubtaskEditTaskId = null;
     let activeSubtaskEditId = null;
     let currentReportPeriod = 'monthly';
@@ -9160,6 +10024,7 @@
       { key: 'EmailSubject', label: 'Email Subject', header: 'Email Subject', width: 30 },
       { key: 'Sender', label: 'Sender', header: 'Sender', width: 15, validationList: 'senders' },
       { key: 'Project', label: 'Project', header: 'Project', width: 18, validationList: 'projects' },
+      { key: 'FolderPath', label: 'Folder Path', header: 'Folder Path', width: 35 },
       { key: 'Created', label: 'Created', header: 'Created', width: 12, center: true, isDate: true },
       { key: 'Received', label: 'Received', header: 'Received', width: 12, center: true, isDate: true },
       { key: 'Due', label: 'Due', header: 'Due', width: 12, center: true, isDate: true },
@@ -9381,6 +10246,7 @@
       const storedItems = await loadJson(KEYS.items, null);
       itemSettings = normalizeItemSettings(await loadJson(KEYS.itemSettings, null));
       logs = await loadJson(KEYS.logs, []);
+      activities = normalizeActivities(await loadJson(KEYS.activities, []));
       categories = await loadJson(KEYS.categories, []);
       templates = await loadJson(KEYS.templates, []);
       hideDone = (await loadPreference(KEYS.hideDone, 'false')) === 'true';
@@ -9455,6 +10321,10 @@
 
     function saveLogs() {
       saveJson(KEYS.logs, logs);
+    }
+
+    function saveActivities() {
+      saveJson(KEYS.activities, activities);
     }
 
     function saveCategories() {
@@ -10613,6 +11483,12 @@
       if (normalizedStatus === 'Completed' && previousStatus !== 'Completed') {
         task.completedAt = today();
         task.progressPercent = 100;
+
+        const runningActivity = getRunningActivity();
+        if (runningActivity && runningActivity.taskId === task.id) {
+          stopRunningActivity();
+          updateActivityHeaderButton();
+        }
       } else if (normalizedStatus !== 'Completed') {
         task.completedAt = null;
       }
@@ -11520,6 +12396,9 @@
     function getTaskQuickActionsMarkup(task) {
       const favorite = isTaskFavorite(task);
       const favoriteLabel = favorite ? 'Remove favorite' : 'Mark as favorite';
+      const runningActivity = getRunningActivity();
+      const isTracking = runningActivity?.taskId === task.id;
+      const trackLabel = isTracking ? 'Stop working on this task' : 'Start working on this task';
 
       return `
         <div class="task-leading-actions">
@@ -11529,14 +12408,21 @@
               <path d="m12 3.8 2.5 5.1 5.6.8-4 3.9.9 5.5-5-2.6-5 2.6.9-5.5-4-3.9 5.6-.8Z" />
             </svg>
           </button>
+          <button class="track-toggle ${isTracking ? 'is-active' : ''}" type="button" data-toggle-track="${task.id}" title="${trackLabel}" aria-label="${trackLabel}" aria-pressed="${isTracking ? 'true' : 'false'}">
+            ${isTracking
+              ? '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7.5" y="7.5" width="9" height="9" rx="1.5" /></svg>'
+              : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6.2v11.6a.6.6 0 0 0 .9.5l9.2-5.8a.6.6 0 0 0 0-1L9.4 5.7a.6.6 0 0 0-.9.5Z" /></svg>'}
+          </button>
         </div>`;
     }
 
     function getStandardTaskCardMarkup(task, searchQuery = '') {
       const taskData = getTaskCardData(task);
+      const runningActivity = getRunningActivity();
+      const trackingActivity = runningActivity?.taskId === task.id ? runningActivity : null;
 
       return `
-        <div class="task-card ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isFavorite ? 'is-favorite' : ''} ${taskData.isActive ? 'is-active' : ''}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
+        <div class="task-card ${taskData.priorityClass} ${taskData.statusClass} ${taskData.isFavorite ? 'is-favorite' : ''} ${taskData.isActive ? 'is-active' : ''} ${trackingActivity ? 'is-tracking' : ''}" data-id="${task.id}" style="--category-color:${escHtml(taskData.categoryColor)}">
           <div class="task-card-body">
             <div class="task-main">
               <div class="task-heading">
@@ -11553,6 +12439,7 @@
                   <div class="task-signal-row">
                     ${getTaskProjectMarkup(task.project, searchQuery)}
                     ${getTaskPriorityMarkup(taskData.priority)}
+                    ${trackingActivity ? `<span class="task-tracking-chip" title="Time tracked in this session"><span class="task-tracking-dot" aria-hidden="true"></span>Working · <span data-activity-elapsed="${escHtml(trackingActivity.id)}">${formatElapsedClock(getActivityDurationMs(trackingActivity))}</span></span>` : ''}
                   </div>
                   <div class="task-progress-row" style="--task-progress:${taskData.progressPercent}%">
                     <div class="task-progress-summary">
@@ -11823,6 +12710,7 @@
         Status: normalizeStatus(task.status),
         Sender: task.sender || '',
         Project: task.project || '',
+        FolderPath: task.folderPath || '',
         EmailSubject: task.emailSubject || '',
         Description: task.description || '',
         Notes: task.notes || '',
@@ -12584,6 +13472,7 @@
 
       tasks = tasks.filter(task => !taskIdSet.has(task.id));
       logs = logs.filter(log => !taskIdSet.has(log.taskId));
+      detachActivitiesFromTasks(taskIdSet);
       deleteItemsByTaskIds(taskIdSet);
 
       if (selectedTaskId && taskIdSet.has(selectedTaskId)) {
@@ -13268,18 +14157,33 @@
         activeDetailTab = detailTabs[0]?.id || 'description';
       }
 
+      const headerThumbHtml = (() => {
+        const imgUrl = String(task.imageDataUrl || '').trim();
+        if (imgUrl) {
+          return `<div class="detail-header-thumb"><img src="${escHtml(imgUrl)}" alt="${escHtml(getTaskImageAlt(task))}" /></div>`;
+        }
+        const cat = getCategoryByName(task.category) || categories[0];
+        if (cat) {
+          return `<div class="detail-header-thumb" style="--category-icon-color:${escHtml(cat.color || 'var(--accent)')}"><span class="detail-header-thumb-icon" style="color:${escHtml(cat.color || 'var(--accent)')}">${getCategoryIconSvgMarkup(cat.iconKey)}</span></div>`;
+        }
+        return '';
+      })();
+
       panel.innerHTML = `
         <div class="detail-header" style="--category-color:${escHtml(categoryColor)}">
           <div class="detail-header-main">
-            <div class="section-title">Task Details</div>
-            <div class="detail-title">${escHtml(task.title)}</div>
-            <div class="task-meta">
-              ${getCategoryMarkup(task.category)}
-                ${task.effortSize ? `<span class="badge badge-category" style="--category-color:${EFFORT_STATS_ACCENT}" title="${escHtml(getTaskEffortRangeLabel(task))}">Effort ${escHtml(getTaskEffortLabel(task))}</span>` : ''}
-              ${getFilterBadgeMarkup('priority', priority)}
-              ${getFilterBadgeMarkup('status', status)}
-              <span class="badge badge-category" style="--category-color:#14b8a6">${workflowItemCount} item${workflowItemCount === 1 ? '' : 's'}</span>
-              ${template ? `<span class="badge badge-category" style="--category-color:${escHtml(categoryColor)}">Template: ${escHtml(template.name)}</span>` : ''}
+            ${headerThumbHtml}
+            <div class="detail-header-info">
+              <div class="section-title">Task Details</div>
+              <div class="detail-title">${escHtml(task.title)}</div>
+              <div class="task-meta">
+                ${getCategoryMarkup(task.category)}
+                  ${task.effortSize ? `<span class="badge badge-category" style="--category-color:${EFFORT_STATS_ACCENT}" title="${escHtml(getTaskEffortRangeLabel(task))}">Effort ${escHtml(getTaskEffortLabel(task))}</span>` : ''}
+                ${getFilterBadgeMarkup('priority', priority)}
+                ${getFilterBadgeMarkup('status', status)}
+                <span class="badge badge-category" style="--category-color:#14b8a6">${workflowItemCount} item${workflowItemCount === 1 ? '' : 's'}</span>
+                ${template ? `<span class="badge badge-category" style="--category-color:${escHtml(categoryColor)}">Template: ${escHtml(template.name)}</span>` : ''}
+              </div>
             </div>
           </div>
           <button class="btn btn-ghost" data-edit="${task.id}">Edit</button>
@@ -13292,6 +14196,7 @@
           </div>
 ${task.effortSize ? getTaskEffortBlockMarkup(task, { variant: 'detail' }) : '<strong>Time not estimated</strong>'}
           <div class="detail-row is-full-width"><span>Email Subject</span><strong>${task.emailSubject ? escHtml(task.emailSubject) : 'N/A'}</strong></div>
+          <div class="detail-row is-full-width"><span>Folder Path</span><strong>${task.folderPath ? escHtml(task.folderPath) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-created"><span>Created</span><strong>${task.createdAt ? escHtml(formatDate(task.createdAt)) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-received"><span>Received</span><strong>${task.receivedAt ? escHtml(formatDate(task.receivedAt)) : 'N/A'}</strong></div>
           <div class="detail-row is-date is-started"><span>Started</span><strong>${task.startedAt ? escHtml(formatDate(task.startedAt)) : 'N/A'}</strong></div>
@@ -13402,6 +14307,7 @@ ${task.effortSize ? getTaskEffortBlockMarkup(task, { variant: 'detail' }) : '<st
         document.getElementById('taskSender').value = t.sender || '';
         document.getElementById('taskDescription').value = t.description || '';
         document.getElementById('taskProject').value = t.project || '';
+        document.getElementById('taskFolderPath').value = t.folderPath || '';
         document.getElementById('taskCategory').value   = getCategoryByName(t.category)?.name || categories[0]?.name || '';
         document.getElementById('taskEffortSize').value = normalizeEffortSize(t.effortSize);
         document.getElementById('taskPriority').value   = normalizePriority(t.priority);
@@ -13426,6 +14332,7 @@ ${task.effortSize ? getTaskEffortBlockMarkup(task, { variant: 'detail' }) : '<st
         document.getElementById('taskSender').value = '';
         document.getElementById('taskDescription').value = '';
         document.getElementById('taskProject').value = '';
+        document.getElementById('taskFolderPath').value = '';
         document.getElementById('taskCategory').value   = categories[0]?.name || '';
         document.getElementById('taskEffortSize').value = '';
         document.getElementById('taskPriority').value   = DEFAULT_PRIORITY;
@@ -13565,6 +14472,7 @@ ${task.effortSize ? getTaskEffortBlockMarkup(task, { variant: 'detail' }) : '<st
         sender: document.getElementById('taskSender').value.trim() || null,
         description: document.getElementById('taskDescription').value.trim() || null,
         project: normalizeSingleLineText(document.getElementById('taskProject').value) || null,
+        folderPath: document.getElementById('taskFolderPath').value.trim() || null,
         imageDataUrl: taskDraftImageDataUrl || '',
         imageName: taskDraftImageName || '',
         category:   document.getElementById('taskCategory').value,
@@ -13656,6 +14564,12 @@ ${task.effortSize ? getTaskEffortBlockMarkup(task, { variant: 'detail' }) : '<st
       const deleteId = e.target.closest('[data-delete]')?.dataset.delete;
       const completeId = e.target.closest('[data-toggle-complete]')?.dataset.toggleComplete;
       const favoriteId = e.target.closest('[data-toggle-favorite]')?.dataset.toggleFavorite;
+      const trackId = e.target.closest('[data-toggle-track]')?.dataset.toggleTrack;
+
+      if (trackId) {
+        toggleTaskTracking(trackId);
+        return;
+      }
 
       if (favoriteId) {
         const task = tasks.find(item => item.id === favoriteId);
@@ -15476,6 +16390,7 @@ ${task.effortSize ? getTaskEffortBlockMarkup(task, { variant: 'detail' }) : '<st
         closeTemplateModal();
         closeItemsModal();
         closeReportModal();
+        closeActivityModal();
       }
     });
 
@@ -15688,6 +16603,904 @@ ${task.effortSize ? getTaskEffortBlockMarkup(task, { variant: 'detail' }) : '<st
       document.getElementById('submitTemplateBtn').textContent = 'Save Template';
     }
 
+    // ── Daily Activity Tracking ──
+    // Activities form a daily journal: session events (app start/close),
+    // timer-tracked task sessions, and manual entries. Only one activity can
+    // be "running" (endedAt === null) at a time; starting a new one stops it.
+    const ACTIVITY_TYPES = ['task', 'general', 'session'];
+    const ACTIVITY_SOURCES = ['timer', 'manual', 'system'];
+    const ACTIVITY_HEARTBEAT_MS = 30000;
+
+    function toValidIsoString(value) {
+      if (!value) return null;
+      const parsed = new Date(value);
+      return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+    }
+
+    function normalizeActivity(activity) {
+      if (!activity || typeof activity !== 'object') return null;
+
+      const type = ACTIVITY_TYPES.includes(activity.type) ? activity.type : 'general';
+      const startedAt = toValidIsoString(activity.startedAt);
+      if (!startedAt) return null;
+
+      let endedAt = toValidIsoString(activity.endedAt);
+      if (endedAt && endedAt < startedAt) endedAt = startedAt;
+
+      return {
+        id: String(activity.id || genId()),
+        type,
+        taskId: type === 'task' ? String(activity.taskId || '') || null : null,
+        taskTitle: normalizeSingleLineText(activity.taskTitle) || null,
+        note: normalizeSingleLineText(activity.note) || null,
+        sessionEvent: type === 'session'
+          ? (activity.sessionEvent === 'end' ? 'end' : 'start')
+          : null,
+        startedAt,
+        endedAt: type === 'session' ? startedAt : endedAt,
+        source: ACTIVITY_SOURCES.includes(activity.source)
+          ? activity.source
+          : (type === 'session' ? 'system' : 'manual'),
+        createdAt: toValidIsoString(activity.createdAt) || startedAt,
+        updatedAt: toValidIsoString(activity.updatedAt) || null
+      };
+    }
+
+    function normalizeActivities(activityList) {
+      return (Array.isArray(activityList) ? activityList : [])
+        .map(normalizeActivity)
+        .filter(Boolean)
+        .sort((a, b) => b.startedAt.localeCompare(a.startedAt));
+    }
+
+    function getActivityById(activityId) {
+      return activities.find(activity => activity.id === activityId) || null;
+    }
+
+    function getRunningActivity() {
+      return activities.find(activity => activity.type !== 'session' && !activity.endedAt) || null;
+    }
+
+    function getActivityTaskLabel(activity) {
+      if (activity.type === 'session') {
+        return activity.sessionEvent === 'end' ? 'App closed' : 'App started';
+      }
+      if (activity.taskId) {
+        return getTaskById(activity.taskId)?.title || activity.taskTitle || 'Deleted task';
+      }
+      return activity.note || 'General activity';
+    }
+
+    function detachActivitiesFromTasks(taskIdSet) {
+      let changed = false;
+
+      activities = activities.map(activity => {
+        if (!activity.taskId || !taskIdSet.has(activity.taskId)) return activity;
+        changed = true;
+        return {
+          ...activity,
+          taskId: null,
+          type: 'general',
+          note: activity.note || activity.taskTitle || null
+        };
+      });
+
+      if (changed) saveActivities();
+      return changed;
+    }
+
+    function getActivityDurationMs(activity, referenceDate = new Date()) {
+      if (activity.type === 'session') return 0;
+      const start = new Date(activity.startedAt).getTime();
+      const end = activity.endedAt ? new Date(activity.endedAt).getTime() : referenceDate.getTime();
+      return Math.max(0, end - start);
+    }
+
+    function formatDurationMs(ms) {
+      const totalMinutes = Math.floor(ms / 60000);
+      if (totalMinutes < 1) return `${Math.max(1, Math.round(ms / 1000))}s`;
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      if (!hours) return `${minutes}m`;
+      return `${hours}h ${String(minutes).padStart(2, '0')}m`;
+    }
+
+    function formatElapsedClock(ms) {
+      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      const paddedSeconds = String(seconds).padStart(2, '0');
+      if (!hours) return `${minutes}:${paddedSeconds}`;
+      return `${hours}:${String(minutes).padStart(2, '0')}:${paddedSeconds}`;
+    }
+
+    function formatActivityClockTime(iso) {
+      if (!iso) return '';
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) return '';
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function getActivityDayKey(iso) {
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) return 'unknown';
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function getActivityDayLabel(dayKey) {
+      if (dayKey === today()) return 'Today';
+
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (dayKey === getActivityDayKey(yesterday.toISOString())) return 'Yesterday';
+
+      const parsed = new Date(`${dayKey}T00:00:00`);
+      if (Number.isNaN(parsed.getTime())) return dayKey;
+      const weekday = parsed.toLocaleDateString([], { weekday: 'short' });
+      return `${weekday} ${formatDate(dayKey)}`;
+    }
+
+    // ── Activity Engine ──
+    function stopRunningActivity(endedAtIso = new Date().toISOString(), options = {}) {
+      const running = getRunningActivity();
+      if (!running) return null;
+
+      running.endedAt = endedAtIso > running.startedAt ? endedAtIso : running.startedAt;
+      running.updatedAt = new Date().toISOString();
+
+      if (options.save !== false) saveActivities();
+      return running;
+    }
+
+    function startTaskActivity(taskId, options = {}) {
+      const task = getTaskById(taskId);
+      if (!task) return null;
+
+      stopRunningActivity(new Date().toISOString(), { save: false });
+
+      const activity = normalizeActivity({
+        id: genId(),
+        type: 'task',
+        taskId: task.id,
+        taskTitle: task.title,
+        startedAt: new Date().toISOString(),
+        endedAt: null,
+        source: 'timer',
+        createdAt: new Date().toISOString()
+      });
+
+      activities.unshift(activity);
+      if (options.save !== false) saveActivities();
+      return activity;
+    }
+
+    function toggleTaskTracking(taskId) {
+      const running = getRunningActivity();
+
+      if (running && running.taskId === taskId) {
+        stopRunningActivity();
+      } else {
+        startTaskActivity(taskId);
+      }
+
+      refreshActivityUi({ rerenderTasks: true });
+    }
+
+    function stopTaskTrackingForTask(taskId) {
+      const running = getRunningActivity();
+      if (!running || running.taskId !== taskId) return false;
+
+      stopRunningActivity();
+      refreshActivityUi();
+      return true;
+    }
+
+    function recordSessionActivity(sessionEvent, atIso = new Date().toISOString(), options = {}) {
+      const activity = normalizeActivity({
+        id: genId(),
+        type: 'session',
+        sessionEvent,
+        startedAt: atIso,
+        source: 'system',
+        createdAt: new Date().toISOString()
+      });
+
+      activities.unshift(activity);
+      activities.sort((a, b) => b.startedAt.localeCompare(a.startedAt));
+      if (options.save !== false) saveActivities();
+      return activity;
+    }
+
+    // ── Activity UI ──
+    function isActivityModalOpen() {
+      return document.getElementById('activityModal')?.classList.contains('open') === true;
+    }
+
+    function refreshActivityUi(options = {}) {
+      updateActivityHeaderButton();
+      if (isActivityModalOpen()) renderActivityPanel();
+      if (options.rerenderTasks) {
+        renderTasks({ preserveOrder: true, preserveDetailScroll: true, preserveItemsModalScroll: true });
+      }
+    }
+
+    function updateActivityHeaderButton() {
+      const button = document.getElementById('openActivityBtn');
+      const dot = document.getElementById('activityHeaderDot');
+      const label = document.getElementById('activityHeaderLabel');
+      if (!button || !dot || !label) return;
+
+      const running = getRunningActivity();
+      button.classList.toggle('is-tracking', Boolean(running));
+      dot.hidden = !running;
+
+      if (running) {
+        const elapsed = formatElapsedClock(getActivityDurationMs(running));
+        label.textContent = elapsed;
+        button.title = `Tracking "${getActivityTaskLabel(running)}" — click to open daily activity`;
+      } else {
+        label.textContent = 'Activity';
+        button.title = 'Open daily activity';
+      }
+    }
+
+    function updateActivityTimers() {
+      const running = getRunningActivity();
+      updateActivityHeaderButton();
+      if (!running) return;
+
+      const elapsed = formatElapsedClock(getActivityDurationMs(running));
+      document.querySelectorAll(`[data-activity-elapsed="${running.id}"]`).forEach(element => {
+        element.textContent = elapsed;
+      });
+    }
+
+    function startActivityTicker() {
+      if (activityTickerId) return;
+      activityTickerId = window.setInterval(updateActivityTimers, 1000);
+    }
+
+    function renderActivityTaskOptions(selectedTaskId = '') {
+      const openTasks = tasks
+        .filter(task => !isTaskCompleted(task))
+        .sort((a, b) => a.title.localeCompare(b.title));
+      const completedTasks = tasks
+        .filter(task => isTaskCompleted(task))
+        .sort((a, b) => a.title.localeCompare(b.title));
+
+      const buildOptions = taskList => taskList
+        .map(task => `<option value="${escHtml(task.id)}" ${task.id === selectedTaskId ? 'selected' : ''}>${escHtml(task.title)}</option>`)
+        .join('');
+
+      return `
+        <option value="">General (no task)</option>
+        ${openTasks.length ? `<optgroup label="Open tasks">${buildOptions(openTasks)}</optgroup>` : ''}
+        ${completedTasks.length ? `<optgroup label="Completed tasks">${buildOptions(completedTasks)}</optgroup>` : ''}`;
+    }
+
+    // ── Searchable task dropdown for activity form ──
+    let activityHideOld = false;
+    let activitySelectedTask = null; // { id, title }
+    let activityDropdownFocusIdx = -1;
+
+    function getActivitySearchableTasks() {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const cutoff = thirtyDaysAgo.toISOString();
+
+      return tasks.filter(task => {
+        if (activityHideOld) {
+          if (isTaskCompleted(task)) return false;
+          if (task.createdAt && task.createdAt < cutoff && task.updatedAt && task.updatedAt < cutoff) return false;
+        }
+        return true;
+      }).sort((a, b) => {
+        const aDone = isTaskCompleted(a) ? 1 : 0;
+        const bDone = isTaskCompleted(b) ? 1 : 0;
+        if (aDone !== bDone) return aDone - bDone;
+        return a.title.localeCompare(b.title);
+      });
+    }
+
+    function renderActivityDropdown(query = '') {
+      const dropdown = document.getElementById('activityTaskDropdown');
+      if (!dropdown) return;
+
+      const filtered = getActivitySearchableTasks().filter(task =>
+        !query || task.title.toLowerCase().includes(query.toLowerCase())
+      );
+
+      const openTasks = filtered.filter(t => !isTaskCompleted(t));
+      const doneTasks = filtered.filter(t => isTaskCompleted(t));
+
+      let html = `<div class="activity-task-option" data-task-id="" data-idx="0">
+        <span class="activity-task-option-status" style="background: var(--text-muted);"></span>
+        <span class="activity-task-option-title">General (no task)</span>
+      </div>`;
+
+      let idx = 1;
+      if (openTasks.length) {
+        html += `<div class="activity-task-option-group">Open tasks (${openTasks.length})</div>`;
+        openTasks.forEach(task => {
+          html += `<div class="activity-task-option${activitySelectedTask?.id === task.id ? ' is-selected' : ''}" data-task-id="${escHtml(task.id)}" data-idx="${idx}">
+            <span class="activity-task-option-status" style="background: var(--status-ongoing);"></span>
+            <span class="activity-task-option-title">${escHtml(task.title)}</span>
+          </div>`;
+          idx++;
+        });
+      }
+      if (doneTasks.length) {
+        html += `<div class="activity-task-option-group">Completed (${doneTasks.length})</div>`;
+        doneTasks.forEach(task => {
+          html += `<div class="activity-task-option${activitySelectedTask?.id === task.id ? ' is-selected' : ''}" data-task-id="${escHtml(task.id)}" data-idx="${idx}">
+            <span class="activity-task-option-status" style="background: var(--status-done);"></span>
+            <span class="activity-task-option-title">${escHtml(task.title)}</span>
+          </div>`;
+          idx++;
+        });
+      }
+
+      if (!filtered.length && query) {
+        html += `<div style="padding:12px 10px;font-size:12px;color:var(--text-muted);text-align:center;">No tasks match "${escHtml(query)}"</div>`;
+      }
+
+      dropdown.innerHTML = html;
+      activityDropdownFocusIdx = -1;
+    }
+
+    function selectActivityTask(taskId) {
+      const hiddenInput = document.getElementById('activityTaskSelect');
+      const chip = document.getElementById('activityTaskChip');
+      const chipLabel = document.getElementById('activityTaskChipLabel');
+      const searchBox = document.getElementById('activityTaskSearchBox');
+      const searchInput = document.getElementById('activityTaskSearchInput');
+      const dropdown = document.getElementById('activityTaskDropdown');
+
+      if (taskId) {
+        const task = getTaskById(taskId);
+        if (!task) return;
+        activitySelectedTask = { id: task.id, title: task.title };
+        hiddenInput.value = task.id;
+        chipLabel.textContent = task.title;
+        chip.style.display = 'flex';
+        searchBox.style.display = 'none';
+      } else {
+        activitySelectedTask = null;
+        hiddenInput.value = '';
+        chip.style.display = 'none';
+        searchBox.style.display = 'block';
+        searchInput.value = '';
+      }
+      dropdown.classList.remove('is-open');
+    }
+
+    function initActivityTaskSearch() {
+      const searchInput = document.getElementById('activityTaskSearchInput');
+      const dropdown = document.getElementById('activityTaskDropdown');
+      const chipClear = document.getElementById('activityTaskChipClear');
+      const chip = document.getElementById('activityTaskChip');
+      const hideBtn = document.getElementById('activityHideOldBtn');
+
+      searchInput.addEventListener('focus', () => {
+        renderActivityDropdown(searchInput.value);
+        dropdown.classList.add('is-open');
+      });
+
+      searchInput.addEventListener('input', () => {
+        renderActivityDropdown(searchInput.value);
+        dropdown.classList.add('is-open');
+      });
+
+      searchInput.addEventListener('keydown', e => {
+        const options = dropdown.querySelectorAll('.activity-task-option');
+        if (!options.length) return;
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          activityDropdownFocusIdx = Math.min(activityDropdownFocusIdx + 1, options.length - 1);
+          options.forEach((o, i) => o.classList.toggle('is-focused', i === activityDropdownFocusIdx));
+          options[activityDropdownFocusIdx]?.scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          activityDropdownFocusIdx = Math.max(activityDropdownFocusIdx - 1, 0);
+          options.forEach((o, i) => o.classList.toggle('is-focused', i === activityDropdownFocusIdx));
+          options[activityDropdownFocusIdx]?.scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          const focused = options[activityDropdownFocusIdx] || options[0];
+          if (focused) {
+            const taskId = focused.dataset.taskId;
+            selectActivityTask(taskId || null);
+          }
+        } else if (e.key === 'Escape') {
+          dropdown.classList.remove('is-open');
+          searchInput.blur();
+        }
+      });
+
+      dropdown.addEventListener('click', e => {
+        const option = e.target.closest('.activity-task-option');
+        if (!option) return;
+        selectActivityTask(option.dataset.taskId || null);
+      });
+
+      chipClear.addEventListener('click', e => {
+        e.stopPropagation();
+        selectActivityTask(null);
+        document.getElementById('activityTaskSearchInput')?.focus();
+      });
+
+      chip.addEventListener('click', () => {
+        selectActivityTask(null);
+        document.getElementById('activityTaskSearchInput')?.focus();
+      });
+
+      // Close dropdown on outside click
+      document.addEventListener('click', e => {
+        if (!e.target.closest('.activity-task-search-wrap')) {
+          dropdown.classList.remove('is-open');
+        }
+      });
+
+      hideBtn.addEventListener('click', () => {
+        activityHideOld = !activityHideOld;
+        hideBtn.classList.toggle('is-active', activityHideOld);
+        hideBtn.textContent = activityHideOld ? 'Show all' : 'Hide done/old';
+        renderActivityDropdown(searchInput.value);
+      });
+    }
+
+    initActivityTaskSearch();
+
+    function getActivityTypeIconMarkup(activity) {
+      if (activity.type === 'session') {
+        return activity.sessionEvent === 'end'
+          ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8"/><path d="M6.3 6.5a8 8 0 1 0 11.4 0"/></svg>'
+          : '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
+      }
+      if (activity.type === 'task') {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>';
+      }
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>';
+    }
+
+    function getActivityEntryMarkup(activity) {
+      if (activity.id === activityEditingId && activity.type !== 'session') {
+        return getActivityEditFormMarkup(activity);
+      }
+
+      const isRunning = activity.type !== 'session' && !activity.endedAt;
+      const typeClass = `is-${activity.type}${activity.sessionEvent === 'end' ? '-end' : ''}`;
+      const title = getActivityTaskLabel(activity);
+      const showNote = activity.note && (activity.taskId || activity.type === 'task');
+      const sourceLabel = activity.source === 'timer' ? 'Timer' : activity.source === 'system' ? 'Auto' : 'Manual';
+
+      let timeline;
+      if (activity.type === 'session') {
+        timeline = formatActivityClockTime(activity.startedAt);
+      } else if (isRunning) {
+        timeline = `${formatActivityClockTime(activity.startedAt)} → <span class="activity-running-label">running</span> · <span data-activity-elapsed="${escHtml(activity.id)}">${formatElapsedClock(getActivityDurationMs(activity))}</span>`;
+      } else {
+        timeline = `${formatActivityClockTime(activity.startedAt)} → ${formatActivityClockTime(activity.endedAt)} · ${formatDurationMs(getActivityDurationMs(activity))}`;
+      }
+
+      return `
+        <div class="activity-entry ${typeClass} ${isRunning ? 'is-running' : ''}" data-activity-id="${escHtml(activity.id)}">
+          <div class="activity-entry-icon" aria-hidden="true">${getActivityTypeIconMarkup(activity)}</div>
+          <div class="activity-entry-main">
+            <div class="activity-entry-title">${escHtml(title)}</div>
+            <div class="activity-entry-meta">
+              <span class="activity-entry-time">${timeline}</span>
+              <span class="activity-entry-source">${sourceLabel}</span>
+            </div>
+            ${showNote ? `<div class="activity-entry-note">${escHtml(activity.note)}</div>` : ''}
+          </div>
+          <div class="activity-entry-actions">
+            ${isRunning ? `<button type="button" class="activity-icon-btn is-stop" data-activity-stop="${escHtml(activity.id)}" title="Stop tracking" aria-label="Stop tracking"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg></button>` : ''}
+            ${activity.type !== 'session' ? `<button type="button" class="activity-icon-btn is-edit" data-activity-edit="${escHtml(activity.id)}" title="Edit activity" aria-label="Edit activity"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg></button>` : ''}
+            <button type="button" class="activity-icon-btn is-delete" data-activity-delete="${escHtml(activity.id)}" title="Delete activity" aria-label="Delete activity"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18"/><path d="M18 6 6 18"/></svg></button>
+          </div>
+        </div>`;
+    }
+
+    function getActivityEditFormMarkup(activity) {
+      return `
+        <form class="activity-entry activity-edit-form" data-activity-form="${escHtml(activity.id)}">
+          <div class="activity-form-grid">
+            <div class="form-group activity-form-task">
+              <label>Task</label>
+              <select data-activity-field="taskId">${renderActivityTaskOptions(activity.taskId || '')}</select>
+            </div>
+            <div class="form-group activity-form-note">
+              <label>Note</label>
+              <input type="text" data-activity-field="note" maxlength="240" value="${escHtml(activity.note || '')}" placeholder="What was this time spent on?" />
+            </div>
+            <div class="form-group">
+              <label>Start *</label>
+              <input type="datetime-local" data-activity-field="startedAt" value="${escHtml(formatDateTimeLocalValue(activity.startedAt))}" required />
+            </div>
+            <div class="form-group">
+              <label>End</label>
+              <input type="datetime-local" data-activity-field="endedAt" value="${escHtml(activity.endedAt ? formatDateTimeLocalValue(activity.endedAt) : '')}" />
+            </div>
+          </div>
+          <div class="activity-form-actions">
+            <button type="button" class="btn btn-ghost" data-activity-cancel-edit="${escHtml(activity.id)}">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>`;
+    }
+
+    function renderActivitySummary() {
+      const summary = document.getElementById('activitySummary');
+      if (!summary) return;
+
+      const todayKey = today();
+      const todayActivities = activities.filter(activity => getActivityDayKey(activity.startedAt) === todayKey);
+      const running = getRunningActivity();
+      const trackedMs = todayActivities.reduce((total, activity) => total + getActivityDurationMs(activity), 0);
+      const firstEvent = todayActivities[todayActivities.length - 1] || null;
+      const sessionEnd = todayActivities.find(activity => activity.type === 'session' && activity.sessionEvent === 'end') || null;
+      const workedCount = todayActivities.filter(activity => activity.type !== 'session').length;
+
+      summary.innerHTML = `
+        <div class="activity-summary-card">
+          <span class="activity-summary-label">Day started</span>
+          <strong>${firstEvent ? formatActivityClockTime(firstEvent.startedAt) : '—'}</strong>
+        </div>
+        <div class="activity-summary-card">
+          <span class="activity-summary-label">Last app close</span>
+          <strong>${sessionEnd ? formatActivityClockTime(sessionEnd.startedAt) : '—'}</strong>
+        </div>
+        <div class="activity-summary-card">
+          <span class="activity-summary-label">Tracked today</span>
+          <strong>${trackedMs ? formatDurationMs(trackedMs) : '0m'}</strong>
+        </div>
+        <div class="activity-summary-card ${running ? 'is-live' : ''}">
+          <span class="activity-summary-label">${running ? 'Now tracking' : 'Entries today'}</span>
+          <strong>${running ? escHtml(getActivityTaskLabel(running)) : String(workedCount)}</strong>
+        </div>`;
+    }
+
+    function getFilteredActivities() {
+      const timelineFilter = document.getElementById('activityTimelineFilter')?.value || 'all';
+      const typeFilter = document.getElementById('activityTypeFilter')?.value || 'all';
+
+      let filtered = [...activities];
+
+      // Timeline filter
+      if (timelineFilter !== 'all') {
+        const now = new Date();
+        let cutoff;
+        if (timelineFilter === 'today') {
+          cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+        } else if (timelineFilter === 'yesterday') {
+          const yd = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+          cutoff = yd.toISOString();
+        } else if (timelineFilter === '7d') {
+          cutoff = new Date(now.getTime() - 7 * 86400000).toISOString();
+        } else if (timelineFilter === '30d') {
+          cutoff = new Date(now.getTime() - 30 * 86400000).toISOString();
+        }
+        if (cutoff) {
+          filtered = filtered.filter(a => a.startedAt >= cutoff);
+        }
+      }
+
+      // Type filter
+      if (typeFilter !== 'all') {
+        filtered = filtered.filter(a => a.type === typeFilter);
+      }
+
+      return filtered.sort((a, b) => b.startedAt.localeCompare(a.startedAt));
+    }
+
+    function renderActivityList() {
+      const list = document.getElementById('activityList');
+      if (!list) return;
+
+      const filtered = getFilteredActivities();
+
+      if (!filtered.length) {
+        const hasAny = activities.length > 0;
+        list.innerHTML = `
+          <div class="empty-state activity-empty-state">
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 12h4l2.5-6.5L14 18.5 16.5 12H21"/></svg>
+            <p>${hasAny ? 'No matching activities' : 'No activity yet'}</p>
+            <small>${hasAny ? 'Try adjusting the filters above.' : 'Press the play button on a task card, or add an activity manually above.'}</small>
+          </div>`;
+        return;
+      }
+
+      const groups = new Map();
+      filtered.forEach(activity => {
+        const dayKey = getActivityDayKey(activity.startedAt);
+        if (!groups.has(dayKey)) groups.set(dayKey, []);
+        groups.get(dayKey).push(activity);
+      });
+
+      list.innerHTML = Array.from(groups.entries()).map(([dayKey, dayActivities]) => {
+        const trackedMs = dayActivities.reduce((total, activity) => total + getActivityDurationMs(activity), 0);
+        const dayStart = dayActivities[dayActivities.length - 1];
+        const dayEnd = dayActivities[0];
+        const endLabel = dayEnd.type !== 'session' && !dayEnd.endedAt
+          ? 'now'
+          : formatActivityClockTime(dayEnd.endedAt || dayEnd.startedAt);
+
+        return `
+          <section class="activity-day-group">
+            <header class="activity-day-header">
+              <div class="activity-day-title">${escHtml(getActivityDayLabel(dayKey))}</div>
+              <div class="activity-day-meta">
+                <span>${formatActivityClockTime(dayStart.startedAt)} → ${escHtml(endLabel)}</span>
+                <span class="activity-day-tracked">${trackedMs ? formatDurationMs(trackedMs) : '0m'} tracked</span>
+              </div>
+            </header>
+            <div class="activity-day-entries">
+              ${dayActivities.map(getActivityEntryMarkup).join('')}
+            </div>
+          </section>`;
+      }).join('');
+    }
+
+    function renderActivityPanel() {
+      renderActivitySummary();
+      renderActivityList();
+    }
+
+    function openActivityModal() {
+      activityEditingId = null;
+
+      // Reset searchable task dropdown
+      selectActivityTask(null);
+      document.getElementById('activityTaskSearchInput').value = '';
+      document.getElementById('activityTaskDropdown').classList.remove('is-open');
+
+      const startInput = document.getElementById('activityStartInput');
+      const endInput = document.getElementById('activityEndInput');
+      const noteInput = document.getElementById('activityNoteInput');
+      if (startInput) startInput.value = formatDateTimeLocalValue(new Date().toISOString());
+      if (endInput) endInput.value = '';
+      if (noteInput) noteInput.value = '';
+
+      renderActivityPanel();
+      document.getElementById('activityModal').classList.add('open');
+    }
+
+    function closeActivityModal() {
+      document.getElementById('activityModal').classList.remove('open');
+      activityEditingId = null;
+      selectActivityTask(null);
+      document.getElementById('activityTaskDropdown')?.classList.remove('is-open');
+      document.getElementById('activityForm')?.reset();
+    }
+
+    function readActivityFormFields(root) {
+      const getField = name => root.querySelector(`[data-activity-field="${name}"]`);
+      return {
+        taskId: getField('taskId')?.value || '',
+        note: normalizeSingleLineText(getField('note')?.value) || null,
+        startedAt: parseDateTimeLocalValue(getField('startedAt')?.value),
+        endedAt: parseDateTimeLocalValue(getField('endedAt')?.value) || null
+      };
+    }
+
+    function applyActivityEdit(activityId, fields) {
+      const activity = getActivityById(activityId);
+      if (!activity || activity.type === 'session') return false;
+
+      if (!fields.startedAt) {
+        alert('Enter a valid start date and time for this activity.');
+        return false;
+      }
+
+      if (fields.endedAt && fields.endedAt < fields.startedAt) {
+        alert('The end time must be after the start time.');
+        return false;
+      }
+
+      const task = fields.taskId ? getTaskById(fields.taskId) : null;
+
+      if (!fields.endedAt) {
+        const running = getRunningActivity();
+        if (running && running.id !== activity.id) {
+          alert(`"${getActivityTaskLabel(running)}" is already running. Stop it first, or give this activity an end time.`);
+          return false;
+        }
+      }
+
+      activity.type = task ? 'task' : 'general';
+      activity.taskId = task ? task.id : null;
+      activity.taskTitle = task ? task.title : activity.taskTitle;
+      activity.note = fields.note;
+      activity.startedAt = fields.startedAt;
+      activity.endedAt = fields.endedAt;
+      activity.updatedAt = new Date().toISOString();
+
+      activities.sort((a, b) => b.startedAt.localeCompare(a.startedAt));
+      saveActivities();
+      return true;
+    }
+
+    // ── Session Start/Close Logging ──
+    function readActivitySessionStash() {
+      try {
+        const raw = localStorage.getItem(KEYS.activitySession);
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function writeActivitySessionStash(stash) {
+      try {
+        localStorage.setItem(KEYS.activitySession, JSON.stringify(stash));
+      } catch {
+        // localStorage may be unavailable; session close tracking degrades gracefully.
+      }
+    }
+
+    function reconcilePreviousSession() {
+      const stash = readActivitySessionStash();
+      if (!stash || !toValidIsoString(stash.lastSeenAt)) return false;
+
+      const closedAt = toValidIsoString(stash.lastSeenAt);
+      recordSessionActivity('end', closedAt, { save: false });
+
+      const running = getRunningActivity();
+      if (running) {
+        running.endedAt = closedAt > running.startedAt ? closedAt : running.startedAt;
+        running.updatedAt = new Date().toISOString();
+      }
+
+      return true;
+    }
+
+    function initializeActivityTracking() {
+      reconcilePreviousSession();
+      recordSessionActivity('start', new Date().toISOString(), { save: false });
+      saveActivities();
+
+      const heartbeat = () => {
+        writeActivitySessionStash({
+          startedAt: readActivitySessionStash()?.startedAt || new Date().toISOString(),
+          lastSeenAt: new Date().toISOString()
+        });
+      };
+
+      writeActivitySessionStash({ startedAt: new Date().toISOString(), lastSeenAt: new Date().toISOString() });
+      window.setInterval(heartbeat, ACTIVITY_HEARTBEAT_MS);
+      window.addEventListener('pagehide', heartbeat);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') heartbeat();
+      });
+
+      startActivityTicker();
+      updateActivityHeaderButton();
+    }
+
+    // ── Activity Event Listeners ──
+    document.getElementById('openActivityBtn').addEventListener('click', openActivityModal);
+    document.getElementById('closeActivityModalBtn').addEventListener('click', closeActivityModal);
+
+    document.getElementById('activityForm').addEventListener('submit', e => {
+      e.preventDefault();
+
+      const taskHiddenInput = document.getElementById('activityTaskSelect');
+      const noteInput = document.getElementById('activityNoteInput');
+      const startInput = document.getElementById('activityStartInput');
+      const endInput = document.getElementById('activityEndInput');
+
+      const startedAt = parseDateTimeLocalValue(startInput?.value);
+      const endedAt = parseDateTimeLocalValue(endInput?.value) || null;
+      const task = taskHiddenInput?.value ? getTaskById(taskHiddenInput.value) : null;
+      const note = normalizeSingleLineText(noteInput?.value) || null;
+
+      if (!startedAt) {
+        alert('Enter a valid start date and time for this activity.');
+        startInput?.focus();
+        return;
+      }
+
+      if (endedAt && endedAt < startedAt) {
+        alert('The end time must be after the start time.');
+        endInput?.focus();
+        return;
+      }
+
+      if (!task && !note) {
+        alert('Pick a task or add a note so this activity has a description.');
+        noteInput?.focus();
+        return;
+      }
+
+      if (!endedAt) {
+        stopRunningActivity(new Date().toISOString(), { save: false });
+      }
+
+      activities.unshift(normalizeActivity({
+        id: genId(),
+        type: task ? 'task' : 'general',
+        taskId: task?.id || null,
+        taskTitle: task?.title || null,
+        note,
+        startedAt,
+        endedAt,
+        source: 'manual',
+        createdAt: new Date().toISOString()
+      }));
+
+      activities.sort((a, b) => b.startedAt.localeCompare(a.startedAt));
+      saveActivities();
+
+      // Reset form
+      selectActivityTask(null);
+      noteInput.value = '';
+      endInput.value = '';
+      startInput.value = formatDateTimeLocalValue(new Date().toISOString());
+      refreshActivityUi({ rerenderTasks: true });
+    });
+
+    // ── Activity filter listeners ──
+    document.getElementById('activityTimelineFilter').addEventListener('change', () => renderActivityList());
+    document.getElementById('activityTypeFilter').addEventListener('change', () => renderActivityList());
+
+    document.getElementById('activityList').addEventListener('click', e => {
+      const stopId = e.target.closest('[data-activity-stop]')?.dataset.activityStop;
+      const editId = e.target.closest('[data-activity-edit]')?.dataset.activityEdit;
+      const deleteId = e.target.closest('[data-activity-delete]')?.dataset.activityDelete;
+      const cancelEditId = e.target.closest('[data-activity-cancel-edit]')?.dataset.activityCancelEdit;
+
+      if (stopId) {
+        const running = getRunningActivity();
+        if (running && running.id === stopId) stopRunningActivity();
+        refreshActivityUi({ rerenderTasks: true });
+        return;
+      }
+
+      if (editId) {
+        activityEditingId = editId;
+        renderActivityList();
+        document.querySelector(`[data-activity-form="${editId}"] [data-activity-field="note"]`)?.focus();
+        return;
+      }
+
+      if (cancelEditId) {
+        activityEditingId = null;
+        renderActivityList();
+        return;
+      }
+
+      if (deleteId) {
+        const activity = getActivityById(deleteId);
+        if (!activity) return;
+        if (!confirm(`Delete this activity (${getActivityTaskLabel(activity)})?`)) return;
+
+        activities = activities.filter(entry => entry.id !== deleteId);
+        if (activityEditingId === deleteId) activityEditingId = null;
+        saveActivities();
+        refreshActivityUi({ rerenderTasks: true });
+      }
+    });
+
+    document.getElementById('activityList').addEventListener('submit', e => {
+      const form = e.target.closest('[data-activity-form]');
+      if (!form) return;
+      e.preventDefault();
+
+      const activityId = form.dataset.activityForm;
+      if (applyActivityEdit(activityId, readActivityFormFields(form))) {
+        activityEditingId = null;
+        refreshActivityUi({ rerenderTasks: true });
+      }
+    });
+
+    bindBackdropDismiss('activityModal', closeActivityModal);
+
     // ── Init ──
     async function initializeApp() {
       await loadState();
@@ -15699,6 +17512,7 @@ ${task.effortSize ? getTaskEffortBlockMarkup(task, { variant: 'detail' }) : '<st
       saveHiddenFilters();
       saveTemplates();
       renderAppState();
+      initializeActivityTracking();
     }
 
     initializeApp().catch(error => {
